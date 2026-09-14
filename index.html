@@ -326,6 +326,15 @@
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);position:relative;cursor:pointer;flex-shrink:0;
   }
   .icon-btn .dot-badge{position:absolute;top:7px;left:7px;width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
+  .notif-dropdown{
+    position:absolute;top:48px;left:0;width:320px;max-height:400px;overflow-y:auto;
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    box-shadow:0 20px 50px -20px rgba(34,21,48,0.35);z-index:30;padding:10px;text-align:right;
+  }
+  .notif-item{padding:10px 12px;border-radius:10px;}
+  .notif-item:hover{background:var(--paper);}
+  .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
+  .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;}
   .app-content{padding:28px;max-width:1180px;}
 
   /* Widgets */
@@ -426,6 +435,31 @@
   .divider{display:flex;align-items:center;gap:12px;margin:22px 0;color:var(--muted);font-size:12.5px;}
   .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
 
+  /* Checkout flow */
+  .checkout-steps{display:flex;gap:8px;margin-bottom:24px;}
+  .checkout-step-dot{flex:1;height:4px;border-radius:99px;background:var(--line);}
+  .checkout-step-dot.done{background:var(--violet-600);}
+  .checkout-summary-row{display:flex;justify-content:space-between;font-size:14px;padding:9px 0;border-top:1px solid var(--line);}
+  .checkout-summary-row:first-child{border-top:none;}
+  .checkout-summary-row.total{font-weight:800;color:var(--violet-900);font-size:16px;}
+  .payment-method-option{
+    display:flex;align-items:center;gap:12px;border:1.5px solid var(--line);border-radius:12px;
+    padding:14px 16px;margin-bottom:10px;cursor:pointer;transition:.15s;
+  }
+  .payment-method-option:hover{border-color:var(--violet-600);}
+  .payment-method-option.selected{border-color:var(--violet-600);background:var(--mist);}
+  .payment-method-option input{width:17px;height:17px;accent-color:var(--violet-700);flex-shrink:0;}
+  .payment-account-box{background:var(--mist);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--violet-800);line-height:1.9;margin-bottom:18px;}
+  .copy-box{
+    display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--paper);
+    border:1.5px dashed var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--muted);margin-top:10px;
+  }
+  .notify-btn{
+    display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;border-radius:10px;
+    font-weight:700;font-size:14px;border:1.5px solid var(--line);background:#fff;color:var(--ink);margin-bottom:10px;
+  }
+  .notify-btn:hover{border-color:var(--violet-600);}
+
   /* Dashboard shell (phase 1 placeholder) */
   .dash-wrap{max-width:760px;margin:0 auto;padding:56px 24px;}
   .dash-card{
@@ -485,6 +519,82 @@
     background:#fff;border-radius:18px;border:1px solid var(--line);padding:28px;
     box-shadow:0 24px 50px -30px rgba(34,21,48,0.25);
   }
+  .detail-card + .detail-card{margin-top:20px;}
+  .detail-card h3{margin:0 0 16px;font-size:16.5px;color:var(--violet-900);}
+
+  .hero-meta-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;color:#fff;opacity:0.9;font-size:13px;}
+  .hero-meta-row span{display:flex;align-items:center;gap:6px;}
+  .star-row{display:inline-flex;align-items:center;gap:2px;color:var(--amber-500);}
+  .star-row.outline-empty{color:var(--line);}
+  .rating-summary{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+  .rating-big{text-align:center;}
+  .rating-big .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:38px;color:var(--violet-900);line-height:1;}
+  .rating-big .count{font-size:12px;color:var(--muted);margin-top:6px;}
+  .rating-bars{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px;}
+  .rating-bar-row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);}
+  .rating-bar-track{flex:1;height:7px;background:var(--mist);border-radius:99px;overflow:hidden;}
+  .rating-bar-fill{height:100%;background:var(--amber-500);border-radius:99px;}
+  .review-item{padding:14px 0;border-top:1px solid var(--line);}
+  .review-item:first-child{border-top:none;}
+  .review-item .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .review-item .rname{font-weight:700;font-size:13.5px;color:var(--ink);}
+  .review-item .rdate{font-size:11.5px;color:var(--muted);}
+  .review-item .rcomment{font-size:13.5px;color:var(--muted);line-height:1.7;}
+
+  .curriculum-module{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+  .curriculum-module-head{padding:14px 16px;background:var(--paper);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;color:var(--violet-900);}
+  .curriculum-lesson{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:13.5px;}
+  .curriculum-lesson .lk{
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:var(--mist);color:var(--muted);
+  }
+  .curriculum-lesson.unlocked .lk{background:#E9F5EE;color:var(--success);}
+  .curriculum-lesson .lname{flex:1;color:var(--ink);}
+  .curriculum-lesson.locked .lname{color:var(--muted);}
+  .preview-pill{font-size:10.5px;font-weight:700;color:var(--violet-700);background:var(--mist);padding:2px 9px;border-radius:99px;}
+
+  .learn-points{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
+  .learn-point{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink);line-height:1.6;}
+  .learn-point .lp-ic{width:20px;height:20px;border-radius:50%;background:#E9F5EE;color:var(--success);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+
+  .instr-block{display:flex;gap:14px;align-items:center;}
+  .instr-block .avatar-circle{width:56px;height:56px;font-size:20px;flex-shrink:0;}
+  .instr-block .iname{font-weight:700;font-size:15px;color:var(--violet-900);}
+  .instr-block .ibio{font-size:12.5px;color:var(--muted);margin-top:2px;}
+
+  .price-block{text-align:right;}
+  .price-old{font-size:14px;color:var(--muted);text-decoration:line-through;margin-left:8px;}
+  .price-new{font-family:'Cairo',sans-serif;font-weight:800;font-size:26px;color:var(--violet-800);}
+  .discount-chip{display:inline-block;background:#FBEBEA;color:var(--danger);font-size:11.5px;font-weight:700;padding:2px 9px;border-radius:99px;margin-right:8px;}
+  .meta-list{display:flex;flex-direction:column;gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line);}
+  .meta-list .mi{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);}
+  .meta-list .mi .side-ic{color:var(--violet-700);width:16px;height:16px;}
+  .next-lecture-box{background:var(--mist);border-radius:12px;padding:14px 16px;margin-top:16px;font-size:13px;color:var(--violet-800);}
+
+  /* Course community (WhatsApp-style feed, instructor-only posting) */
+  .chat-feed{display:flex;flex-direction:column;gap:14px;}
+  .chat-bubble{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;max-width:88%;}
+  .chat-bubble-head{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .chat-bubble-head .t1{font-weight:700;font-size:13.5px;color:var(--violet-900);}
+  .chat-bubble-head .t2{font-size:11px;color:var(--muted);}
+  .chat-type-pill{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px;background:var(--mist);color:var(--violet-700);margin-right:6px;}
+  .chat-body{font-size:14px;color:var(--ink);line-height:1.7;white-space:pre-line;}
+  .reaction-bar{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);}
+  .reaction-btn{
+    display:flex;align-items:center;gap:6px;padding:5px 12px;border-radius:99px;
+    border:1.5px solid var(--line);background:#fff;font-size:12.5px;color:var(--muted);cursor:pointer;transition:.15s;
+  }
+  .reaction-btn.active{border-color:var(--violet-600);color:var(--violet-700);background:var(--mist);}
+  .my-learning-card{
+    display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--line);border-radius:14px;margin-bottom:12px;background:#fff;
+  }
+  .my-learning-card .cover{
+    width:56px;height:56px;border-radius:12px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--violet-600),var(--violet-800));
+    color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-family:'Cairo',sans-serif;font-size:15px;
+  }
+  .my-learning-card .progress-track{height:6px;background:var(--mist);border-radius:99px;margin-top:8px;overflow:hidden;}
+  .my-learning-card .progress-fill{height:100%;background:var(--violet-600);border-radius:99px;}
 
   /* Enrollment status */
   .status-badge{display:inline-block;padding:5px 14px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap;}
@@ -554,6 +664,8 @@
     .nav-search{display:none;}
     .course-grid{grid-template-columns:1fr 1fr;}
     .detail-grid{grid-template-columns:1fr;margin-top:-24px;}
+    .learn-points{grid-template-columns:1fr;}
+    .rating-summary{flex-direction:column;align-items:flex-start;}
     .cat-grid{grid-template-columns:repeat(3,1fr);}
     .terms-grid{grid-template-columns:1fr;}
     .devices-wrap{height:260px;}
@@ -655,7 +767,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp, collection,
-  getCountFromServer, query, where, getDocs, addDoc, updateDoc, deleteDoc
+  getCountFromServer, query, where, getDocs, addDoc, updateDoc, deleteDoc, arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -707,6 +819,12 @@ const MICRO_ICONS = {
   grid:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>',
   devices:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="14" height="10" rx="1"/><path d="M8 20h4"/><rect x="18" y="8" width="4" height="12" rx="1"/></svg>',
   chevronLeft:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>',
+  lock:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>',
+  playCircle:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polygon points="10 8 16 12 10 16 10 8" fill="currentColor" stroke="none"/></svg>',
+  starFilled:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14 18.18 21 12 17.27 5.82 21 7.5 14 2 9.24 8.91 8.63 12 2"/></svg>',
+  starOutline:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14 18.18 21 12 17.27 5.82 21 7.5 14 2 9.24 8.91 8.63 12 2"/></svg>',
+  clock:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+  layers:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 8 12 14 22 8 12 2"/><polyline points="2 14 12 20 22 14"/><polyline points="2 11 12 17 22 11"/></svg>',
 };
 
 // Sidebar / topbar / table icon set (dashboard system)
@@ -730,6 +848,11 @@ const SIDE_ICONS = {
   video:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
   calendar:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>',
   exam:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>',
+  chatBubble:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+  paperPlane:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',
+  copy:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+  thumbsUp:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
+  heart:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
 };
 
 const STEPS = [
@@ -745,6 +868,14 @@ function router(){
   const hash = location.hash || '#/';
   const [path, qs] = hash.split('?');
   const params = new URLSearchParams(qs || '');
+
+  // Admins never see the public marketplace/home/auth/checkout pages — force them straight to the admin panel.
+  const adminBlockedRoutes = ['#/', '#/courses', '#/login', '#/register', '#/enroll/'];
+  if(currentProfile?.role === 'admin' && adminBlockedRoutes.some(r => (r === '#/' ? path === '#/' : path.startsWith(r)))){
+    if(location.hash !== '#/dashboard'){ location.hash = '#/dashboard'; }
+    return;
+  }
+
   if(path.startsWith('#/login')) renderLogin();
   else if(path.startsWith('#/register')) renderRegister();
   else if(path.startsWith('#/dashboard')) renderDashboard(params.get('tab'));
@@ -752,6 +883,7 @@ function router(){
   else if(path.startsWith('#/manage/')) renderManageCourse(path.split('#/manage/')[1]);
   else if(path.startsWith('#/exam/')) renderExamTake(path.split('#/exam/')[1]);
   else if(path.startsWith('#/course/')) renderCourseDetail(path.split('#/course/')[1]);
+  else if(path.startsWith('#/instructor/')) renderInstructorProfile(path.split('#/instructor/')[1]);
   else if(path.startsWith('#/enroll/')) renderEnrollForm(path.split('#/enroll/')[1]);
   else if(path.startsWith('#/courses')) renderCourses();
   else renderHome();
@@ -958,7 +1090,7 @@ async function loadStats(){
 
 async function loadCategoryCounts(){
   try{
-    const courses = await fetchCourses();
+    const courses = (await fetchCourses()).filter(isCourseApproved);
     const grid = document.getElementById('catGrid');
     if(!grid) return;
     grid.querySelectorAll('[data-count-for]').forEach(el => {
@@ -973,7 +1105,7 @@ async function loadFeaturedCourses(){
   const area = document.getElementById('featuredCoursesArea');
   if(!area) return;
   try{
-    const courses = await fetchCourses();
+    const courses = (await fetchCourses()).filter(isCourseApproved);
     if(courses.length === 0){
       area.innerHTML = `<div class="empty-state">كورساتنا الأولى في الطريق — تابعنا قريباً.</div>`;
       return;
@@ -1159,8 +1291,46 @@ async function fetchCourses(){
   return coursesCache;
 }
 
+/* Renders a 5-star row for a given average rating (full/empty stars, kept simple and honest — no fabricated halves) */
+function starRowHTML(rating){
+  const r = Math.round(rating || 0);
+  let stars = '';
+  for(let i = 1; i <= 5; i++){
+    stars += i <= r
+      ? `<span style="color:var(--amber-500);">${SIDE_ICONS.starFilled}</span>`
+      : `<span style="color:var(--line);">${SIDE_ICONS.starOutline}</span>`;
+  }
+  return `<span class="star-row">${stars}</span>`;
+}
+
+/* Fetches all reviews for a course and returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
+/* Fetches all reviews of a given type ('course' or 'instructor') for a target id, returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
+async function fetchReviewsFor(type, targetId){
+  try{
+    const snap = await getDocs(query(collection(db, 'reviews'), where('targetId','==', targetId), where('type','==', type)));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const count = items.length;
+    const avg = count ? items.reduce((s,r) => s + (r.rating||0), 0) / count : 0;
+    const distribution = [5,4,3,2,1].map(star => items.filter(r => Math.round(r.rating) === star).length);
+    return { avg, count, distribution, items };
+  }catch(e){
+    return { avg: 0, count: 0, distribution: [0,0,0,0,0], items: [] };
+  }
+}
+async function fetchCourseReviews(courseId){
+  return fetchReviewsFor('course', courseId);
+}
+
 function courseCardHTML(c){
-  const price = (c.price === 0 || c.price === '0') ? 'مجاني' : (c.price ? `${c.price} جنيه` : 'غير محدد');
+  const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
+  const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
+  const finalPrice = hasDiscount ? c.discountPrice : c.price;
+  const priceHTML = isFree
+    ? `<div class="course-price">مجاني</div>`
+    : `<div class="course-price">${hasDiscount ? `<span class="price-old" style="font-size:12px;">${c.price} ج.س</span>` : ''}${finalPrice ? `${finalPrice} ج.س` : 'غير محدد'}</div>`;
+  const ratingHTML = c.ratingCount
+    ? `<div style="display:flex;align-items:center;gap:5px;">${starRowHTML(c.ratingAvg)}<span style="font-size:11.5px;color:var(--muted);">(${c.ratingCount})</span></div>`
+    : '';
   return `
     <a href="#/course/${c.id}" class="course-card">
       <div class="course-thumb">${c.title || 'كورس'}</div>
@@ -1170,7 +1340,8 @@ function courseCardHTML(c){
           ${c.categoryName ? `<span class="pill">${c.categoryName}</span>` : ''}
           ${c.level ? `<span class="pill">${c.level}</span>` : ''}
         </div>
-        <div class="course-price">${price}</div>
+        ${ratingHTML}
+        ${priceHTML}
       </div>
     </a>
   `;
@@ -1193,7 +1364,8 @@ async function renderCourses(){
     </section>
   `;
 
-  const [categories, courses] = await Promise.all([fetchCategories(), fetchCourses()]);
+  const [categories, allCourses] = await Promise.all([fetchCategories(), fetchCourses()]);
+  const courses = allCourses.filter(isCourseApproved);
 
   const tabsEl = document.getElementById('catTabs');
   categories.forEach(cat => {
@@ -1250,6 +1422,61 @@ function canManageCourse(course){
   return false;
 }
 
+/* ---------------- courseAccess mirror (makes Security Rules actually enforceable) ----------------
+   Firestore rules cannot run arbitrary queries — they can only look up a specific document path.
+   So "does this student have an approved enrollment in this course" cannot be checked directly
+   against the `enrollments` collection from a rule (enrollment IDs are auto-generated).
+   This tiny deterministic-ID collection (`${studentId}_${courseId}`) mirrors just the approval
+   flag, so a rule can do a single get() to gate lessons/lectures/exams/community/reviews/progress.
+   It is written every time an enrollment is approved or un-approved — see adminRenderPayments. */
+async function grantCourseAccess(studentId, courseId){
+  try{
+    await setDoc(doc(db, 'courseAccess', `${studentId}_${courseId}`), {
+      studentId, courseId, approved: true, updatedAt: serverTimestamp(),
+    });
+  }catch(e){ /* non-fatal for the UI — the enrollment status itself already updated */ }
+}
+async function revokeCourseAccess(studentId, courseId){
+  try{
+    await setDoc(doc(db, 'courseAccess', `${studentId}_${courseId}`), {
+      studentId, courseId, approved: false, updatedAt: serverTimestamp(),
+    });
+  }catch(e){ /* non-fatal */ }
+}
+
+/* Lecture join links live in a private subdocument (lectures/{id}/private/link) so Security
+   Rules can keep them hidden from anyone without approved access, while the lecture's title/
+   date/time stay on the public parent doc for the course-preview page. This helper stitches
+   the link back on for callers who ARE authorized to see it (enrolled students, the owning
+   instructor, or admin) — for everyone else the private get() will simply be denied and we
+   fall back to an empty link, so the caller only ever attempts this when access is expected. */
+async function fetchLectureWithLink(id, data){
+  const base = { id, ...data };
+  try{
+    const linkSnap = await getDoc(doc(db, 'lectures', id, 'private', 'link'));
+    base.link = linkSnap.exists() ? linkSnap.data().link : '';
+  }catch(e){
+    base.link = '';
+  }
+  return base;
+}
+
+/* Same pattern as lectures: a lesson's title/type/order/isPreviewFree stay on the public
+   document (so the locked curriculum preview on the course page can list every lesson for
+   any visitor), while the actual content (video URL, file URL, or text body) lives in
+   lessons/{id}/private/content and is only readable with approved access, preview-free,
+   or course-management rights. */
+async function fetchLessonWithContent(id, data){
+  const base = { id, ...data };
+  try{
+    const contentSnap = await getDoc(doc(db, 'lessons', id, 'private', 'content'));
+    base.content = contentSnap.exists() ? contentSnap.data().content : '';
+  }catch(e){
+    base.content = '';
+  }
+  return base;
+}
+
 /* ---------------- COURSE DETAIL ---------------- */
 async function renderCourseDetail(courseId){
   const app = document.getElementById('app');
@@ -1273,61 +1500,314 @@ async function renderCourseDetail(courseId){
     return;
   }
 
-  const price = (course.price === 0 || course.price === '0') ? 'مجاني' : (course.price ? `${course.price} جنيه` : 'غير محدد');
+  if(!isCourseApproved(course) && !canManageCourse(course)){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">هذا الكورس غير متاح للعرض حالياً.</p>
+          <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
 
-  let ctaHTML = `
-    <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">سجّل في هذا الكورس</a>
-    <div style="margin-top:16px;font-size:13px;color:var(--muted);line-height:1.7;">
-      بعد التسجيل، ادفع خارج المنصة وارفع إثبات الدفع — الإدارة تراجع طلبك وتفعّل الكورس بعد الموافقة.
-    </div>
-  `;
+  // Gather everything needed for the page in parallel
+  const [modSnap, lesSnap, lecSnap, reviewData, instructorSnap, studentsCountSnap] = await Promise.all([
+    getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))).catch(()=>({docs:[]})),
+    getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))).catch(()=>({docs:[]})),
+    getDocs(query(collection(db, 'lectures'), where('courseId','==', course.id))).catch(()=>({docs:[]})),
+    fetchCourseReviews(course.id),
+    course.instructorId ? getDoc(doc(db, 'users', course.instructorId)).catch(()=>null) : Promise.resolve(null),
+    getCountFromServer(query(collection(db, 'enrollments'), where('courseId','==', course.id), where('status','==','approved'))).catch(()=>null),
+  ]);
 
-  if(currentUser){
-    const enrollment = await getEnrollmentStatusForCourse(course.id);
-    if(enrollment){
-      if(enrollment.status === 'approved'){
-        ctaHTML = `<a href="#/learn/${course.id}" class="btn btn-amber btn-full">ابدأ التعلم</a>`;
-      } else if(enrollment.status === 'pending'){
-        ctaHTML = `
-          <button class="btn btn-ghost btn-full" disabled>طلبك قيد المراجعة</button>
-          <div style="margin-top:14px;font-size:13px;color:var(--muted);">هنعلمك أول ما الإدارة توافق على دفعك.</div>
+  const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  const lessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  const lectures = lecSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  const instructor = (instructorSnap && instructorSnap.exists && instructorSnap.exists()) ? instructorSnap.data() : null;
+  const studentsCount = studentsCountSnap ? studentsCountSnap.data().count : 0;
+
+  // Determine access: approved enrollment, or admin/owning instructor previewing
+  let enrollment = null;
+  if(currentUser) enrollment = await getEnrollmentStatusForCourse(course.id);
+  const isApproved = (enrollment && enrollment.status === 'approved') || canManageCourse(course);
+
+  // Price block
+  const hasDiscount = course.discountPrice !== undefined && course.discountPrice !== null && Number(course.discountPrice) < Number(course.price || 0);
+  const isFree = (course.price === 0 || course.price === '0') && !hasDiscount;
+  const finalPrice = hasDiscount ? course.discountPrice : course.price;
+  const priceHTML = isFree
+    ? `<div class="price-new">مجاني</div>`
+    : `
+      <div>
+        ${hasDiscount ? `<span class="discount-chip">خصم</span><span class="price-old">${course.price} ج.س</span>` : ''}
+      </div>
+      <div class="price-new">${finalPrice ? `${finalPrice} ج.س` : 'غير محدد'}</div>
+    `;
+
+  // What you'll learn
+  const whatToLearn = Array.isArray(course.whatToLearn) ? course.whatToLearn.filter(Boolean) : [];
+
+  // Curriculum tree
+  const curriculumHTML = modules.length === 0
+    ? `<div class="empty-state" style="padding:24px 0;">لسه ما اتضاف محتوى لهذا الكورس.</div>`
+    : modules.map(m => {
+        const modLessons = lessons.filter(l => l.moduleId === m.id);
+        return `
+          <div class="curriculum-module">
+            <div class="curriculum-module-head"><span>${m.title}</span><span style="font-weight:600;font-size:12px;color:var(--muted);">${modLessons.length} محاضرة</span></div>
+            ${modLessons.map((l, idx) => {
+              const unlocked = isApproved || l.isPreviewFree;
+              return `
+                <div class="curriculum-lesson ${unlocked ? 'unlocked' : 'locked'}">
+                  <span class="lk">${unlocked ? SIDE_ICONS.playCircle : SIDE_ICONS.lock}</span>
+                  <span class="lname">${l.title}</span>
+                  ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
         `;
-      } else if(enrollment.status === 'rejected'){
-        ctaHTML = `
-          <div class="alert alert-error" style="margin-bottom:14px;">تم رفض طلبك السابق.</div>
-          <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">سجّل مرة أخرى</a>
-        `;
-      }
+      }).join('');
+
+  // Next scheduled lecture (date/time preview only unless enrolled)
+  const todayStr = new Date().toISOString().slice(0,10);
+  const upcomingLectures = lectures.filter(l => (l.date || '') >= todayStr).sort((a,b) => (a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  const nextLecture = upcomingLectures[0];
+  let nextLectureHTML = '';
+  if(nextLecture){
+    if(isApproved){
+      const withLink = await fetchLectureWithLink(nextLecture.id, nextLecture);
+      nextLectureHTML = `
+        <div class="next-lecture-box">
+          <strong>المحاضرة القادمة:</strong> ${nextLecture.title}<br/>
+          ${nextLecture.date} · ${nextLecture.time}<br/>
+          <a href="${withLink.link}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:700;">فتح رابط المحاضرة</a>
+        </div>
+      `;
+    } else {
+      const d = new Date(nextLecture.date);
+      const dayName = isNaN(d) ? '' : d.toLocaleDateString('ar', { weekday:'long' });
+      nextLectureHTML = `
+        <div class="next-lecture-box">
+          <strong>المحاضرة القادمة:</strong> ${dayName} — ${nextLecture.time}<br/>
+          <span style="opacity:0.8;">رابط الدخول يظهر بعد قبول اشتراكك.</span>
+        </div>
+      `;
     }
   }
 
+  // CTA
+  let ctaHTML = `
+    <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">اشترك الآن</a>
+    <div style="margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.7;">
+      بعد الاشتراك، ادفع خارج المنصة وارفع إثبات الدفع — الإدارة تراجع طلبك وتفعّل الكورس بعد الموافقة.
+    </div>
+  `;
+  if(currentUser && enrollment){
+    if(enrollment.status === 'approved'){
+      ctaHTML = `<a href="#/learn/${course.id}" class="btn btn-amber btn-full">ابدأ التعلم</a>`;
+    } else if(enrollment.status === 'pending_payment'){
+      ctaHTML = `<a href="#/enroll/${course.id}" class="btn btn-primary btn-full">إتمام الدفع</a>`;
+    } else if(enrollment.status === 'payment_submitted' || enrollment.status === 'under_review' || enrollment.status === 'pending'){
+      ctaHTML = `
+        <button class="btn btn-ghost btn-full" disabled>${STATUS_LABEL[enrollment.status] || 'قيد المراجعة'}</button>
+        <div style="margin-top:14px;font-size:13px;color:var(--muted);">هنعلمك أول ما الإدارة توافق على دفعك.</div>
+      `;
+    } else if(enrollment.status === 'rejected' || enrollment.status === 'cancelled'){
+      ctaHTML = `
+        <div class="alert alert-error" style="margin-bottom:14px;">${enrollment.status === 'cancelled' ? 'طلبك السابق تم إلغاؤه.' : 'تم رفض طلبك السابق.'}</div>
+        <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">اشترك مرة أخرى</a>
+      `;
+    }
+  }
   const manageLink = canManageCourse(course)
     ? `<a href="#/manage/${course.id}" class="btn btn-ghost btn-full" style="margin-top:10px;">إدارة محتوى الكورس</a>`
     : '';
 
+  // Rating distribution bars
+  const ratingBarsHTML = [5,4,3,2,1].map((star, i) => {
+    const c = reviewData.distribution[i];
+    const pct = reviewData.count ? Math.round((c / reviewData.count) * 100) : 0;
+    return `
+      <div class="rating-bar-row">
+        <span>${star}</span>
+        <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${pct}%;"></div></div>
+        <span>${c}</span>
+      </div>
+    `;
+  }).join('');
+
   app.innerHTML = `
+    ${!isCourseApproved(course) ? `
+      <div style="background:var(--amber-500);color:var(--violet-900);text-align:center;padding:8px;font-size:13px;font-weight:700;">
+        معاينة إدارية — هذا الكورس غير منشور بعد (${COURSE_STATUS_LABEL[course.status] || course.status})
+      </div>
+    ` : ''}
     <div class="detail-hero">
       <div class="container">
         <h2 style="color:#fff;margin:0 0 8px;font-size:26px;">${course.title || 'كورس'}</h2>
-        <div style="opacity:0.85;font-size:14px;color:#fff;">${course.categoryName ? course.categoryName : ''} ${course.level ? '· ' + course.level : ''}</div>
+        <p style="color:#fff;opacity:0.85;font-size:14.5px;max-width:60ch;margin:0 0 6px;">${course.description ? course.description.slice(0,140) : ''}</p>
+        <div class="hero-meta-row">
+          ${reviewData.count ? `<span>${starRowHTML(reviewData.avg)} <span style="margin-right:4px;">${reviewData.avg.toFixed(1)} (${reviewData.count} تقييم)</span></span>` : `<span>لا توجد تقييمات بعد</span>`}
+          <span>${SIDE_ICONS.users} ${studentsCount} طالب</span>
+          <span>${SIDE_ICONS.layers} ${modules.length} وحدة</span>
+          <span>${SIDE_ICONS.playCircle} ${lessons.length} محاضرة</span>
+          ${course.durationText ? `<span>${SIDE_ICONS.clock} ${course.durationText}</span>` : ''}
+          ${course.level ? `<span>${course.level}</span>` : ''}
+        </div>
       </div>
     </div>
     <div class="container">
       <div class="detail-grid">
-        <div class="detail-card">
-          <h3 style="margin-top:0;color:var(--violet-900);">عن الكورس</h3>
-          <p style="color:var(--muted);line-height:1.9;font-size:15px;">${course.description || 'لا يوجد وصف لهذا الكورس حالياً.'}</p>
-          ${course.instructorName ? `
-            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--line);">
-              <div style="font-size:13px;color:var(--muted);margin-bottom:4px;">المدرب</div>
-              <div style="font-weight:700;color:var(--violet-900);">${course.instructorName}</div>
+        <div>
+          <div class="detail-card">
+            <h3>عن الكورس</h3>
+            <p style="color:var(--muted);line-height:1.9;font-size:15px;margin:0;">${course.description || 'لا يوجد وصف لهذا الكورس حالياً.'}</p>
+          </div>
+
+          ${whatToLearn.length ? `
+            <div class="detail-card">
+              <h3>ماذا ستتعلم؟</h3>
+              <div class="learn-points">
+                ${whatToLearn.map(pt => `<div class="learn-point"><span class="lp-ic">${SIDE_ICONS.check}</span><span>${pt}</span></div>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="detail-card">
+            <h3>محتوى الكورس</h3>
+            <p style="font-size:13px;color:var(--muted);margin:-8px 0 16px;">هذا الكورس يحتوي على ${lessons.length} محاضرة موزّعة على ${modules.length} وحدة تعليمية.</p>
+            ${curriculumHTML}
+          </div>
+
+          <div class="detail-card">
+            <h3>تقييمات الطلاب</h3>
+            ${reviewData.count ? `
+              <div class="rating-summary">
+                <div class="rating-big">
+                  <div class="num">${reviewData.avg.toFixed(1)}</div>
+                  <div>${starRowHTML(reviewData.avg)}</div>
+                  <div class="count">${reviewData.count} تقييم</div>
+                </div>
+                <div class="rating-bars">${ratingBarsHTML}</div>
+              </div>
+              ${reviewData.items.slice(0,6).map(r => `
+                <div class="review-item">
+                  <div class="rh">
+                    <span class="rname">${r.studentName || 'طالب'}</span>
+                    <span class="star-row">${starRowHTML(r.rating)}</span>
+                  </div>
+                  ${r.comment ? `<div class="rcomment">${r.comment}</div>` : ''}
+                </div>
+              `).join('')}
+            ` : `<div class="empty-state" style="padding:20px 0;">لا توجد تقييمات بعد لهذا الكورس.</div>`}
+          </div>
+        </div>
+
+        <div>
+          <div class="detail-card" style="align-self:start;">
+            <div class="price-block">${priceHTML}</div>
+            <div style="margin-top:16px;">${ctaHTML}</div>
+            ${manageLink}
+            ${nextLectureHTML}
+            <div class="meta-list">
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.grid}</span> ${course.categoryName || 'بدون قسم'}</div>
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.dashboard}</span> المستوى: ${course.level || 'غير محدد'}</div>
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.users}</span> ${studentsCount} طالب مسجل</div>
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.layers}</span> ${modules.length} وحدة · ${lessons.length} محاضرة</div>
+              ${course.durationText ? `<div class="mi"><span class="side-ic">${SIDE_ICONS.clock}</span> ${course.durationText}</div>` : ''}
+            </div>
+          </div>
+
+          ${instructor ? `
+            <div class="detail-card">
+              <h3>عن المدرب</h3>
+              <a href="#/instructor/${course.instructorId}" class="instr-block" style="color:inherit;">
+                <div class="avatar-circle">${(instructor.name || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
+                <div>
+                  <div class="iname">${instructor.name || 'مدرب'}</div>
+                  ${instructor.specialty ? `<div class="ibio">${instructor.specialty}</div>` : ''}
+                </div>
+              </a>
+              ${instructor.bio ? `<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:14px 0 0;">${instructor.bio}</p>` : ''}
+              <a href="#/instructor/${course.instructorId}" class="view-all-link" style="display:block;margin-top:14px;font-size:13px;">عرض الملف الشخصي الكامل</a>
             </div>
           ` : ''}
         </div>
-        <div class="detail-card" style="align-self:start;">
-          <div class="course-price" style="font-size:26px;margin-bottom:18px;">${price}</div>
-          ${ctaHTML}
-          ${manageLink}
+      </div>
+    </div>
+  `;
+}
+
+/* ---------------- INSTRUCTOR PUBLIC PROFILE ---------------- */
+async function renderInstructorProfile(instructorId){
+  const app = document.getElementById('app');
+  app.innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ تحميل الملف الشخصي...</div></div>`;
+
+  let instructor = null;
+  try{
+    const snap = await getDoc(doc(db, 'users', instructorId));
+    if(snap.exists() && snap.data().role === 'instructor') instructor = { id: snap.id, ...snap.data() };
+  }catch(e){ /* ignore */ }
+
+  if(!instructor){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">هذا الملف الشخصي غير موجود.</p>
+          <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const [coursesSnap, ratingData] = await Promise.all([
+    getDocs(query(collection(db, 'courses'), where('instructorId','==', instructorId))),
+    fetchReviewsFor('instructor', instructorId),
+  ]);
+  const courses = coursesSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(isCourseApproved);
+
+  const studentsCounts = await Promise.all(courses.map(c =>
+    getCountFromServer(query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved'))).catch(()=>null)
+  ));
+  const totalStudents = studentsCounts.reduce((s, snap) => s + (snap ? snap.data().count : 0), 0);
+
+  app.innerHTML = `
+    <div class="detail-hero">
+      <div class="container">
+        <div class="instr-block" style="color:#fff;">
+          <div class="avatar-circle" style="width:76px;height:76px;font-size:28px;background:#fff;color:var(--violet-800);">${(instructor.name||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+          <div>
+            <h2 style="margin:0 0 4px;font-size:24px;color:#fff;">${instructor.name || 'مدرب'}</h2>
+            ${instructor.specialty ? `<div style="opacity:0.85;font-size:14px;">${instructor.specialty}</div>` : ''}
+            <div class="hero-meta-row" style="margin-top:10px;">
+              ${ratingData.count ? `<span>${starRowHTML(ratingData.avg)} ${ratingData.avg.toFixed(1)} (${ratingData.count})</span>` : `<span>لا توجد تقييمات بعد</span>`}
+              <span>${SIDE_ICONS.book} ${courses.length} كورس</span>
+              <span>${SIDE_ICONS.users} ${totalStudents} طالب</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container" style="padding-bottom:64px;">
+      <div class="detail-grid">
+        <div>
+          ${instructor.bio ? `
+            <div class="detail-card" style="margin-top:-40px;">
+              <h3>نبذة عن المدرب</h3>
+              <p style="color:var(--muted);line-height:1.9;font-size:15px;margin:0;">${instructor.bio}</p>
+            </div>
+          ` : ''}
+          <div class="detail-card" style="${instructor.bio ? '' : 'margin-top:-40px;'}">
+            <h3>كورسات ${instructor.name || 'المدرب'}</h3>
+            ${courses.length === 0
+              ? `<div class="empty-state" style="padding:20px 0;">لا توجد كورسات منشورة بعد.</div>`
+              : `<div class="course-grid">${courses.map(courseCardHTML).join('')}</div>`
+            }
+          </div>
         </div>
       </div>
     </div>
@@ -1335,6 +1815,28 @@ async function renderCourseDetail(courseId){
 }
 
 /* ---------------- ENROLLMENT (manual payment) ---------------- */
+/* ---------------- CHECKOUT HELPERS ---------------- */
+async function fetchActivePaymentMethods(){
+  try{
+    const snap = await getDocs(query(collection(db, 'paymentMethods'), where('active','==', true)));
+    return snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  }catch(e){
+    return [];
+  }
+}
+async function fetchCommunicationSettings(){
+  try{
+    const snap = await getDoc(doc(db, 'settings', 'communication'));
+    return snap.exists() ? snap.data() : null;
+  }catch(e){
+    return null;
+  }
+}
+function buildPaymentNotificationMessage(course, enrollment){
+  return `أريد تأكيد دفع كورس: ${course.title}\nاسم الطالب: ${currentProfile?.name || currentUser.email}\nرقم الطلب: ${enrollment.id}\nالمبلغ: ${enrollment.finalAmount} ج.س`;
+}
+
+/* ---------------- ENROLLMENT / CHECKOUT (multi-step, manual payment) ---------------- */
 async function renderEnrollForm(courseId){
   const app = document.getElementById('app');
 
@@ -1342,7 +1844,7 @@ async function renderEnrollForm(courseId){
     app.innerHTML = `
       <div class="dash-wrap">
         <div class="dash-card" style="text-align:center;">
-          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان تسجّل في كورس.</p>
+          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان تشترك في كورس.</p>
           <a href="#/login" class="btn btn-primary">تسجيل الدخول</a>
         </div>
       </div>
@@ -1353,14 +1855,9 @@ async function renderEnrollForm(courseId){
   app.innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ التحميل...</div></div>`;
 
   let course = null;
-  let paymentInfo = null;
   try{
     const snap = await getDoc(doc(db, 'courses', courseId));
     if(snap.exists()) course = { id: snap.id, ...snap.data() };
-  }catch(e){ /* ignore */ }
-  try{
-    const paySnap = await getDoc(doc(db, 'settings', 'payment'));
-    if(paySnap.exists()) paymentInfo = paySnap.data();
   }catch(e){ /* ignore */ }
 
   if(!course){
@@ -1375,31 +1872,174 @@ async function renderEnrollForm(courseId){
     return;
   }
 
+  const enrollment = await getEnrollmentStatusForCourse(course.id);
+
+  if(enrollment && enrollment.status === 'approved'){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <div class="alert alert-success">أنت مشترك بالفعل في هذا الكورس.</div>
+          <a href="#/learn/${course.id}" class="btn btn-primary" style="margin-top:10px;">ابدأ التعلم</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  if(enrollment && enrollment.status === 'under_review'){
+    renderCheckoutStatusPage(course, enrollment, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
+    return;
+  }
+  if(enrollment && enrollment.status === 'payment_submitted'){
+    renderCheckoutStep3(course, enrollment);
+    return;
+  }
+  if(enrollment && enrollment.status === 'pending_payment'){
+    renderCheckoutStep2(course, enrollment);
+    return;
+  }
+  // no enrollment yet, or a previous attempt was rejected/cancelled — start fresh
+  renderCheckoutStep1(course);
+}
+
+function renderCheckoutStatusPage(course, enrollment, message){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="dash-wrap">
+      <div class="dash-card" style="text-align:center;">
+        <span class="status-badge ${STATUS_CLASS[enrollment.status]}" style="margin-bottom:14px;display:inline-block;">${STATUS_LABEL[enrollment.status]}</span>
+        <p style="color:var(--muted);">${message}</p>
+        <a href="#/dashboard" class="btn btn-ghost" style="margin-top:10px;">الرجوع إلى لوحتي</a>
+      </div>
+    </div>
+  `;
+}
+
+/* Step 1 — confirm price/discount and choose a payment method */
+async function renderCheckoutStep1(course){
+  const app = document.getElementById('app');
+  const methods = await fetchActivePaymentMethods();
+
+  const hasDiscount = course.discountPrice !== undefined && course.discountPrice !== null && Number(course.discountPrice) < Number(course.price || 0);
+  const isFree = (course.price === 0 || course.price === '0') && !hasDiscount;
+  const finalAmount = isFree ? 0 : (hasDiscount ? Number(course.discountPrice) : Number(course.price || 0));
+
   app.innerHTML = `
     <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
       <div class="auth-card" style="max-width:520px;">
-        <h2>التسجيل في: ${course.title}</h2>
-        <p class="sub">ادفع بأي وسيلة متاحة، ثم ارفع إثبات الدفع هنا.</p>
-        <div id="enrollAlert"></div>
+        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot"></div><div class="checkout-step-dot"></div></div>
+        <h2>تأكيد الاشتراك</h2>
+        <p class="sub">${course.title}</p>
+        <div id="checkoutAlert"></div>
 
-        ${paymentInfo ? `
-          <div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">
-            <strong>بيانات الدفع:</strong><br/>
-            ${paymentInfo.bankak ? `بنكك: ${paymentInfo.bankak}<br/>` : ''}
-            ${paymentInfo.fawry ? `فوري: ${paymentInfo.fawry}<br/>` : ''}
-            ${paymentInfo.mycash ? `ماي كاش: ${paymentInfo.mycash}<br/>` : ''}
-            ${(!paymentInfo.bankak && !paymentInfo.fawry && !paymentInfo.mycash) ? 'تواصل مع الإدارة لمعرفة وسيلة الدفع.' : ''}
-          </div>
-        ` : `
-          <div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">
-            بيانات الدفع لسه ما اتحددت من الإدارة — تواصل معانا لمعرفة طريقة الدفع.
-          </div>
+        <div style="margin-bottom:20px;">
+          <div class="checkout-summary-row"><span>سعر الكورس</span><span>${course.price ? course.price + ' ج.س' : 'مجاني'}</span></div>
+          ${hasDiscount ? `<div class="checkout-summary-row"><span>الخصم</span><span style="color:var(--success);">- ${course.price - course.discountPrice} ج.س</span></div>` : ''}
+          <div class="checkout-summary-row total"><span>المبلغ النهائي</span><span>${isFree ? 'مجاني' : finalAmount + ' ج.س'}</span></div>
+        </div>
+
+        ${isFree ? '' : `
+          <h4 style="font-size:14px;color:var(--violet-900);margin:0 0 10px;">اختر طريقة الدفع</h4>
+          ${methods.length === 0
+            ? `<div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">لسه الإدارة ما أضافت وسائل دفع — تواصل معانا مباشرة لإتمام الاشتراك.</div>`
+            : `<div id="paymentMethodsList">
+                ${methods.map((m,i) => `
+                  <label class="payment-method-option ${i===0?'selected':''}" data-id="${m.id}">
+                    <input type="radio" name="paymentMethodChoice" value="${m.id}" ${i===0?'checked':''} />
+                    <div>
+                      <div style="font-weight:700;color:var(--ink);">${m.label}</div>
+                      ${m.accountName ? `<div style="font-size:12px;color:var(--muted);">${m.accountName}</div>` : ''}
+                    </div>
+                  </label>
+                `).join('')}
+              </div>`
+          }
         `}
 
-        <form id="enrollForm">
+        <button class="btn btn-primary btn-full" id="confirmCheckoutBtn" style="margin-top:10px;" ${(!isFree && methods.length===0) ? 'disabled' : ''}>تأكيد الاشتراك</button>
+      </div>
+    </div>
+  `;
+
+  document.querySelectorAll('.payment-method-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      document.querySelectorAll('.payment-method-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+    });
+  });
+
+  document.getElementById('confirmCheckoutBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('confirmCheckoutBtn');
+    const alertBox = document.getElementById('checkoutAlert');
+    const selectedMethod = document.querySelector('input[name="paymentMethodChoice"]:checked');
+    if(!isFree && !selectedMethod){
+      alertBox.innerHTML = `<div class="alert alert-error">اختر طريقة دفع أولاً.</div>`;
+      return;
+    }
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> جارٍ التأكيد...`;
+    try{
+      const ref = await addDoc(collection(db, 'enrollments'), {
+        studentId: currentUser.uid,
+        studentName: currentProfile?.name || currentUser.email,
+        courseId: course.id,
+        courseTitle: course.title || '',
+        priceAtPurchase: course.price || 0,
+        discountApplied: hasDiscount,
+        finalAmount,
+        paymentMethodId: selectedMethod ? selectedMethod.value : null,
+        notificationSent: false,
+        status: isFree ? 'payment_submitted' : 'pending_payment',
+        createdAt: serverTimestamp(),
+      });
+      const newEnrollment = { id: ref.id, courseId: course.id, courseTitle: course.title, finalAmount, paymentMethodId: selectedMethod ? selectedMethod.value : null, status: isFree ? 'payment_submitted' : 'pending_payment' };
+      if(isFree){
+        renderCheckoutStep3(course, newEnrollment);
+      } else {
+        renderCheckoutStep2(course, newEnrollment);
+      }
+    }catch(e){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر تأكيد الاشتراك، حاول مرة أخرى.</div>`;
+      btn.disabled = false;
+      btn.textContent = 'تأكيد الاشتراك';
+    }
+  });
+}
+
+/* Step 2 — show chosen payment account + upload proof */
+async function renderCheckoutStep2(course, enrollment){
+  const app = document.getElementById('app');
+  let method = null;
+  if(enrollment.paymentMethodId){
+    try{
+      const snap = await getDoc(doc(db, 'paymentMethods', enrollment.paymentMethodId));
+      if(snap.exists()) method = snap.data();
+    }catch(e){ /* ignore */ }
+  }
+
+  app.innerHTML = `
+    <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
+      <div class="auth-card" style="max-width:520px;">
+        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot"></div></div>
+        <h2>إتمام الدفع</h2>
+        <p class="sub">${course.title} — ${enrollment.finalAmount} ج.س</p>
+        <div id="checkoutAlert"></div>
+
+        ${method ? `
+          <div class="payment-account-box">
+            <strong>${method.label}</strong><br/>
+            ${method.accountName ? `اسم الحساب: ${method.accountName}<br/>` : ''}
+            ${method.accountNumber ? `الرقم: ${method.accountNumber}<br/>` : ''}
+            ${method.instructions ? `<div style="margin-top:6px;">${method.instructions}</div>` : ''}
+          </div>
+        ` : `
+          <div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">تواصل مع الإدارة لمعرفة بيانات الدفع.</div>
+        `}
+
+        <form id="proofForm">
           <div class="field">
-            <label>مرجع العملية / رقم التحويل</label>
-            <input type="text" id="paymentRef" required placeholder="مثال: 8842051" />
+            <label>مرجع العملية / رقم التحويل (إن وجد)</label>
+            <input type="text" id="paymentRef" placeholder="مثال: 8842051" />
           </div>
           <div class="field">
             <label>إثبات الدفع (صورة)</label>
@@ -1408,8 +2048,9 @@ async function renderEnrollForm(courseId){
               <input type="file" id="proofFile" accept="image/*" required style="display:none;" />
             </label>
           </div>
-          <button type="submit" class="btn btn-primary btn-full" id="enrollBtn">إرسال طلب التسجيل</button>
+          <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">إرسال إثبات الدفع</button>
         </form>
+        <button class="btn btn-ghost btn-full" id="cancelCheckoutBtn" style="margin-top:10px;">إلغاء الطلب</button>
       </div>
     </div>
   `;
@@ -1423,52 +2064,123 @@ async function renderEnrollForm(courseId){
     }
   });
 
-  document.getElementById('enrollForm').addEventListener('submit', async (e) => {
+  document.getElementById('cancelCheckoutBtn').addEventListener('click', async () => {
+    if(!confirm('هل تريد إلغاء طلب الاشتراك؟')) return;
+    try{
+      await updateDoc(doc(db, 'enrollments', enrollment.id), { status: 'cancelled' });
+      location.hash = `#/course/${course.id}`;
+    }catch(e){
+      alert('تعذّر إلغاء الطلب.');
+    }
+  });
+
+  document.getElementById('proofForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const btn = document.getElementById('enrollBtn');
-    const alertBox = document.getElementById('enrollAlert');
-    alertBox.innerHTML = '';
+    const btn = document.getElementById('submitProofBtn');
+    const alertBox = document.getElementById('checkoutAlert');
     const paymentRef = document.getElementById('paymentRef').value.trim();
     const file = fileInput.files[0];
-
     if(!file){
       alertBox.innerHTML = `<div class="alert alert-error">لازم ترفع صورة إثبات الدفع.</div>`;
       return;
     }
-
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> جارٍ الإرسال...`;
-
     try{
       const filePath = `payment-proofs/${currentUser.uid}/${course.id}-${Date.now()}-${file.name}`;
       const storageRef = ref(storage, filePath);
       await uploadBytes(storageRef, file);
       const proofURL = await getDownloadURL(storageRef);
 
-      await addDoc(collection(db, 'enrollments'), {
-        studentId: currentUser.uid,
-        studentName: currentProfile?.name || currentUser.email,
-        courseId: course.id,
-        courseTitle: course.title || '',
-        paymentRef: paymentRef,
-        proofURL: proofURL,
-        status: 'pending',
-        createdAt: serverTimestamp(),
+      await updateDoc(doc(db, 'enrollments', enrollment.id), {
+        status: 'payment_submitted',
+        paymentRef: paymentRef || null,
+        proofURL,
+        submittedAt: serverTimestamp(),
       });
 
-      app.innerHTML = `
-        <div class="dash-wrap">
-          <div class="dash-card" style="text-align:center;">
-            <div class="alert alert-success">تم إرسال طلبك بنجاح! الإدارة هتراجعه وتفعّل الكورس بعد الموافقة.</div>
-            <a href="#/dashboard" class="btn btn-primary" style="margin-top:12px;">اذهب إلى لوحتي</a>
-          </div>
-        </div>
-      `;
+      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef, proofURL });
     }catch(err){
-      alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء رفع الطلب، حاول مرة أخرى. (${err.message || ''})</div>`;
+      alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء رفع الإثبات، حاول مرة أخرى.</div>`;
       btn.disabled = false;
-      btn.textContent = 'إرسال طلب التسجيل';
+      btn.textContent = 'إرسال إثبات الدفع';
     }
+  });
+}
+
+/* Step 3 — thank you + WhatsApp/Telegram notification (honest: only logs that the button was pressed) */
+async function renderCheckoutStep3(course, enrollment){
+  const app = document.getElementById('app');
+  const comms = await fetchCommunicationSettings();
+  const message = buildPaymentNotificationMessage(course, enrollment);
+
+  const hasWhatsapp = comms && (comms.whatsappNumber || comms.whatsappLink);
+  const hasTelegram = comms && (comms.telegramUsername || comms.telegramLink);
+  const waLink = comms?.whatsappNumber
+    ? `https://wa.me/${comms.whatsappNumber.replace(/\D/g,'')}?text=${encodeURIComponent(message)}`
+    : comms?.whatsappLink;
+  const tgLink = comms?.telegramLink || (comms?.telegramUsername ? `https://t.me/${comms.telegramUsername.replace('@','')}` : null);
+
+  app.innerHTML = `
+    <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
+      <div class="auth-card" style="max-width:520px;">
+        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div></div>
+        <h2>تم استلام إثبات دفعك</h2>
+        <p class="sub">آخر خطوة: أرسل إشعاراً للإدارة للتحقق السريع (اختياري لكنه بيسرّع المراجعة).</p>
+        <div id="notifyAlert"></div>
+
+        ${hasWhatsapp ? `<button class="notify-btn" id="waNotifyBtn">${SIDE_ICONS.chatBubble} إرسال إشعار عبر واتساب</button>` : ''}
+        ${hasTelegram ? `<button class="notify-btn" id="tgNotifyBtn">${SIDE_ICONS.paperPlane} إرسال إشعار عبر تلغرام</button>` : ''}
+        ${(!hasWhatsapp && !hasTelegram) ? `<div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">لسه الإدارة ما حددت وسيلة تواصل للتحقق السريع — طلبك هيتراجع يدوياً.</div>` : ''}
+
+        <div class="copy-box">
+          <span>نص الرسالة الجاهز</span>
+          <button class="icon-action" id="copyMsgBtn" title="نسخ">${SIDE_ICONS.copy}</button>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="finishCheckoutBtn" style="margin-top:20px;">تم — انتظار المراجعة</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('copyMsgBtn').addEventListener('click', () => {
+    navigator.clipboard?.writeText(message).then(() => {
+      document.getElementById('notifyAlert').innerHTML = `<div class="alert alert-success">تم نسخ الرسالة.</div>`;
+    }).catch(() => {});
+  });
+
+  async function markNotified(){
+    try{
+      await updateDoc(doc(db, 'enrollments', enrollment.id), {
+        notificationSent: true,
+        notificationSentAt: serverTimestamp(),
+        status: 'under_review',
+      });
+    }catch(e){ /* non-fatal — proof is already saved */ }
+  }
+
+  const waBtn = document.getElementById('waNotifyBtn');
+  if(waBtn){
+    waBtn.addEventListener('click', async () => {
+      window.open(waLink, '_blank', 'noopener');
+      await markNotified();
+      renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
+    });
+  }
+  const tgBtn = document.getElementById('tgNotifyBtn');
+  if(tgBtn){
+    tgBtn.addEventListener('click', async () => {
+      window.open(tgLink, '_blank', 'noopener');
+      await markNotified();
+      renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
+    });
+  }
+
+  document.getElementById('finishCheckoutBtn').addEventListener('click', async () => {
+    try{
+      await updateDoc(doc(db, 'enrollments', enrollment.id), { status: 'under_review' });
+    }catch(e){ /* ignore */ }
+    renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة هتراجع إثبات الدفع وتفعّل الكورس بعد الموافقة.');
   });
 }
 
@@ -1533,8 +2245,18 @@ function shellSideLinks(activeKey){
       { key:'users', label:'المستخدمون', icon: SIDE_ICONS.users },
       { key:'categories', label:'الأقسام', icon: SIDE_ICONS.grid },
       { key:'courses', label:'الكورسات', icon: SIDE_ICONS.book },
+      { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.exam },
       { key:'payments', label:'المدفوعات', icon: SIDE_ICONS.card },
+      { key:'finance', label:'التحليلات المالية', icon: SIDE_ICONS.card },
+      { key:'payment-methods', label:'وسائل الدفع', icon: SIDE_ICONS.card },
       { key:'certificates', label:'الشهادات', icon: SIDE_ICONS.certificate },
+      { key:'live-sessions', label:'المحاضرات المباشرة', icon: SIDE_ICONS.video },
+      { key:'attendance', label:'الحضور', icon: SIDE_ICONS.calendar },
+      { key:'exams', label:'الامتحانات', icon: SIDE_ICONS.exam },
+      { key:'community', label:'المجتمع', icon: SIDE_ICONS.chatBubble },
+      { key:'reviews', label:'التقييمات', icon: SIDE_ICONS.starFilled },
+      { key:'notifications', label:'الإشعارات', icon: SIDE_ICONS.bell },
+      { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.grid },
     ];
     return `
       <div class="side-label">لوحة الإدارة</div>
@@ -1590,7 +2312,7 @@ function renderShell(activeKey){
             <input type="text" placeholder="بحث سريع..." id="shellSearchInput" />
           </div>
           <div class="topbar-actions">
-            <div class="icon-btn"><span class="dot-badge"></span>${SIDE_ICONS.bell}</div>
+            <div class="icon-btn" id="notifBellBtn">${SIDE_ICONS.bell}</div>
           </div>
         </div>
         <div class="app-content" id="appContent"></div>
@@ -1621,12 +2343,119 @@ function renderShell(activeKey){
       loadAdminTab(link.dataset.tab);
     });
   });
+
+  wireNotificationBell();
+}
+
+/* Fetches notifications relevant to the current user: broadcast-to-all, direct-to-user,
+   direct-to-instructor (if they are one), or course-targeted (if they hold an approved
+   enrollment for that course). Domain-targeted notifications are stored by the admin but
+   not yet matched here — that scoping is left for a future pass. */
+async function fetchMyNotifications(){
+  if(!currentUser) return [];
+  try{
+    const snap = await getDocs(collection(db, 'notifications'));
+    const all = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let myCourseIds = [];
+    if(currentProfile?.role === 'student'){
+      const enrollSnap = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid), where('status','==','approved')));
+      myCourseIds = enrollSnap.docs.map(d => d.data().courseId);
+    }
+    return all.filter(n => {
+      if(n.targetType === 'all') return true;
+      if(n.targetType === 'user') return n.targetId === currentUser.uid;
+      if(n.targetType === 'instructor') return currentProfile?.role === 'instructor' && n.targetId === currentUser.uid;
+      if(n.targetType === 'course') return myCourseIds.includes(n.targetId);
+      return false;
+    }).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+  }catch(e){
+    return [];
+  }
+}
+
+async function wireNotificationBell(){
+  const btn = document.getElementById('notifBellBtn');
+  if(!btn) return;
+  const myNotifs = await fetchMyNotifications();
+  const unread = myNotifs.filter(n => !(n.readBy||[]).includes(currentUser.uid));
+  if(unread.length > 0){
+    btn.insertAdjacentHTML('beforeend', '<span class="dot-badge"></span>');
+  }
+
+  btn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    const existing = document.getElementById('notifDropdown');
+    if(existing){ existing.remove(); return; }
+
+    const dropdown = document.createElement('div');
+    dropdown.id = 'notifDropdown';
+    dropdown.className = 'notif-dropdown';
+    dropdown.innerHTML = myNotifs.length === 0
+      ? `<div class="empty-state" style="padding:20px 0;">لا توجد إشعارات.</div>`
+      : myNotifs.slice(0,15).map(n => `
+          <div class="notif-item">
+            <div class="t1">${n.title}</div>
+            <div class="t2">${n.body}</div>
+          </div>
+        `).join('');
+    btn.appendChild(dropdown);
+
+    // Mark all currently-shown notifications as read for this user
+    const toMark = myNotifs.filter(n => !(n.readBy||[]).includes(currentUser.uid));
+    if(toMark.length){
+      Promise.all(toMark.map(n => updateDoc(doc(db, 'notifications', n.id), { readBy: arrayUnion(currentUser.uid) }).catch(()=>{})))
+        .then(() => { const dot = btn.querySelector('.dot-badge'); if(dot) dot.remove(); });
+    }
+
+    document.addEventListener('click', function closeDropdown(ev){
+      if(!dropdown.contains(ev.target) && ev.target !== btn){
+        dropdown.remove();
+        document.removeEventListener('click', closeDropdown);
+      }
+    });
+  });
 }
 
 /* ================= ROLE-BASED DASHBOARD ROUTER ================= */
 const ROLE_LABEL = { student: 'طالب', instructor: 'مدرب', admin: 'إدارة' };
-const STATUS_LABEL = { pending: 'قيد المراجعة', approved: 'مقبول', rejected: 'مرفوض' };
-const STATUS_CLASS = { pending: 'status-pending', approved: 'status-approved', rejected: 'status-rejected' };
+const STATUS_LABEL = {
+  pending: 'قيد المراجعة',
+  pending_payment: 'بانتظار الدفع',
+  payment_submitted: 'تم إرسال الإثبات',
+  under_review: 'قيد المراجعة',
+  approved: 'مقبول',
+  rejected: 'مرفوض',
+  cancelled: 'ملغي',
+};
+const STATUS_CLASS = {
+  pending: 'status-pending',
+  pending_payment: 'status-pending',
+  payment_submitted: 'status-pending',
+  under_review: 'status-pending',
+  approved: 'status-approved',
+  rejected: 'status-rejected',
+  cancelled: 'status-rejected',
+};
+
+/* Course publication status (separate from enrollment status above) */
+const COURSE_STATUS_LABEL = {
+  draft: 'مسودة',
+  pending_review: 'قيد مراجعة الإدارة',
+  needs_changes: 'يحتاج تعديلات',
+  approved: 'منشور',
+  rejected: 'مرفوض',
+};
+const COURSE_STATUS_CLASS = {
+  draft: 'status-pending',
+  pending_review: 'status-pending',
+  needs_changes: 'status-pending',
+  approved: 'status-approved',
+  rejected: 'status-rejected',
+};
+/* Courses created before this system existed have no status field — treat them as already approved. */
+function isCourseApproved(course){
+  return !course.status || course.status === 'approved';
+}
 
 async function renderDashboard(tab){
   const app = document.getElementById('app');
@@ -1648,13 +2477,40 @@ async function renderDashboard(tab){
 }
 
 /* ---------------- LEARNING ROOM (student) ---------------- */
-const LESSON_TYPE_LABEL = { video:'فيديو', text:'نص', file:'ملف', link:'رابط' };
+const LESSON_TYPE_LABEL = { drive:'فيديو (Google Drive)', youtube:'فيديو (YouTube)', video:'فيديو (رابط خارجي)', text:'نص', file:'ملف', link:'رابط' };
 const LESSON_TYPE_ICON = {
+  drive:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  youtube:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   video:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   text:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   file:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
   link:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
 };
+
+/* Tries to embed Google Drive / YouTube video links; falls back to an "open" button for anything else
+   (external URLs, or Drive files whose sharing permissions block iframe embedding). */
+function videoEmbedHTML(lesson){
+  const url = lesson.content || '';
+  let embedUrl = null;
+
+  if(lesson.type === 'drive'){
+    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if(m) embedUrl = `https://drive.google.com/file/d/${m[1]}/preview`;
+  } else if(lesson.type === 'youtube'){
+    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
+    if(m) embedUrl = `https://www.youtube.com/embed/${m[1]}`;
+  }
+
+  if(embedUrl){
+    return `
+      <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:8px 0;">
+        <iframe src="${embedUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
+      <a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--violet-700);font-weight:600;">الفيديو ما ظاهر؟ افتحه في نافذة منفصلة</a>
+    `;
+  }
+  return `<a href="${url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:6px;">فتح الفيديو</a>`;
+}
 
 async function renderLearnRoom(courseId){
   let app = document.getElementById('app');
@@ -1700,7 +2556,9 @@ async function renderLearnRoom(courseId){
       <div class="sub-tabs" id="learnTabs">
         <button class="cat-tab active" data-tab="content">المحتوى</button>
         <button class="cat-tab" data-tab="lectures">المحاضرات المباشرة</button>
+        <button class="cat-tab" data-tab="community">مجتمع الكورس</button>
         <button class="cat-tab" data-tab="exams">الامتحانات</button>
+        <button class="cat-tab" data-tab="review">تقييمي</button>
       </div>
       <div id="learnTabContent"><div class="empty-state">جارٍ التحميل...</div></div>
     </div>
@@ -1724,45 +2582,342 @@ async function loadLearnTab(tab, course){
   if(tab === 'content') return learnRenderContent(area, course);
   if(tab === 'lectures') return learnRenderLectures(area, course);
   if(tab === 'exams') return learnRenderExams(area, course);
+  if(tab === 'review') return learnRenderReview(area, course);
+  if(tab === 'community') return renderCommunityFeed(area, course, false);
+}
+
+/* Star picker used for submitting reviews */
+function starPickerHTML(inputId, currentValue){
+  const val = currentValue || 0;
+  return `
+    <div class="star-row" id="${inputId}" data-value="${val}" style="cursor:pointer;font-size:22px;gap:4px;">
+      ${[1,2,3,4,5].map(i => `<span data-star="${i}" style="color:${i <= val ? 'var(--amber-500)' : 'var(--line)'};">${SIDE_ICONS.starFilled}</span>`).join('')}
+    </div>
+  `;
+}
+function wireStarPicker(inputId){
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  el.querySelectorAll('[data-star]').forEach(star => {
+    star.addEventListener('click', () => {
+      const val = Number(star.dataset.star);
+      el.dataset.value = val;
+      el.querySelectorAll('[data-star]').forEach(s => {
+        s.style.color = Number(s.dataset.star) <= val ? 'var(--amber-500)' : 'var(--line)';
+      });
+    });
+  });
+}
+
+/* ---------------- COURSE COMMUNITY (WhatsApp-style feed, instructor-only posting) ---------------- */
+const COMMUNITY_TYPE_LABEL = { announcement:'إعلان', reminder:'تذكير', lesson:'رسالة تعليمية', schedule:'موعد محاضرة', file:'ملف', link:'رابط' };
+
+async function renderCommunityFeed(area, course, canPost){
+  area.innerHTML = `<div class="empty-state">جارٍ تحميل المجتمع...</div>`;
+  try{
+    const snap = await getDocs(query(collection(db, 'communityMessages'), where('courseId','==', course.id)));
+    let messages = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    area.innerHTML = `
+      ${canPost ? `
+        <form id="postMessageForm" style="display:flex;flex-direction:column;gap:12px;padding:16px;background:var(--paper);border:1px solid var(--line);border-radius:12px;margin-bottom:20px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
+              <label>نوع الرسالة</label>
+              <select id="msgType">
+                <option value="announcement">إعلان</option>
+                <option value="reminder">تذكير</option>
+                <option value="lesson">رسالة تعليمية</option>
+                <option value="schedule">موعد محاضرة</option>
+                <option value="link">رابط</option>
+                <option value="file">ملف</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label id="msgContentLabel">نص الرسالة</label>
+            <textarea id="msgContent" rows="3" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;" placeholder="اكتب رسالتك لطلاب هذا الكورس..."></textarea>
+          </div>
+          <div class="field hidden" id="msgFileWrap" style="margin-bottom:0;">
+            <label>الملف</label>
+            <input type="file" id="msgFile" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+            <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.paperPlane}</span> إرسال للطلاب
+          </button>
+          <div id="postMessageAlert"></div>
+        </form>
+      ` : ''}
+      <div class="chat-feed" id="chatFeed"></div>
+    `;
+
+    if(canPost){
+      const typeSel = document.getElementById('msgType');
+      typeSel.addEventListener('change', () => {
+        document.getElementById('msgFileWrap').classList.toggle('hidden', typeSel.value !== 'file');
+        document.getElementById('msgContentLabel').textContent = typeSel.value === 'link' ? 'الرابط' : 'نص الرسالة';
+      });
+
+      document.getElementById('postMessageForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const type = typeSel.value;
+        const content = document.getElementById('msgContent').value.trim();
+        const fileInput = document.getElementById('msgFile');
+        const alertBox = document.getElementById('postMessageAlert');
+        if(!content && type !== 'file'){
+          alertBox.innerHTML = `<div class="alert alert-error">اكتب محتوى الرسالة.</div>`;
+          return;
+        }
+        if(type === 'file' && (!fileInput.files || !fileInput.files[0])){
+          alertBox.innerHTML = `<div class="alert alert-error">اختر ملفاً للرفع.</div>`;
+          return;
+        }
+        try{
+          let fileURL = null;
+          if(type === 'file' && fileInput.files[0]){
+            const file = fileInput.files[0];
+            const filePath = `community-files/${course.id}/${Date.now()}-${file.name}`;
+            const storageRef = ref(storage, filePath);
+            await uploadBytes(storageRef, file);
+            fileURL = await getDownloadURL(storageRef);
+          }
+          const ref2 = await addDoc(collection(db, 'communityMessages'), {
+            courseId: course.id,
+            senderId: currentUser.uid,
+            senderName: currentProfile?.name || currentUser.email,
+            type, content: content || null, fileURL, fileName: type === 'file' ? fileInput.files[0].name : null,
+            reactions: {},
+            createdAt: serverTimestamp(),
+          });
+          messages.unshift({ id: ref2.id, courseId: course.id, senderId: currentUser.uid, senderName: currentProfile?.name || currentUser.email, type, content, fileURL, reactions: {}, createdAt: { seconds: Date.now()/1000 } });
+          renderFeed();
+          document.getElementById('postMessageForm').reset();
+          document.getElementById('msgFileWrap').classList.add('hidden');
+          alertBox.innerHTML = `<div class="alert alert-success">تم الإرسال.</div>`;
+        }catch(err){
+          alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال الرسالة.</div>`;
+        }
+      });
+    }
+
+    function renderFeed(){
+      const feedEl = document.getElementById('chatFeed');
+      if(messages.length === 0){
+        feedEl.innerHTML = `<div class="empty-state">لا توجد رسائل في مجتمع هذا الكورس بعد.</div>`;
+        return;
+      }
+      feedEl.innerHTML = messages.map(m => {
+        const reactions = m.reactions || {};
+        const reactionCount = Object.keys(reactions).length;
+        const iReacted = currentUser ? !!reactions[currentUser.uid] : false;
+        const dateStr = m.createdAt?.seconds ? new Date(m.createdAt.seconds * 1000).toLocaleString('ar') : '';
+        return `
+          <div class="chat-bubble">
+            <div class="chat-bubble-head">
+              <div class="avatar-sm">${(m.senderName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+              <div>
+                <div class="t1"><span class="chat-type-pill">${COMMUNITY_TYPE_LABEL[m.type]||m.type}</span>${m.senderName || 'المدرب'}</div>
+                <div class="t2">${dateStr}</div>
+              </div>
+            </div>
+            <div class="chat-body">
+              ${m.type === 'link' ? `<a href="${m.content}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:600;">${m.content}</a>`
+                : m.type === 'file' ? `<a href="${m.fileURL}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:600;">${SIDE_ICONS.copy} ${m.fileName || 'فتح الملف'}</a>${m.content ? `<div style="margin-top:6px;">${m.content}</div>` : ''}`
+                : (m.content || '')}
+            </div>
+            <div class="reaction-bar">
+              <button class="reaction-btn ${iReacted ? 'active' : ''}" data-react="${m.id}">${SIDE_ICONS.thumbsUp} ${reactionCount > 0 ? reactionCount : ''}</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      feedEl.querySelectorAll('[data-react]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!currentUser) return;
+          const msg = messages.find(x => x.id === btn.dataset.react);
+          if(!msg) return;
+          const reactions = { ...(msg.reactions || {}) };
+          if(reactions[currentUser.uid]) delete reactions[currentUser.uid];
+          else reactions[currentUser.uid] = 'like';
+          msg.reactions = reactions;
+          renderFeed();
+          try{
+            await updateDoc(doc(db, 'communityMessages', msg.id), { reactions });
+          }catch(e){ /* non-fatal */ }
+        });
+      });
+    }
+    renderFeed();
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل مجتمع الكورس.</div>`;
+  }
+}
+
+async function learnRenderReview(area, course){
+  try{
+    const courseReviewId = `${currentUser.uid}_course_${course.id}`;
+    const existingSnap = await getDoc(doc(db, 'reviews', courseReviewId));
+    const existing = existingSnap.exists() ? existingSnap.data() : null;
+
+    let instructorExisting = null;
+    if(course.instructorId){
+      const instReviewId = `${currentUser.uid}_instructor_${course.instructorId}`;
+      const instSnap = await getDoc(doc(db, 'reviews', instReviewId));
+      instructorExisting = instSnap.exists() ? instSnap.data() : null;
+    }
+
+    area.innerHTML = `
+      <div style="max-width:480px;">
+        <h4 style="font-size:14.5px;color:var(--violet-900);margin:0 0 8px;">تقييمك لهذا الكورس</h4>
+        ${starPickerHTML('courseStarPicker', existing?.rating)}
+        <div class="field" style="margin-top:14px;">
+          <label>تعليقك (اختياري)</label>
+          <input type="text" id="courseReviewComment" value="${existing?.comment ? existing.comment.replace(/"/g,'&quot;') : ''}" placeholder="شاركنا رأيك في الكورس" />
+        </div>
+        ${course.instructorId ? `
+          <h4 style="font-size:14.5px;color:var(--violet-900);margin:20px 0 8px;">تقييمك للمدرب</h4>
+          ${starPickerHTML('instructorStarPicker', instructorExisting?.rating)}
+        ` : ''}
+        <button class="btn btn-primary" id="submitReviewBtn" style="margin-top:20px;">${existing ? 'تحديث تقييمي' : 'إرسال التقييم'}</button>
+        <div id="reviewAlertBox" style="margin-top:14px;"></div>
+      </div>
+    `;
+    wireStarPicker('courseStarPicker');
+    if(course.instructorId) wireStarPicker('instructorStarPicker');
+
+    document.getElementById('submitReviewBtn').addEventListener('click', async () => {
+      const btn = document.getElementById('submitReviewBtn');
+      const alertBox = document.getElementById('reviewAlertBox');
+      const courseRating = Number(document.getElementById('courseStarPicker').dataset.value || 0);
+      if(courseRating === 0){
+        alertBox.innerHTML = `<div class="alert alert-error">اختر تقييماً بالنجوم أولاً.</div>`;
+        return;
+      }
+      const comment = document.getElementById('courseReviewComment').value.trim();
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner"></span> جارٍ الإرسال...`;
+      try{
+        await setDoc(doc(db, 'reviews', courseReviewId), {
+          type: 'course',
+          targetId: course.id,
+          courseId: course.id,
+          studentId: currentUser.uid,
+          studentName: currentProfile?.name || currentUser.email,
+          rating: courseRating,
+          comment: comment || null,
+          createdAt: serverTimestamp(),
+        });
+
+        if(course.instructorId){
+          const instructorRating = Number(document.getElementById('instructorStarPicker')?.dataset.value || 0);
+          if(instructorRating > 0){
+            await setDoc(doc(db, 'reviews', `${currentUser.uid}_instructor_${course.instructorId}`), {
+              type: 'instructor',
+              targetId: course.instructorId,
+              courseId: course.id,
+              studentId: currentUser.uid,
+              studentName: currentProfile?.name || currentUser.email,
+              rating: instructorRating,
+              createdAt: serverTimestamp(),
+            });
+          }
+        }
+
+        alertBox.innerHTML = `<div class="alert alert-success">تم حفظ تقييمك، شكراً لك!</div>`;
+        btn.textContent = 'تحديث تقييمي';
+      }catch(e){
+        alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال التقييم، حاول مرة أخرى.</div>`;
+      }
+      btn.disabled = false;
+      if(btn.textContent.includes('جارٍ')) btn.textContent = 'إرسال التقييم';
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل قسم التقييم.</div>`;
+  }
 }
 
 async function learnRenderContent(area, course){
   try{
-    const [modSnap, lesSnap] = await Promise.all([
+    const [modSnap, lesSnap, progressSnap] = await Promise.all([
       getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))),
       getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))),
+      getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
     ]);
     const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
     const lessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+    const completedIds = new Set(
+      progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId)
+    );
 
     if(modules.length === 0){
       area.innerHTML = `<div class="empty-state">لا يوجد محتوى منشور لهذا الكورس بعد.</div>`;
       return;
     }
 
-    area.innerHTML = modules.map(m => {
-      const modLessons = lessons.filter(l => l.moduleId === m.id);
-      return `
-        <div class="module-block">
-          <div class="module-title">${m.title}</div>
-          ${modLessons.length === 0
-            ? `<div style="font-size:13px;color:var(--muted);">لا توجد دروس في هذا الفصل بعد.</div>`
-            : modLessons.map(l => `
-              <div class="lesson-item">
-                <div class="lesson-type-icon">${LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text}</div>
-                <div style="flex:1;">
-                  <div style="font-weight:600;color:var(--ink);">${l.title}</div>
-                  ${l.type === 'text'
-                    ? `<div style="color:var(--muted);font-size:13px;margin-top:4px;white-space:pre-line;">${l.content || ''}</div>`
-                    : `<a href="${l.content}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:600;font-size:13px;">فتح ${LESSON_TYPE_LABEL[l.type] || ''}</a>`
-                  }
-                </div>
-              </div>
-            `).join('')
-          }
+    const totalLessons = lessons.length;
+    const doneCount = lessons.filter(l => completedIds.has(l.id)).length;
+    const pct = totalLessons ? Math.round((doneCount / totalLessons) * 100) : 0;
+
+    area.innerHTML = `
+      <div style="margin-bottom:18px;">
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px;">
+          <span>تقدّمك في الكورس</span><span>${doneCount} / ${totalLessons} (${pct}%)</span>
         </div>
-      `;
-    }).join('');
+        <div class="rating-bar-track" style="height:9px;"><div class="rating-bar-fill" style="width:${pct}%;background:var(--violet-600);"></div></div>
+      </div>
+      ${modules.map(m => {
+        const modLessons = lessons.filter(l => l.moduleId === m.id);
+        return `
+          <div class="module-block">
+            <div class="module-title">${m.title}</div>
+            ${modLessons.length === 0
+              ? `<div style="font-size:13px;color:var(--muted);">لا توجد دروس في هذا الفصل بعد.</div>`
+              : modLessons.map(l => {
+                  const isVideo = l.type === 'drive' || l.type === 'youtube' || l.type === 'video';
+                  const isDone = completedIds.has(l.id);
+                  return `
+                    <div class="lesson-item" style="align-items:flex-start;flex-direction:column;gap:8px;">
+                      <div style="display:flex;align-items:center;gap:10px;width:100%;">
+                        <div class="lesson-type-icon" style="${isDone ? 'background:#E9F5EE;color:var(--success);' : ''}">${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}</div>
+                        <div style="flex:1;font-weight:600;color:var(--ink);">${l.title}</div>
+                        <button class="icon-action ${isDone ? 'success' : ''}" data-lesson-id="${l.id}" data-completed="${isDone}" title="${isDone ? 'مكتمل' : 'وضع كمكتمل'}">${SIDE_ICONS.check}</button>
+                      </div>
+                      <div style="width:100%;padding-right:36px;">
+                        ${l.type === 'text'
+                          ? `<div style="color:var(--muted);font-size:13px;white-space:pre-line;">${l.content || ''}</div>`
+                          : isVideo
+                            ? videoEmbedHTML(l)
+                            : `<a href="${l.content}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:600;font-size:13px;">فتح ${LESSON_TYPE_LABEL[l.type] || ''}</a>`
+                        }
+                      </div>
+                    </div>
+                  `;
+                }).join('')
+            }
+          </div>
+        `;
+      }).join('')}
+    `;
+
+    area.querySelectorAll('button[data-lesson-id]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const lessonId = btn.dataset.lessonId;
+        const wasDone = btn.dataset.completed === 'true';
+        try{
+          await setDoc(doc(db, 'progress', `${currentUser.uid}_${lessonId}`), {
+            studentId: currentUser.uid,
+            courseId: course.id,
+            lessonId,
+            completed: !wasDone,
+            completedAt: serverTimestamp(),
+          });
+          learnRenderContent(area, course);
+        }catch(e){
+          alert('تعذّر تحديث حالة الدرس.');
+        }
+      });
+    });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل المحتوى.</div>`;
   }
@@ -1771,7 +2926,7 @@ async function learnRenderContent(area, course){
 async function learnRenderLectures(area, course){
   try{
     const snap = await getDocs(query(collection(db, 'lectures'), where('courseId','==', course.id)));
-    const lectures = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const lectures = await Promise.all(snap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
     if(lectures.length === 0){
       area.innerHTML = `<div class="empty-state">لا توجد محاضرات مباشرة مجدولة حالياً.</div>`;
       return;
@@ -1963,6 +3118,7 @@ async function renderManageCourse(courseId){
       <div class="sub-tabs" id="manageTabs">
         <button class="cat-tab active" data-tab="content">المحتوى</button>
         <button class="cat-tab" data-tab="lectures">المحاضرات</button>
+        <button class="cat-tab" data-tab="community">المجتمع</button>
         <button class="cat-tab" data-tab="exams">الامتحانات</button>
       </div>
       <div id="manageTabContent"><div class="empty-state">جارٍ التحميل...</div></div>
@@ -1987,6 +3143,7 @@ async function loadManageTab(tab, course){
   if(tab === 'content') return manageRenderContent(area, course);
   if(tab === 'lectures') return manageRenderLectures(area, course);
   if(tab === 'exams') return manageRenderExams(area, course);
+  if(tab === 'community') return renderCommunityFeed(area, course, true);
 }
 
 async function manageRenderContent(area, course){
@@ -2027,7 +3184,7 @@ async function manageRenderContent(area, course){
               <div class="lesson-item">
                 <div class="lesson-type-icon">${LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text}</div>
                 <div style="flex:1;">
-                  <div style="font-weight:600;">${l.title}</div>
+                  <div style="font-weight:600;">${l.title} ${l.isPreviewFree ? '<span class="preview-pill">معاينة مجانية</span>' : ''}</div>
                   <div style="font-size:12px;color:var(--muted);">${LESSON_TYPE_LABEL[l.type] || ''}</div>
                 </div>
                 <button class="btn btn-sm btn-danger" data-dellesson="${l.id}">حذف</button>
@@ -2039,10 +3196,12 @@ async function manageRenderContent(area, course){
                   <label>عنوان الدرس</label>
                   <input type="text" class="lessonTitle" required />
                 </div>
-                <div class="field" style="margin-bottom:0;flex:1;min-width:120px;">
+                <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
                   <label>النوع</label>
                   <select class="lessonType">
-                    <option value="video">فيديو</option>
+                    <option value="drive">فيديو (Google Drive)</option>
+                    <option value="youtube">فيديو (YouTube)</option>
+                    <option value="video">فيديو (رابط خارجي)</option>
                     <option value="text">نص</option>
                     <option value="file">ملف</option>
                     <option value="link">رابط</option>
@@ -2051,8 +3210,13 @@ async function manageRenderContent(area, course){
               </div>
               <div class="field" style="margin-bottom:0;">
                 <label>المحتوى (رابط الفيديو/الملف/الرابط، أو النص لو نوع "نص")</label>
-                <input type="text" class="lessonContent" required />
+                <input type="text" class="lessonContent" required placeholder="مثال: https://drive.google.com/file/d/XXXX/view" />
+                <div class="field-hint">لو Google Drive: تأكد إن صلاحية المشاركة "أي شخص لديه الرابط" وإلا الطلاب مش هيقدروا يشوفوا الفيديو.</div>
               </div>
+              <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;">
+                <input type="checkbox" class="lessonPreviewFree" style="width:16px;height:16px;accent-color:var(--violet-700);" />
+                اجعل هذا الدرس معاينة مجانية (يظهر للزوار بدون اشتراك)
+              </label>
               <button type="submit" class="btn btn-ghost" style="align-self:flex-start;">إضافة درس</button>
             </form>
           </div>
@@ -2097,14 +3261,15 @@ async function manageRenderContent(area, course){
           const title = form.querySelector('.lessonTitle').value.trim();
           const type = form.querySelector('.lessonType').value;
           const content = form.querySelector('.lessonContent').value.trim();
+          const isPreviewFree = form.querySelector('.lessonPreviewFree').checked;
           if(!title || !content) return;
           try{
             const ref = await addDoc(collection(db, 'lessons'), {
-              courseId: course.id, moduleId: modId, title, type, content,
+              courseId: course.id, moduleId: modId, title, type, content, isPreviewFree,
               order: lessons.filter(l => l.moduleId === modId).length,
               createdAt: serverTimestamp(),
             });
-            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, type, content });
+            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, type, content, isPreviewFree });
             renderModules();
           }catch(e){
             alert('تعذّر إضافة الدرس.');
@@ -2137,7 +3302,7 @@ async function manageRenderContent(area, course){
 async function manageRenderLectures(area, course){
   try{
     const snap = await getDocs(query(collection(db, 'lectures'), where('courseId','==', course.id)));
-    let lectures = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let lectures = await Promise.all(snap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
 
     area.innerHTML = `
       <form id="addLectureForm" style="display:flex;flex-direction:column;gap:14px;margin-bottom:24px;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:12px;">
@@ -2158,6 +3323,7 @@ async function manageRenderLectures(area, course){
         <div class="field" style="margin-bottom:0;">
           <label>رابط المحاضرة (Zoom / Google Meet)</label>
           <input type="url" id="lecLink" required placeholder="https://..." />
+          <div class="field-hint">الرابط محفوظ بشكل منفصل ومقفول — الزوار وغير المشتركين بيشوفوا التاريخ والوقت بس، مش الرابط.</div>
         </div>
         <button type="submit" class="btn btn-primary" style="align-self:flex-start;">إضافة محاضرة</button>
       </form>
@@ -2184,6 +3350,7 @@ async function manageRenderLectures(area, course){
           if(!confirm('حذف هذه المحاضرة؟')) return;
           try{
             await deleteDoc(doc(db, 'lectures', btn.dataset.id));
+            try{ await deleteDoc(doc(db, 'lectures', btn.dataset.id, 'private', 'link')); }catch(e2){ /* ignore */ }
             lectures = lectures.filter(l => l.id !== btn.dataset.id);
             renderList();
           }catch(e){
@@ -2203,8 +3370,9 @@ async function manageRenderLectures(area, course){
       if(!title || !date || !time || !link) return;
       try{
         const ref = await addDoc(collection(db, 'lectures'), {
-          courseId: course.id, title, date, time, link, createdAt: serverTimestamp(),
+          courseId: course.id, title, date, time, createdAt: serverTimestamp(),
         });
+        await setDoc(doc(db, 'lectures', ref.id, 'private', 'link'), { link });
         lectures.push({ id: ref.id, courseId: course.id, title, date, time, link });
         renderList();
         document.getElementById('addLectureForm').reset();
@@ -2347,6 +3515,10 @@ async function renderStudentDashboard(){
     <div class="widget-grid" id="studentStatCards">
       <div class="widget widget-4"><div class="empty-state">جارٍ التحميل...</div></div>
     </div>
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>كورساتي (My Learning)</h3></div>
+      <div id="myLearningArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
+    </div>
     <div class="widget-grid">
       <div class="widget widget-2">
         <div class="widget-head"><h3>توزيع طلبات التسجيل</h3></div>
@@ -2370,6 +3542,7 @@ async function renderStudentDashboard(){
   `;
 
   loadStudentStats();
+  loadMyLearningCards();
   loadMyEnrollments();
   loadStudentAgenda();
   loadMyCertificates();
@@ -2381,9 +3554,10 @@ async function loadStudentStats(){
   try{
     const snap = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid)));
     const items = snap.docs.map(d => d.data());
+    const inProgressStatuses = ['pending','pending_payment','payment_submitted','under_review'];
     const approved = items.filter(i => i.status === 'approved').length;
-    const pending = items.filter(i => i.status === 'pending').length;
-    const rejected = items.filter(i => i.status === 'rejected').length;
+    const pending = items.filter(i => inProgressStatuses.includes(i.status)).length;
+    const rejected = items.filter(i => i.status === 'rejected' || i.status === 'cancelled').length;
 
     area.innerHTML = `
       <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${items.length}</div><div class="lbl">إجمالي التسجيلات</div></div></div></div>
@@ -2395,10 +3569,48 @@ async function loadStudentStats(){
     renderDonutChart('studentStatusChart', [
       { label:'مفعّل', value: approved, color:'#2F7A4F' },
       { label:'قيد المراجعة', value: pending, color:'#E2A33B' },
-      { label:'مرفوض', value: rejected, color:'#B3413A' },
+      { label:'مرفوض/ملغي', value: rejected, color:'#B3413A' },
     ]);
   }catch(e){
     area.innerHTML = `<div class="widget widget-4"><div class="empty-state">تعذّر تحميل الإحصائيات.</div></div>`;
+  }
+}
+
+async function loadMyLearningCards(){
+  const area = document.getElementById('myLearningArea');
+  if(!area) return;
+  try{
+    const enrollSnap = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid), where('status','==','approved')));
+    const enrollments = enrollSnap.docs.map(d => d.data());
+    if(enrollments.length === 0){
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك كورسات مفعّلة — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات</a>.</div>`;
+      return;
+    }
+
+    const cards = await Promise.all(enrollments.map(async e => {
+      const [lessonsSnap, progressSnap] = await Promise.all([
+        getDocs(query(collection(db, 'lessons'), where('courseId','==', e.courseId))),
+        getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', e.courseId))),
+      ]);
+      const total = lessonsSnap.docs.length;
+      const done = progressSnap.docs.filter(d => d.data().completed).length;
+      const pct = total ? Math.round((done/total)*100) : 0;
+      return { courseId: e.courseId, courseTitle: e.courseTitle, pct, done, total };
+    }));
+
+    area.innerHTML = cards.map(c => `
+      <div class="my-learning-card">
+        <div class="cover">${(c.courseTitle||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+        <div class="grow">
+          <div class="t1">${c.courseTitle || 'كورس'}</div>
+          <div class="t2">${c.total ? `${c.done} / ${c.total} درس مكتمل` : 'لا يوجد محتوى منشور بعد'}</div>
+          <div class="progress-track"><div class="progress-fill" style="width:${c.pct}%;"></div></div>
+        </div>
+        <a href="#/learn/${c.courseId}" class="btn btn-primary btn-sm">متابعة التعلم</a>
+      </div>
+    `).join('');
+  }catch(e){
+    area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل كورساتك.</div>`;
   }
 }
 
@@ -2459,10 +3671,13 @@ async function fetchUpcomingLectures(courseIds, max = 5){
     allLectures.push(...snap.docs.map(d => ({ id: d.id, ...d.data() })));
   }
   const todayStr = new Date().toISOString().slice(0,10);
-  return allLectures
+  const upcoming = allLectures
     .filter(l => (l.date || '') >= todayStr)
     .sort((a,b) => (a.date + (a.time||'')).localeCompare(b.date + (b.time||'')))
     .slice(0, max);
+  // Only fetch join links for the handful we'll actually display — the caller has already
+  // scoped courseIds to courses the current user has real access to.
+  return Promise.all(upcoming.map(l => fetchLectureWithLink(l.id, l)));
 }
 
 function agendaItemHTML(l){
@@ -2500,12 +3715,125 @@ async function renderInstructorDashboard(){
       </div>
     </div>
     <div class="widget widget-4">
-      <div class="widget-head"><h3>كورساتي</h3></div>
+      <div class="widget-head">
+        <h3>كورساتي</h3>
+        <button class="btn btn-ghost btn-sm" id="newCourseToggleBtn">
+          <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.plus}</span> كورس جديد
+        </button>
+      </div>
+      <form id="newCourseForm" class="hidden" style="display:flex;flex-direction:column;gap:14px;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:12px;margin-bottom:18px;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="flex:2;min-width:200px;margin-bottom:0;">
+            <label>عنوان الكورس</label>
+            <input type="text" id="ncTitle" required />
+          </div>
+          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
+            <label>المستوى</label>
+            <select id="ncLevel">
+              <option value="">—</option>
+              <option value="Beginner">مبتدئ</option>
+              <option value="Intermediate">متوسط</option>
+              <option value="Advanced">متقدم</option>
+            </select>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>الوصف</label>
+          <input type="text" id="ncDesc" />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>ماذا سيتعلم الطالب؟ (سطر لكل نقطة)</label>
+          <textarea id="ncWhatToLearn" rows="3" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;"></textarea>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+            <label>القسم</label>
+            <select id="ncCategory"><option value="">— اختر القسم —</option></select>
+          </div>
+          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
+            <label>مدة الكورس (اختياري)</label>
+            <input type="text" id="ncDuration" placeholder="مثال: 6 ساعات" />
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin:0;">هيتحفظ كـ"مسودة" — السعر والخصم بتحددهم الإدارة وقت المراجعة والموافقة.</p>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ كمسودة</button>
+        <div id="newCourseAlert"></div>
+      </form>
       <div id="instructorCoursesArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
+    </div>
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>ملفي الشخصي العام</h3></div>
+      <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 16px;">هذه البيانات تظهر للطلاب في صفحتك الشخصية وصفحة أي كورس تدرّسه.</p>
+      <form id="instructorProfileForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>التخصص</label>
+          <input type="text" id="instrSpecialty" placeholder="مثال: مدرب تعليق صوتي" value="${currentProfile?.specialty || ''}" />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>نبذة تعريفية</label>
+          <textarea id="instrBio" rows="3" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;" placeholder="اكتب نبذة قصيرة عن خبرتك...">${currentProfile?.bio || ''}</textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ الملف الشخصي</button>
+        <div id="instrProfileAlert"></div>
+      </form>
     </div>
   `;
   loadInstructorCourses();
   loadInstructorAgenda();
+
+  document.getElementById('newCourseToggleBtn').addEventListener('click', () => {
+    document.getElementById('newCourseForm').classList.toggle('hidden');
+  });
+
+  fetchCategories().then(cats => {
+    const sel = document.getElementById('ncCategory');
+    if(sel) cats.forEach(c => sel.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name}</option>`));
+  });
+
+  document.getElementById('newCourseForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const title = document.getElementById('ncTitle').value.trim();
+    const description = document.getElementById('ncDesc').value.trim();
+    const level = document.getElementById('ncLevel').value;
+    const duration = document.getElementById('ncDuration').value.trim();
+    const whatToLearnRaw = document.getElementById('ncWhatToLearn').value.trim();
+    const whatToLearn = whatToLearnRaw ? whatToLearnRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+    const categorySel = document.getElementById('ncCategory');
+    const categoryId = categorySel.value;
+    const categoryName = categoryId ? categorySel.options[categorySel.selectedIndex].textContent : null;
+    const alertBox = document.getElementById('newCourseAlert');
+    if(!title) return;
+    try{
+      await addDoc(collection(db, 'courses'), {
+        title, description, level: level || null, durationText: duration || null, whatToLearn,
+        categoryId: categoryId || null, categoryName,
+        instructorId: currentUser.uid, instructorName: currentProfile?.name || currentUser.email,
+        price: 0, discountPrice: null,
+        status: 'draft',
+        createdAt: serverTimestamp(),
+      });
+      coursesCache = null;
+      alertBox.innerHTML = `<div class="alert alert-success">تم حفظ الكورس كمسودة. اضغط "إدارة المحتوى" لإضافة الدروس، وبعدها "إرسال للمراجعة".</div>`;
+      document.getElementById('newCourseForm').reset();
+      loadInstructorCourses();
+    }catch(e){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر إنشاء الكورس.</div>`;
+    }
+  });
+
+  document.getElementById('instructorProfileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const specialty = document.getElementById('instrSpecialty').value.trim();
+    const bio = document.getElementById('instrBio').value.trim();
+    const alertBox = document.getElementById('instrProfileAlert');
+    try{
+      await updateDoc(doc(db, 'users', currentUser.uid), { specialty: specialty || null, bio: bio || null });
+      if(currentProfile){ currentProfile.specialty = specialty; currentProfile.bio = bio; }
+      alertBox.innerHTML = `<div class="alert alert-success" style="margin-top:0;">تم حفظ ملفك الشخصي.</div>`;
+    }catch(e){
+      alertBox.innerHTML = `<div class="alert alert-error" style="margin-top:0;">تعذّر الحفظ، حاول مرة أخرى.</div>`;
+    }
+  });
 }
 
 async function loadInstructorCourses(){
@@ -2516,7 +3844,7 @@ async function loadInstructorCourses(){
     const snap = await getDocs(query(collection(db, 'courses'), where('instructorId', '==', currentUser.uid)));
     const courses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if(courses.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه مافي كورسات مسندة إليك — تواصل مع الإدارة.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما أنشأت أي كورس — اضغط "كورس جديد" فوق.</div>`;
       if(statArea) statArea.innerHTML = `<div class="widget widget-4"><div class="empty-state">لا توجد بيانات بعد.</div></div>`;
       return;
     }
@@ -2531,26 +3859,53 @@ async function loadInstructorCourses(){
       return { ...c, studentsCount };
     }));
 
+    const publishedOnly = withCounts.filter(isCourseApproved);
     const totalStudents = withCounts.reduce((s,c) => s + c.studentsCount, 0);
     if(statArea){
       statArea.innerHTML = `
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${withCounts.length}</div><div class="lbl">كورساتي</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${withCounts.length}</div><div class="lbl">إجمالي كورساتي</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.users}</div><div><div class="num">${totalStudents}</div><div class="lbl">إجمالي الطلاب</div></div></div></div>
       `;
     }
 
-    renderBarChart('instructorBarChart', withCounts.map(c => c.title), withCounts.map(c => c.studentsCount), '#6E4BAF');
+    renderBarChart('instructorBarChart', publishedOnly.map(c => c.title), publishedOnly.map(c => c.studentsCount), '#6E4BAF');
 
-    area.innerHTML = withCounts.map(c => `
-      <div class="table-widget-row">
-        <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
-        <div class="grow">
-          <div class="t1">${c.title || 'كورس'}</div>
-          <div class="t2">${c.studentsCount} طالب مسجل ${c.categoryName ? '· ' + c.categoryName : ''}</div>
+    area.innerHTML = withCounts.map(c => {
+      const status = c.status || 'approved';
+      const canSubmit = status === 'draft' || status === 'needs_changes' || status === 'rejected';
+      return `
+        <div class="table-widget-row" style="align-items:flex-start;">
+          <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
+          <div class="grow">
+            <div class="t1">${c.title || 'كورس'} <span class="status-badge ${COURSE_STATUS_CLASS[status] || 'status-approved'}" style="margin-right:6px;">${COURSE_STATUS_LABEL[status] || 'منشور'}</span></div>
+            <div class="t2">${c.studentsCount} طالب مسجل ${c.categoryName ? '· ' + c.categoryName : ''}</div>
+            ${(status === 'needs_changes' || status === 'rejected') && c.reviewNote ? `<div class="t2" style="color:var(--danger);margin-top:4px;">ملاحظة الإدارة: ${c.reviewNote}</div>` : ''}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
+            <div style="display:flex;gap:6px;">
+              <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.grid}</a>
+              ${status === 'approved' ? `<a href="#/course/${c.id}" class="icon-action" title="عرض الصفحة العامة">${SIDE_ICONS.playCircle}</a>` : ''}
+            </div>
+            ${canSubmit ? `<button class="btn btn-sm btn-primary" data-submit-review="${c.id}">إرسال للمراجعة</button>` : ''}
+          </div>
         </div>
-        <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.grid}</a>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+
+    area.querySelectorAll('button[data-submit-review]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm('إرسال الكورس للإدارة للمراجعة؟ لن يظهر للطلاب حتى تتم الموافقة.')) return;
+        btn.disabled = true;
+        try{
+          await updateDoc(doc(db, 'courses', btn.dataset.submitReview), { status: 'pending_review', submittedAt: serverTimestamp() });
+          coursesCache = null;
+          loadInstructorCourses();
+        }catch(e){
+          alert('تعذّر إرسال الكورس للمراجعة.');
+          btn.disabled = false;
+        }
+      });
+    });
   }catch(err){
     area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل كورساتك.</div>`;
   }
@@ -2592,23 +3947,37 @@ async function loadAdminTab(tab){
   if(tab === 'users') return adminRenderUsers(area);
   if(tab === 'categories') return adminRenderCategories(area);
   if(tab === 'courses') return adminRenderCourses(area);
+  if(tab === 'review') return adminRenderCourseReview(area);
   if(tab === 'payments') return adminRenderPayments(area);
+  if(tab === 'finance') return adminRenderFinance(area);
+  if(tab === 'payment-methods') return adminRenderPaymentMethods(area);
   if(tab === 'certificates') return adminRenderCertificates(area);
+  if(tab === 'live-sessions') return adminRenderLiveSessions(area);
+  if(tab === 'attendance') return adminRenderAttendance(area);
+  if(tab === 'exams') return adminRenderExamsOverview(area);
+  if(tab === 'community') return adminRenderCommunityModeration(area);
+  if(tab === 'reviews') return adminRenderReviewsModeration(area);
+  if(tab === 'notifications') return adminRenderNotifications(area);
+  if(tab === 'settings') return adminRenderSettings(area);
 }
 
 async function adminRenderOverview(area){
   try{
     const usersCol = collection(db, 'users');
-    const [studentsSnap, instructorsSnap, coursesSnap, pendingSnap] = await Promise.all([
+    const [studentsSnap, instructorsSnap, coursesSnap, pendingSnap, approvedEnrollSnap, reviewSnap] = await Promise.all([
       getCountFromServer(query(usersCol, where('role','==','student'))).catch(()=>null),
       getCountFromServer(query(usersCol, where('role','==','instructor'))).catch(()=>null),
       getCountFromServer(collection(db, 'courses')).catch(()=>null),
-      getCountFromServer(query(collection(db, 'enrollments'), where('status','==','pending'))).catch(()=>null),
+      getCountFromServer(query(collection(db, 'enrollments'), where('status','in',['pending','payment_submitted','under_review']))).catch(()=>null),
+      getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))).catch(()=>({docs:[]})),
+      getCountFromServer(query(collection(db, 'courses'), where('status','in',['pending_review','needs_changes']))).catch(()=>null),
     ]);
     const studentCount = studentsSnap ? studentsSnap.data().count : 0;
     const instructorCount = instructorsSnap ? instructorsSnap.data().count : 0;
     const courseCount = coursesSnap ? coursesSnap.data().count : 0;
     const pendingCount = pendingSnap ? pendingSnap.data().count : 0;
+    const reviewCount = reviewSnap ? reviewSnap.data().count : 0;
+    const totalRevenue = approvedEnrollSnap.docs.reduce((s, d) => s + Number(d.data().finalAmount || 0), 0);
 
     area.innerHTML = `
       <div class="widget-grid">
@@ -2616,6 +3985,8 @@ async function adminRenderOverview(area){
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.book}</div><div><div class="num">${instructorCount}</div><div class="lbl">مدرب</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.grid}</div><div><div class="num">${courseCount}</div><div class="lbl">كورس</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pendingCount}</div><div class="lbl">طلب دفع معلّق</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.exam}</div><div><div class="num">${reviewCount}</div><div class="lbl">كورس يحتاج مراجعة</div></div></div></div>
+        <div class="widget" style="grid-column:span 3;"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
       </div>
       <div class="widget-grid">
         <div class="widget widget-2">
@@ -2650,6 +4021,11 @@ async function adminRenderUsers(area){
   try{
     const snap = await getDocs(collection(db, 'users'));
     const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const PAGE_SIZE = 10;
+    let currentPage = 1;
+    let currentRoleFilter = 'all';
+    let currentSearch = '';
+
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head">
@@ -2659,33 +4035,66 @@ async function adminRenderUsers(area){
             <input type="text" id="userSearch" placeholder="ابحث بالاسم أو البريد..." />
           </div>
         </div>
+        <div class="cat-tabs" id="roleFilterTabs">
+          <button class="cat-tab active" data-role="all">الكل (${users.length})</button>
+          <button class="cat-tab" data-role="student">طلاب (${users.filter(u=>u.role==='student').length})</button>
+          <button class="cat-tab" data-role="instructor">مدربون (${users.filter(u=>u.role==='instructor').length})</button>
+          <button class="cat-tab" data-role="admin">إداريون (${users.filter(u=>u.role==='admin').length})</button>
+        </div>
         <div id="usersList"></div>
+        <div id="usersPagination" style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px;font-size:13px;color:var(--muted);"></div>
       </div>
     `;
 
-    function renderUsersList(filterText){
+    function getFiltered(){
+      return users.filter(u => {
+        const roleOk = currentRoleFilter === 'all' || u.role === currentRoleFilter;
+        const searchOk = !currentSearch || (u.name||'').toLowerCase().includes(currentSearch) || (u.email||'').toLowerCase().includes(currentSearch);
+        return roleOk && searchOk;
+      });
+    }
+
+    function renderUsersList(){
       const listEl = document.getElementById('usersList');
-      const filtered = !filterText ? users : users.filter(u =>
-        (u.name||'').toLowerCase().includes(filterText) || (u.email||'').toLowerCase().includes(filterText)
-      );
+      const pagEl = document.getElementById('usersPagination');
+      const filtered = getFiltered();
       if(filtered.length === 0){
         listEl.innerHTML = `<div class="empty-state">لا يوجد مستخدمون مطابقون.</div>`;
+        pagEl.innerHTML = '';
         return;
       }
-      listEl.innerHTML = filtered.map(u => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${(u.name || u.email || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
-          <div class="grow">
-            <div class="t1">${u.name || 'بدون اسم'}</div>
-            <div class="t2">${u.email || ''}</div>
+      const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if(currentPage > totalPages) currentPage = totalPages;
+      const pageItems = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
+
+      listEl.innerHTML = pageItems.map(u => `
+        <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
+          <div style="display:flex;align-items:center;gap:12px;width:100%;">
+            <div class="avatar-sm" style="${u.status==='disabled' ? 'background:var(--muted);' : ''}">${(u.name || u.email || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
+            <div class="grow" style="cursor:pointer;" data-expand="${u.id}">
+              <div class="t1">${u.name || 'بدون اسم'} ${u.status==='disabled' ? '<span class="status-badge status-rejected">معطّل</span>' : ''}</div>
+              <div class="t2">${u.email || ''}</div>
+            </div>
+            <select class="role-select" data-uid="${u.id}" style="width:auto;padding:7px 10px;">
+              <option value="student" ${u.role==='student'?'selected':''}>طالب</option>
+              <option value="instructor" ${u.role==='instructor'?'selected':''}>مدرب</option>
+              <option value="admin" ${u.role==='admin'?'selected':''}>إدارة</option>
+            </select>
           </div>
-          <select class="role-select" data-uid="${u.id}" style="width:auto;padding:7px 10px;">
-            <option value="student" ${u.role==='student'?'selected':''}>طالب</option>
-            <option value="instructor" ${u.role==='instructor'?'selected':''}>مدرب</option>
-            <option value="admin" ${u.role==='admin'?'selected':''}>إدارة</option>
-          </select>
+          <div id="userPanel-${u.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
         </div>
       `).join('');
+
+      pagEl.innerHTML = totalPages > 1 ? `
+        <button class="btn btn-ghost btn-sm" id="prevPageBtn" ${currentPage<=1?'disabled':''}>السابق</button>
+        <span>صفحة ${currentPage} من ${totalPages}</span>
+        <button class="btn btn-ghost btn-sm" id="nextPageBtn" ${currentPage>=totalPages?'disabled':''}>التالي</button>
+      ` : '';
+
+      const prevBtn = document.getElementById('prevPageBtn');
+      const nextBtn = document.getElementById('nextPageBtn');
+      if(prevBtn) prevBtn.addEventListener('click', () => { currentPage--; renderUsersList(); });
+      if(nextBtn) nextBtn.addEventListener('click', () => { currentPage++; renderUsersList(); });
 
       listEl.querySelectorAll('.role-select').forEach(sel => {
         sel.addEventListener('change', async () => {
@@ -2702,11 +4111,119 @@ async function adminRenderUsers(area){
           sel.disabled = false;
         });
       });
+
+      listEl.querySelectorAll('[data-expand]').forEach(el => {
+        el.addEventListener('click', () => {
+          const uid = el.dataset.expand;
+          const panel = document.getElementById(`userPanel-${uid}`);
+          const wasHidden = panel.classList.contains('hidden');
+          panel.classList.toggle('hidden');
+          if(wasHidden && !panel.dataset.loaded){
+            const u = users.find(x => x.id === uid);
+            renderUserDetailPanel(panel, u);
+            panel.dataset.loaded = '1';
+          }
+        });
+      });
     }
 
-    renderUsersList('');
+    async function renderUserDetailPanel(panel, u){
+      panel.innerHTML = `<div class="empty-state" style="padding:16px 0;">جارٍ تحميل التفاصيل...</div>`;
+      try{
+        if(u.role === 'instructor'){
+          const [coursesSnap, ratingData] = await Promise.all([
+            getDocs(query(collection(db, 'courses'), where('instructorId','==', u.id))),
+            fetchReviewsFor('instructor', u.id),
+          ]);
+          const courses = coursesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+          let totalRevenue = 0, totalStudents = 0;
+          for(const c of courses){
+            const enrSnap = await getDocs(query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved')));
+            totalStudents += enrSnap.docs.length;
+            totalRevenue += enrSnap.docs.reduce((s,d) => s + Number(d.data().finalAmount || 0), 0);
+          }
+          panel.innerHTML = `
+            <div class="learn-points" style="margin-bottom:16px;">
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.book}</span><span>${courses.length} كورس</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.users}</span><span>${totalStudents} طالب</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.card}</span><span>${totalRevenue.toLocaleString('ar')} ج.س إيرادات</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.starFilled}</span><span>${ratingData.count ? ratingData.avg.toFixed(1) + ' (' + ratingData.count + ' تقييم)' : 'بدون تقييم بعد'}</span></div>
+            </div>
+            ${u.specialty ? `<div style="font-size:13px;margin-bottom:6px;"><strong>التخصص:</strong> ${u.specialty}</div>` : ''}
+            ${u.bio ? `<div style="font-size:13px;color:var(--muted);margin-bottom:12px;">${u.bio}</div>` : ''}
+            <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">كورساته</div>
+            ${courses.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد كورسات.</div>` : courses.map(c => `
+              <div class="table-widget-row"><div class="grow"><div class="t1">${c.title}</div></div><span class="status-badge ${COURSE_STATUS_CLASS[c.status||'approved']}">${COURSE_STATUS_LABEL[c.status||'approved']}</span></div>
+            `).join('')}
+            <div style="display:flex;gap:8px;margin-top:14px;">
+              <a href="#/instructor/${u.id}" target="_blank" class="btn btn-ghost btn-sm">عرض الملف العام</a>
+              <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
+            </div>
+          `;
+        } else if(u.role === 'student'){
+          const [enrollSnap, certSnap, resultsSnap] = await Promise.all([
+            getDocs(query(collection(db, 'enrollments'), where('studentId','==', u.id))),
+            getDocs(query(collection(db, 'certificates'), where('studentId','==', u.id))),
+            getDocs(query(collection(db, 'examResults'), where('studentId','==', u.id))),
+          ]);
+          const enrollments = enrollSnap.docs.map(d => d.data());
+          const approvedCount = enrollments.filter(e => e.status === 'approved').length;
+          panel.innerHTML = `
+            <div class="learn-points" style="margin-bottom:16px;">
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.book}</span><span>${enrollments.length} طلب اشتراك</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.check}</span><span>${approvedCount} كورس مفعّل</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.certificate}</span><span>${certSnap.docs.length} شهادة</span></div>
+              <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.exam}</span><span>${resultsSnap.docs.length} امتحان منجز</span></div>
+            </div>
+            ${u.phone ? `<div style="font-size:13px;margin-bottom:12px;"><strong>الهاتف:</strong> ${u.phone}</div>` : ''}
+            <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">اشتراكاته</div>
+            ${enrollments.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد اشتراكات.</div>` : enrollments.map(e => `
+              <div class="table-widget-row"><div class="grow"><div class="t1">${e.courseTitle || 'كورس'}</div><div class="t2">${e.finalAmount !== undefined ? e.finalAmount + ' ج.س' : ''}</div></div><span class="status-badge ${STATUS_CLASS[e.status]||'status-pending'}">${STATUS_LABEL[e.status]||e.status}</span></div>
+            `).join('')}
+            <div style="margin-top:14px;">
+              <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
+            </div>
+          `;
+        } else {
+          panel.innerHTML = `
+            <div style="font-size:13px;color:var(--muted);">تاريخ الإنشاء: ${u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar') : '—'}</div>
+          `;
+        }
+
+        const toggleBtn = panel.querySelector('[data-toggle-status]');
+        if(toggleBtn){
+          toggleBtn.addEventListener('click', async () => {
+            const newStatus = u.status === 'disabled' ? 'active' : 'disabled';
+            if(!confirm(newStatus === 'disabled' ? 'تعطيل هذا الحساب؟ لن يقدر صاحبه يسجّل الدخول.' : 'إعادة تفعيل هذا الحساب؟')) return;
+            try{
+              await updateDoc(doc(db, 'users', u.id), { status: newStatus });
+              u.status = newStatus;
+              renderUsersList();
+            }catch(e){
+              alert('تعذّر تحديث حالة الحساب.');
+            }
+          });
+        }
+      }catch(e){
+        panel.innerHTML = `<div class="empty-state" style="padding:10px 0;">تعذّر تحميل تفاصيل المستخدم.</div>`;
+      }
+    }
+
+    document.getElementById('roleFilterTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.cat-tab');
+      if(!btn) return;
+      document.querySelectorAll('#roleFilterTabs .cat-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentRoleFilter = btn.dataset.role;
+      currentPage = 1;
+      renderUsersList();
+    });
+
+    renderUsersList();
     document.getElementById('userSearch').addEventListener('input', (e) => {
-      renderUsersList(e.target.value.trim().toLowerCase());
+      currentSearch = e.target.value.trim().toLowerCase();
+      currentPage = 1;
+      renderUsersList();
     });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل المستخدمين.</div>`;
@@ -2817,10 +4334,18 @@ async function adminRenderCourses(area){
               <label>السعر (جنيه)</label>
               <input type="number" id="coursePrice" min="0" placeholder="0 = مجاني" />
             </div>
+            <div class="field" style="flex:1;min-width:120px;margin-bottom:0;">
+              <label>السعر بعد الخصم (اختياري)</label>
+              <input type="number" id="courseDiscountPrice" min="0" placeholder="بدون خصم" />
+            </div>
           </div>
           <div class="field" style="margin-bottom:0;">
             <label>الوصف</label>
             <input type="text" id="courseDesc" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>ماذا سيتعلم الطالب؟ (سطر لكل نقطة)</label>
+            <textarea id="courseWhatToLearn" rows="4" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;" placeholder="ستتعلم أساسيات...&#10;ستكون قادراً على...&#10;ستكتسب مهارة..."></textarea>
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
             <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
@@ -2846,6 +4371,10 @@ async function adminRenderCourses(area){
                 <option value="Advanced">متقدم</option>
               </select>
             </div>
+            <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
+              <label>مدة الكورس (اختياري)</label>
+              <input type="text" id="courseDuration" placeholder="مثال: 6 ساعات" />
+            </div>
           </div>
           <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
             <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة كورس
@@ -2868,7 +4397,7 @@ async function adminRenderCourses(area){
         <div class="table-widget-row">
           <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
           <div class="grow">
-            <div class="t1">${c.title}</div>
+            <div class="t1">${c.title} <span class="status-badge ${COURSE_STATUS_CLASS[c.status || 'approved']}" style="margin-right:6px;">${COURSE_STATUS_LABEL[c.status || 'approved']}</span></div>
             <div class="t2">${c.categoryName || 'بدون قسم'} ${c.instructorName ? '· ' + c.instructorName : ''}</div>
           </div>
           <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.grid}</a>
@@ -2896,7 +4425,11 @@ async function adminRenderCourses(area){
       e.preventDefault();
       const title = document.getElementById('courseTitle').value.trim();
       const priceVal = document.getElementById('coursePrice').value;
+      const discountVal = document.getElementById('courseDiscountPrice').value;
       const description = document.getElementById('courseDesc').value.trim();
+      const whatToLearnRaw = document.getElementById('courseWhatToLearn').value.trim();
+      const whatToLearn = whatToLearnRaw ? whatToLearnRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
+      const durationText = document.getElementById('courseDuration').value.trim();
       const categoryId = document.getElementById('courseCategory').value;
       const instructorId = document.getElementById('courseInstructor').value;
       const level = document.getElementById('courseLevel').value;
@@ -2905,10 +4438,11 @@ async function adminRenderCourses(area){
       const category = cats.find(c => c.id === categoryId);
       const instructor = instructors.find(i => i.id === instructorId);
       const price = priceVal ? Number(priceVal) : 0;
+      const discountPrice = discountVal ? Number(discountVal) : null;
 
       try{
         const ref = await addDoc(collection(db, 'courses'), {
-          title, description, price,
+          title, description, price, discountPrice, whatToLearn, durationText: durationText || null,
           categoryId: categoryId || null,
           categoryName: category ? category.name : null,
           instructorId: instructorId || null,
@@ -2917,7 +4451,7 @@ async function adminRenderCourses(area){
           createdAt: serverTimestamp(),
         });
         courses.push({
-          id: ref.id, title, description, price,
+          id: ref.id, title, description, price, discountPrice, whatToLearn, durationText,
           categoryId: categoryId || null, categoryName: category ? category.name : null,
           instructorId: instructorId || null, instructorName: instructor ? (instructor.name || instructor.email) : null,
           level: level || null,
@@ -2934,13 +4468,141 @@ async function adminRenderCourses(area){
   }
 }
 
+async function adminRenderCourseReview(area){
+  try{
+    const snap = await getDocs(query(collection(db, 'courses'), where('status','in',['pending_review','needs_changes'])));
+    let pending = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    pending.sort((a,b) => (b.submittedAt?.seconds || 0) - (a.submittedAt?.seconds || 0));
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>مركز مراجعة الكورسات</h3></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">الكورسات اللي بعتها المدربين للمراجعة. لازم تحدد السعر وتوافق عشان الكورس يظهر في المتجر.</p>
+        <div id="reviewList"></div>
+      </div>
+    `;
+
+    function renderList(){
+      const listEl = document.getElementById('reviewList');
+      if(pending.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد كورسات تحتاج مراجعة حالياً.</div>`;
+        return;
+      }
+      listEl.innerHTML = pending.map(c => `
+        <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
+          <div style="display:flex;align-items:center;gap:12px;width:100%;">
+            <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
+            <div class="grow">
+              <div class="t1">${c.title}</div>
+              <div class="t2">المدرب: ${c.instructorName || '—'} · <span class="status-badge ${COURSE_STATUS_CLASS[c.status]}">${COURSE_STATUS_LABEL[c.status]}</span></div>
+            </div>
+            <button class="btn btn-ghost btn-sm" data-toggle="${c.id}">فتح للمراجعة</button>
+          </div>
+          <div id="reviewPanel-${c.id}" class="hidden" style="width:100%;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"></div>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('button[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const panel = document.getElementById(`reviewPanel-${btn.dataset.toggle}`);
+          const wasHidden = panel.classList.contains('hidden');
+          panel.classList.toggle('hidden');
+          if(wasHidden && !panel.dataset.loaded){
+            renderReviewPanel(panel, pending.find(c => c.id === btn.dataset.toggle));
+            panel.dataset.loaded = '1';
+          }
+        });
+      });
+    }
+
+    function renderReviewPanel(panel, course){
+      panel.innerHTML = `
+        <p style="font-size:13.5px;color:var(--muted);line-height:1.8;margin:0 0 12px;">${course.description || 'بدون وصف'}</p>
+        ${Array.isArray(course.whatToLearn) && course.whatToLearn.length ? `
+          <div style="margin-bottom:14px;">
+            <div style="font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:6px;">ماذا سيتعلم الطالب:</div>
+            <ul style="margin:0;padding-right:18px;font-size:13px;color:var(--muted);">
+              ${course.whatToLearn.map(pt => `<li>${pt}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
+            <label>السعر (جنيه)</label>
+            <input type="number" min="0" class="reviewPrice" value="${course.price || 0}" />
+          </div>
+          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
+            <label>السعر بعد الخصم (اختياري)</label>
+            <input type="number" min="0" class="reviewDiscount" value="${course.discountPrice || ''}" placeholder="بدون خصم" />
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:14px;">
+          <label>ملاحظة للمدرب (سبب الرفض أو التعديلات المطلوبة)</label>
+          <input type="text" class="reviewNote" placeholder="اختياري لو موافقة، إلزامي لو رفض أو طلب تعديل" />
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="btn btn-primary btn-sm" data-decision="approve">قبول ونشر الكورس</button>
+          <button class="btn btn-ghost btn-sm" data-decision="needs_changes">طلب تعديلات</button>
+          <button class="btn btn-sm btn-danger" data-decision="reject">رفض</button>
+        </div>
+      `;
+
+      panel.querySelectorAll('button[data-decision]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const decision = btn.dataset.decision;
+          const note = panel.querySelector('.reviewNote').value.trim();
+          if(decision !== 'approve' && !note){
+            alert('لازم تكتب ملاحظة للمدرب توضح السبب.');
+            return;
+          }
+          const price = Number(panel.querySelector('.reviewPrice').value || 0);
+          const discountVal = panel.querySelector('.reviewDiscount').value;
+          const discountPrice = discountVal ? Number(discountVal) : null;
+
+          btn.disabled = true;
+          try{
+            const updates = { reviewNote: note || null, reviewedAt: serverTimestamp() };
+            if(decision === 'approve'){
+              updates.status = 'approved';
+              updates.price = price;
+              updates.discountPrice = discountPrice;
+            } else if(decision === 'needs_changes'){
+              updates.status = 'needs_changes';
+            } else {
+              updates.status = 'rejected';
+            }
+            await updateDoc(doc(db, 'courses', course.id), updates);
+            coursesCache = null;
+            pending = pending.filter(c => c.id !== course.id);
+            renderList();
+          }catch(e){
+            alert('تعذّر تحديث حالة الكورس.');
+            btn.disabled = false;
+          }
+        });
+      });
+    }
+
+    renderList();
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات قيد المراجعة.</div>`;
+  }
+}
+
 async function adminRenderPayments(area){
   try{
     const snap = await getDocs(collection(db, 'enrollments'));
     let enrollments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    enrollments.sort((a,b) => (a.status === 'pending' ? 0 : 1) - (b.status === 'pending' ? 0 : 1));
+    const reviewable = ['pending','payment_submitted','under_review'];
+    enrollments.sort((a,b) => (reviewable.includes(a.status) ? 0 : 1) - (reviewable.includes(b.status) ? 0 : 1));
 
-    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>طلبات التسجيل والدفع</h3></div><div id="paymentsList"></div></div>`;
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>طلبات الاشتراك والدفع</h3></div>
+        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما رفع إثبات — منتظرين منه، مش من الإدارة.</p>
+        <div id="paymentsList"></div>
+      </div>
+    `;
 
     function renderList(){
       const listEl = document.getElementById('paymentsList');
@@ -2954,11 +4616,12 @@ async function adminRenderPayments(area){
           <div class="grow">
             <div class="t1">${e.studentName || 'طالب'}</div>
             <div class="t2">${e.courseTitle || 'كورس'}</div>
-            <div class="t2">مرجع الدفع: ${e.paymentRef || '—'}</div>
+            <div class="t2">${e.finalAmount !== undefined ? `المبلغ: ${e.finalAmount} ج.س · ` : ''}مرجع الدفع: ${e.paymentRef || '—'}</div>
+            <div class="t2">${e.notificationSent ? `${SIDE_ICONS.check} تم إرسال إشعار واتساب/تلغرام` : 'لم يُرسل إشعار بعد'}</div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
             <span class="status-badge ${STATUS_CLASS[e.status] || 'status-pending'}">${STATUS_LABEL[e.status] || 'قيد المراجعة'}</span>
-            ${e.status === 'pending' ? `
+            ${(e.status === 'pending' || e.status === 'payment_submitted' || e.status === 'under_review') ? `
               <div style="display:flex;gap:6px;">
                 <button class="icon-action success" data-action="approve" data-id="${e.id}" title="موافقة">${SIDE_ICONS.check}</button>
                 <button class="icon-action danger" data-action="reject" data-id="${e.id}" title="رفض">${SIDE_ICONS.close}</button>
@@ -2975,8 +4638,12 @@ async function adminRenderPayments(area){
           const newStatus = action === 'approve' ? 'approved' : 'rejected';
           btn.disabled = true;
           try{
-            await updateDoc(doc(db, 'enrollments', id), { status: newStatus, reviewedAt: serverTimestamp() });
             const en = enrollments.find(x => x.id === id);
+            await updateDoc(doc(db, 'enrollments', id), { status: newStatus, reviewedAt: serverTimestamp() });
+            if(en && en.studentId && en.courseId){
+              if(newStatus === 'approved') await grantCourseAccess(en.studentId, en.courseId);
+              else await revokeCourseAccess(en.studentId, en.courseId);
+            }
             if(en) en.status = newStatus;
             renderList();
           }catch(e){
@@ -2989,6 +4656,137 @@ async function adminRenderPayments(area){
     renderList();
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل طلبات الدفع.</div>`;
+  }
+}
+
+async function adminRenderFinance(area){
+  try{
+    const snap = await getDocs(query(collection(db, 'enrollments'), where('status','==','approved')));
+    const allApproved = snap.docs.map(d => d.data()).filter(e => e.createdAt?.toDate);
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>الفترة الزمنية</h3></div>
+        <div class="cat-tabs" id="financePresetTabs">
+          <button class="cat-tab active" data-range="today">اليوم</button>
+          <button class="cat-tab" data-range="week">هذا الأسبوع</button>
+          <button class="cat-tab" data-range="month">هذا الشهر</button>
+          <button class="cat-tab" data-range="year">هذا العام</button>
+          <button class="cat-tab" data-range="all">كل الفترات</button>
+        </div>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px;">
+          <div class="field" style="margin-bottom:0;">
+            <label>من تاريخ</label>
+            <input type="date" id="financeFrom" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>إلى تاريخ</label>
+            <input type="date" id="financeTo" />
+          </div>
+          <button class="btn btn-ghost" id="financeCustomBtn">تطبيق فترة مخصصة</button>
+        </div>
+      </div>
+      <div id="financeContent"></div>
+    `;
+
+    function computeRange(preset){
+      const now = new Date();
+      let from = new Date(0);
+      const to = new Date();
+      if(preset === 'today'){ from = new Date(now.getFullYear(), now.getMonth(), now.getDate()); }
+      else if(preset === 'week'){ from = new Date(now); from.setDate(now.getDate() - 7); }
+      else if(preset === 'month'){ from = new Date(now.getFullYear(), now.getMonth(), 1); }
+      else if(preset === 'year'){ from = new Date(now.getFullYear(), 0, 1); }
+      else if(preset === 'all'){ from = new Date(0); }
+      return { from, to };
+    }
+
+    function renderForRange(from, to){
+      const inRange = allApproved.filter(e => {
+        const d = e.createdAt.toDate();
+        return d >= from && d <= to;
+      });
+      const totalRevenue = inRange.reduce((s,e) => s + Number(e.finalAmount || 0), 0);
+      const purchaseCount = inRange.length;
+      const avgOrder = purchaseCount ? Math.round(totalRevenue / purchaseCount) : 0;
+
+      const byCourse = {};
+      const byCategory = {};
+      inRange.forEach(e => {
+        byCourse[e.courseTitle || 'كورس'] = (byCourse[e.courseTitle || 'كورس'] || 0) + Number(e.finalAmount || 0);
+      });
+
+      const byDay = {};
+      inRange.forEach(e => {
+        const key = e.createdAt.toDate().toISOString().slice(0,10);
+        byDay[key] = (byDay[key] || 0) + Number(e.finalAmount || 0);
+      });
+      const sortedDays = Object.keys(byDay).sort();
+
+      const topCourses = Object.entries(byCourse).sort((a,b) => b[1]-a[1]).slice(0,6);
+
+      const contentEl = document.getElementById('financeContent');
+      contentEl.innerHTML = `
+        <div class="widget-grid">
+          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي المبيعات</div></div></div></div>
+          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${purchaseCount}</div><div class="lbl">عدد عمليات الشراء</div></div></div></div>
+          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.dashboard}</div><div><div class="num">${avgOrder.toLocaleString('ar')} ج.س</div><div class="lbl">متوسط قيمة الطلب</div></div></div></div>
+        </div>
+        <div class="widget-grid">
+          <div class="widget widget-2">
+            <div class="widget-head"><h3>الإيرادات عبر الزمن</h3></div>
+            <div class="chart-box"><canvas id="financeLineChart"></canvas></div>
+          </div>
+          <div class="widget widget-2">
+            <div class="widget-head"><h3>أفضل الكورسات إيراداً</h3></div>
+            <div class="chart-box"><canvas id="financeTopCoursesChart"></canvas></div>
+          </div>
+        </div>
+      `;
+
+      if(sortedDays.length){
+        destroyChartIfExists('financeLineChart');
+        chartInstances['financeLineChart'] = new Chart(document.getElementById('financeLineChart'), {
+          type: 'line',
+          data: {
+            labels: sortedDays,
+            datasets: [{ data: sortedDays.map(d => byDay[d]), borderColor: '#6E4BAF', backgroundColor: 'rgba(110,75,175,0.12)', fill: true, tension: 0.3 }],
+          },
+          options: {
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { display:false }, ticks: { font: { family: "'IBM Plex Sans Arabic'", size: 10 } } }, y: { beginAtZero: true } },
+          },
+        });
+      } else {
+        document.getElementById('financeLineChart').parentElement.innerHTML = `<div class="empty-state" style="padding:36px 0;">لا توجد بيانات في هذه الفترة.</div>`;
+      }
+
+      renderBarChart('financeTopCoursesChart', topCourses.map(c => c[0]), topCourses.map(c => c[1]), '#E2A33B');
+    }
+
+    const { from, to } = computeRange('today');
+    renderForRange(from, to);
+
+    document.getElementById('financePresetTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('.cat-tab');
+      if(!btn) return;
+      document.querySelectorAll('#financePresetTabs .cat-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const { from, to } = computeRange(btn.dataset.range);
+      renderForRange(from, to);
+    });
+
+    document.getElementById('financeCustomBtn').addEventListener('click', () => {
+      const fromVal = document.getElementById('financeFrom').value;
+      const toVal = document.getElementById('financeTo').value;
+      if(!fromVal || !toVal){ alert('اختر تاريخ البداية والنهاية.'); return; }
+      document.querySelectorAll('#financePresetTabs .cat-tab').forEach(b => b.classList.remove('active'));
+      const toDate = new Date(toVal); toDate.setHours(23,59,59,999);
+      renderForRange(new Date(fromVal), toDate);
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل التحليلات المالية.</div>`;
   }
 }
 
@@ -3089,6 +4887,629 @@ async function adminRenderCertificates(area){
   }
 }
 
+async function adminRenderPaymentMethods(area){
+  try{
+    const snap = await getDocs(collection(db, 'paymentMethods'));
+    let methods = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>إضافة وسيلة دفع</h3></div>
+        <form id="addPaymentMethodForm" style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+              <label>اسم الوسيلة</label>
+              <input type="text" id="pmLabel" required placeholder="مثال: بنكك" />
+            </div>
+            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+              <label>اسم صاحب الحساب</label>
+              <input type="text" id="pmAccountName" placeholder="مثال: أحمد محمد" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>رقم الحساب / الهاتف</label>
+            <input type="text" id="pmAccountNumber" placeholder="رقم الحساب أو الهاتف" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>تعليمات إضافية (اختياري)</label>
+            <input type="text" id="pmInstructions" placeholder="مثال: أرسل صورة الإيصال بعد التحويل" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة وسيلة
+          </button>
+        </form>
+      </div>
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>وسائل الدفع الحالية</h3></div>
+        <div id="paymentMethodsAdminList"></div>
+      </div>
+    `;
+
+    function renderList(){
+      const listEl = document.getElementById('paymentMethodsAdminList');
+      if(methods.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد وسائل دفع بعد — الطلاب لن يقدروا يشتروا كورسات مدفوعة لحد ما تضيف واحدة.</div>`;
+        return;
+      }
+      listEl.innerHTML = methods.map(m => `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${SIDE_ICONS.card}</div>
+          <div class="grow">
+            <div class="t1">${m.label} ${m.active === false ? '<span class="pill" style="color:var(--danger);background:#FBEBEA;">معطّلة</span>' : ''}</div>
+            <div class="t2">${m.accountName || ''} ${m.accountNumber ? '· ' + m.accountNumber : ''}</div>
+          </div>
+          <button class="icon-action" data-toggle="${m.id}" title="${m.active === false ? 'تفعيل' : 'تعطيل'}">${m.active === false ? SIDE_ICONS.check : SIDE_ICONS.close}</button>
+          <button class="icon-action danger" data-id="${m.id}" title="حذف">${SIDE_ICONS.trash}</button>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('حذف وسيلة الدفع هذه؟')) return;
+          try{
+            await deleteDoc(doc(db, 'paymentMethods', btn.dataset.id));
+            methods = methods.filter(m => m.id !== btn.dataset.id);
+            renderList();
+          }catch(e){
+            alert('تعذّر حذف وسيلة الدفع.');
+          }
+        });
+      });
+      listEl.querySelectorAll('button[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const m = methods.find(x => x.id === btn.dataset.toggle);
+          if(!m) return;
+          const newActive = !(m.active !== false);
+          try{
+            await updateDoc(doc(db, 'paymentMethods', m.id), { active: newActive });
+            m.active = newActive;
+            renderList();
+          }catch(e){
+            alert('تعذّر تحديث الحالة.');
+          }
+        });
+      });
+    }
+    renderList();
+
+    document.getElementById('addPaymentMethodForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const label = document.getElementById('pmLabel').value.trim();
+      const accountName = document.getElementById('pmAccountName').value.trim();
+      const accountNumber = document.getElementById('pmAccountNumber').value.trim();
+      const instructions = document.getElementById('pmInstructions').value.trim();
+      if(!label) return;
+      try{
+        const ref = await addDoc(collection(db, 'paymentMethods'), {
+          label, accountName: accountName || null, accountNumber: accountNumber || null,
+          instructions: instructions || null, active: true, order: methods.length,
+          createdAt: serverTimestamp(),
+        });
+        methods.push({ id: ref.id, label, accountName, accountNumber, instructions, active: true, order: methods.length });
+        renderList();
+        document.getElementById('addPaymentMethodForm').reset();
+      }catch(e){
+        alert('تعذّر إضافة وسيلة الدفع.');
+      }
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل وسائل الدفع.</div>`;
+  }
+}
+
+async function adminRenderLiveSessions(area){
+  try{
+    const [lecSnap, courses] = await Promise.all([
+      getDocs(collection(db, 'lectures')),
+      fetchCourses(),
+    ]);
+    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
+    let lectures = await Promise.all(lecSnap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
+    const todayStr = new Date().toISOString().slice(0,10);
+    const upcoming = lectures.filter(l => (l.date||'') >= todayStr).sort((a,b) => (a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+    const past = lectures.filter(l => (l.date||'') < todayStr).sort((a,b) => (b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
+
+    function rowHTML(l){
+      const c = courseMap[l.courseId];
+      return `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${SIDE_ICONS.video}</div>
+          <div class="grow">
+            <div class="t1">${l.title}</div>
+            <div class="t2">${c ? c.title : 'كورس محذوف'} ${c?.instructorName ? '· ' + c.instructorName : ''} · ${l.date} ${l.time || ''}</div>
+          </div>
+          <a href="${l.link}" target="_blank" rel="noopener" class="icon-action" title="فتح الرابط">${SIDE_ICONS.playCircle}</a>
+        </div>
+      `;
+    }
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>المحاضرات القادمة (${upcoming.length})</h3></div>
+        ${upcoming.length === 0 ? `<div class="empty-state">لا توجد محاضرات مجدولة قادمة.</div>` : upcoming.map(rowHTML).join('')}
+      </div>
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>محاضرات سابقة (${past.length})</h3></div>
+        ${past.length === 0 ? `<div class="empty-state">لا توجد محاضرات سابقة.</div>` : past.slice(0,20).map(rowHTML).join('')}
+      </div>
+    `;
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل المحاضرات.</div>`;
+  }
+}
+
+async function adminRenderAttendance(area){
+  try{
+    const courses = await fetchCourses();
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>تسجيل الحضور</h3></div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+          <div class="field" style="flex:1;min-width:200px;margin-bottom:0;">
+            <label>الكورس</label>
+            <select id="attCourseSelect">
+              <option value="">— اختر الكورس —</option>
+              ${courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('')}
+            </select>
+          </div>
+          <div class="field" style="flex:1;min-width:200px;margin-bottom:0;">
+            <label>المحاضرة</label>
+            <select id="attLectureSelect" disabled><option value="">— اختر الكورس أولاً —</option></select>
+          </div>
+        </div>
+        <div id="attendanceListArea"></div>
+      </div>
+    `;
+
+    document.getElementById('attCourseSelect').addEventListener('change', async (e) => {
+      const courseId = e.target.value;
+      const lecSel = document.getElementById('attLectureSelect');
+      document.getElementById('attendanceListArea').innerHTML = '';
+      if(!courseId){ lecSel.disabled = true; lecSel.innerHTML = `<option value="">— اختر الكورس أولاً —</option>`; return; }
+      const lecSnap = await getDocs(query(collection(db, 'lectures'), where('courseId','==', courseId)));
+      const lectures = lecSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if(lectures.length === 0){
+        lecSel.disabled = true;
+        lecSel.innerHTML = `<option value="">لا توجد محاضرات لهذا الكورس</option>`;
+        return;
+      }
+      lecSel.disabled = false;
+      lecSel.innerHTML = `<option value="">— اختر المحاضرة —</option>` + lectures.map(l => `<option value="${l.id}" data-course="${courseId}">${l.title} (${l.date})</option>`).join('');
+    });
+
+    document.getElementById('attLectureSelect').addEventListener('change', async (e) => {
+      const lectureId = e.target.value;
+      const listEl = document.getElementById('attendanceListArea');
+      const courseId = document.getElementById('attCourseSelect').value;
+      if(!lectureId){ listEl.innerHTML = ''; return; }
+      listEl.innerHTML = `<div class="empty-state">جارٍ تحميل الطلاب...</div>`;
+      try{
+        const [enrollSnap, attSnap] = await Promise.all([
+          getDocs(query(collection(db, 'enrollments'), where('courseId','==', courseId), where('status','==','approved'))),
+          getDocs(query(collection(db, 'attendance'), where('lectureId','==', lectureId))),
+        ]);
+        const students = enrollSnap.docs.map(d => d.data());
+        const attMap = Object.fromEntries(attSnap.docs.map(d => [d.data().studentId, d.data().present]));
+        if(students.length === 0){
+          listEl.innerHTML = `<div class="empty-state">لا يوجد طلاب مفعّلين في هذا الكورس.</div>`;
+          return;
+        }
+        listEl.innerHTML = students.map(s => `
+          <div class="table-widget-row">
+            <div class="avatar-sm">${(s.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+            <div class="grow"><div class="t1">${s.studentName || 'طالب'}</div></div>
+            <button class="icon-action ${attMap[s.studentId] ? 'success' : ''}" data-mark="${s.studentId}" data-lecture="${lectureId}" data-course="${courseId}" data-present="${attMap[s.studentId] ? 'true' : 'false'}">
+              ${attMap[s.studentId] ? SIDE_ICONS.check : SIDE_ICONS.close}
+            </button>
+          </div>
+        `).join('');
+
+        listEl.querySelectorAll('[data-mark]').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const newPresent = btn.dataset.present !== 'true';
+            try{
+              await setDoc(doc(db, 'attendance', `${btn.dataset.lecture}_${btn.dataset.mark}`), {
+                lectureId: btn.dataset.lecture, courseId: btn.dataset.course, studentId: btn.dataset.mark,
+                present: newPresent, markedAt: serverTimestamp(),
+              });
+              btn.dataset.present = newPresent ? 'true' : 'false';
+              btn.classList.toggle('success', newPresent);
+              btn.innerHTML = newPresent ? SIDE_ICONS.check : SIDE_ICONS.close;
+            }catch(e){
+              alert('تعذّر تسجيل الحضور.');
+            }
+          });
+        });
+      }catch(e){
+        listEl.innerHTML = `<div class="empty-state">تعذّر تحميل قائمة الطلاب.</div>`;
+      }
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل قسم الحضور.</div>`;
+  }
+}
+
+async function adminRenderExamsOverview(area){
+  try{
+    const [examSnap, courses] = await Promise.all([
+      getDocs(collection(db, 'exams')),
+      fetchCourses(),
+    ]);
+    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
+    const exams = examSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>كل الامتحانات (${exams.length})</h3></div><div id="examsOverviewList"></div></div>`;
+    const listEl = document.getElementById('examsOverviewList');
+    if(exams.length === 0){
+      listEl.innerHTML = `<div class="empty-state">لا توجد امتحانات على المنصة بعد. أضف امتحاناً من صفحة "إدارة المحتوى" لأي كورس.</div>`;
+      return;
+    }
+
+    listEl.innerHTML = exams.map(ex => `
+      <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
+        <div style="display:flex;align-items:center;gap:12px;width:100%;">
+          <div class="avatar-sm">${SIDE_ICONS.exam}</div>
+          <div class="grow">
+            <div class="t1">${ex.title}</div>
+            <div class="t2">${courseMap[ex.courseId]?.title || 'كورس محذوف'} · ${ex.questions?.length || 0} سؤال</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" data-toggle-results="${ex.id}">عرض النتائج</button>
+        </div>
+        <div id="examResultsPanel-${ex.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
+      </div>
+    `).join('');
+
+    listEl.querySelectorAll('[data-toggle-results]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const panel = document.getElementById(`examResultsPanel-${btn.dataset.toggleResults}`);
+        const wasHidden = panel.classList.contains('hidden');
+        panel.classList.toggle('hidden');
+        if(wasHidden && !panel.dataset.loaded){
+          panel.innerHTML = `<div class="empty-state" style="padding:10px 0;">جارٍ التحميل...</div>`;
+          const resSnap = await getDocs(query(collection(db, 'examResults'), where('examId','==', btn.dataset.toggleResults)));
+          const results = resSnap.docs.map(d => d.data());
+          panel.innerHTML = results.length === 0
+            ? `<div class="empty-state" style="padding:10px 0;">لا توجد نتائج بعد.</div>`
+            : results.map(r => `
+              <div class="table-widget-row">
+                <div class="grow"><div class="t1">${r.studentName || 'طالب'}</div></div>
+                <span class="status-badge ${r.passed ? 'status-approved' : 'status-rejected'}">${r.score}/${r.total}</span>
+              </div>
+            `).join('');
+          panel.dataset.loaded = '1';
+        }
+      });
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الامتحانات.</div>`;
+  }
+}
+
+async function adminRenderCommunityModeration(area){
+  try{
+    const [msgSnap, courses] = await Promise.all([
+      getDocs(collection(db, 'communityMessages')),
+      fetchCourses(),
+    ]);
+    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
+    let messages = msgSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>رسائل مجتمعات الكورسات (${messages.length})</h3></div><div id="communityModList"></div></div>`;
+
+    function renderList(){
+      const listEl = document.getElementById('communityModList');
+      if(messages.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد رسائل بعد.</div>`;
+        return;
+      }
+      listEl.innerHTML = messages.slice(0,50).map(m => `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${(m.senderName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+          <div class="grow">
+            <div class="t1">${m.senderName || 'مدرب'} <span class="chat-type-pill">${COMMUNITY_TYPE_LABEL[m.type]||m.type}</span></div>
+            <div class="t2">${courseMap[m.courseId]?.title || 'كورس'} · ${m.content ? m.content.slice(0,80) : (m.fileName || '')}</div>
+          </div>
+          <button class="icon-action danger" data-id="${m.id}" title="حذف">${SIDE_ICONS.trash}</button>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('حذف هذه الرسالة من مجتمع الكورس؟')) return;
+          try{
+            await deleteDoc(doc(db, 'communityMessages', btn.dataset.id));
+            messages = messages.filter(m => m.id !== btn.dataset.id);
+            renderList();
+          }catch(e){
+            alert('تعذّر حذف الرسالة.');
+          }
+        });
+      });
+    }
+    renderList();
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل المجتمعات.</div>`;
+  }
+}
+
+async function adminRenderReviewsModeration(area){
+  try{
+    const snap = await getDocs(collection(db, 'reviews'));
+    let reviews = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+
+    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>كل التقييمات (${reviews.length})</h3></div><div id="reviewsModList"></div></div>`;
+
+    function renderList(){
+      const listEl = document.getElementById('reviewsModList');
+      if(reviews.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد تقييمات بعد.</div>`;
+        return;
+      }
+      listEl.innerHTML = reviews.map(r => `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${(r.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+          <div class="grow">
+            <div class="t1">${r.studentName || 'طالب'} <span class="chat-type-pill">${r.type === 'course' ? 'تقييم كورس' : 'تقييم مدرب'}</span></div>
+            <div class="t2">${starRowHTML(r.rating)} ${r.comment || ''}</div>
+          </div>
+          <button class="icon-action danger" data-id="${r.id}" title="حذف">${SIDE_ICONS.trash}</button>
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('حذف هذا التقييم؟')) return;
+          try{
+            await deleteDoc(doc(db, 'reviews', btn.dataset.id));
+            reviews = reviews.filter(r => r.id !== btn.dataset.id);
+            renderList();
+          }catch(e){
+            alert('تعذّر حذف التقييم.');
+          }
+        });
+      });
+    }
+    renderList();
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل التقييمات.</div>`;
+  }
+}
+
+async function adminRenderNotifications(area){
+  try{
+    const [notifSnap, courses, instructorsSnap] = await Promise.all([
+      getDocs(collection(db, 'notifications')),
+      fetchCourses(),
+      getDocs(query(collection(db, 'users'), where('role','==','instructor'))),
+    ]);
+    let notifications = notifSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    const instructors = instructorsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>إرسال إشعار جديد</h3></div>
+        <form id="notifForm" style="display:flex;flex-direction:column;gap:14px;">
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+              <label>المستهدَفون</label>
+              <select id="notifTarget">
+                <option value="all">كل المستخدمين</option>
+                <option value="course">طلاب كورس معيّن</option>
+                <option value="instructor">مدرب معيّن</option>
+                <option value="user">مستخدم معيّن (بالبريد)</option>
+              </select>
+            </div>
+            <div class="field hidden" id="notifCourseWrap" style="flex:1;min-width:180px;margin-bottom:0;">
+              <label>الكورس</label>
+              <select id="notifCourseId">${courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('')}</select>
+            </div>
+            <div class="field hidden" id="notifInstructorWrap" style="flex:1;min-width:180px;margin-bottom:0;">
+              <label>المدرب</label>
+              <select id="notifInstructorId">${instructors.map(i => `<option value="${i.id}">${i.name || i.email}</option>`).join('')}</select>
+            </div>
+            <div class="field hidden" id="notifUserWrap" style="flex:1;min-width:180px;margin-bottom:0;">
+              <label>بريد المستخدم</label>
+              <input type="email" id="notifUserEmail" placeholder="user@example.com" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>العنوان</label>
+            <input type="text" id="notifTitle" required />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>نص الإشعار</label>
+            <textarea id="notifBody" rows="3" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+            <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.bell}</span> إرسال
+          </button>
+          <div id="notifAlert"></div>
+        </form>
+      </div>
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>الإشعارات المرسلة</h3></div>
+        <div id="notifList"></div>
+      </div>
+    `;
+
+    const targetSel = document.getElementById('notifTarget');
+    targetSel.addEventListener('change', () => {
+      document.getElementById('notifCourseWrap').classList.toggle('hidden', targetSel.value !== 'course');
+      document.getElementById('notifInstructorWrap').classList.toggle('hidden', targetSel.value !== 'instructor');
+      document.getElementById('notifUserWrap').classList.toggle('hidden', targetSel.value !== 'user');
+    });
+
+    function renderNotifList(){
+      const listEl = document.getElementById('notifList');
+      if(notifications.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لم يتم إرسال أي إشعارات بعد.</div>`;
+        return;
+      }
+      const targetLabel = { all:'الجميع', course:'طلاب كورس', instructor:'مدرب', user:'مستخدم واحد', domain:'مجال' };
+      listEl.innerHTML = notifications.slice(0,30).map(n => `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${SIDE_ICONS.bell}</div>
+          <div class="grow">
+            <div class="t1">${n.title}</div>
+            <div class="t2">${n.body} · <span class="pill">${targetLabel[n.targetType]||n.targetType}</span></div>
+          </div>
+        </div>
+      `).join('');
+    }
+    renderNotifList();
+
+    document.getElementById('notifForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const alertBox = document.getElementById('notifAlert');
+      const targetType = targetSel.value;
+      const title = document.getElementById('notifTitle').value.trim();
+      const body = document.getElementById('notifBody').value.trim();
+      let targetId = null;
+
+      if(targetType === 'course') targetId = document.getElementById('notifCourseId').value;
+      if(targetType === 'instructor') targetId = document.getElementById('notifInstructorId').value;
+      if(targetType === 'user'){
+        const email = document.getElementById('notifUserEmail').value.trim();
+        if(!email){ alertBox.innerHTML = `<div class="alert alert-error">اكتب بريد المستخدم.</div>`; return; }
+        try{
+          const uSnap = await getDocs(query(collection(db, 'users'), where('email','==', email)));
+          if(uSnap.empty){ alertBox.innerHTML = `<div class="alert alert-error">لا يوجد مستخدم بهذا البريد.</div>`; return; }
+          targetId = uSnap.docs[0].id;
+        }catch(e){
+          alertBox.innerHTML = `<div class="alert alert-error">تعذّر البحث عن المستخدم.</div>`;
+          return;
+        }
+      }
+
+      try{
+        const ref = await addDoc(collection(db, 'notifications'), {
+          targetType, targetId, title, body, readBy: [],
+          createdBy: currentUser.uid, createdAt: serverTimestamp(),
+        });
+        notifications.unshift({ id: ref.id, targetType, targetId, title, body, readBy: [], createdAt: { seconds: Date.now()/1000 } });
+        renderNotifList();
+        document.getElementById('notifForm').reset();
+        alertBox.innerHTML = `<div class="alert alert-success">تم إرسال الإشعار.</div>`;
+      }catch(e){
+        alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال الإشعار.</div>`;
+      }
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الإشعارات.</div>`;
+  }
+}
+
+async function adminRenderSettings(area){
+  try{
+    const [commSnap, generalSnap] = await Promise.all([
+      getDoc(doc(db, 'settings', 'communication')),
+      getDoc(doc(db, 'settings', 'general')),
+    ]);
+    const comms = commSnap.exists() ? commSnap.data() : {};
+    const general = generalSnap.exists() ? generalSnap.data() : {};
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>معلومات المنصة العامة</h3></div>
+        <form id="generalSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
+          <div class="field" style="margin-bottom:0;">
+            <label>اسم المنصة</label>
+            <input type="text" id="genPlatformName" value="${general.platformName || 'لافندر'}" />
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
+              <label>بريد التواصل</label>
+              <input type="email" id="genEmail" value="${general.supportEmail || ''}" />
+            </div>
+            <div class="field" style="flex:1;min-width:150px;margin-bottom:0;">
+              <label>رقم الهاتف</label>
+              <input type="text" id="genPhone" value="${general.supportPhone || ''}" />
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>العملة المعروضة</label>
+            <select id="genCurrency">
+              <option value="SDG" ${(!general.currency || general.currency==='SDG') ? 'selected' : ''}>الجنيه السوداني (ج.س)</option>
+              <option value="USD" ${general.currency==='USD' ? 'selected' : ''}>الدولار الأمريكي (USD)</option>
+            </select>
+            <div class="field-hint">تنبيه بالأمانة: تغيير هذا الإعداد بيحفظ العملة المفضّلة، لكن الأسعار المعروضة حالياً في صفحات الكورسات والدفع مكتوبة بالجنيه السوداني مباشرة. عرض الأسعار بعملة مختلفة تلقائياً في كل الصفحات يحتاج تحديثاً إضافياً لاحقاً.</div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ</button>
+          <div id="generalSettingsAlert"></div>
+        </form>
+      </div>
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>إعدادات التحقق من الدفع (واتساب / تلغرام)</h3></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">هذه البيانات بتظهر للطالب بعد رفع إثبات الدفع عشان يقدر يبعت إشعار سريع للتحقق. النظام بيسجّل فقط إن الطالب ضغط الزر، وما بيقدر يتأكد إن الرسالة وصلت فعلاً.</p>
+        <form id="commSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
+          <div class="field" style="margin-bottom:0;">
+            <label>رقم واتساب (بصيغة دولية بدون +، مثال: 249912345678)</label>
+            <input type="text" id="waNumber" value="${comms.whatsappNumber || ''}" placeholder="249912345678" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>أو رابط واتساب جاهز (اختياري بدل الرقم)</label>
+            <input type="text" id="waLink" value="${comms.whatsappLink || ''}" placeholder="https://wa.me/..." />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>اسم مستخدم تلغرام (بدون @)</label>
+            <input type="text" id="tgUsername" value="${comms.telegramUsername || ''}" placeholder="lavender_support" />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>أو رابط تلغرام جاهز (اختياري)</label>
+            <input type="text" id="tgLink" value="${comms.telegramLink || ''}" placeholder="https://t.me/..." />
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ الإعدادات</button>
+          <div id="commSettingsAlert"></div>
+        </form>
+      </div>
+    `;
+
+    document.getElementById('generalSettingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const platformName = document.getElementById('genPlatformName').value.trim();
+      const supportEmail = document.getElementById('genEmail').value.trim();
+      const supportPhone = document.getElementById('genPhone').value.trim();
+      const currency = document.getElementById('genCurrency').value;
+      const alertBox = document.getElementById('generalSettingsAlert');
+      try{
+        await setDoc(doc(db, 'settings', 'general'), {
+          platformName: platformName || 'لافندر',
+          supportEmail: supportEmail || null,
+          supportPhone: supportPhone || null,
+          currency,
+          updatedAt: serverTimestamp(),
+        });
+        alertBox.innerHTML = `<div class="alert alert-success">تم الحفظ.</div>`;
+      }catch(e){
+        alertBox.innerHTML = `<div class="alert alert-error">تعذّر الحفظ.</div>`;
+      }
+    });
+
+    document.getElementById('commSettingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const whatsappNumber = document.getElementById('waNumber').value.trim();
+      const whatsappLink = document.getElementById('waLink').value.trim();
+      const telegramUsername = document.getElementById('tgUsername').value.trim();
+      const telegramLink = document.getElementById('tgLink').value.trim();
+      const alertBox = document.getElementById('commSettingsAlert');
+      try{
+        await setDoc(doc(db, 'settings', 'communication'), {
+          whatsappNumber: whatsappNumber || null,
+          whatsappLink: whatsappLink || null,
+          telegramUsername: telegramUsername || null,
+          telegramLink: telegramLink || null,
+          updatedAt: serverTimestamp(),
+        });
+        alertBox.innerHTML = `<div class="alert alert-success">تم حفظ الإعدادات.</div>`;
+      }catch(e){
+        alertBox.innerHTML = `<div class="alert alert-error">تعذّر حفظ الإعدادات.</div>`;
+      }
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الإعدادات.</div>`;
+  }
+}
+
 async function loadMyEnrollments(){
   const area = document.getElementById('enrollmentsArea');
   if(!area) return;
@@ -3103,14 +5524,17 @@ async function loadMyEnrollments(){
       const e = d.data();
       return `
         <div class="table-widget-row">
-          <div class="avatar-sm" style="background:${e.status === 'approved' ? 'var(--success)' : e.status === 'rejected' ? 'var(--danger)' : 'var(--amber-500)'};">
-            ${e.status === 'approved' ? SIDE_ICONS.check : e.status === 'rejected' ? SIDE_ICONS.close : SIDE_ICONS.card}
+          <div class="avatar-sm" style="background:${e.status === 'approved' ? 'var(--success)' : (e.status === 'rejected' || e.status === 'cancelled') ? 'var(--danger)' : 'var(--amber-500)'};">
+            ${e.status === 'approved' ? SIDE_ICONS.check : (e.status === 'rejected' || e.status === 'cancelled') ? SIDE_ICONS.close : SIDE_ICONS.card}
           </div>
           <div class="grow">
             <div class="t1">${e.courseTitle || 'كورس'}</div>
-            <div class="t2">مرجع الدفع: ${e.paymentRef || '—'}</div>
+            <div class="t2">${e.finalAmount !== undefined ? `${e.finalAmount} ج.س` : (e.paymentRef ? `مرجع الدفع: ${e.paymentRef}` : '—')}</div>
           </div>
-          <span class="status-badge ${STATUS_CLASS[e.status] || 'status-pending'}">${STATUS_LABEL[e.status] || 'قيد المراجعة'}</span>
+          ${e.status === 'pending_payment'
+            ? `<a href="#/enroll/${e.courseId}" class="btn btn-sm btn-primary">إتمام الدفع</a>`
+            : `<span class="status-badge ${STATUS_CLASS[e.status] || 'status-pending'}">${STATUS_LABEL[e.status] || 'قيد المراجعة'}</span>`
+          }
         </div>
       `;
     }).join('');
@@ -3128,6 +5552,16 @@ onAuthStateChanged(auth, async (user) => {
       currentProfile = snap.exists() ? snap.data() : { name: user.displayName || user.email, email: user.email, role: 'student' };
     }catch(e){
       currentProfile = { name: user.displayName || user.email, email: user.email, role: 'student' };
+    }
+    if(currentProfile?.status === 'disabled'){
+      await signOut(auth);
+      currentUser = null;
+      currentProfile = null;
+      renderNav();
+      location.hash = '#/login';
+      router();
+      alert('تم تعطيل هذا الحساب من قبل الإدارة. تواصل معنا لمزيد من التفاصيل.');
+      return;
     }
   } else {
     currentProfile = null;
