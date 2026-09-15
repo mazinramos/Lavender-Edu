@@ -336,6 +336,36 @@
   .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
   .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;}
   .app-content{padding:28px;max-width:1180px;}
+  .app-topbar-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:15.5px;color:var(--violet-900);display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58%;}
+
+  /* Mobile bottom tab bar (phones) */
+  .bottom-nav{
+    display:none;position:fixed;bottom:0;left:0;right:0;z-index:40;
+    background:#fff;border-top:1px solid var(--line);
+    padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+    box-shadow:0 -10px 24px -18px rgba(34,21,48,0.25);
+  }
+  .bottom-nav-item{
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+    padding:6px 2px;border-radius:12px;color:var(--muted);font-size:10.5px;font-weight:700;
+    position:relative;background:none;border:none;font-family:inherit;cursor:pointer;
+  }
+  .bottom-nav-item .side-ic{width:22px;height:22px;}
+  .bottom-nav-item.active{color:var(--violet-700);}
+  .bottom-nav-item .nav-dot{position:absolute;top:1px;left:calc(50% - 3px);width:6px;height:6px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
+
+  /* Bottom sheet (used for "account" and admin "more") */
+  .sheet-overlay{position:fixed;inset:0;background:rgba(34,21,48,0.45);z-index:60;display:flex;align-items:flex-end;}
+  .sheet-panel{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:18px 20px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow-y:auto;}
+  .sheet-handle{width:38px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 18px;}
+  .sheet-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--violet-900);margin-bottom:16px;}
+  .sheet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 8px;}
+  .sheet-grid-item{
+    display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;color:var(--ink);
+    text-align:center;background:none;border:none;font-family:inherit;cursor:pointer;font-weight:600;
+  }
+  .sheet-grid-item .ic-circle{width:48px;height:48px;border-radius:14px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;}
+  .sheet-grid-item.active .ic-circle{background:var(--violet-700);color:#fff;}
 
   /* Widgets */
   .widget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:20px;}
@@ -677,6 +707,17 @@
     .widget-grid{grid-template-columns:1fr 1fr;}
     .widget-2, .widget-4{grid-column:span 2;}
     .topbar-search{max-width:160px;}
+  }
+  @media (max-width:640px){
+    .app-sidebar{display:none;}
+    .bottom-nav{display:flex;}
+    .app-content{padding:16px 16px 92px;}
+    .app-topbar-title{display:block;}
+    .topbar-search{display:none;}
+    .app-topbar{padding:14px 16px;}
+    .widget-grid{grid-template-columns:1fr;}
+    .widget-2, .widget-4{grid-column:span 1;}
+    .stat-card-v3{gap:12px;}
   }
   @media (max-width:520px){
     .steps{grid-template-columns:1fr;}
@@ -2236,31 +2277,32 @@ function renderBarChart(canvasId, labels, values, color){
 }
 
 /* ================= APP SHELL (sidebar + topbar for authenticated pages) ================= */
+const ADMIN_TABS = [
+  { key:'overview', label:'نظرة عامة', icon: SIDE_ICONS.dashboard },
+  { key:'users', label:'المستخدمون', icon: SIDE_ICONS.users },
+  { key:'categories', label:'الأقسام', icon: SIDE_ICONS.grid },
+  { key:'courses', label:'الكورسات', icon: SIDE_ICONS.book },
+  { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.exam },
+  { key:'payments', label:'المدفوعات', icon: SIDE_ICONS.card },
+  { key:'finance', label:'التحليلات المالية', icon: SIDE_ICONS.card },
+  { key:'payment-methods', label:'وسائل الدفع', icon: SIDE_ICONS.card },
+  { key:'certificates', label:'الشهادات', icon: SIDE_ICONS.certificate },
+  { key:'live-sessions', label:'المحاضرات المباشرة', icon: SIDE_ICONS.video },
+  { key:'attendance', label:'الحضور', icon: SIDE_ICONS.calendar },
+  { key:'exams', label:'الامتحانات', icon: SIDE_ICONS.exam },
+  { key:'community', label:'المجتمع', icon: SIDE_ICONS.chatBubble },
+  { key:'reviews', label:'التقييمات', icon: SIDE_ICONS.starFilled },
+  { key:'notifications', label:'الإشعارات', icon: SIDE_ICONS.bell },
+  { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.grid },
+];
+
 function shellSideLinks(activeKey){
   const role = currentProfile?.role || 'student';
 
   if(role === 'admin'){
-    const tabs = [
-      { key:'overview', label:'نظرة عامة', icon: SIDE_ICONS.dashboard },
-      { key:'users', label:'المستخدمون', icon: SIDE_ICONS.users },
-      { key:'categories', label:'الأقسام', icon: SIDE_ICONS.grid },
-      { key:'courses', label:'الكورسات', icon: SIDE_ICONS.book },
-      { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.exam },
-      { key:'payments', label:'المدفوعات', icon: SIDE_ICONS.card },
-      { key:'finance', label:'التحليلات المالية', icon: SIDE_ICONS.card },
-      { key:'payment-methods', label:'وسائل الدفع', icon: SIDE_ICONS.card },
-      { key:'certificates', label:'الشهادات', icon: SIDE_ICONS.certificate },
-      { key:'live-sessions', label:'المحاضرات المباشرة', icon: SIDE_ICONS.video },
-      { key:'attendance', label:'الحضور', icon: SIDE_ICONS.calendar },
-      { key:'exams', label:'الامتحانات', icon: SIDE_ICONS.exam },
-      { key:'community', label:'المجتمع', icon: SIDE_ICONS.chatBubble },
-      { key:'reviews', label:'التقييمات', icon: SIDE_ICONS.starFilled },
-      { key:'notifications', label:'الإشعارات', icon: SIDE_ICONS.bell },
-      { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.grid },
-    ];
     return `
       <div class="side-label">لوحة الإدارة</div>
-      ${tabs.map(t => `
+      ${ADMIN_TABS.map(t => `
         <a href="#/dashboard?tab=${t.key}" class="side-link admin-side-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
           <span class="side-ic">${t.icon}</span><span class="lbl-text">${t.label}</span>
         </a>
@@ -2279,11 +2321,143 @@ function shellSideLinks(activeKey){
   `;
 }
 
+/* ---------------- Mobile bottom tab bar (Telegram-style) ---------------- */
+function bottomNavHTML(activeKey){
+  if(currentProfile?.role === 'admin'){
+    const primary = ADMIN_BOTTOM_PRIMARY_KEYS.map(k => ADMIN_TABS.find(t => t.key === k)).filter(Boolean);
+    return `
+      ${primary.map(t => `
+        <a href="#/dashboard?tab=${t.key}" class="bottom-nav-item admin-bottom-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
+          <span class="side-ic">${t.icon}</span><span>${t.label}</span>
+        </a>
+      `).join('')}
+      <button type="button" class="bottom-nav-item" id="bottomNavMoreBtn">
+        <span class="side-ic">${SIDE_ICONS.grid}</span><span>المزيد</span>
+      </button>
+    `;
+  }
+
+  return `
+    <a href="#/" class="bottom-nav-item">
+      <span class="side-ic">${SIDE_ICONS.home}</span><span>الرئيسية</span>
+    </a>
+    <a href="#/dashboard" class="bottom-nav-item ${activeKey === 'dashboard' ? 'active' : ''}">
+      <span class="side-ic">${SIDE_ICONS.dashboard}</span><span>لوحتي</span>
+    </a>
+    <a href="#/courses" class="bottom-nav-item">
+      <span class="side-ic">${SIDE_ICONS.book}</span><span>الكورسات</span>
+    </a>
+    <button type="button" class="bottom-nav-item" id="bottomNavNotifBtn">
+      <span class="side-ic">${SIDE_ICONS.bell}</span><span>الإشعارات</span>
+    </button>
+    <button type="button" class="bottom-nav-item" id="bottomNavAccountBtn">
+      <span class="side-ic">${SIDE_ICONS.users}</span><span>حسابي</span>
+    </button>
+  `;
+}
+
+function closeSheet(){
+  const existing = document.getElementById('activeSheetOverlay');
+  if(existing) existing.remove();
+}
+
+function openSheet(titleText, itemsHTML){
+  closeSheet();
+  const overlay = document.createElement('div');
+  overlay.className = 'sheet-overlay';
+  overlay.id = 'activeSheetOverlay';
+  overlay.innerHTML = `
+    <div class="sheet-panel">
+      <div class="sheet-handle"></div>
+      <div class="sheet-title">${titleText}</div>
+      ${itemsHTML}
+    </div>
+  `;
+  overlay.addEventListener('click', (e) => {
+    if(e.target === overlay) closeSheet();
+  });
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+function openAccountSheet(){
+  const name = currentProfile?.name || currentUser?.email || 'مستخدم';
+  const roleLabelText = ROLE_LABEL[currentProfile?.role] || 'طالب';
+  const overlay = openSheet('حسابي', `
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;">
+      <div class="avatar-circle" style="width:48px;height:48px;font-size:17px;">${name.trim()[0]?.toUpperCase() || '؟'}</div>
+      <div>
+        <div style="font-weight:700;font-size:14.5px;color:var(--ink);">${name}</div>
+        <div style="font-size:12.5px;color:var(--muted);">${roleLabelText}</div>
+      </div>
+    </div>
+    <div class="sheet-grid">
+      <a href="#/" class="sheet-grid-item" data-close-sheet><span class="ic-circle">${SIDE_ICONS.home}</span>الرئيسية</a>
+      <a href="#/courses" class="sheet-grid-item" data-close-sheet><span class="ic-circle">${SIDE_ICONS.book}</span>الكورسات</a>
+      <button type="button" class="sheet-grid-item" id="sheetLogoutBtn"><span class="ic-circle">${SIDE_ICONS.logout}</span>تسجيل الخروج</button>
+    </div>
+  `);
+  overlay.querySelectorAll('[data-close-sheet]').forEach(el => el.addEventListener('click', closeSheet));
+  overlay.querySelector('#sheetLogoutBtn').addEventListener('click', async () => {
+    closeSheet();
+    await signOut(auth);
+    location.hash = '#/';
+  });
+}
+
+function openAdminMoreSheet(activeKey){
+  const overlay = openSheet('كل الأقسام', `
+    <div class="sheet-grid">
+      ${ADMIN_TABS.map(t => `
+        <button type="button" class="sheet-grid-item admin-sheet-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
+          <span class="ic-circle">${t.icon}</span>${t.label}
+        </button>
+      `).join('')}
+    </div>
+  `);
+  overlay.querySelectorAll('.admin-sheet-link').forEach(btn => {
+    btn.addEventListener('click', () => {
+      closeSheet();
+      document.querySelectorAll('.admin-side-link, .admin-bottom-link').forEach(l => l.classList.toggle('active', l.dataset.tab === btn.dataset.tab));
+      history.replaceState(null, '', `#/dashboard?tab=${btn.dataset.tab}`);
+      loadAdminTab(btn.dataset.tab);
+      const titleEl = document.querySelector('.app-topbar-title');
+      if(titleEl) titleEl.textContent = shellTopbarTitle(btn.dataset.tab);
+    });
+  });
+}
+
+function wireBottomNav(activeKey){
+  const notifBtn = document.getElementById('bottomNavNotifBtn');
+  if(notifBtn){
+    notifBtn.addEventListener('click', () => {
+      document.getElementById('notifBellBtn')?.click();
+    });
+  }
+  const accountBtn = document.getElementById('bottomNavAccountBtn');
+  if(accountBtn){
+    accountBtn.addEventListener('click', openAccountSheet);
+  }
+  const moreBtn = document.getElementById('bottomNavMoreBtn');
+  if(moreBtn){
+    moreBtn.addEventListener('click', () => openAdminMoreSheet(activeKey));
+  }
+}
+
+function shellTopbarTitle(activeKey){
+  if(currentProfile?.role === 'admin'){
+    return ADMIN_TABS.find(t => t.key === activeKey)?.label || 'لوحة الإدارة';
+  }
+  const map = { dashboard:'لوحتي' };
+  return map[activeKey] || 'لوحتي';
+}
+
 function renderShell(activeKey){
   const app = document.getElementById('app');
   const name = currentProfile?.name || currentUser?.email || 'مستخدم';
   const initial = name.trim()[0]?.toUpperCase() || '؟';
   const roleLabelText = ROLE_LABEL[currentProfile?.role] || 'طالب';
+  const isAdminRole = currentProfile?.role === 'admin';
 
   app.innerHTML = `
     <div class="app-shell">
@@ -2307,6 +2481,7 @@ function renderShell(activeKey){
       </aside>
       <div class="app-main">
         <div class="app-topbar">
+          <div class="app-topbar-title">${shellTopbarTitle(activeKey)}</div>
           <div class="topbar-search">
             <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.search}</span>
             <input type="text" placeholder="بحث سريع..." id="shellSearchInput" />
@@ -2317,6 +2492,7 @@ function renderShell(activeKey){
         </div>
         <div class="app-content" id="appContent"></div>
       </div>
+      <nav class="bottom-nav" id="bottomNav">${bottomNavHTML(activeKey)}</nav>
     </div>
   `;
 
@@ -2341,9 +2517,13 @@ function renderShell(activeKey){
       link.classList.add('active');
       history.replaceState(null, '', `#/dashboard?tab=${link.dataset.tab}`);
       loadAdminTab(link.dataset.tab);
+      const titleEl = document.querySelector('.app-topbar-title');
+      if(titleEl) titleEl.textContent = shellTopbarTitle(link.dataset.tab);
+      document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === link.dataset.tab));
     });
   });
 
+  wireBottomNav(activeKey);
   wireNotificationBell();
 }
 
