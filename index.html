@@ -369,6 +369,7 @@
   .widget-head h3{font-size:14.5px;font-weight:700;color:var(--violet-900);margin:0;}
   .widget-2{grid-column:span 2;}
   .widget-4{grid-column:span 4;}
+  .widget-span-3{grid-column:span 3;}
 
   .stat-card-v3{display:flex;align-items:center;gap:14px;}
   .stat-card-v3 .ic{
@@ -628,11 +629,6 @@
   .status-rejected{background:#FBEBEA;color:var(--danger);}
   .enroll-list-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);}
   .enroll-list-item:last-child{border-bottom:none;}
-  .file-input-wrap{
-    display:block;border:1.5px dashed var(--line);border-radius:12px;padding:20px;
-    text-align:center;font-size:13.5px;color:var(--muted);cursor:pointer;background:var(--paper);
-  }
-  .file-input-wrap.has-file{border-color:var(--violet-600);color:var(--violet-800);font-weight:600;}
 
   /* Admin / instructor lists & controls */
   .list-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line);}
@@ -640,7 +636,6 @@
   .btn-sm{padding:7px 14px;font-size:13px;border-radius:8px;}
   .btn-danger{background:#FBEBEA;color:var(--danger);}
   .btn-danger:hover{background:#F5D9D6;}
-  .proof-thumb{width:64px;height:64px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex-shrink:0;}
   .field select{
     width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);
     font-size:14.5px;font-family:inherit;background:#fff;
@@ -700,7 +695,7 @@
     .side-label{text-align:center;}
     .app-content{padding:18px;}
     .widget-grid{grid-template-columns:1fr 1fr;}
-    .widget-2, .widget-4{grid-column:span 2;}
+    .widget-2, .widget-4, .widget-span-3{grid-column:span 2;}
     .topbar-search{max-width:160px;}
   }
   @media (max-width:640px){
@@ -710,17 +705,19 @@
     .app-topbar-title{display:block;}
     .topbar-search{display:none;}
     .app-topbar{padding:14px 16px;}
-    .widget-grid{grid-template-columns:1fr;}
-    .widget-2, .widget-4{grid-column:span 1;}
-    .stat-card-v3{gap:12px;}
+    .widget-grid{grid-template-columns:1fr 1fr;gap:12px;}
+    .widget-2, .widget-4, .widget-span-3{grid-column:span 2;}
+    .widget{padding:14px;}
+    .stat-card-v3{flex-direction:column;align-items:center;text-align:center;gap:8px;}
+    .stat-card-v3 .ic{width:38px;height:38px;}
+    .stat-card-v3 .num{font-size:19px;}
+    .stat-card-v3 .lbl{font-size:11px;line-height:1.4;}
   }
   @media (max-width:520px){
     .steps{grid-template-columns:1fr;}
     .footer-grid{grid-template-columns:1fr;}
     .course-grid{grid-template-columns:1fr;}
     .cat-grid{grid-template-columns:repeat(2,1fr);}
-    .widget-grid{grid-template-columns:1fr;}
-    .widget-2, .widget-4{grid-column:span 1;}
     .app-topbar{padding:12px 14px;}
     .topbar-search{display:none;}
   }
@@ -895,7 +892,7 @@ const SIDE_ICONS = {
 const STEPS = [
   { t:'إنشاء حساب', d:'سجّل ببريدك في أقل من دقيقة.' },
   { t:'اختيار الكورس', d:'تصفّح المجالات واختر ما يناسبك.' },
-  { t:'التسجيل والدفع', d:'ادفع وارفع إثبات الدفع من داخل حسابك.' },
+  { t:'التسجيل والدفع', d:'ادفع بأي وسيلة متاحة، وأكّد الدفع من داخل حسابك.' },
   { t:'انتظار الموافقة', d:'الإدارة تراجع طلبك خلال وقت قصير.' },
   { t:'بدء التعلم', d:'المحتوى والمحاضرات تفتح فوراً بعد التفعيل.' },
 ];
@@ -1655,7 +1652,7 @@ async function renderCourseDetail(courseId){
   let ctaHTML = `
     <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">اشترك الآن</a>
     <div style="margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.7;">
-      بعد الاشتراك، ادفع خارج المنصة وارفع إثبات الدفع — الإدارة تراجع طلبك وتفعّل الكورس بعد الموافقة.
+      بعد الاشتراك، ادفع خارج المنصة وأكّد الدفع من حسابك — الإدارة تراجع طلبك وتفعّل الكورس بعد الموافقة.
     </div>
   `;
   if(currentUser && enrollment){
@@ -2091,31 +2088,16 @@ async function renderCheckoutStep2(course, enrollment){
 
         <form id="proofForm">
           <div class="field">
-            <label>مرجع العملية / رقم التحويل (إن وجد)</label>
+            <label>مرجع العملية / رقم التحويل (اختياري)</label>
             <input type="text" id="paymentRef" placeholder="مثال: 8842051" />
           </div>
-          <div class="field">
-            <label>إثبات الدفع (صورة)</label>
-            <label class="file-input-wrap" id="fileWrap">
-              <span id="fileWrapText">اضغط لرفع صورة إثبات الدفع</span>
-              <input type="file" id="proofFile" accept="image/*" required style="display:none;" />
-            </label>
-          </div>
-          <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">إرسال إثبات الدفع</button>
+          <p style="font-size:12.5px;color:var(--muted);margin:0 0 16px;">حوّل المبلغ لبيانات الحساب فوق، وبعدها اضغط "تم الدفع" — هتقدر بعدها تبعت إشعار واتساب للإدارة للتحقق السريع.</p>
+          <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">تم الدفع، متابعة</button>
         </form>
         <button class="btn btn-ghost btn-full" id="cancelCheckoutBtn" style="margin-top:10px;">إلغاء الطلب</button>
       </div>
     </div>
   `;
-
-  const fileInput = document.getElementById('proofFile');
-  const fileWrap = document.getElementById('fileWrap');
-  fileInput.addEventListener('change', () => {
-    if(fileInput.files[0]){
-      document.getElementById('fileWrapText').textContent = fileInput.files[0].name;
-      fileWrap.classList.add('has-file');
-    }
-  });
 
   document.getElementById('cancelCheckoutBtn').addEventListener('click', async () => {
     if(!confirm('هل تريد إلغاء طلب الاشتراك؟')) return;
@@ -2132,31 +2114,20 @@ async function renderCheckoutStep2(course, enrollment){
     const btn = document.getElementById('submitProofBtn');
     const alertBox = document.getElementById('checkoutAlert');
     const paymentRef = document.getElementById('paymentRef').value.trim();
-    const file = fileInput.files[0];
-    if(!file){
-      alertBox.innerHTML = `<div class="alert alert-error">لازم ترفع صورة إثبات الدفع.</div>`;
-      return;
-    }
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> جارٍ الإرسال...`;
     try{
-      const filePath = `payment-proofs/${currentUser.uid}/${course.id}-${Date.now()}-${file.name}`;
-      const storageRef = ref(storage, filePath);
-      await uploadBytes(storageRef, file);
-      const proofURL = await getDownloadURL(storageRef);
-
       await updateDoc(doc(db, 'enrollments', enrollment.id), {
         status: 'payment_submitted',
         paymentRef: paymentRef || null,
-        proofURL,
         submittedAt: serverTimestamp(),
       });
 
-      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef, proofURL });
+      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef });
     }catch(err){
-      alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء رفع الإثبات، حاول مرة أخرى.</div>`;
+      alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء الإرسال، حاول مرة أخرى.</div>`;
       btn.disabled = false;
-      btn.textContent = 'إرسال إثبات الدفع';
+      btn.textContent = 'تم الدفع، متابعة';
     }
   });
 }
@@ -2178,7 +2149,7 @@ async function renderCheckoutStep3(course, enrollment){
     <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
       <div class="auth-card" style="max-width:520px;">
         <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div></div>
-        <h2>تم استلام إثبات دفعك</h2>
+        <h2>تم تأكيد دفعك</h2>
         <p class="sub">آخر خطوة: أرسل إشعاراً للإدارة للتحقق السريع (اختياري لكنه بيسرّع المراجعة).</p>
         <div id="notifyAlert"></div>
 
@@ -2233,7 +2204,7 @@ async function renderCheckoutStep3(course, enrollment){
     try{
       await updateDoc(doc(db, 'enrollments', enrollment.id), { status: 'under_review' });
     }catch(e){ /* ignore */ }
-    renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة هتراجع إثبات الدفع وتفعّل الكورس بعد الموافقة.');
+    renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة هتتحقق من دفعك وتفعّل الكورس بعد الموافقة.');
   });
 }
 
@@ -2675,7 +2646,7 @@ const ROLE_LABEL = { student: 'طالب', instructor: 'مدرب', admin: 'إدا
 const STATUS_LABEL = {
   pending: 'قيد المراجعة',
   pending_payment: 'بانتظار الدفع',
-  payment_submitted: 'تم إرسال الإثبات',
+  payment_submitted: 'تم الدفع',
   under_review: 'قيد المراجعة',
   approved: 'مقبول',
   rejected: 'مرفوض',
@@ -3810,18 +3781,24 @@ async function loadStudentStats(){
   const area = document.getElementById('studentStatCards');
   if(!area) return;
   try{
-    const snap = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid)));
-    const items = snap.docs.map(d => d.data());
+    const [enrollSnap, examResultsSnap] = await Promise.all([
+      getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid))),
+      getDocs(query(collection(db, 'examResults'), where('studentId','==', currentUser.uid))),
+    ]);
+    const items = enrollSnap.docs.map(d => d.data());
     const inProgressStatuses = ['pending','pending_payment','payment_submitted','under_review'];
     const approved = items.filter(i => i.status === 'approved').length;
     const pending = items.filter(i => inProgressStatuses.includes(i.status)).length;
     const rejected = items.filter(i => i.status === 'rejected' || i.status === 'cancelled').length;
+    const examsPassed = examResultsSnap.docs.filter(d => d.data().passed).length;
 
     area.innerHTML = `
       <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${items.length}</div><div class="lbl">إجمالي التسجيلات</div></div></div></div>
       <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.check}</div><div><div class="num">${approved}</div><div class="lbl">كورسات مفعّلة</div></div></div></div>
       <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pending}</div><div class="lbl">قيد المراجعة</div></div></div></div>
       <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.certificate}</div><div><div class="num" id="certCountNum">—</div><div class="lbl">شهادات</div></div></div></div>
+      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.exam}</div><div><div class="num">${examResultsSnap.docs.length}</div><div class="lbl">امتحانات منجزة</div></div></div></div>
+      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.starFilled}</div><div><div class="num">${examsPassed}</div><div class="lbl">امتحانات ناجحة</div></div></div></div>
     `;
 
     renderDonutChart('studentStatusChart', [
@@ -4244,7 +4221,7 @@ async function adminRenderOverview(area){
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.grid}</div><div><div class="num">${courseCount}</div><div class="lbl">كورس</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pendingCount}</div><div class="lbl">طلب دفع معلّق</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.exam}</div><div><div class="num">${reviewCount}</div><div class="lbl">كورس يحتاج مراجعة</div></div></div></div>
-        <div class="widget" style="grid-column:span 3;"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
+        <div class="widget widget-span-3"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
       </div>
       <div class="widget-grid">
         <div class="widget widget-2">
@@ -4857,7 +4834,7 @@ async function adminRenderPayments(area){
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head"><h3>طلبات الاشتراك والدفع</h3></div>
-        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما رفع إثبات — منتظرين منه، مش من الإدارة.</p>
+        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما ضغط "تم الدفع" — منتظرين منه، مش من الإدارة. التحقق من الدفع بيتم عبر واتساب مباشرة مع الطالب، مش برفع صورة إثبات.</p>
         <div id="paymentsList"></div>
       </div>
     `;
@@ -4870,7 +4847,7 @@ async function adminRenderPayments(area){
       }
       listEl.innerHTML = enrollments.map(e => `
         <div class="table-widget-row" style="align-items:flex-start;">
-          ${e.proofURL ? `<a href="${e.proofURL}" target="_blank" rel="noopener"><img src="${e.proofURL}" class="proof-thumb" /></a>` : `<div class="avatar-sm">${(e.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>`}
+          <div class="avatar-sm">${(e.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
           <div class="grow">
             <div class="t1">${e.studentName || 'طالب'}</div>
             <div class="t2">${e.courseTitle || 'كورس'}</div>
@@ -5698,7 +5675,7 @@ async function adminRenderSettings(area){
       </div>
       <div class="widget widget-4">
         <div class="widget-head"><h3>إعدادات التحقق من الدفع (واتساب / تلغرام)</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">هذه البيانات بتظهر للطالب بعد رفع إثبات الدفع عشان يقدر يبعت إشعار سريع للتحقق. النظام بيسجّل فقط إن الطالب ضغط الزر، وما بيقدر يتأكد إن الرسالة وصلت فعلاً.</p>
+        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">هذه البيانات بتظهر للطالب بعد تأكيد الدفع عشان يقدر يبعت إشعار سريع للتحقق. النظام بيسجّل فقط إن الطالب ضغط الزر، وما بيقدر يتأكد إن الرسالة وصلت فعلاً.</p>
         <form id="commSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
           <div class="field" style="margin-bottom:0;">
             <label>رقم واتساب (بصيغة دولية بدون +، مثال: 249912345678)</label>
