@@ -651,6 +651,50 @@
     width:30px;height:30px;border-radius:8px;background:var(--mist);
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);flex-shrink:0;
   }
+
+  /* Learn Room v2: module/lesson accordion with per-lesson content + rating */
+  .course-player-head{
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between;
+    padding-bottom:18px;margin-bottom:20px;border-bottom:1px solid var(--line);
+  }
+  .course-player-head h2{margin:0 0 4px;font-size:19px;color:var(--violet-900);}
+  .course-player-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);align-items:center;}
+  .course-player-meta span{display:flex;align-items:center;gap:5px;}
+  .course-player-meta .side-ic{width:15px;height:15px;color:var(--violet-700);}
+
+  .module-accordion{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden;background:#fff;}
+  .module-accordion-head{
+    display:flex;align-items:center;justify-content:space-between;padding:15px 16px;
+    cursor:pointer;background:var(--paper);gap:10px;
+  }
+  .module-accordion-head .mh-left{display:flex;align-items:center;gap:11px;min-width:0;}
+  .module-accordion-head .mh-num{
+    width:28px;height:28px;border-radius:9px;background:var(--violet-700);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-weight:800;font-size:12.5px;flex-shrink:0;
+  }
+  .module-accordion-head .mh-title{font-weight:700;font-size:14px;color:var(--violet-900);}
+  .module-accordion-head .mh-meta{font-size:11.5px;color:var(--muted);margin-top:2px;}
+  .module-accordion-head .chev{color:var(--muted);flex-shrink:0;transition:transform .2s;}
+  .module-accordion.open > .module-accordion-head .chev{transform:rotate(-90deg);}
+  .module-accordion-body{display:none;}
+  .module-accordion.open > .module-accordion-body{display:block;}
+
+  .lesson-row{border-top:1px solid var(--line);}
+  .lesson-row:first-child{border-top:none;}
+  .lesson-row-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;}
+  .lesson-row-head .lr-num{font-size:11.5px;color:var(--muted);width:16px;flex-shrink:0;text-align:center;}
+  .lesson-row-head .lr-icon{
+    width:30px;height:30px;border-radius:9px;background:var(--mist);color:var(--violet-700);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .lesson-row-head.done .lr-icon{background:#E9F5EE;color:var(--success);}
+  .lesson-row-head .lr-title{flex:1;font-size:13.5px;color:var(--ink);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lesson-row-head .lr-rating{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--amber-600);flex-shrink:0;}
+  .lesson-row-head .chev{color:var(--muted);flex-shrink:0;transition:transform .2s;width:13px;}
+  .lesson-row.open > .lesson-row-head .chev{transform:rotate(-90deg);}
+  .lesson-row-body{display:none;padding:0 16px 18px;}
+  .lesson-row.open > .lesson-row-body{display:block;}
+  .lesson-rate-box{background:var(--paper);border-radius:12px;padding:14px;margin-top:14px;}
   .lecture-card, .exam-card{
     display:flex;justify-content:space-between;align-items:center;gap:14px;
     padding:16px 18px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff;
@@ -899,6 +943,7 @@ Object.assign(SIDE_ICONS, {
   starOutline: MICRO_ICONS.starOutline,
   clock: MICRO_ICONS.clock,
   layers: MICRO_ICONS.layers,
+  chevronLeft: MICRO_ICONS.chevronLeft,
 });
 
 const STEPS = [
@@ -1381,6 +1426,25 @@ async function fetchReviewsFor(type, targetId){
 }
 async function fetchCourseReviews(courseId){
   return fetchReviewsFor('course', courseId);
+}
+
+/* Batch version for lesson-level ratings — one query for every lesson in a course instead
+   of one query per lesson. Returns { [lessonId]: { avg, count } }. */
+async function fetchTargetRatingsMap(type, courseId){
+  try{
+    const snap = await getDocs(query(collection(db, 'reviews'), where('courseId','==', courseId), where('type','==', type)));
+    const map = {};
+    snap.docs.forEach(d => {
+      const r = d.data();
+      if(!map[r.targetId]) map[r.targetId] = { sum: 0, count: 0 };
+      map[r.targetId].sum += Number(r.rating || 0);
+      map[r.targetId].count += 1;
+    });
+    Object.keys(map).forEach(k => { map[k].avg = map[k].sum / map[k].count; });
+    return map;
+  }catch(e){
+    return {};
+  }
 }
 
 function courseCardHTML(c){
@@ -2714,30 +2778,41 @@ async function renderDashboard(tab){
 }
 
 /* ---------------- LEARNING ROOM (student) ---------------- */
-const LESSON_TYPE_LABEL = { drive:'فيديو (Google Drive)', youtube:'فيديو (YouTube)', video:'فيديو (رابط خارجي)', text:'نص', file:'ملف', link:'رابط' };
+const LESSON_TYPE_LABEL = { drive:'فيديو (Google Drive)', youtube:'فيديو (YouTube)', video:'فيديو (رابط خارجي)', pdf:'ملف PDF', text:'نص', file:'ملف', link:'رابط' };
 const LESSON_TYPE_ICON = {
   drive:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   youtube:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   video:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
+  pdf:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15v-3h1.5a1 1 0 1 1 0 3H9z"/><path d="M13 12v3M16 12v3h-1"/></svg>',
   text:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   file:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
   link:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
 };
 
-/* Tries to embed Google Drive / YouTube video links; falls back to an "open" button for anything else
-   (external URLs, or Drive files whose sharing permissions block iframe embedding). */
-function videoEmbedHTML(lesson){
+/* Renders inline preview for a lesson's content depending on its type. Tries embedding
+   Google Drive / YouTube video links and PDFs; falls back to an "open" button for anything
+   that can't be embedded (external URLs, or files whose sharing permissions block iframes). */
+function lessonContentPreviewHTML(lesson){
   const url = lesson.content || '';
   let embedUrl = null;
 
-  if(lesson.type === 'drive'){
+  if(lesson.type === 'drive' || lesson.type === 'pdf'){
     const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
     if(m) embedUrl = `https://drive.google.com/file/d/${m[1]}/preview`;
+    else if(lesson.type === 'pdf') embedUrl = url; // assume a direct PDF URL
   } else if(lesson.type === 'youtube'){
     const m = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
     if(m) embedUrl = `https://www.youtube.com/embed/${m[1]}`;
   }
 
+  if(lesson.type === 'pdf' && embedUrl){
+    return `
+      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:8px 0;">
+        <iframe src="${embedUrl}" style="width:100%;height:60vh;border:0;display:block;"></iframe>
+      </div>
+      <a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--violet-700);font-weight:600;">الملف ما ظاهر؟ افتحه في نافذة منفصلة</a>
+    `;
+  }
   if(embedUrl){
     return `
       <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:8px 0;">
@@ -2746,7 +2821,8 @@ function videoEmbedHTML(lesson){
       <a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--violet-700);font-weight:600;">الفيديو ما ظاهر؟ افتحه في نافذة منفصلة</a>
     `;
   }
-  return `<a href="${url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:6px;">فتح الفيديو</a>`;
+  const btnLabel = lesson.type === 'pdf' ? 'فتح الملف' : (lesson.type === 'file' ? 'تحميل الملف' : lesson.type === 'link' ? 'فتح الرابط' : 'فتح الفيديو');
+  return `<a href="${url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:6px;">${btnLabel}</a>`;
 }
 
 async function renderLearnRoom(courseId){
@@ -2842,6 +2918,24 @@ function wireStarPicker(inputId){
       el.querySelectorAll('[data-star]').forEach(s => {
         s.style.color = Number(s.dataset.star) <= val ? 'var(--amber-500)' : 'var(--line)';
       });
+    });
+  });
+}
+
+/* Immediate-save star picker for compact inline ratings (per-lesson) — no separate submit
+   button, clicking a star saves right away via the given async callback. */
+function wireInlineStarPicker(inputId, onRate){
+  const el = document.getElementById(inputId);
+  if(!el) return;
+  el.querySelectorAll('[data-star]').forEach(star => {
+    star.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const val = Number(star.dataset.star);
+      el.dataset.value = val;
+      el.querySelectorAll('[data-star]').forEach(s => {
+        s.style.color = Number(s.dataset.star) <= val ? 'var(--amber-500)' : 'var(--line)';
+      });
+      await onRate(val);
     });
   });
 }
@@ -3076,10 +3170,12 @@ async function learnRenderReview(area, course){
 
 async function learnRenderContent(area, course){
   try{
-    const [modSnap, lesSnap, progressSnap] = await Promise.all([
+    const [modSnap, lesSnap, progressSnap, lessonRatings, myLessonReviewsSnap] = await Promise.all([
       getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))),
       getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))),
       getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
+      fetchTargetRatingsMap('lesson', course.id),
+      getDocs(query(collection(db, 'reviews'), where('courseId','==', course.id), where('type','==','lesson'), where('studentId','==', currentUser.uid))),
     ]);
     const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
     const lessons = (await Promise.all(
@@ -3088,6 +3184,8 @@ async function learnRenderContent(area, course){
     const completedIds = new Set(
       progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId)
     );
+    const myLessonRatings = {};
+    myLessonReviewsSnap.docs.forEach(d => { const r = d.data(); myLessonRatings[r.targetId] = r.rating; });
 
     if(modules.length === 0){
       area.innerHTML = `<div class="empty-state">لا يوجد محتوى منشور لهذا الكورس بعد.</div>`;
@@ -3099,62 +3197,134 @@ async function learnRenderContent(area, course){
     const pct = totalLessons ? Math.round((doneCount / totalLessons) * 100) : 0;
 
     area.innerHTML = `
-      <div style="margin-bottom:18px;">
+      <div style="margin-bottom:20px;" id="courseProgressBox">
         <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:6px;">
-          <span>تقدّمك في الكورس</span><span>${doneCount} / ${totalLessons} (${pct}%)</span>
+          <span>تقدّمك في الكورس</span><span id="courseProgressText">${doneCount} / ${totalLessons} (${pct}%)</span>
         </div>
-        <div class="rating-bar-track" style="height:9px;"><div class="rating-bar-fill" style="width:${pct}%;background:var(--violet-600);"></div></div>
+        <div class="rating-bar-track" style="height:9px;"><div class="rating-bar-fill" id="courseProgressFill" style="width:${pct}%;background:var(--violet-600);"></div></div>
       </div>
-      ${modules.map(m => {
+      ${modules.map((m, mi) => {
         const modLessons = lessons.filter(l => l.moduleId === m.id);
+        const modDone = modLessons.filter(l => completedIds.has(l.id)).length;
         return `
-          <div class="module-block">
-            <div class="module-title">${m.title}</div>
-            ${modLessons.length === 0
-              ? `<div style="font-size:13px;color:var(--muted);">لا توجد دروس في هذا الفصل بعد.</div>`
-              : modLessons.map(l => {
-                  const isVideo = l.type === 'drive' || l.type === 'youtube' || l.type === 'video';
-                  const isDone = completedIds.has(l.id);
-                  return `
-                    <div class="lesson-item" style="align-items:flex-start;flex-direction:column;gap:8px;">
-                      <div style="display:flex;align-items:center;gap:10px;width:100%;">
-                        <div class="lesson-type-icon" style="${isDone ? 'background:#E9F5EE;color:var(--success);' : ''}">${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}</div>
-                        <div style="flex:1;font-weight:600;color:var(--ink);">${l.title}</div>
-                        <button class="icon-action ${isDone ? 'success' : ''}" data-lesson-id="${l.id}" data-completed="${isDone}" title="${isDone ? 'مكتمل' : 'وضع كمكتمل'}">${SIDE_ICONS.check}</button>
+          <div class="module-accordion ${mi === 0 ? 'open' : ''}" data-module="${m.id}">
+            <div class="module-accordion-head" data-toggle-module>
+              <div class="mh-left">
+                <div class="mh-num">${mi+1}</div>
+                <div>
+                  <div class="mh-title">${m.title}</div>
+                  <div class="mh-meta" data-module-meta>${modLessons.length} درس${modLessons.length ? ' · ' + modDone + ' مكتمل' : ''}</div>
+                </div>
+              </div>
+              <span class="chev">${SIDE_ICONS.chevronLeft}</span>
+            </div>
+            <div class="module-accordion-body">
+              ${modLessons.length === 0
+                ? `<div class="empty-state" style="padding:14px 16px;">لا توجد دروس في هذا الفصل بعد.</div>`
+                : modLessons.map((l, li) => {
+                    const isDone = completedIds.has(l.id);
+                    const rating = lessonRatings[l.id];
+                    const myRating = myLessonRatings[l.id] || 0;
+                    return `
+                      <div class="lesson-row" data-lesson-row="${l.id}">
+                        <div class="lesson-row-head ${isDone ? 'done' : ''}" data-toggle-lesson data-done-icon>
+                          <span class="lr-num">${li+1}</span>
+                          <div class="lr-icon">${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}</div>
+                          <div class="lr-title">${l.title}</div>
+                          ${rating ? `<div class="lr-rating">${SIDE_ICONS.starFilled} ${rating.avg.toFixed(1)}</div>` : ''}
+                          <span class="chev">${SIDE_ICONS.chevronLeft}</span>
+                        </div>
+                        <div class="lesson-row-body">
+                          ${l.type === 'text'
+                            ? `<div style="color:var(--muted);font-size:13.5px;white-space:pre-line;line-height:1.8;">${l.content || ''}</div>`
+                            : lessonContentPreviewHTML(l)
+                          }
+                          <div style="margin-top:14px;">
+                            <button class="btn btn-sm ${isDone ? 'btn-primary' : 'btn-ghost'}" data-lesson-id="${l.id}" data-completed="${isDone}" data-complete-btn>
+                              ${isDone ? 'مكتمل ✓' : 'وضع كمكتمل'}
+                            </button>
+                          </div>
+                          <div class="lesson-rate-box">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                              <span style="font-size:12.5px;font-weight:700;color:var(--violet-900);">قيّم هذا الدرس</span>
+                              <span style="font-size:12px;color:var(--muted);" data-lesson-rating-summary>${rating ? `${starRowHTML(rating.avg)} (${rating.count})` : 'لا توجد تقييمات بعد'}</span>
+                            </div>
+                            ${starPickerHTML(`lessonStarPicker-${l.id}`, myRating)}
+                          </div>
+                        </div>
                       </div>
-                      <div style="width:100%;padding-right:36px;">
-                        ${l.type === 'text'
-                          ? `<div style="color:var(--muted);font-size:13px;white-space:pre-line;">${l.content || ''}</div>`
-                          : isVideo
-                            ? videoEmbedHTML(l)
-                            : `<a href="${l.content}" target="_blank" rel="noopener" style="color:var(--violet-700);font-weight:600;font-size:13px;">فتح ${LESSON_TYPE_LABEL[l.type] || ''}</a>`
-                        }
-                      </div>
-                    </div>
-                  `;
-                }).join('')
-            }
+                    `;
+                  }).join('')
+              }
+            </div>
           </div>
         `;
       }).join('')}
     `;
 
-    area.querySelectorAll('button[data-lesson-id]').forEach(btn => {
-      btn.addEventListener('click', async () => {
+    area.querySelectorAll('[data-toggle-module]').forEach(head => {
+      head.addEventListener('click', () => head.closest('.module-accordion').classList.toggle('open'));
+    });
+    area.querySelectorAll('[data-toggle-lesson]').forEach(head => {
+      head.addEventListener('click', () => head.closest('.lesson-row').classList.toggle('open'));
+    });
+
+    lessons.forEach(l => {
+      wireInlineStarPicker(`lessonStarPicker-${l.id}`, async (val) => {
+        try{
+          await setDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${l.id}`), {
+            type: 'lesson', targetId: l.id, courseId: course.id,
+            studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
+            rating: val, createdAt: serverTimestamp(),
+          });
+          const row = area.querySelector(`[data-lesson-row="${l.id}"] [data-lesson-rating-summary]`);
+          const fresh = await fetchTargetRatingsMap('lesson', course.id);
+          const r = fresh[l.id];
+          if(row && r) row.innerHTML = `${starRowHTML(r.avg)} (${r.count})`;
+        }catch(e){
+          alert('تعذّر حفظ تقييمك.');
+        }
+      });
+    });
+
+    // Mark-complete updates the DOM in place instead of a full re-render, so open
+    // accordion sections stay open after the click.
+    area.querySelectorAll('[data-complete-btn]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.stopPropagation();
         const lessonId = btn.dataset.lessonId;
         const wasDone = btn.dataset.completed === 'true';
+        const nowDone = !wasDone;
+        btn.disabled = true;
         try{
           await setDoc(doc(db, 'progress', `${currentUser.uid}_${lessonId}`), {
             studentId: currentUser.uid,
             courseId: course.id,
             lessonId,
-            completed: !wasDone,
+            completed: nowDone,
             completedAt: serverTimestamp(),
           });
-          learnRenderContent(area, course);
+          btn.dataset.completed = nowDone ? 'true' : 'false';
+          btn.textContent = nowDone ? 'مكتمل ✓' : 'وضع كمكتمل';
+          btn.classList.toggle('btn-primary', nowDone);
+          btn.classList.toggle('btn-ghost', !nowDone);
+          const row = btn.closest('.lesson-row');
+          const head = row?.querySelector('[data-done-icon]');
+          const icon = head?.querySelector('.lr-icon');
+          if(head) head.classList.toggle('done', nowDone);
+          if(icon) icon.innerHTML = nowDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[lessons.find(x=>x.id===lessonId)?.type] || LESSON_TYPE_ICON.text);
+
+          const newDoneCount = doneCount + (nowDone ? 1 : -1) - (wasDone && !nowDone ? 0 : 0);
+          const doneNow = area.querySelectorAll('[data-done-icon].done').length;
+          const pctNow = totalLessons ? Math.round((doneNow / totalLessons) * 100) : 0;
+          const progressText = document.getElementById('courseProgressText');
+          const progressFill = document.getElementById('courseProgressFill');
+          if(progressText) progressText.textContent = `${doneNow} / ${totalLessons} (${pctNow}%)`;
+          if(progressFill) progressFill.style.width = `${pctNow}%`;
         }catch(e){
           alert('تعذّر تحديث حالة الدرس.');
         }
+        btn.disabled = false;
       });
     });
   }catch(e){
@@ -3441,6 +3611,7 @@ async function manageRenderContent(area, course){
                     <option value="drive">فيديو (Google Drive)</option>
                     <option value="youtube">فيديو (YouTube)</option>
                     <option value="video">فيديو (رابط خارجي)</option>
+                    <option value="pdf">ملف PDF</option>
                     <option value="text">نص</option>
                     <option value="file">ملف</option>
                     <option value="link">رابط</option>
