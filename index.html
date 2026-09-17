@@ -888,6 +888,18 @@ const SIDE_ICONS = {
   thumbsUp:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>',
   heart:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg>',
 };
+// A handful of icons used across the course-detail/review UI were originally defined only
+// in MICRO_ICONS; several call sites reference them as SIDE_ICONS.* instead, which printed
+// the literal text "undefined". Merging them in here fixes every one of those call sites at
+// once instead of editing each individually.
+Object.assign(SIDE_ICONS, {
+  lock: MICRO_ICONS.lock,
+  playCircle: MICRO_ICONS.playCircle,
+  starFilled: MICRO_ICONS.starFilled,
+  starOutline: MICRO_ICONS.starOutline,
+  clock: MICRO_ICONS.clock,
+  layers: MICRO_ICONS.layers,
+});
 
 const STEPS = [
   { t:'إنشاء حساب', d:'سجّل ببريدك في أقل من دقيقة.' },
