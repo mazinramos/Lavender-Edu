@@ -538,6 +538,56 @@
   .course-price{font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;color:var(--violet-800);margin-top:auto;}
   .empty-state{text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;}
 
+  /* Promo carousel (home page ad-style cards) */
+  .promo-section{padding:8px 0 6px;}
+  .promo-viewport{
+    overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline-start:4px;
+    scrollbar-width:none;-ms-overflow-style:none;margin:0 -4px;
+  }
+  .promo-viewport::-webkit-scrollbar{display:none;}
+  .promo-track{display:flex;gap:18px;padding:6px 4px 22px;}
+  .promo-card{
+    position:relative;flex:0 0 auto;width:clamp(230px,78vw,300px);min-height:196px;
+    border-radius:22px;padding:22px;overflow:hidden;scroll-snap-align:start;
+    color:#fff;text-decoration:none;display:flex;flex-direction:column;
+    box-shadow:0 20px 44px -24px rgba(42,25,72,0.55);
+    transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s;
+    opacity:0;transform:translateY(18px) scale(.96);animation:promoIn .6s cubic-bezier(.22,1,.36,1) forwards;
+    cursor:pointer;
+  }
+  .promo-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 88% -12%,rgba(255,255,255,.32),transparent 55%);
+    pointer-events:none;
+  }
+  .promo-card::after{
+    content:'';position:absolute;width:150px;height:150px;border-radius:50%;
+    background:rgba(255,255,255,.14);filter:blur(2px);bottom:-60px;left:-50px;pointer-events:none;
+    transition:transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .promo-card:hover{transform:translateY(-8px) scale(1.015);box-shadow:0 32px 60px -22px rgba(42,25,72,0.62);}
+  .promo-card:hover::after{transform:scale(1.25);}
+  .promo-card:active{transform:translateY(-3px) scale(.99);}
+  .promo-badge{
+    align-self:flex-start;background:rgba(255,255,255,.2);backdrop-filter:blur(4px);
+    border:1px solid rgba(255,255,255,.32);font-size:11px;font-weight:700;
+    padding:4px 12px;border-radius:999px;position:relative;z-index:1;
+  }
+  .promo-ic{
+    width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,.18);
+    display:flex;align-items:center;justify-content:center;margin:16px 0 12px;position:relative;z-index:1;
+  }
+  .promo-body{margin-top:auto;position:relative;z-index:1;}
+  .promo-card h3{font-family:'Cairo',sans-serif;font-size:18.5px;margin:0 0 6px;line-height:1.3;}
+  .promo-card p{font-size:12.5px;line-height:1.65;opacity:.92;margin:0 0 14px;}
+  .promo-cta{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:13px;}
+  .promo-cta svg{transition:transform .25s;}
+  .promo-card:hover .promo-cta svg{transform:translateX(-4px);}
+  @keyframes promoIn{to{opacity:1;transform:translateY(0) scale(1);}}
+  .promo-dots{display:flex;justify-content:center;gap:7px;margin-top:2px;}
+  .promo-dot{width:7px;height:7px;border-radius:50%;background:var(--line);cursor:pointer;transition:.25s;border:none;padding:0;}
+  .promo-dot.active{width:22px;border-radius:99px;background:var(--violet-600);}
+
   /* Course detail */
   .detail-hero{background:linear-gradient(135deg,var(--violet-700),var(--violet-900));padding:44px 0 64px;}
   .detail-grid{display:grid;grid-template-columns:2fr 1fr;gap:32px;margin-top:-40px;padding-bottom:64px;}
@@ -1065,6 +1115,21 @@ async function renderHome(){
       </div>
     </section>
 
+    <section class="promo-section">
+      <div class="container">
+        <div class="section-head" style="margin-bottom:14px;">
+          <h2>اكتشف المنصة</h2>
+          <p>كورسات ومزايا مختارة — اضغط على أي كرت عشان تشوف التفاصيل.</p>
+        </div>
+        <div class="promo-viewport" id="promoViewport">
+          <div class="promo-track" id="promoTrack">
+            <div class="empty-state" style="padding:30px 20px;">جارٍ التحميل...</div>
+          </div>
+        </div>
+        <div class="promo-dots" id="promoDots"></div>
+      </div>
+    </section>
+
     <section id="domains">
       <div class="container">
         <div class="section-head">
@@ -1168,6 +1233,7 @@ async function renderHome(){
   loadStats();
   loadFeaturedCourses();
   loadCategoryCounts();
+  renderPromoCarousel();
 }
 
 async function loadStats(){
@@ -1222,6 +1288,160 @@ async function loadFeaturedCourses(){
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات.</div>`;
   }
+}
+
+/* ---------------- HOME PROMO CAROUSEL ---------------- */
+const PROMO_GRADIENTS = [
+  ['#7C5CC4','#4B2E86'],
+  ['#5B8DEF','#2B4C91'],
+  ['#E2A33B','#A9631B'],
+  ['#3FB68B','#1F6E52'],
+  ['#D97B98','#9C3F63'],
+];
+
+function promoArrowSVG(){
+  return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>`;
+}
+
+function promoDomainSlide(d, idx){
+  const [g1,g2] = PROMO_GRADIENTS[idx % PROMO_GRADIENTS.length];
+  return {
+    href: '#/courses',
+    gradient: `linear-gradient(135deg,${g1},${g2})`,
+    badge: 'مجال تعليمي',
+    icon: ICONS[d.key] || '',
+    title: d.title,
+    desc: d.desc,
+  };
+}
+
+function promoCourseSlide(c, idx){
+  const [g1,g2] = PROMO_GRADIENTS[(idx + 2) % PROMO_GRADIENTS.length];
+  const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
+  const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
+  let badge = 'كورس جديد';
+  if(hasDiscount){
+    const pct = Math.round((1 - Number(c.discountPrice) / Number(c.price)) * 100);
+    badge = `خصم ${pct}%`;
+  } else if(isFree){
+    badge = 'مجاني';
+  }
+  const domainMatch = DOMAINS.find(d => d.title === c.categoryName);
+  const icon = domainMatch ? (ICONS[domainMatch.key] || '') : MICRO_ICONS.book;
+  const desc = c.description ? String(c.description).slice(0, 70) + (c.description.length > 70 ? '…' : '') : (c.categoryName || 'كورس متاح الآن على المنصة');
+  return {
+    href: `#/course/${c.id}`,
+    gradient: `linear-gradient(135deg,${g1},${g2})`,
+    badge,
+    icon,
+    title: c.title || 'كورس',
+    desc,
+  };
+}
+
+function promoSlideHTML(slide, i){
+  return `
+    <a href="${slide.href}" class="promo-card" style="background:${slide.gradient};animation-delay:${(i * 0.08).toFixed(2)}s;" data-promo-index="${i}">
+      <span class="promo-badge">${slide.badge}</span>
+      <div class="promo-ic">${slide.icon}</div>
+      <div class="promo-body">
+        <h3>${slide.title}</h3>
+        <p>${slide.desc}</p>
+        <span class="promo-cta">استكشف الآن ${promoArrowSVG()}</span>
+      </div>
+    </a>
+  `;
+}
+
+let promoAutoplayTimer = null;
+let promoObserver = null;
+
+async function renderPromoCarousel(){
+  const track = document.getElementById('promoTrack');
+  const dotsWrap = document.getElementById('promoDots');
+  const viewport = document.getElementById('promoViewport');
+  if(!track || !dotsWrap || !viewport) return;
+
+  let courseSlides = [];
+  try{
+    const courses = (await fetchCourses()).filter(isCourseApproved);
+    const sorted = [...courses].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 4);
+    courseSlides = sorted.map(promoCourseSlide);
+  }catch(e){ /* ignore — fall back to domain slides only */ }
+
+  const domainSlides = DOMAINS.map(promoDomainSlide);
+
+  // Interleave domain and course slides for variety
+  const slides = [];
+  const maxLen = Math.max(domainSlides.length, courseSlides.length);
+  for(let i = 0; i < maxLen; i++){
+    if(domainSlides[i]) slides.push(domainSlides[i]);
+    if(courseSlides[i]) slides.push(courseSlides[i]);
+  }
+
+  if(slides.length === 0){
+    track.innerHTML = `<div class="empty-state" style="padding:30px 20px;">لا توجد عناصر لعرضها حالياً.</div>`;
+    dotsWrap.innerHTML = '';
+    return;
+  }
+
+  track.innerHTML = slides.map(promoSlideHTML).join('');
+  dotsWrap.innerHTML = slides.map((s, i) => `<button type="button" class="promo-dot${i === 0 ? ' active' : ''}" data-dot-index="${i}" aria-label="اذهب للكرت ${i + 1}"></button>`).join('');
+
+  const cards = Array.from(track.querySelectorAll('.promo-card'));
+  const dots = Array.from(dotsWrap.querySelectorAll('.promo-dot'));
+  let currentIndex = 0;
+
+  function setActiveDot(idx){
+    currentIndex = idx;
+    dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+  }
+
+  function goTo(idx){
+    const target = cards[((idx % cards.length) + cards.length) % cards.length];
+    if(target) target.scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'});
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener('click', () => {
+      const idx = Number(dot.dataset.dotIndex);
+      goTo(idx);
+      setActiveDot(idx);
+      restartAutoplay();
+    });
+  });
+
+  if(promoObserver) promoObserver.disconnect();
+  promoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting && entry.intersectionRatio >= 0.6){
+        const idx = Number(entry.target.dataset.promoIndex);
+        setActiveDot(idx);
+      }
+    });
+  }, { root: viewport, threshold: [0.6] });
+  cards.forEach(c => promoObserver.observe(c));
+
+  function startAutoplay(){
+    if(promoAutoplayTimer) clearInterval(promoAutoplayTimer);
+    promoAutoplayTimer = setInterval(() => {
+      goTo(currentIndex + 1);
+    }, 4200);
+  }
+  function stopAutoplay(){
+    if(promoAutoplayTimer){ clearInterval(promoAutoplayTimer); promoAutoplayTimer = null; }
+  }
+  function restartAutoplay(){
+    stopAutoplay();
+    startAutoplay();
+  }
+
+  viewport.addEventListener('mouseenter', stopAutoplay);
+  viewport.addEventListener('mouseleave', startAutoplay);
+  viewport.addEventListener('touchstart', stopAutoplay, { passive: true });
+  viewport.addEventListener('touchend', startAutoplay);
+
+  startAutoplay();
 }
 
 /* ---------------- AUTH ERROR MESSAGES ---------------- */
