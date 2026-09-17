@@ -2861,11 +2861,32 @@ async function renderLearnRoom(courseId){
     return;
   }
 
+  // Fetch instructor + rating + module/lesson counts for a proper header (not just a bare title)
+  const [instructorSnap, ratingData, modCountSnap, lesCountSnap] = await Promise.all([
+    course.instructorId ? getDoc(doc(db, 'users', course.instructorId)).catch(()=>null) : Promise.resolve(null),
+    fetchCourseReviews(course.id),
+    getCountFromServer(query(collection(db, 'modules'), where('courseId','==', course.id))).catch(()=>null),
+    getCountFromServer(query(collection(db, 'lessons'), where('courseId','==', course.id))).catch(()=>null),
+  ]);
+  const instructor = (instructorSnap && instructorSnap.exists && instructorSnap.exists()) ? instructorSnap.data() : null;
+  const modCount = modCountSnap ? modCountSnap.data().count : 0;
+  const lesCount = lesCountSnap ? lesCountSnap.data().count : 0;
+
   app.innerHTML = `
     <a href="#/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع للوحة التحكم</a>
     <div class="dash-card">
-      <h2 style="margin:0 0 4px;font-size:20px;color:var(--violet-900);">${course.title}</h2>
-      <p style="color:var(--muted);font-size:14px;margin:0 0 22px;">قاعة التعلم</p>
+      <div class="course-player-head">
+        <div>
+          <h2>${course.title}</h2>
+          <div class="course-player-meta">
+            ${instructor ? `<span>${SIDE_ICONS.users} ${instructor.name || 'مدرب'}</span>` : ''}
+            <span>${ratingData.count ? `${starRowHTML(ratingData.avg)} ${ratingData.avg.toFixed(1)} (${ratingData.count})` : 'لا توجد تقييمات بعد'}</span>
+            <span>${SIDE_ICONS.layers} ${modCount} وحدة</span>
+            <span>${SIDE_ICONS.playCircle} ${lesCount} درس</span>
+            ${course.level ? `<span>${course.level}</span>` : ''}
+          </div>
+        </div>
+      </div>
       <div class="sub-tabs" id="learnTabs">
         <button class="cat-tab active" data-tab="content">المحتوى</button>
         <button class="cat-tab" data-tab="lectures">المحاضرات المباشرة</button>
@@ -3241,7 +3262,7 @@ async function learnRenderContent(area, course){
                           }
                           <div style="margin-top:14px;">
                             <button class="btn btn-sm ${isDone ? 'btn-primary' : 'btn-ghost'}" data-lesson-id="${l.id}" data-completed="${isDone}" data-complete-btn>
-                              ${isDone ? 'مكتمل ✓' : 'وضع كمكتمل'}
+                              ${isDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل'}
                             </button>
                           </div>
                           <div class="lesson-rate-box">
@@ -3305,7 +3326,7 @@ async function learnRenderContent(area, course){
             completedAt: serverTimestamp(),
           });
           btn.dataset.completed = nowDone ? 'true' : 'false';
-          btn.textContent = nowDone ? 'مكتمل ✓' : 'وضع كمكتمل';
+          btn.innerHTML = nowDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل';
           btn.classList.toggle('btn-primary', nowDone);
           btn.classList.toggle('btn-ghost', !nowDone);
           const row = btn.closest('.lesson-row');
@@ -3314,7 +3335,6 @@ async function learnRenderContent(area, course){
           if(head) head.classList.toggle('done', nowDone);
           if(icon) icon.innerHTML = nowDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[lessons.find(x=>x.id===lessonId)?.type] || LESSON_TYPE_ICON.text);
 
-          const newDoneCount = doneCount + (nowDone ? 1 : -1) - (wasDone && !nowDone ? 0 : 0);
           const doneNow = area.querySelectorAll('[data-done-icon].done').length;
           const pctNow = totalLessons ? Math.round((doneNow / totalLessons) * 100) : 0;
           const progressText = document.getElementById('courseProgressText');
@@ -4005,6 +4025,9 @@ async function loadMyLearningCards(){
       return;
     }
 
+    const allCourses = await fetchCourses();
+    const courseMap = Object.fromEntries(allCourses.map(c => [c.id, c]));
+
     const cards = await Promise.all(enrollments.map(async e => {
       const [lessonsSnap, progressSnap] = await Promise.all([
         getDocs(query(collection(db, 'lessons'), where('courseId','==', e.courseId))),
@@ -4013,18 +4036,39 @@ async function loadMyLearningCards(){
       const total = lessonsSnap.docs.length;
       const done = progressSnap.docs.filter(d => d.data().completed).length;
       const pct = total ? Math.round((done/total)*100) : 0;
-      return { courseId: e.courseId, courseTitle: e.courseTitle, pct, done, total };
+      const courseData = courseMap[e.courseId];
+      return {
+        courseId: e.courseId, courseTitle: e.courseTitle, pct, done, total,
+        categoryName: courseData?.categoryName || 'كورسات أخرى',
+        instructorName: courseData?.instructorName || null,
+      };
     }));
 
-    area.innerHTML = cards.map(c => `
-      <div class="my-learning-card">
-        <div class="cover">${(c.courseTitle||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
-        <div class="grow">
-          <div class="t1">${c.courseTitle || 'كورس'}</div>
-          <div class="t2">${c.total ? `${c.done} / ${c.total} درس مكتمل` : 'لا يوجد محتوى منشور بعد'}</div>
-          <div class="progress-track"><div class="progress-fill" style="width:${c.pct}%;"></div></div>
+    // Grouped by domain/category, as requested, so the student finds courses organized
+    // rather than as one flat list.
+    const groups = {};
+    cards.forEach(c => {
+      if(!groups[c.categoryName]) groups[c.categoryName] = [];
+      groups[c.categoryName].push(c);
+    });
+
+    area.innerHTML = Object.entries(groups).map(([catName, catCards]) => `
+      <div style="margin-bottom:18px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+          <span class="pill">${catName}</span>
+          <span style="font-size:12px;color:var(--muted);">${catCards.length} كورس</span>
         </div>
-        <a href="#/learn/${c.courseId}" class="btn btn-primary btn-sm">متابعة التعلم</a>
+        ${catCards.map(c => `
+          <div class="my-learning-card">
+            <div class="cover">${(c.courseTitle||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+            <div class="grow">
+              <div class="t1">${c.courseTitle || 'كورس'}</div>
+              <div class="t2">${c.instructorName ? c.instructorName + ' · ' : ''}${c.total ? `${c.done} / ${c.total} درس مكتمل` : 'لا يوجد محتوى منشور بعد'}</div>
+              <div class="progress-track"><div class="progress-fill" style="width:${c.pct}%;"></div></div>
+            </div>
+            <a href="#/learn/${c.courseId}" class="btn btn-primary btn-sm">متابعة التعلم</a>
+          </div>
+        `).join('')}
       </div>
     `).join('');
   }catch(e){
