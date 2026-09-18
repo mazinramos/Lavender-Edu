@@ -328,8 +328,8 @@
   .icon-btn .dot-badge{position:absolute;top:7px;left:7px;width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
   .notif-item{padding:10px 12px;border-radius:10px;}
   .notif-item:hover{background:var(--paper);}
-  .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
-  .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;}
+  .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
   .app-content{padding:28px;max-width:1180px;}
   .app-topbar-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:15.5px;color:var(--violet-900);display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58%;}
 
@@ -532,7 +532,7 @@
     font-family:'Cairo',sans-serif;flex-shrink:0;
   }
   .table-widget-row .grow{flex:1;min-width:0;}
-  .table-widget-row .t1{font-size:13.5px;font-weight:700;color:var(--ink);}
+  .table-widget-row .t1{font-size:13.5px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .table-widget-row .t2{font-size:12px;color:var(--muted);}
   .icon-action{
     width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
@@ -835,32 +835,35 @@
   }
   .star-row{display:inline-flex;align-items:center;gap:2px;color:var(--amber-500);}
   .star-row.outline-empty{color:var(--line);}
-  .rating-summary{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
-  .rating-big{text-align:center;}
-  .rating-big .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:38px;color:var(--violet-900);line-height:1;}
-  .rating-big .count{font-size:12px;color:var(--muted);margin-top:6px;}
-  .rating-bars{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px;}
+
+  /* Rating summary — stacked and fully centered (the old side-by-side flex layout used
+     to lean toward one edge in RTL once it wrapped on narrower screens); distribution
+     bars sit below as their own full-width block. */
+  .rating-score-block{text-align:center;padding:4px 0 2px;margin-bottom:16px;}
+  .rating-score-block .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:42px;color:var(--violet-900);line-height:1;}
+  .rating-score-block .stars{display:flex;justify-content:center;margin:8px 0 6px;}
+  .rating-score-block .stars .star-row svg{width:18px;height:18px;}
+  .rating-score-block .count{font-size:12.5px;color:var(--muted);}
+  .rating-bars-v2{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line);}
   .rating-bar-row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);}
   .rating-bar-track{flex:1;height:7px;background:var(--mist);border-radius:99px;overflow:hidden;}
   .rating-bar-fill{height:100%;background:var(--amber-500);border-radius:99px;}
-  .review-item{padding:14px 0;border-top:1px solid var(--line);}
-  .review-item:first-child{border-top:none;}
-  .review-item .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-  .review-item .rname{font-weight:700;font-size:13.5px;color:var(--ink);}
-  .review-item .rdate{font-size:11.5px;color:var(--muted);}
-  .review-item .rcomment{font-size:13.5px;color:var(--muted);line-height:1.7;}
 
-  .curriculum-module{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;}
-  .curriculum-module-head{padding:14px 16px;background:var(--paper);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;color:var(--violet-900);}
-  .curriculum-lesson{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:13.5px;}
-  .curriculum-lesson .lk{
-    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
-    background:var(--mist);color:var(--muted);
+  /* Review cards — avatar + a single-line, ellipsis-truncated name (so a long name or a
+     long list of reviewers never breaks or over-stretches the layout) + stars, with the
+     comment underneath. Shared by the inline preview and the "see all reviews" modal. */
+  .review-list{display:flex;flex-direction:column;gap:14px;}
+  .review-card{display:flex;gap:11px;}
+  .rc-avatar{
+    width:36px;height:36px;border-radius:50%;background:var(--mist);color:var(--violet-700);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;
   }
-  .curriculum-lesson.unlocked .lk{background:#E9F5EE;color:var(--success);}
-  .curriculum-lesson .lname{flex:1;color:var(--ink);}
-  .curriculum-lesson.locked .lname{color:var(--muted);}
-  .preview-pill{font-size:10.5px;font-weight:700;color:var(--violet-700);background:var(--mist);padding:2px 9px;border-radius:99px;}
+  .rc-body{flex:1;min-width:0;}
+  .rc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:3px;}
+  .rc-name{font-weight:700;font-size:13.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
+  .rc-top .star-row{flex-shrink:0;}
+  .rc-top .star-row svg{width:12px;height:12px;}
+  .rc-comment{font-size:13.5px;color:var(--muted);line-height:1.7;}
 
   .learn-points{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
   .learn-point{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink);line-height:1.6;}
@@ -978,6 +981,19 @@
   .lesson-row-body{display:none;padding:0 16px 18px;}
   .lesson-row.open > .lesson-row-body{display:block;}
   .lesson-rate-box{background:var(--paper);border-radius:12px;padding:14px;margin-top:14px;}
+
+  /* Curriculum preview on the course detail page reuses .lesson-row-head directly (no
+     expandable body), so it needs its own border/hover/locked treatment. */
+  .module-accordion-body > .lesson-row-head{border-top:1px solid var(--line);}
+  .module-accordion-body > .lesson-row-head:first-child{border-top:none;}
+  .module-accordion-body > .lesson-row-head[data-goto-learn]{cursor:pointer;transition:background .15s;}
+  .module-accordion-body > .lesson-row-head[data-goto-learn]:hover{background:var(--paper);}
+  .module-accordion-body > .lesson-row-head.locked{opacity:0.65;}
+  .module-accordion-body > .lesson-row-head.locked .lr-icon{background:var(--mist);color:var(--muted);}
+  .preview-pill{
+    background:#E9F5EE;color:var(--success);font-size:10.5px;font-weight:800;
+    padding:2.5px 9px;border-radius:999px;flex-shrink:0;
+  }
   .lecture-card, .exam-card{
     display:flex;justify-content:space-between;align-items:center;gap:14px;
     padding:16px 18px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff;
@@ -1013,7 +1029,6 @@
     .detail-grid{grid-template-columns:1fr;margin-top:-24px;}
     .hero-cta-btn{width:100%;justify-content:center;}
     .learn-points{grid-template-columns:1fr;}
-    .rating-summary{flex-direction:column;align-items:flex-start;}
     .cat-grid{grid-template-columns:repeat(3,1fr);}
     .terms-grid{grid-template-columns:1fr;}
     .devices-wrap{height:260px;}
@@ -2036,6 +2051,25 @@ function starRowHTML(rating){
   return `<span class="star-row">${stars}</span>`;
 }
 
+/* A single review — avatar initial + name (truncated so a long name never breaks the row)
+   + stars, with an optional comment underneath. Shared between the inline preview on the
+   course detail page and the "see all reviews" modal so both look identical. */
+function reviewCardHTML(r){
+  const name = (r.studentName || 'طالب').trim();
+  return `
+    <div class="review-card">
+      <div class="rc-avatar">${name[0]?.toUpperCase() || '؟'}</div>
+      <div class="rc-body">
+        <div class="rc-top">
+          <span class="rc-name">${name}</span>
+          <span class="star-row">${starRowHTML(r.rating)}</span>
+        </div>
+        ${r.comment ? `<div class="rc-comment">${r.comment}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
 /* Fetches all reviews for a course and returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
 /* Fetches all reviews of a given type ('course' or 'instructor') for a target id, returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
 async function fetchReviewsFor(type, targetId){
@@ -2505,27 +2539,47 @@ async function renderCourseDetail(courseId){
   // What you'll learn
   const whatToLearn = Array.isArray(course.whatToLearn) ? course.whatToLearn.filter(Boolean) : [];
 
-  // Curriculum tree
+  // Curriculum tree — a collapsible, type-aware accordion (reuses the same visual language
+  // as the in-course content browser) so a course with many modules/lessons stays compact
+  // and scannable instead of dumping everything open at once.
   const curriculumHTML = modules.length === 0
     ? `<div class="empty-state" style="padding:24px 0;">لسه ما اتضاف محتوى لهذا الكورس.</div>`
-    : modules.map(m => {
-        const modLessons = lessons.filter(l => l.moduleId === m.id);
+    : modules.map((m, mi) => {
+        const modLessons = lessons.filter(l => l.moduleId === m.id).sort((a,b) => (a.order||0)-(b.order||0));
         return `
-          <div class="curriculum-module">
-            <div class="curriculum-module-head"><span>${m.title}</span><span style="font-weight:600;font-size:12px;color:var(--muted);">${modLessons.length} محاضرة</span></div>
-            ${modLessons.map((l, idx) => {
-              const unlocked = isApproved || l.isPreviewFree;
-              return `
-                <div class="curriculum-lesson ${unlocked ? 'unlocked' : 'locked'}">
-                  <span class="lk">${unlocked ? SIDE_ICONS.playCircle : SIDE_ICONS.lock}</span>
-                  <span class="lname">${l.title}</span>
-                  ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
+          <div class="module-accordion ${mi === 0 ? 'open' : ''}" data-curriculum-module>
+            <div class="module-accordion-head" data-toggle-curriculum-module>
+              <div class="mh-left">
+                <div class="mh-num">${mi+1}</div>
+                <div>
+                  <div class="mh-title">${m.title}</div>
+                  <div class="mh-meta">${modLessons.length} محاضرة</div>
                 </div>
-              `;
-            }).join('')}
+              </div>
+              <span class="chev">${SIDE_ICONS.chevronLeft}</span>
+            </div>
+            <div class="module-accordion-body">
+              ${modLessons.length === 0
+                ? `<div class="empty-state" style="padding:14px 16px;">لا توجد محاضرات في هذه الوحدة بعد.</div>`
+                : modLessons.map((l, idx) => {
+                    const unlocked = isApproved || l.isPreviewFree;
+                    const clickable = isApproved; // free-preview items are flagged, not deep-linked
+                    return `
+                      <div class="lesson-row-head ${unlocked ? '' : 'locked'}" ${clickable ? 'data-goto-learn role="button" tabindex="0"' : ''}>
+                        <span class="lr-num">${idx+1}</span>
+                        <div class="lr-icon">${unlocked ? (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text) : SIDE_ICONS.lock}</div>
+                        <div class="lr-title">${l.title}</div>
+                        ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
+                        ${clickable ? `<span class="chev">${SIDE_ICONS.chevronLeft}</span>` : ''}
+                      </div>
+                    `;
+                  }).join('')
+              }
+            </div>
           </div>
         `;
       }).join('');
+
 
   // Next scheduled lecture (date/time preview only unless enrolled)
   const todayStr = new Date().toISOString().slice(0,10);
@@ -2648,23 +2702,16 @@ async function renderCourseDetail(courseId){
           <div class="detail-card">
             <h3>تقييمات الطلاب</h3>
             ${reviewData.count ? `
-              <div class="rating-summary">
-                <div class="rating-big">
-                  <div class="num">${reviewData.avg.toFixed(1)}</div>
-                  <div>${starRowHTML(reviewData.avg)}</div>
-                  <div class="count">${reviewData.count} تقييم</div>
-                </div>
-                <div class="rating-bars">${ratingBarsHTML}</div>
+              <div class="rating-score-block">
+                <div class="num">${reviewData.avg.toFixed(1)}</div>
+                <div class="stars">${starRowHTML(reviewData.avg)}</div>
+                <div class="count">${reviewData.count} تقييم</div>
               </div>
-              ${reviewData.items.slice(0,6).map(r => `
-                <div class="review-item">
-                  <div class="rh">
-                    <span class="rname">${r.studentName || 'طالب'}</span>
-                    <span class="star-row">${starRowHTML(r.rating)}</span>
-                  </div>
-                  ${r.comment ? `<div class="rcomment">${r.comment}</div>` : ''}
-                </div>
-              `).join('')}
+              <div class="rating-bars-v2">${ratingBarsHTML}</div>
+              <div class="review-list">
+                ${reviewData.items.slice(0,4).map(reviewCardHTML).join('')}
+              </div>
+              ${reviewData.count > 4 ? `<button type="button" class="btn btn-ghost btn-full" id="viewAllReviewsBtn" style="margin-top:6px;">عرض كل التقييمات (${reviewData.count})</button>` : ''}
             ` : `<div class="empty-state" style="padding:20px 0;">لا توجد تقييمات بعد لهذا الكورس.</div>`}
           </div>
         </div>
@@ -2707,6 +2754,21 @@ async function renderCourseDetail(courseId){
       </div>
     </div>
   `;
+
+  // "See all reviews" opens the full scrollable list so a popular course with dozens of
+  // ratings never turns this card into an endless scroll on the page itself.
+  document.getElementById('viewAllReviewsBtn')?.addEventListener('click', () => openAllReviewsModal(reviewData));
+
+  // Curriculum accordion: first module open by default, others collapse to keep a
+  // course with many modules/lessons compact and scannable.
+  document.querySelectorAll('[data-toggle-curriculum-module]').forEach(head => {
+    head.addEventListener('click', () => head.closest('[data-curriculum-module]').classList.toggle('open'));
+  });
+  // Unlocked lessons (enrolled/admin) jump straight into the full content browser.
+  document.querySelectorAll('[data-goto-learn]').forEach(row => {
+    row.addEventListener('click', () => { location.hash = `#/learn/${course.id}`; });
+    row.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); location.hash = `#/learn/${course.id}`; } });
+  });
 
   // The rating / students / units / lessons chips in the hero are only clickable for a
   // student who actually owns the course — everyone else sees the same plain <span> row
@@ -2973,6 +3035,16 @@ function openCourseLessonsModal(course, modules, lessons){
     subtitle: 'مقسّمة حسب النوع — فيديو، PDF وغيرها',
     headIcon: SIDE_ICONS.playCircle,
     bodyHTML,
+  });
+}
+
+/* ---------------- 5) ALL REVIEWS — full scrollable list, opened from "عرض كل التقييمات" ---------------- */
+function openAllReviewsModal(reviewData){
+  openCourseModal({
+    title: `كل التقييمات (${reviewData.count})`,
+    subtitle: `بمتوسط ${reviewData.avg.toFixed(1)} من 5`,
+    headIcon: SIDE_ICONS.starFilled,
+    bodyHTML: `<div class="review-list">${reviewData.items.map(reviewCardHTML).join('')}</div>`,
   });
 }
 
