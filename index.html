@@ -232,7 +232,7 @@
 
   /* Categories grid v2 */
   .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;}
-  .cat-tile{text-align:center;padding:26px 12px;border-radius:16px;transition:transform .15s, box-shadow .15s;cursor:default;}
+  .cat-tile{display:block;text-align:center;padding:26px 12px;border-radius:16px;transition:transform .15s, box-shadow .15s;cursor:pointer;text-decoration:none;color:inherit;}
   .cat-tile:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px rgba(34,21,48,0.25);}
   .cat-tile .ic-wrap{
     width:58px;height:58px;border-radius:16px;display:flex;align-items:center;
@@ -567,6 +567,8 @@
   }
   .cat-tab.active{background:var(--violet-700);color:#fff;border-color:var(--violet-700);}
   .cat-tab:hover:not(.active){border-color:var(--violet-600);}
+  .cat-tabs-sub{margin-top:-14px;margin-bottom:24px;}
+  .cat-tab.sub{padding:7px 14px;font-size:12.5px;}
   .course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .course-card{
     background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
@@ -1076,13 +1078,9 @@ const ICONS = {
   writing: `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5z"/></svg>`,
 };
 
-const DOMAINS = [
-  { key:'medical', title:'المجال الطبي', desc:'تمريض، مختبرات، صيدلة، وطوارئ — بمحاضرات مباشرة وامتحانات.', tint:'#F3EEFB' },
-  { key:'tech', title:'الحاسوب والتقنية', desc:'Excel، أمن سيبراني، ومهارات تقنية عملية.', tint:'#EDE4F9' },
-  { key:'english', title:'اللغة الإنجليزية', desc:'من Beginner لـ Advanced بمستويات واضحة.', tint:'#F1E9FB' },
-  { key:'voice', title:'التعليق الصوتي', desc:'تأهيل المبتدئين لاحتراف التعليق الصوتي.', tint:'#E7DDF7' },
-  { key:'writing', title:'الكتابة', desc:'مساحة للكتّاب الجدد لتطوير مهاراتهم ونشر أعمالهم.', tint:'#EFE3FA' },
-];
+// NOTE: the old hardcoded DOMAINS array has been removed — "مجالات تقدر تبدأ فيها اليوم"
+// on the homepage now reads live root categories via renderHomeDomains() below, driven by
+// the same `categories` collection the admin manages from the dashboard.
 
 // Small icon set for hero floating cards + stats band (v2 design)
 const MICRO_ICONS = {
@@ -1186,7 +1184,7 @@ function router(){
   else if(path.startsWith('#/instructor/')) renderInstructorProfile(path.split('#/instructor/')[1]);
   else if(path.startsWith('#/enroll/')) renderEnrollForm(path.split('#/enroll/')[1]);
   else if(path.startsWith('#/my-exams')) renderMyExamResults();
-  else if(path.startsWith('#/courses')) renderCourses();
+  else if(path.startsWith('#/courses')) renderCourses(params.get('cat'));
   else renderHome();
 
   renderGlobalBottomNav(path, params.get('tab'));
@@ -1297,13 +1295,7 @@ async function renderHome(){
           <p>كل مجال مصمم عشان يوصلك لمهارة حقيقية، مش مجرد فيديوهات متفرقة.</p>
         </div>
         <div class="cat-grid" id="catGrid">
-          ${DOMAINS.map(d => `
-            <div class="cat-tile">
-              <div class="ic-wrap" style="background:${d.tint};color:var(--violet-700);">${ICONS[d.key]}</div>
-              <h4>${d.title}</h4>
-              <div class="count" data-count-for="${d.title}">—</div>
-            </div>
-          `).join('')}
+          <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
         </div>
       </div>
     </section>
@@ -1392,7 +1384,7 @@ async function renderHome(){
   `;
   loadStats();
   loadFeaturedCourses();
-  loadCategoryCounts();
+  renderHomeDomains();
   renderPromoCarousel();
 }
 
@@ -1421,17 +1413,34 @@ async function loadStats(){
   }
 }
 
-async function loadCategoryCounts(){
+/* "مجالات تقدر تبدأ فيها اليوم" — reads real root categories (the ones the admin created from
+   the categories panel) instead of the old hardcoded DOMAINS list, so this section and the
+   admin's category management always share one source of truth. */
+async function renderHomeDomains(){
+  const grid = document.getElementById('catGrid');
+  if(!grid) return;
   try{
-    const courses = (await fetchCourses()).filter(isCourseApproved);
-    const grid = document.getElementById('catGrid');
-    if(!grid) return;
-    grid.querySelectorAll('[data-count-for]').forEach(el => {
-      const domainTitle = el.dataset.countFor;
-      const n = courses.filter(c => c.categoryName === domainTitle).length;
-      el.textContent = n > 0 ? `${n} كورس` : 'قريباً';
-    });
-  }catch(e){ /* ignore */ }
+    const [cats, allCourses] = await Promise.all([fetchCategories(), fetchCourses()]);
+    const roots = rootCategories(cats);
+    if(roots.length === 0){
+      grid.innerHTML = `<div class="empty-state" style="padding:20px 0;">الأقسام قريباً.</div>`;
+      return;
+    }
+    const courses = allCourses.filter(isCourseApproved);
+    grid.innerHTML = roots.map((cat, idx) => {
+      const { icon, tint } = categoryVisual(idx);
+      const n = courses.filter(c => courseRootCategoryId(c) === cat.id).length;
+      return `
+        <a href="#/courses?cat=${cat.id}" class="cat-tile">
+          <div class="ic-wrap" style="background:${tint};color:var(--violet-700);">${icon}</div>
+          <h4>${cat.name}</h4>
+          <div class="count">${n > 0 ? n + ' كورس' : 'قريباً'}</div>
+        </a>
+      `;
+    }).join('');
+  }catch(e){
+    grid.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل الأقسام.</div>`;
+  }
 }
 
 async function loadFeaturedCourses(){
@@ -1473,19 +1482,20 @@ function promoArrowSVG(){
   return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>`;
 }
 
-function promoDomainSlide(d, idx){
+function promoDomainSlide(cat, idx){
   const [g1,g2] = PROMO_VIOLET_SHADES[idx % PROMO_VIOLET_SHADES.length];
+  const { icon } = categoryVisual(idx);
   return {
-    href: '#/courses',
+    href: `#/courses?cat=${cat.id}`,
     gradient: `linear-gradient(135deg,${g1},${g2})`,
     badge: 'مجال تعليمي',
-    icon: ICONS[d.key] || '',
-    title: d.title,
-    desc: d.desc,
+    icon,
+    title: cat.name,
+    desc: cat.description || 'استكشف كورسات هذا المجال على المنصة.',
   };
 }
 
-function promoCourseSlide(c, idx){
+function promoCourseSlide(c, idx, catIconMap){
   const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
   const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
   let badge = 'كورس جديد';
@@ -1498,8 +1508,7 @@ function promoCourseSlide(c, idx){
   // Deal slides get the amber accent (same color as every "buy now"/price
   // element on the site); everything else stays in the violet family.
   const [g1,g2] = (hasDiscount || isFree) ? PROMO_AMBER_SHADE : PROMO_VIOLET_SHADES[(idx + 1) % PROMO_VIOLET_SHADES.length];
-  const domainMatch = DOMAINS.find(d => d.title === c.categoryName);
-  const icon = domainMatch ? (ICONS[domainMatch.key] || '') : MICRO_ICONS.book;
+  const icon = (catIconMap && catIconMap[courseRootCategoryId(c)]) || MICRO_ICONS.book;
   const desc = c.description ? String(c.description).slice(0, 70) + (c.description.length > 70 ? '…' : '') : (c.categoryName || 'كورس متاح الآن على المنصة');
   return {
     href: `#/course/${c.id}`,
@@ -1534,14 +1543,19 @@ async function renderPromoCarousel(){
   const viewport = document.getElementById('promoViewport');
   if(!track || !dotsWrap || !viewport) return;
 
+  const cats = await fetchCategories().catch(() => []);
+  const roots = rootCategories(cats);
+  const catIconMap = {};
+  roots.forEach((r, i) => { catIconMap[r.id] = categoryVisual(i).icon; });
+
   let courseSlides = [];
   try{
     const courses = (await fetchCourses()).filter(isCourseApproved);
     const sorted = [...courses].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 4);
-    courseSlides = sorted.map(promoCourseSlide);
+    courseSlides = sorted.map((c, idx) => promoCourseSlide(c, idx, catIconMap));
   }catch(e){ /* ignore — fall back to domain slides only */ }
 
-  const domainSlides = DOMAINS.map(promoDomainSlide);
+  const domainSlides = roots.map(promoDomainSlide);
 
   // Interleave domain and course slides for variety
   const slides = [];
@@ -1854,6 +1868,62 @@ function categoryColor(seed){
   return CATEGORY_COLOR_PALETTE[hash % CATEGORY_COLOR_PALETTE.length];
 }
 
+/* ---------------- CATEGORY HIERARCHY (two levels: root "قسم رئيسي" -> sub "مجال فرعي") ----------------
+   Backward compatible: any category doc with no parentId (including every category created before
+   this system existed) is treated as a root category automatically — nothing needs to be migrated. */
+function rootCategories(cats){
+  return cats.filter(c => !c.parentId);
+}
+function subCategoriesOf(cats, parentId){
+  return cats.filter(c => c.parentId === parentId);
+}
+/* The root a course belongs to, for grouping/filtering/counting. New courses store both
+   categoryId (the chosen sub-category) and parentCategoryId (its root). Legacy courses only
+   have categoryId, which — since legacy categories are always roots — IS the root id. */
+function courseRootCategoryId(c){
+  return c.parentCategoryId || c.categoryId || null;
+}
+
+/* Rotating icon/tint pool so any admin-created root category automatically gets a distinct,
+   on-brand look without needing per-category configuration — same visual system as the old
+   hardcoded DOMAINS list (violet tints, stroke icons), just generated instead of hardcoded. */
+const CATEGORY_ICON_POOL = [ICONS.medical, ICONS.tech, ICONS.english, ICONS.voice, ICONS.writing, SIDE_ICONS.grid, SIDE_ICONS.layers, SIDE_ICONS.certificate, SIDE_ICONS.tag, SIDE_ICONS.book];
+const CATEGORY_TINT_POOL = ['#F3EEFB','#EDE4F9','#F1E9FB','#E7DDF7','#EFE3FA'];
+function categoryVisual(idx){
+  return {
+    icon: CATEGORY_ICON_POOL[idx % CATEGORY_ICON_POOL.length],
+    tint: CATEGORY_TINT_POOL[idx % CATEGORY_TINT_POOL.length],
+  };
+}
+
+/* Wires a root-category <select> + a dependent sub-category <select>: picking a root
+   repopulates the sub-select with only that root's children. Used by every "create/edit
+   course" form so the two-step category picker behaves identically everywhere. If the
+   chosen root happens to have no sub-categories yet, the sub-select is disabled and the
+   caller should fall back to saving the course directly under the root (see submit handlers). */
+function wireCategoryCascadeSelects(parentSel, subSel, allCats){
+  const roots = rootCategories(allCats);
+  parentSel.innerHTML = `<option value="">— اختر القسم الرئيسي —</option>` +
+    roots.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+
+  function refreshSub(){
+    const subs = subCategoriesOf(allCats, parentSel.value);
+    if(!parentSel.value){
+      subSel.innerHTML = `<option value="">— اختر القسم الرئيسي أولاً —</option>`;
+      subSel.disabled = true;
+    } else if(subs.length === 0){
+      subSel.innerHTML = `<option value="">— لا يوجد مجالات فرعية لهذا القسم —</option>`;
+      subSel.disabled = true;
+    } else {
+      subSel.disabled = false;
+      subSel.innerHTML = `<option value="">— اختر المجال الفرعي —</option>` +
+        subs.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    }
+  }
+  parentSel.addEventListener('change', refreshSub);
+  refreshSub();
+}
+
 function courseCardHTML(c){
   const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
   const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
@@ -1937,7 +2007,7 @@ function wireCourseRowNav(container){
   });
 }
 
-async function renderCourses(){
+async function renderCourses(initialCatId){
   const app = document.getElementById('app');
   app.innerHTML = `
     <section>
@@ -1949,34 +2019,54 @@ async function renderCourses(){
         <div class="cat-tabs" id="catTabs">
           <button class="cat-tab active" data-cat="all">الكل</button>
         </div>
+        <div class="cat-tabs cat-tabs-sub hidden" id="subCatTabs"></div>
         <div id="coursesArea"><div class="empty-state">جارٍ تحميل الكورسات...</div></div>
       </div>
     </section>
   `;
 
-  const [categories, allCourses] = await Promise.all([fetchCategories(), fetchCourses()]);
+  const [allCategories, allCourses] = await Promise.all([fetchCategories(), fetchCourses()]);
   const courses = allCourses.filter(isCourseApproved);
+  const categories = rootCategories(allCategories); // top-level tabs = main sections only
 
   const tabsEl = document.getElementById('catTabs');
+  const subTabsEl = document.getElementById('subCatTabs');
   categories.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'cat-tab';
     btn.dataset.cat = cat.id;
-    btn.textContent = cat.name || cat.title || 'قسم';
+    btn.textContent = cat.name || 'قسم';
     tabsEl.appendChild(btn);
   });
 
-  function renderList(filter){
+  let activeRoot = 'all';
+  let activeSub = 'all';
+
+  function renderSubTabs(){
+    const subs = activeRoot === 'all' ? [] : subCategoriesOf(allCategories, activeRoot);
+    if(subs.length === 0){
+      subTabsEl.classList.add('hidden');
+      subTabsEl.innerHTML = '';
+      return;
+    }
+    subTabsEl.classList.remove('hidden');
+    subTabsEl.innerHTML = `
+      <button class="cat-tab sub ${activeSub === 'all' ? 'active' : ''}" data-sub="all">كل ${(categories.find(c => c.id === activeRoot) || {}).name || 'القسم'}</button>
+      ${subs.map(s => `<button class="cat-tab sub ${activeSub === s.id ? 'active' : ''}" data-sub="${s.id}">${s.name}</button>`).join('')}
+    `;
+  }
+
+  function renderList(){
     const area = document.getElementById('coursesArea');
-    if(filter === 'all'){
+
+    if(activeRoot === 'all'){
       const groups = [];
       categories.forEach(cat => {
-        const catName = cat.name || cat.title || 'قسم';
-        const catCourses = courses.filter(c => c.categoryId === cat.id);
-        if(catCourses.length) groups.push({ id: cat.id, name: catName, courses: catCourses });
+        const catCourses = courses.filter(c => courseRootCategoryId(c) === cat.id);
+        if(catCourses.length) groups.push({ id: cat.id, name: cat.name || 'قسم', courses: catCourses });
       });
       const groupedIds = new Set(categories.map(cat => cat.id));
-      const leftover = courses.filter(c => !c.categoryId || !groupedIds.has(c.categoryId));
+      const leftover = courses.filter(c => !courseRootCategoryId(c) || !groupedIds.has(courseRootCategoryId(c)));
       if(leftover.length) groups.push({ id: '__other', name: 'كورسات أخرى', courses: leftover });
 
       if(groups.length === 0){
@@ -1987,7 +2077,11 @@ async function renderCourses(){
       wireCourseRowNav(area);
       return;
     }
-    const filtered = courses.filter(c => c.categoryId === filter);
+
+    const filtered = activeSub === 'all'
+      ? courses.filter(c => courseRootCategoryId(c) === activeRoot)
+      : courses.filter(c => c.categoryId === activeSub);
+
     if(filtered.length === 0){
       area.innerHTML = `<div class="empty-state">لا توجد كورسات في هذا القسم حالياً.</div>`;
       return;
@@ -1995,18 +2089,49 @@ async function renderCourses(){
     area.innerHTML = `<div class="course-grid">${filtered.map(courseCardHTML).join('')}</div>`;
   }
 
+  function selectRoot(rootId){
+    activeRoot = rootId;
+    activeSub = 'all';
+    tabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.cat === rootId));
+    renderSubTabs();
+    renderList();
+  }
+
   tabsEl.addEventListener('click', (e) => {
     const btn = e.target.closest('.cat-tab');
     if(!btn) return;
-    tabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderList(btn.dataset.cat);
+    selectRoot(btn.dataset.cat);
+  });
+
+  subTabsEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('.cat-tab');
+    if(!btn) return;
+    activeSub = btn.dataset.sub;
+    subTabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.sub === activeSub));
+    renderList();
   });
 
   if(courses.length === 0){
     document.getElementById('coursesArea').innerHTML = `<div class="empty-state">لا توجد كورسات منشورة حالياً — تابعنا قريباً.</div>`;
+    return;
+  }
+
+  // Deep-link from the homepage domain cards / promo carousel (#/courses?cat=ID) — accepts
+  // either a root category id or a sub-category id and lands on the right tab either way.
+  if(initialCatId){
+    const target = allCategories.find(c => c.id === initialCatId);
+    if(target && target.parentId){
+      selectRoot(target.parentId);
+      activeSub = target.id;
+      subTabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b.dataset.sub === activeSub));
+      renderList();
+    } else if(target){
+      selectRoot(target.id);
+    } else {
+      selectRoot('all');
+    }
   } else {
-    renderList('all');
+    selectRoot('all');
   }
 }
 
@@ -4836,8 +4961,12 @@ async function renderInstructorDashboard(){
         </div>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
           <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-            <label>القسم</label>
-            <select id="ncCategory"><option value="">— اختر القسم —</option></select>
+            <label>القسم الرئيسي</label>
+            <select id="ncCategoryParent"><option value="">— اختر القسم الرئيسي —</option></select>
+          </div>
+          <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+            <label>المجال الفرعي</label>
+            <select id="ncCategory" disabled><option value="">— اختر القسم الرئيسي أولاً —</option></select>
           </div>
           <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
             <label>مدة الكورس (اختياري)</label>
@@ -4875,8 +5004,9 @@ async function renderInstructorDashboard(){
   });
 
   fetchCategories().then(cats => {
-    const sel = document.getElementById('ncCategory');
-    if(sel) cats.forEach(c => sel.insertAdjacentHTML('beforeend', `<option value="${c.id}">${c.name}</option>`));
+    const parentSel = document.getElementById('ncCategoryParent');
+    const subSel = document.getElementById('ncCategory');
+    if(parentSel && subSel) wireCategoryCascadeSelects(parentSel, subSel, cats);
   });
 
   document.getElementById('newCourseForm').addEventListener('submit', async (e) => {
@@ -4887,15 +5017,21 @@ async function renderInstructorDashboard(){
     const duration = document.getElementById('ncDuration').value.trim();
     const whatToLearnRaw = document.getElementById('ncWhatToLearn').value.trim();
     const whatToLearn = whatToLearnRaw ? whatToLearnRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
-    const categorySel = document.getElementById('ncCategory');
-    const categoryId = categorySel.value;
-    const categoryName = categoryId ? categorySel.options[categorySel.selectedIndex].textContent : null;
+    const parentSel = document.getElementById('ncCategoryParent');
+    const subSel = document.getElementById('ncCategory');
+    const parentCategoryId = parentSel.value || null;
+    const parentCategoryName = parentCategoryId ? parentSel.options[parentSel.selectedIndex].textContent : null;
+    // If the chosen root has no sub-categories yet, save the course directly under the root
+    // (same as the old flat system) instead of leaving categoryId empty.
+    const categoryId = subSel.value || parentCategoryId;
+    const categoryName = subSel.value ? subSel.options[subSel.selectedIndex].textContent : parentCategoryName;
     const alertBox = document.getElementById('newCourseAlert');
     if(!title) return;
     try{
       await addDoc(collection(db, 'courses'), {
         title, description, level: level || null, durationText: duration || null, whatToLearn,
         categoryId: categoryId || null, categoryName,
+        parentCategoryId: parentCategoryId || null, parentCategoryName,
         instructorId: currentUser.uid, instructorName: currentProfile?.name || currentUser.email,
         price: 0, discountPrice: null,
         status: 'draft',
@@ -5332,11 +5468,11 @@ async function adminRenderCategories(area){
     const cats = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     area.innerHTML = `
       <div class="widget widget-4">
-        <div class="widget-head"><h3>إضافة قسم جديد</h3></div>
+        <div class="widget-head"><h3>إضافة قسم رئيسي جديد</h3></div>
         <form id="addCategoryForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
           <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
-            <label>اسم القسم</label>
-            <input type="text" id="catName" required placeholder="مثال: المجال الطبي" />
+            <label>اسم القسم الرئيسي</label>
+            <input type="text" id="catName" required placeholder="مثال: اللغات" />
           </div>
           <div class="field" style="margin-bottom:0;flex:2;min-width:200px;">
             <label>وصف مختصر</label>
@@ -5348,27 +5484,64 @@ async function adminRenderCategories(area){
         </form>
       </div>
       <div class="widget widget-4">
-        <div class="widget-head"><h3>الأقسام الحالية</h3></div>
+        <div class="widget-head"><h3>الأقسام والمجالات الفرعية</h3></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">كل قسم رئيسي ممكن يحتوي على أكتر من مجال فرعي. استخدم زر "+" جنب أي قسم لإضافة مجال فرعي تابع له.</p>
         <div id="categoriesList"></div>
       </div>
     `;
 
     function renderList(){
       const listEl = document.getElementById('categoriesList');
-      if(cats.length === 0){
+      const roots = rootCategories(cats);
+      if(roots.length === 0){
         listEl.innerHTML = `<div class="empty-state">لا توجد أقسام بعد.</div>`;
         return;
       }
-      listEl.innerHTML = cats.map(c => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${SIDE_ICONS.tag}</div>
-          <div class="grow">
-            <div class="t1">${c.name || ''}</div>
-            <div class="t2">${c.description || ''}</div>
+      listEl.innerHTML = roots.map(root => {
+        const subs = subCategoriesOf(cats, root.id);
+        return `
+          <div class="cat-tree-root" data-root-id="${root.id}" style="border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px;">
+            <div class="table-widget-row">
+              <div class="avatar-sm">${SIDE_ICONS.tag}</div>
+              <div class="grow">
+                <div class="t1">${root.name || ''}</div>
+                <div class="t2">${root.description || ''}${subs.length ? ` · ${subs.length} مجال فرعي` : ''}</div>
+              </div>
+              <button type="button" class="icon-action" data-add-sub="${root.id}" title="إضافة مجال فرعي">${SIDE_ICONS.plus}</button>
+              <button type="button" class="icon-action danger" data-id="${root.id}" title="حذف القسم">${SIDE_ICONS.trash}</button>
+            </div>
+            ${subs.length ? `
+              <div class="cat-tree-subs" style="padding-right:38px;border-right:2px solid var(--line);margin-right:20px;">
+                ${subs.map(s => `
+                  <div class="table-widget-row">
+                    <div class="avatar-sm" style="width:28px;height:28px;">${SIDE_ICONS.folder}</div>
+                    <div class="grow">
+                      <div class="t1">${s.name || ''}</div>
+                      <div class="t2">${s.description || ''}</div>
+                    </div>
+                    <button type="button" class="icon-action danger" data-id="${s.id}" title="حذف المجال الفرعي">${SIDE_ICONS.trash}</button>
+                  </div>
+                `).join('')}
+              </div>
+            ` : ''}
+            <form class="hidden add-sub-form" id="addSubForm-${root.id}" data-parent="${root.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:12px 0 4px 38px;">
+              <div class="field" style="margin-bottom:0;flex:1;min-width:140px;">
+                <label>اسم المجال الفرعي</label>
+                <input type="text" class="sub-cat-name" required placeholder="مثال: لغة إنجليزية" />
+              </div>
+              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;">
+                <label>وصف مختصر</label>
+                <input type="text" class="sub-cat-desc" placeholder="وصف اختياري" />
+              </div>
+              <button type="submit" class="btn btn-ghost btn-sm">
+                <span class="side-ic" style="width:13px;height:13px;">${SIDE_ICONS.plus}</span> إضافة إلى "${root.name || 'القسم'}"
+              </button>
+            </form>
           </div>
-          <button class="icon-action danger" data-id="${c.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+
+      // Delete works the same for a root category or a sub-category — same collection, one doc.
       listEl.querySelectorAll('button[data-id]').forEach(btn => {
         btn.addEventListener('click', async () => {
           if(!confirm('هل أنت متأكد من حذف هذا القسم؟')) return;
@@ -5383,6 +5556,30 @@ async function adminRenderCategories(area){
           }
         });
       });
+
+      listEl.querySelectorAll('button[data-add-sub]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById(`addSubForm-${btn.dataset.addSub}`)?.classList.toggle('hidden');
+        });
+      });
+
+      listEl.querySelectorAll('.add-sub-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const parentId = form.dataset.parent;
+          const name = form.querySelector('.sub-cat-name').value.trim();
+          const description = form.querySelector('.sub-cat-desc').value.trim();
+          if(!name) return;
+          try{
+            const ref = await addDoc(collection(db, 'categories'), { name, description, parentId, createdAt: serverTimestamp() });
+            cats.push({ id: ref.id, name, description, parentId });
+            categoriesCache = null;
+            renderList();
+          }catch(e){
+            alert('تعذّر إضافة المجال الفرعي.');
+          }
+        });
+      });
     }
     renderList();
 
@@ -5392,8 +5589,8 @@ async function adminRenderCategories(area){
       const description = document.getElementById('catDesc').value.trim();
       if(!name) return;
       try{
-        const ref = await addDoc(collection(db, 'categories'), { name, description, createdAt: serverTimestamp() });
-        cats.push({ id: ref.id, name, description });
+        const ref = await addDoc(collection(db, 'categories'), { name, description, parentId: null, createdAt: serverTimestamp() });
+        cats.push({ id: ref.id, name, description, parentId: null });
         categoriesCache = null;
         renderList();
         document.getElementById('addCategoryForm').reset();
@@ -5445,11 +5642,12 @@ async function adminRenderCourses(area){
           </div>
           <div style="display:flex;gap:12px;flex-wrap:wrap;">
             <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>القسم</label>
-              <select id="courseCategory">
-                <option value="">— اختر القسم —</option>
-                ${cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}
-              </select>
+              <label>القسم الرئيسي</label>
+              <select id="courseCategoryParent"><option value="">— اختر القسم الرئيسي —</option></select>
+            </div>
+            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
+              <label>المجال الفرعي</label>
+              <select id="courseCategory" disabled><option value="">— اختر القسم الرئيسي أولاً —</option></select>
             </div>
             <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
               <label>المدرب</label>
@@ -5517,6 +5715,12 @@ async function adminRenderCourses(area){
     }
     renderList();
 
+    wireCategoryCascadeSelects(
+      document.getElementById('courseCategoryParent'),
+      document.getElementById('courseCategory'),
+      cats
+    );
+
     document.getElementById('addCourseForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const title = document.getElementById('courseTitle').value.trim();
@@ -5526,11 +5730,16 @@ async function adminRenderCourses(area){
       const whatToLearnRaw = document.getElementById('courseWhatToLearn').value.trim();
       const whatToLearn = whatToLearnRaw ? whatToLearnRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
       const durationText = document.getElementById('courseDuration').value.trim();
-      const categoryId = document.getElementById('courseCategory').value;
+      const parentSel = document.getElementById('courseCategoryParent');
+      const subSel = document.getElementById('courseCategory');
+      const parentCategoryId = parentSel.value || null;
       const instructorId = document.getElementById('courseInstructor').value;
       const level = document.getElementById('courseLevel').value;
       if(!title) return;
 
+      const parentCategory = cats.find(c => c.id === parentCategoryId);
+      // Falls back to the root category itself if it has no sub-categories yet.
+      const categoryId = subSel.value || parentCategoryId;
       const category = cats.find(c => c.id === categoryId);
       const instructor = instructors.find(i => i.id === instructorId);
       const price = priceVal ? Number(priceVal) : 0;
@@ -5541,6 +5750,8 @@ async function adminRenderCourses(area){
           title, description, price, discountPrice, whatToLearn, durationText: durationText || null,
           categoryId: categoryId || null,
           categoryName: category ? category.name : null,
+          parentCategoryId: parentCategoryId || null,
+          parentCategoryName: parentCategory ? parentCategory.name : null,
           instructorId: instructorId || null,
           instructorName: instructor ? (instructor.name || instructor.email) : null,
           level: level || null,
@@ -5549,12 +5760,18 @@ async function adminRenderCourses(area){
         courses.push({
           id: ref.id, title, description, price, discountPrice, whatToLearn, durationText,
           categoryId: categoryId || null, categoryName: category ? category.name : null,
+          parentCategoryId: parentCategoryId || null, parentCategoryName: parentCategory ? parentCategory.name : null,
           instructorId: instructorId || null, instructorName: instructor ? (instructor.name || instructor.email) : null,
           level: level || null,
         });
         coursesCache = null;
         renderList();
         document.getElementById('addCourseForm').reset();
+        wireCategoryCascadeSelects(
+          document.getElementById('courseCategoryParent'),
+          document.getElementById('courseCategory'),
+          cats
+        );
       }catch(e){
         alert('تعذّر إضافة الكورس.');
       }
