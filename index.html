@@ -240,6 +240,56 @@
   }
   .cat-tile h4{font-size:14.5px;margin:0 0 4px;color:var(--violet-900);font-weight:700;}
   .cat-tile .count{font-size:12px;color:var(--muted);}
+  .cat-tile .ic-wrap.has-photo{background-size:cover;background-position:center;}
+  .cat-tile .ic-wrap.has-photo img{width:100%;height:100%;object-fit:cover;border-radius:16px;display:block;}
+
+  /* Lesson detail page */
+  .lesson-breadcrumb{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,0.78);margin-bottom:10px;}
+  .lesson-breadcrumb a{color:#fff;font-weight:600;opacity:0.9;}
+  .lesson-breadcrumb a:hover{opacity:1;text-decoration:underline;}
+  .lesson-breadcrumb .sep{opacity:0.55;}
+  .lesson-layout{display:grid;grid-template-columns:1fr 320px;gap:22px;align-items:start;}
+  .lesson-toc{position:sticky;top:90px;max-height:calc(100vh - 110px);overflow-y:auto;}
+  .lesson-toc-module{margin-bottom:6px;}
+  .lesson-toc-module-title{font-size:12.5px;font-weight:800;color:var(--violet-900);padding:10px 4px 6px;}
+  .lesson-toc-item{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;font-size:13px;color:var(--ink);text-decoration:none;}
+  .lesson-toc-item:hover{background:var(--mist);}
+  .lesson-toc-item.active{background:var(--violet-700);color:#fff;font-weight:700;}
+  .lesson-toc-item .tc-num{width:20px;height:20px;border-radius:50%;background:var(--mist);color:var(--violet-800);display:flex;align-items:center;justify-content:center;font-size:10.5px;flex-shrink:0;}
+  .lesson-toc-item.active .tc-num{background:rgba(255,255,255,0.25);color:#fff;}
+  .lesson-toc-item.done .tc-num{background:var(--success);color:#fff;}
+  .lesson-toc-item .tc-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .resource-list{display:flex;flex-direction:column;gap:10px;}
+  .resource-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;text-decoration:none;color:var(--ink);transition:background .15s,border-color .15s;}
+  .resource-item:hover{background:var(--mist);border-color:var(--violet-600);}
+  .resource-item .ri-ic{width:38px;height:38px;border-radius:10px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .resource-item .ri-body{flex:1;min-width:0;}
+  .resource-item .ri-title{font-weight:700;font-size:13.5px;}
+  .resource-item .ri-type{font-size:11.5px;color:var(--muted);}
+  .lesson-nav-row{display:flex;justify-content:space-between;gap:12px;margin-top:22px;}
+  .lesson-nav-btn{flex:1;display:flex;align-items:center;gap:10px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;color:var(--ink);text-decoration:none;transition:background .15s,border-color .15s;}
+  .lesson-nav-btn:hover{background:var(--mist);border-color:var(--violet-600);}
+  .lesson-nav-btn .lnb-dir{font-size:11px;color:var(--muted);font-weight:600;}
+  .lesson-nav-btn .lnb-title{font-size:13.5px;font-weight:700;color:var(--violet-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22ch;}
+  .lesson-nav-btn.next{flex-direction:row-reverse;text-align:left;}
+  @media (max-width:880px){
+    .lesson-layout{grid-template-columns:1fr;}
+    .lesson-toc{position:static;max-height:none;}
+  }
+
+  /* Archive room + Library (writing) */
+  .lib-group-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
+  .lib-work-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:18px;}
+  .lib-work-card{display:block;text-decoration:none;color:inherit;border-radius:14px;overflow:hidden;border:1px solid var(--line);transition:transform .15s,box-shadow .15s;background:#fff;}
+  .lib-work-card:hover{transform:translateY(-4px);box-shadow:0 20px 40px -24px rgba(34,21,48,0.25);}
+  .lib-work-cover{width:100%;aspect-ratio:3/4;object-fit:cover;background:var(--mist);display:block;}
+  .lib-work-body{padding:12px 14px;}
+  .lib-work-title{font-weight:700;font-size:13.5px;color:var(--violet-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lib-work-author{font-size:11.5px;color:var(--muted);margin-top:3px;}
+  .lib-reader{max-width:560px;margin:0 auto;text-align:center;}
+  .lib-reader-img{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:0 20px 44px -28px rgba(34,21,48,0.35);}
+  .lib-reader-nav{display:flex;justify-content:space-between;align-items:center;margin-top:16px;}
+  .lib-reader-page{font-size:13px;color:var(--muted);}
 
   /* Course card v2 */
   .course-head-row{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:44px;gap:20px;flex-wrap:wrap;}
@@ -962,54 +1012,12 @@
   .module-accordion-body{display:none;}
   .module-accordion.open > .module-accordion-body{display:block;}
 
-  .lesson-row{border-top:1px solid var(--line);display:block;text-decoration:none;color:inherit;}
-  .lesson-row:first-child{border-top:none;}
-  .lesson-row-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;}
-  .lesson-row-head .lr-num{font-size:11.5px;color:var(--muted);width:16px;flex-shrink:0;text-align:center;}
-  .lesson-row-head .lr-icon{
-    width:30px;height:30px;border-radius:9px;background:var(--mist);color:var(--violet-700);
-    display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  }
-  .lesson-row-head.done .lr-icon{background:#E9F5EE;color:var(--success);}
-  .lesson-row-head .lr-title{flex:1;font-size:13.5px;color:var(--ink);font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .lesson-row-head .lr-rating{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--amber-600);flex-shrink:0;}
-  .lesson-row-head .chev{color:var(--muted);flex-shrink:0;transition:transform .2s;width:13px;}
-  .lesson-row.open > .lesson-row-head .chev{transform:rotate(-90deg);}
-  .lesson-row-body{display:none;padding:0 16px 18px;}
-  .lesson-row.open > .lesson-row-body{display:block;}
-  .lesson-rate-box{background:var(--paper);border-radius:12px;padding:14px;margin-top:14px;}
-
-  /* Dedicated lesson page */
-  .lesson-breadcrumb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:16px;}
-  .lesson-breadcrumb .lb-sep{color:var(--line);}
-  .lesson-breadcrumb .lb-current{color:var(--violet-800);font-weight:700;}
-  .lesson-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
-  .lesson-page-titlewrap h2{margin:8px 0 8px;font-size:21px;color:var(--violet-900);font-family:'Cairo',sans-serif;}
-  .lesson-type-badge{display:inline-flex;align-items:center;gap:6px;background:var(--mist);color:var(--violet-700);font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:999px;}
-  .lesson-page-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);}
-  .lesson-page-meta span{display:flex;align-items:center;gap:5px;}
-  .lesson-text-body{color:var(--ink);font-size:14.5px;line-height:1.9;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;}
-  .lesson-nav-buttons{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line);}
-  .lesson-outline .widget-head{margin-bottom:10px;}
-  .lesson-outline-list{display:flex;flex-direction:column;gap:4px;max-height:520px;overflow-y:auto;}
-  .lesson-outline-item{
-    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
-    text-decoration:none;color:var(--ink);font-size:13px;font-weight:600;transition:background .2s,color .2s;
-  }
-  .lesson-outline-item:hover{background:var(--paper);}
-  .lesson-outline-item .loi-num{
-    width:24px;height:24px;border-radius:50%;background:var(--mist);color:var(--violet-700);
-    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
-  }
-  .lesson-outline-item.done .loi-num{background:#E9F5EE;color:var(--success);}
-  .lesson-outline-item.active{background:linear-gradient(135deg,var(--violet-600),var(--violet-800));color:#fff;}
-  .lesson-outline-item.active .loi-num{background:rgba(255,255,255,.25);color:#fff;}
-  .lesson-outline-item .loi-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  @media (max-width:860px){ .lesson-outline{grid-column:1/-1;} }
-
-  .lesson-row-head:hover{background:var(--paper);}
-  .lesson-row-head:hover .chev{transform:translateX(-3px);color:var(--violet-600);}
-
+  .lesson-row-link{border-top:1px solid var(--line);transition:background .15s;}
+  .lesson-row-link:first-child{border-top:none;}
+  .lesson-row-link:hover{background:var(--mist);}
+  .lesson-row-link .lr-icon:hover{filter:brightness(0.95);}
+  .lesson-row-link .lr-rating{display:flex;align-items:center;gap:3px;font-size:11px;color:var(--amber-600);flex-shrink:0;}
+  .lesson-row-link .chev{color:var(--muted);flex-shrink:0;width:13px;}
   .lecture-card, .exam-card{
     display:flex;justify-content:space-between;align-items:center;gap:14px;
     padding:16px 18px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff;
@@ -1430,7 +1438,10 @@ function router(){
   else if(path.startsWith('#/register')) renderRegister();
   else if(path.startsWith('#/dashboard')) renderDashboard(params.get('tab'));
   else if(path.startsWith('#/learn/')) renderLearnRoom(path.split('#/learn/')[1]);
-  else if(path.startsWith('#/lesson/')) renderLessonPage(path.split('#/lesson/')[1]);
+  else if(path.startsWith('#/lesson/')) renderLessonDetail(path.split('#/lesson/')[1]);
+  else if(path.startsWith('#/archive')) renderArchiveRoom();
+  else if(path.startsWith('#/library-work/')) renderLibraryWork(path.split('#/library-work/')[1]);
+  else if(path.startsWith('#/library')) renderLibrary(params.get('group'));
   else if(path.startsWith('#/manage/')) renderManageCourse(path.split('#/manage/')[1]);
   else if(path.startsWith('#/exam/')) renderExamTake(path.split('#/exam/')[1]);
   else if(path.startsWith('#/course/')) renderCourseDetail(path.split('#/course/')[1]);
@@ -1549,6 +1560,27 @@ async function renderHome(){
         </div>
         <div class="cat-grid" id="catGrid">
           <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-alt">
+      <div class="container">
+        <div class="section-head" style="margin-bottom:18px;">
+          <h2>استكشف أكثر</h2>
+          <p>مساحات إضافية على المنصة، مش تابعة لكورس معيّن.</p>
+        </div>
+        <div class="cat-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;">
+          <a href="#/archive" class="cat-tile">
+            <div class="ic-wrap" style="background:#EDE4F9;color:var(--violet-700);">${SIDE_ICONS.folder}</div>
+            <h4>غرفة الأرشيف</h4>
+            <div class="count">محاضرات عامة للمراجعة</div>
+          </a>
+          <a href="#/library" class="cat-tile">
+            <div class="ic-wrap" style="background:#F1E9FB;color:var(--violet-700);">${SIDE_ICONS.book}</div>
+            <h4>المكتبة</h4>
+            <div class="count">كتابة محتوى · أشعار · روايات</div>
+          </a>
         </div>
       </div>
     </section>
@@ -1683,9 +1715,12 @@ async function renderHomeDomains(){
     grid.innerHTML = roots.map((cat, idx) => {
       const { icon, tint } = categoryVisual(idx);
       const n = courses.filter(c => courseRootCategoryId(c) === cat.id).length;
+      const iconWrapHTML = cat.imageUrl
+        ? `<div class="ic-wrap has-photo"><img src="${cat.imageUrl}" alt="${cat.name || ''}" /></div>`
+        : `<div class="ic-wrap" style="background:${tint};color:var(--violet-700);">${icon}</div>`;
       return `
         <a href="#/courses?cat=${cat.id}" class="cat-tile">
-          <div class="ic-wrap" style="background:${tint};color:var(--violet-700);">${icon}</div>
+          ${iconWrapHTML}
           <h4>${cat.name}</h4>
           <div class="count">${n > 0 ? n + ' كورس' : 'قريباً'}</div>
         </a>
@@ -2388,6 +2423,278 @@ async function renderCourses(initialCatId){
   }
 }
 
+/* ---------------- ARCHIVE ROOM ----------------
+   A standalone section, independent from courses/enrollment: any signed-in user can browse
+   and open general lectures the admin uploads here (not tied to a specific course). */
+async function renderArchiveRoom(){
+  const app = document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان توصل لغرفة الأرشيف.</p>
+          <a href="#/login" class="btn btn-primary">تسجيل الدخول</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  app.innerHTML = `
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <h2>غرفة الأرشيف</h2>
+          <p>محاضرات عامة للمراجعة — مش تابعة لكورس معيّن.</p>
+        </div>
+        <div id="archiveListArea"><div class="empty-state">جارٍ التحميل...</div></div>
+      </div>
+    </section>
+  `;
+  const area = document.getElementById('archiveListArea');
+  try{
+    const snap = await getDocs(collection(db, 'archiveLectures'));
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+    if(items.length === 0){
+      area.innerHTML = `<div class="empty-state">لا توجد محاضرات في الأرشيف بعد.</div>`;
+      return;
+    }
+    area.innerHTML = `
+      <div class="resource-list">
+        ${items.map(it => `
+          <a href="${it.url}" target="_blank" rel="noopener" class="resource-item">
+            <div class="ri-ic">${LESSON_TYPE_ICON[it.type] || LESSON_TYPE_ICON.file}</div>
+            <div class="ri-body">
+              <div class="ri-title">${it.title}</div>
+              <div class="ri-type">${it.description ? it.description : (LESSON_TYPE_LABEL[it.type] || '')}</div>
+            </div>
+            <span class="side-ic">${SIDE_ICONS.chevronLeft}</span>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الأرشيف.</div>`;
+  }
+}
+
+/* ---------------- LIBRARY (WRITING SECTION) ----------------
+   Three groups — content writing / poetry / novels. Any signed-in user can submit a work
+   (a set of page images, read like a small book); the admin approves before it's public. */
+const LIBRARY_GROUPS = [
+  { key:'content', label:'كتابة محتوى' },
+  { key:'poetry', label:'مكتبة أشعار' },
+  { key:'novels', label:'كتابات روايات' },
+];
+
+async function renderLibrary(activeGroupParam){
+  const app = document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان توصل للمكتبة.</p>
+          <a href="#/login" class="btn btn-primary">تسجيل الدخول</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  let activeGroup = LIBRARY_GROUPS.some(g => g.key === activeGroupParam) ? activeGroupParam : LIBRARY_GROUPS[0].key;
+
+  app.innerHTML = `
+    <section>
+      <div class="container">
+        <div class="course-head-row">
+          <div class="section-head" style="margin-bottom:0;">
+            <h2>المكتبة</h2>
+            <p>كتابات جاهزة من مستخدمي المنصة — نصوص، أشعار، وروايات.</p>
+          </div>
+          <button type="button" class="btn btn-primary" id="submitWorkBtn">${SIDE_ICONS.plus} أضف عملك</button>
+        </div>
+        <div class="lib-group-tabs" id="libGroupTabs">
+          ${LIBRARY_GROUPS.map(g => `<button type="button" class="cat-tab ${g.key === activeGroup ? 'active' : ''}" data-group="${g.key}">${g.label}</button>`).join('')}
+        </div>
+        <div id="libWorksArea"><div class="empty-state">جارٍ التحميل...</div></div>
+      </div>
+    </section>
+  `;
+
+  async function renderGroup(group){
+    const area = document.getElementById('libWorksArea');
+    area.innerHTML = `<div class="empty-state">جارٍ التحميل...</div>`;
+    try{
+      const snap = await getDocs(query(collection(db, 'libraryWorks'), where('group','==', group), where('status','==','approved')));
+      const works = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+        .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      if(works.length === 0){
+        area.innerHTML = `<div class="empty-state">لا توجد أعمال منشورة في هذا القسم بعد.</div>`;
+        return;
+      }
+      area.innerHTML = `
+        <div class="lib-work-grid">
+          ${works.map(w => `
+            <a href="#/library-work/${w.id}" class="lib-work-card">
+              <img src="${(w.images && w.images[0]) || ''}" alt="${w.title || ''}" class="lib-work-cover" />
+              <div class="lib-work-body">
+                <div class="lib-work-title">${w.title || 'بدون عنوان'}</div>
+                <div class="lib-work-author">${w.authorName || 'كاتب'} · ${(w.images || []).length} صفحة</div>
+              </div>
+            </a>
+          `).join('')}
+        </div>
+      `;
+    }catch(e){
+      area.innerHTML = `<div class="empty-state">تعذّر تحميل أعمال هذا القسم.</div>`;
+    }
+  }
+  renderGroup(activeGroup);
+
+  document.getElementById('libGroupTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-group]');
+    if(!btn) return;
+    activeGroup = btn.dataset.group;
+    document.querySelectorAll('#libGroupTabs .cat-tab').forEach(b => b.classList.toggle('active', b.dataset.group === activeGroup));
+    history.replaceState(null, '', `#/library?group=${activeGroup}`);
+    renderGroup(activeGroup);
+  });
+
+  document.getElementById('submitWorkBtn').addEventListener('click', () => openLibrarySubmitModal(activeGroup));
+}
+
+/* Submission modal — any signed-in user picks a group, a title, and one or more page images
+   (uploaded straight to Firebase Storage), then the work goes in as "pending" for admin review. */
+function openLibrarySubmitModal(defaultGroup){
+  const overlay = openCourseModal({
+    title: 'أضف عملك للمكتبة',
+    subtitle: 'العمل هيتعرض للمستخدمين بعد موافقة الإدارة.',
+    bodyHTML: `
+      <form id="libSubmitForm" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="field" style="margin-bottom:0;">
+          <label>عنوان العمل</label>
+          <input type="text" id="libWorkTitle" required />
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>القسم</label>
+          <select id="libWorkGroup">
+            ${LIBRARY_GROUPS.map(g => `<option value="${g.key}" ${g.key === defaultGroup ? 'selected' : ''}>${g.label}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field" style="margin-bottom:0;">
+          <label>صفحات العمل (صور — يقدر يختار أكتر من صورة، وترتيبها هو ترتيب الصفحات)</label>
+          <input type="file" id="libWorkImages" accept="image/*" multiple required />
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">إرسال للمراجعة</button>
+        <div id="libSubmitAlert"></div>
+      </form>
+    `,
+  });
+
+  overlay.querySelector('#libSubmitForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertBox = overlay.querySelector('#libSubmitAlert');
+    const title = overlay.querySelector('#libWorkTitle').value.trim();
+    const group = overlay.querySelector('#libWorkGroup').value;
+    const files = Array.from(overlay.querySelector('#libWorkImages').files || []);
+    if(!title || files.length === 0){
+      alertBox.innerHTML = `<div class="alert alert-error">اكتب عنوان واختر صورة واحدة على الأقل.</div>`;
+      return;
+    }
+    const submitBtn = overlay.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'جارٍ الرفع...';
+    try{
+      const images = [];
+      for(let i = 0; i < files.length; i++){
+        const file = files[i];
+        const filePath = `library/${currentUser.uid}/${Date.now()}-${i}-${file.name}`;
+        const storageRef = ref(storage, filePath);
+        await uploadBytes(storageRef, file);
+        images.push(await getDownloadURL(storageRef));
+      }
+      await addDoc(collection(db, 'libraryWorks'), {
+        title, group, images,
+        authorId: currentUser.uid, authorName: currentProfile?.name || currentUser.email,
+        status: 'pending', createdAt: serverTimestamp(),
+      });
+      alertBox.innerHTML = `<div class="alert alert-success">تم إرسال عملك — هيظهر بعد موافقة الإدارة.</div>`;
+      overlay.querySelector('#libSubmitForm').reset();
+      submitBtn.textContent = 'إرسال للمراجعة';
+    }catch(err){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر رفع العمل. حاول مرة أخرى.</div>`;
+      submitBtn.textContent = 'إرسال للمراجعة';
+    }
+    submitBtn.disabled = false;
+  });
+}
+
+/* Reader page — flips through a work's page images one at a time. Approved works are public
+   to any signed-in user; a pending work is only visible to its author or an admin (so the
+   author can double-check it after submitting, before it's approved). */
+async function renderLibraryWork(workId){
+  const app = document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان تقرأ هذا العمل.</p>
+          <a href="#/login" class="btn btn-primary">تسجيل الدخول</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+  app.innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ التحميل...</div></div>`;
+
+  let snap = null;
+  try{ snap = await getDoc(doc(db, 'libraryWorks', workId)); }catch(e){ /* ignore */ }
+  if(!snap || !snap.exists()){
+    app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">هذا العمل غير موجود.</p><a href="#/library" class="btn btn-primary">الرجوع للمكتبة</a></div></div>`;
+    return;
+  }
+  const work = { id: snap.id, ...snap.data() };
+  const isOwner = work.authorId === currentUser.uid;
+  const isAdmin = currentProfile?.role === 'admin';
+  if(work.status !== 'approved' && !isOwner && !isAdmin){
+    app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">هذا العمل غير متاح للعرض حالياً.</p><a href="#/library" class="btn btn-primary">الرجوع للمكتبة</a></div></div>`;
+    return;
+  }
+
+  const images = work.images || [];
+  let page = 0;
+
+  app.innerHTML = `
+    <section>
+      <div class="container">
+        <div class="section-head" style="text-align:center;">
+          <h2>${work.title || 'بدون عنوان'}</h2>
+          <p>${work.authorName || 'كاتب'} · ${LIBRARY_GROUPS.find(g => g.key === work.group)?.label || ''}${work.status !== 'approved' ? ' · قيد المراجعة' : ''}</p>
+        </div>
+        <div class="lib-reader">
+          <img id="libReaderImg" src="${images[0] || ''}" class="lib-reader-img" alt="${work.title || ''}" />
+          <div class="lib-reader-nav">
+            <button type="button" class="btn btn-ghost btn-sm" id="libPrevPage">السابق</button>
+            <span class="lib-reader-page" id="libReaderPageNum">صفحة 1 / ${images.length}</span>
+            <button type="button" class="btn btn-ghost btn-sm" id="libNextPage">التالي</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  `;
+
+  const imgEl = document.getElementById('libReaderImg');
+  const pageNumEl = document.getElementById('libReaderPageNum');
+  function renderPage(){
+    imgEl.src = images[page] || '';
+    pageNumEl.textContent = `صفحة ${page + 1} / ${images.length}`;
+    document.getElementById('libPrevPage').disabled = page === 0;
+    document.getElementById('libNextPage').disabled = page === images.length - 1;
+  }
+  renderPage();
+  document.getElementById('libPrevPage').addEventListener('click', () => { if(page > 0){ page--; renderPage(); } });
+  document.getElementById('libNextPage').addEventListener('click', () => { if(page < images.length - 1){ page++; renderPage(); } });
+}
+
 /* ---------------- ENROLLMENT / ACCESS HELPERS ---------------- */
 async function getEnrollmentStatusForCourse(courseId){
   if(!currentUser) return null;
@@ -2457,9 +2764,14 @@ async function fetchLessonWithContent(id, data){
   const base = { id, ...data };
   try{
     const contentSnap = await getDoc(doc(db, 'lessons', id, 'private', 'content'));
-    base.content = contentSnap.exists() ? contentSnap.data().content : '';
+    const contentData = contentSnap.exists() ? contentSnap.data() : {};
+    base.content = contentData.content || '';
+    // Extra attachments beyond the lesson's primary video/PDF/text (added from the lesson
+    // editor in the manage-course screen) — each is { title, type, url }.
+    base.resources = Array.isArray(contentData.resources) ? contentData.resources : [];
   }catch(e){
     base.content = '';
+    base.resources = [];
   }
   return base;
 }
@@ -3482,6 +3794,8 @@ const ADMIN_TABS = [
   { key:'overview', label:'نظرة عامة', icon: SIDE_ICONS.dashboard },
   { key:'users', label:'المستخدمون', icon: SIDE_ICONS.users },
   { key:'categories', label:'الأقسام', icon: SIDE_ICONS.tag },
+  { key:'archive', label:'غرفة الأرشيف', icon: SIDE_ICONS.folder },
+  { key:'library', label:'مراجعة المكتبة', icon: SIDE_ICONS.book },
   { key:'courses', label:'الكورسات', icon: SIDE_ICONS.book },
   { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.clipboardCheck },
   { key:'payments', label:'المدفوعات', icon: SIDE_ICONS.card },
@@ -3518,6 +3832,12 @@ function shellSideLinks(activeKey){
     </a>
     <a href="#/courses" class="side-link">
       <span class="side-ic">${SIDE_ICONS.book}</span><span class="lbl-text">تصفح الكورسات</span>
+    </a>
+    <a href="#/archive" class="side-link">
+      <span class="side-ic">${SIDE_ICONS.folder}</span><span class="lbl-text">غرفة الأرشيف</span>
+    </a>
+    <a href="#/library" class="side-link">
+      <span class="side-ic">${SIDE_ICONS.book}</span><span class="lbl-text">المكتبة</span>
     </a>
   `;
 }
@@ -4340,7 +4660,9 @@ async function learnRenderContent(area, course){
       fetchTargetRatingsMap('lesson', course.id),
     ]);
     const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
-    const lessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+    const lessons = (await Promise.all(
+      lesSnap.docs.map(d => fetchLessonWithContent(d.id, d.data()))
+    )).sort((a,b) => (a.order||0) - (b.order||0));
     const completedIds = new Set(
       progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId)
     );
@@ -4383,14 +4705,15 @@ async function learnRenderContent(area, course){
                     const isDone = completedIds.has(l.id);
                     const rating = lessonRatings[l.id];
                     return `
-                      <a href="#/lesson/${l.id}" class="lesson-row" data-lesson-row="${l.id}">
-                        <div class="lesson-row-head ${isDone ? 'done' : ''}" data-done-icon>
-                          <span class="lr-num">${li+1}</span>
-                          <div class="lr-icon">${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}</div>
-                          <div class="lr-title">${l.title}</div>
-                          ${rating ? `<div class="lr-rating">${SIDE_ICONS.starFilled} ${rating.avg.toFixed(1)}</div>` : ''}
-                          <span class="chev">${SIDE_ICONS.chevronLeft}</span>
-                        </div>
+                      <a href="#/lesson/${l.id}" class="lesson-row-link" data-lesson-row="${l.id}" style="display:flex;align-items:center;gap:12px;padding:13px 16px;border-top:1px solid var(--line);text-decoration:none;color:var(--ink);">
+                        <button type="button" class="lr-icon ${isDone ? 'done' : ''}" data-lesson-id="${l.id}" data-completed="${isDone}" data-complete-btn title="${isDone ? 'إلغاء علامة الإكمال' : 'وضع كمكتمل'}" style="border:0;background:${isDone ? 'var(--success)' : 'var(--mist)'};color:${isDone ? '#fff' : 'var(--violet-700)'};width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;">
+                          ${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}
+                        </button>
+                        <span class="lr-num" style="color:var(--muted);font-size:12px;flex-shrink:0;">${li+1}</span>
+                        <div class="lr-title" style="flex:1;font-weight:600;font-size:14px;">${l.title}</div>
+                        ${l.resources && l.resources.length ? `<span style="font-size:11px;color:var(--muted);">+${l.resources.length} مرفق</span>` : ''}
+                        ${rating ? `<div class="lr-rating">${SIDE_ICONS.starFilled} ${rating.avg.toFixed(1)}</div>` : ''}
+                        <span class="chev">${SIDE_ICONS.chevronLeft}</span>
                       </a>
                     `;
                   }).join('')
@@ -4404,142 +4727,247 @@ async function learnRenderContent(area, course){
     area.querySelectorAll('[data-toggle-module]').forEach(head => {
       head.addEventListener('click', () => head.closest('.module-accordion').classList.toggle('open'));
     });
+
+    // Mark-complete updates the DOM in place instead of a full re-render, so open
+    // module accordions stay open after the click. The button lives inside the lesson's
+    // <a> row (so the row itself still navigates to the full lesson page on click), so we
+    // stop the click from also triggering that navigation.
+    area.querySelectorAll('[data-complete-btn]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const lessonId = btn.dataset.lessonId;
+        const wasDone = btn.dataset.completed === 'true';
+        const nowDone = !wasDone;
+        btn.disabled = true;
+        try{
+          await setDoc(doc(db, 'progress', `${currentUser.uid}_${lessonId}`), {
+            studentId: currentUser.uid,
+            courseId: course.id,
+            lessonId,
+            completed: nowDone,
+            completedAt: serverTimestamp(),
+          });
+          btn.dataset.completed = nowDone ? 'true' : 'false';
+          btn.classList.toggle('done', nowDone);
+          btn.style.background = nowDone ? 'var(--success)' : 'var(--mist)';
+          btn.style.color = nowDone ? '#fff' : 'var(--violet-700)';
+          btn.title = nowDone ? 'إلغاء علامة الإكمال' : 'وضع كمكتمل';
+          btn.innerHTML = nowDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[lessons.find(x=>x.id===lessonId)?.type] || LESSON_TYPE_ICON.text);
+
+          const doneNow = area.querySelectorAll('[data-complete-btn].done').length;
+          const pctNow = totalLessons ? Math.round((doneNow / totalLessons) * 100) : 0;
+          const progressText = document.getElementById('courseProgressText');
+          const progressFill = document.getElementById('courseProgressFill');
+          if(progressText) progressText.textContent = `${doneNow} / ${totalLessons} (${pctNow}%)`;
+          if(progressFill) progressFill.style.width = `${pctNow}%`;
+        }catch(e2){
+          alert('تعذّر تحديث حالة الدرس.');
+        }
+        btn.disabled = false;
+      });
+    });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل المحتوى.</div>`;
   }
 }
 
-/* ---------------- DEDICATED LESSON PAGE ---------------- */
-async function renderLessonPage(lessonId){
+/* ---------------- LESSON DETAIL PAGE ----------------
+   Dedicated full page for a single lesson (route: #/lesson/{lessonId}), opened from the
+   learn room's lesson list instead of the old inline accordion preview. Shows the lesson's
+   main content (video/PDF/text), its description, any extra attachments the admin added,
+   completion + rating controls, prev/next navigation, and a sticky table-of-contents for
+   the whole course so the student always sees where this lesson sits in the curriculum. */
+async function renderLessonDetail(lessonId){
   const app = document.getElementById('app');
+  app.innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ تحميل الدرس...</div></div>`;
+
   if(!currentUser){
-    app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">لازم تسجّل الدخول الأول.</p><a href="#/login" class="btn btn-primary">تسجيل الدخول</a></div></div>`;
-    return;
-  }
-
-  renderShell('dashboard');
-  const appContent = document.getElementById('appContent');
-  appContent.innerHTML = `<div class="empty-state">جارٍ تحميل الدرس...</div>`;
-
-  let lessonSnap = null;
-  try{ lessonSnap = await getDoc(doc(db, 'lessons', lessonId)); }catch(e){ /* ignore */ }
-
-  if(!lessonSnap || !lessonSnap.exists()){
-    appContent.innerHTML = `<div class="dash-card" style="text-align:center;"><p>هذا الدرس غير موجود.</p><a href="#/dashboard" class="btn btn-primary">الرجوع للوحة التحكم</a></div>`;
-    return;
-  }
-
-  const lesson = await fetchLessonWithContent(lessonSnap.id, lessonSnap.data());
-
-  let course = null;
-  try{
-    const cSnap = await getDoc(doc(db, 'courses', lesson.courseId));
-    if(cSnap.exists()) course = { id: cSnap.id, ...cSnap.data() };
-  }catch(e){ /* ignore */ }
-
-  if(!course){
-    appContent.innerHTML = `<div class="dash-card" style="text-align:center;"><p>الكورس التابع لهذا الدرس غير موجود.</p><a href="#/dashboard" class="btn btn-primary">الرجوع للوحة التحكم</a></div>`;
-    return;
-  }
-
-  const enrollment = await getEnrollmentStatusForCourse(course.id);
-  const authorized = (enrollment && enrollment.status === 'approved') || canManageCourse(course);
-  if(!authorized){
-    appContent.innerHTML = `
-      <div class="locked-box">
-        <h3 style="color:var(--violet-900);margin-bottom:10px;">لسه ما اتفعّل وصولك لهذا الكورس</h3>
-        <p style="margin-bottom:20px;">لازم تسجّل وتنتظر موافقة الإدارة على دفعك أولاً.</p>
-        <a href="#/course/${course.id}" class="btn btn-primary">الذهاب لصفحة الكورس</a>
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">لازم تسجّل الدخول الأول عشان توصل لهذا الدرس.</p>
+          <a href="#/login" class="btn btn-primary">تسجيل الدخول</a>
+        </div>
       </div>
     `;
     return;
   }
 
-  let moduleData = null;
-  try{
-    const mSnap = await getDoc(doc(db, 'modules', lesson.moduleId));
-    if(mSnap.exists()) moduleData = { id: mSnap.id, ...mSnap.data() };
-  }catch(e){ /* ignore */ }
-
-  const [lesSnap, progressSnap, ratingsMap, myReviewSnap] = await Promise.all([
-    getDocs(query(collection(db, 'lessons'), where('moduleId','==', lesson.moduleId))),
-    getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
-    fetchTargetRatingsMap('lesson', course.id),
-    getDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lesson.id}`)).catch(() => null),
-  ]);
-
-  const siblingLessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
-  const myIndex = siblingLessons.findIndex(l => l.id === lesson.id);
-  const prevLesson = myIndex > 0 ? siblingLessons[myIndex - 1] : null;
-  const nextLesson = (myIndex >= 0 && myIndex < siblingLessons.length - 1) ? siblingLessons[myIndex + 1] : null;
-
-  const completedIds = new Set(progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId));
-  const isDone = completedIds.has(lesson.id);
-  const rating = ratingsMap[lesson.id];
-  const myRating = (myReviewSnap && myReviewSnap.exists && myReviewSnap.exists()) ? myReviewSnap.data().rating : 0;
-  const typeLabel = LESSON_TYPE_LABEL[lesson.type] || 'محتوى';
-  const chevronRight = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
-
-  appContent.innerHTML = `
-    <a href="#/learn/${course.id}" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع لقاعة الكورس</a>
-    <div class="lesson-breadcrumb">
-      <span>${course.title}</span>
-      <span class="lb-sep">/</span>
-      <span>${moduleData ? moduleData.title : 'الفصل'}</span>
-      <span class="lb-sep">/</span>
-      <span class="lb-current">${lesson.title}</span>
-    </div>
-    <div class="widget-grid">
-      <div class="widget widget-span-3">
-        <div class="lesson-page-head">
-          <div class="lesson-page-titlewrap">
-            <span class="lesson-type-badge">${LESSON_TYPE_ICON[lesson.type] || LESSON_TYPE_ICON.text} ${typeLabel}</span>
-            <h2>${lesson.title}</h2>
-            <div class="lesson-page-meta">
-              ${myIndex >= 0 ? `<span>${SIDE_ICONS.layers} الدرس ${myIndex + 1} من ${siblingLessons.length}</span>` : ''}
-              <span id="lessonRatingSummary">${rating ? `${starRowHTML(rating.avg)} ${rating.avg.toFixed(1)} (${rating.count})` : 'لا توجد تقييمات بعد'}</span>
-            </div>
-          </div>
-          <button class="btn btn-sm ${isDone ? 'btn-primary' : 'btn-ghost'}" data-completed="${isDone}" id="lessonCompleteBtn">
-            ${isDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل'}
-          </button>
-        </div>
-
-        <div class="lesson-viewer-box">
-          ${lesson.type === 'text'
-            ? `<div class="lesson-text-body">${(lesson.content || '').replace(/\n/g, '<br>')}</div>`
-            : lessonContentPreviewHTML(lesson)
-          }
-        </div>
-
-        <div class="lesson-rate-box">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-            <span style="font-size:13px;font-weight:700;color:var(--violet-900);">قيّم هذا الدرس</span>
-          </div>
-          ${starPickerHTML('lessonPageStarPicker', myRating)}
-        </div>
-
-        <div class="lesson-nav-buttons">
-          ${prevLesson ? `<a href="#/lesson/${prevLesson.id}" class="btn btn-ghost">${SIDE_ICONS.back} الدرس السابق</a>` : `<span></span>`}
-          ${nextLesson ? `<a href="#/lesson/${nextLesson.id}" class="btn btn-primary">الدرس التالي ${chevronRight}</a>` : `<a href="#/learn/${course.id}" class="btn btn-primary">${SIDE_ICONS.check} إنهاء والرجوع لقاعة الكورس</a>`}
+  let lessonSnap = null;
+  try{ lessonSnap = await getDoc(doc(db, 'lessons', lessonId)); }catch(e){ /* ignore */ }
+  if(!lessonSnap || !lessonSnap.exists()){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">هذا الدرس غير موجود أو تم حذفه.</p>
+          <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
         </div>
       </div>
+    `;
+    return;
+  }
+  const lesson = await fetchLessonWithContent(lessonSnap.id, lessonSnap.data());
 
-      <div class="widget lesson-outline">
-        <div class="widget-head"><h3>دروس هذا الفصل</h3></div>
-        <div class="lesson-outline-list">
-          ${siblingLessons.map((l, i) => `
-            <a href="#/lesson/${l.id}" class="lesson-outline-item ${l.id === lesson.id ? 'active' : ''} ${completedIds.has(l.id) ? 'done' : ''}">
-              <span class="loi-num">${completedIds.has(l.id) ? SIDE_ICONS.check : (i + 1)}</span>
-              <span class="loi-title">${l.title}</span>
-            </a>
-          `).join('')}
+  const courseSnap = await getDoc(doc(db, 'courses', lesson.courseId)).catch(() => null);
+  const course = (courseSnap && courseSnap.exists()) ? { id: courseSnap.id, ...courseSnap.data() } : null;
+  if(!course){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">تعذّر تحميل الكورس الخاص بهذا الدرس.</p>
+          <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const enrollment = await getEnrollmentStatusForCourse(course.id);
+  const isApproved = (enrollment && enrollment.status === 'approved') || canManageCourse(course);
+  const hasAccess = isApproved || lesson.isPreviewFree;
+  if(!hasAccess){
+    app.innerHTML = `
+      <div class="dash-wrap">
+        <div class="dash-card" style="text-align:center;">
+          <p style="margin-bottom:18px;">لازم تشترك في هذا الكورس عشان توصل لهذا الدرس.</p>
+          <a href="#/course/${course.id}" class="btn btn-primary">الذهاب لصفحة الكورس</a>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const [modSnap, lesSnap, progressSnap, lessonRatings, myReviewSnap, allCats] = await Promise.all([
+    getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))),
+    getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))),
+    getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
+    fetchTargetRatingsMap('lesson', course.id),
+    getDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lessonId}`)).catch(() => null),
+    fetchCategories(),
+  ]);
+
+  const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  const moduleOrderIndex = {};
+  modules.forEach((m, i) => { moduleOrderIndex[m.id] = i; });
+  const allLessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => {
+    const ma = moduleOrderIndex[a.moduleId] ?? 999, mb = moduleOrderIndex[b.moduleId] ?? 999;
+    if(ma !== mb) return ma - mb;
+    return (a.order||0) - (b.order||0);
+  });
+  const completedIds = new Set(progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId));
+  const isDone = completedIds.has(lesson.id);
+  const rating = lessonRatings[lesson.id];
+  const myRating = (myReviewSnap && myReviewSnap.exists && myReviewSnap.exists()) ? (myReviewSnap.data().rating || 0) : 0;
+
+  const flatIndex = allLessons.findIndex(l => l.id === lesson.id);
+  const prevLesson = flatIndex > 0 ? allLessons[flatIndex - 1] : null;
+  const nextLesson = (flatIndex > -1 && flatIndex < allLessons.length - 1) ? allLessons[flatIndex + 1] : null;
+
+  const currentModule = modules.find(m => m.id === lesson.moduleId);
+  const rootCat = allCats.find(c => c.id === courseRootCategoryId(course));
+
+  const mainContentHTML = lesson.type === 'text'
+    ? `<div style="color:var(--ink);font-size:15px;white-space:pre-line;line-height:2;">${lesson.content || 'لا يوجد محتوى نصي لهذا الدرس بعد.'}</div>`
+    : lessonContentPreviewHTML(lesson);
+
+  const resourcesHTML = (lesson.resources && lesson.resources.length) ? `
+    <div class="detail-card">
+      <h3>مرفقات الدرس</h3>
+      <div class="resource-list">
+        ${lesson.resources.map(r => `
+          <a href="${r.url}" target="_blank" rel="noopener" class="resource-item">
+            <div class="ri-ic">${LESSON_TYPE_ICON[r.type] || LESSON_TYPE_ICON.file}</div>
+            <div class="ri-body">
+              <div class="ri-title">${r.title || LESSON_TYPE_LABEL[r.type] || 'مرفق'}</div>
+              <div class="ri-type">${LESSON_TYPE_LABEL[r.type] || ''}</div>
+            </div>
+            <span class="side-ic">${SIDE_ICONS.chevronLeft}</span>
+          </a>
+        `).join('')}
+      </div>
+    </div>
+  ` : '';
+
+  const tocHTML = modules.map((m, mi) => {
+    const modLessons = allLessons.filter(l => l.moduleId === m.id);
+    if(modLessons.length === 0) return '';
+    return `
+      <div class="lesson-toc-module">
+        <div class="lesson-toc-module-title">${mi+1}. ${m.title}</div>
+        ${modLessons.map((l, li) => `
+          <a href="#/lesson/${l.id}" class="lesson-toc-item ${l.id === lesson.id ? 'active' : ''} ${completedIds.has(l.id) ? 'done' : ''}">
+            <span class="tc-num">${completedIds.has(l.id) ? SIDE_ICONS.check : (li+1)}</span>
+            <span class="tc-title">${l.title}</span>
+          </a>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+
+  app.innerHTML = `
+    <div class="detail-hero" style="padding-bottom:26px;">
+      <div class="container">
+        <div class="lesson-breadcrumb">
+          ${rootCat ? `<a href="#/courses?cat=${rootCat.id}">${rootCat.name}</a><span class="sep">/</span>` : ''}
+          <a href="#/course/${course.id}">${course.title || 'الكورس'}</a>
+          ${currentModule ? `<span class="sep">/</span><span>${currentModule.title}</span>` : ''}
+        </div>
+        <h2 style="color:#fff;margin:0 0 8px;font-size:24px;">${lesson.title}</h2>
+        <div class="hero-meta-row">
+          <span>${LESSON_TYPE_ICON[lesson.type] || ''} ${LESSON_TYPE_LABEL[lesson.type] || ''}</span>
+          ${rating ? `<span>${starRowHTML(rating.avg)} ${rating.avg.toFixed(1)} (${rating.count})</span>` : ''}
+          ${lesson.isPreviewFree ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
+        </div>
+        <a href="#/learn/${course.id}" class="btn btn-ghost" style="margin-top:14px;color:#fff;border-color:rgba(255,255,255,0.4);">${SIDE_ICONS.chevronLeft} الرجوع لمحتوى الكورس</a>
+      </div>
+    </div>
+    <div class="container" style="margin-top:24px;">
+      <div class="lesson-layout">
+        <div>
+          <div class="detail-card">${mainContentHTML}</div>
+          ${lesson.description ? `
+            <div class="detail-card">
+              <h3>عن هذا الدرس</h3>
+              <p style="color:var(--muted);line-height:1.9;font-size:14.5px;margin:0;">${lesson.description}</p>
+            </div>
+          ` : ''}
+          ${resourcesHTML}
+          <div class="detail-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+              <button class="btn ${isDone ? 'btn-primary' : 'btn-ghost'}" id="lessonCompleteBtn" data-completed="${isDone}">
+                ${isDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل'}
+              </button>
+              <div style="text-align:left;">
+                <div style="font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">قيّم هذا الدرس</div>
+                ${starPickerHTML('lessonDetailStarPicker', myRating)}
+              </div>
+            </div>
+          </div>
+          <div class="lesson-nav-row">
+            ${prevLesson ? `
+              <a href="#/lesson/${prevLesson.id}" class="lesson-nav-btn prev">
+                <span class="side-ic" style="transform:rotate(180deg);display:inline-flex;">${SIDE_ICONS.chevronLeft}</span>
+                <div><div class="lnb-dir">الدرس السابق</div><div class="lnb-title">${prevLesson.title}</div></div>
+              </a>
+            ` : `<div style="flex:1;"></div>`}
+            ${nextLesson ? `
+              <a href="#/lesson/${nextLesson.id}" class="lesson-nav-btn next">
+                <span class="side-ic">${SIDE_ICONS.chevronLeft}</span>
+                <div><div class="lnb-dir">الدرس التالي</div><div class="lnb-title">${nextLesson.title}</div></div>
+              </a>
+            ` : `<div style="flex:1;"></div>`}
+          </div>
+        </div>
+        <div class="detail-card lesson-toc">
+          <h3 style="margin-bottom:10px;">محتوى الكورس</h3>
+          ${tocHTML}
         </div>
       </div>
     </div>
   `;
 
-  document.getElementById('lessonCompleteBtn').addEventListener('click', async (e) => {
+  document.getElementById('lessonCompleteBtn')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     const wasDone = btn.dataset.completed === 'true';
     const nowDone = !wasDone;
@@ -4553,30 +4981,27 @@ async function renderLessonPage(lessonId){
       btn.innerHTML = nowDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل';
       btn.classList.toggle('btn-primary', nowDone);
       btn.classList.toggle('btn-ghost', !nowDone);
-      const outlineItem = document.querySelector('.lesson-outline-item.active');
-      if(outlineItem){
-        outlineItem.classList.toggle('done', nowDone);
-        const numEl = outlineItem.querySelector('.loi-num');
-        if(numEl) numEl.innerHTML = nowDone ? SIDE_ICONS.check : String(myIndex + 1);
+      const tocItem = document.querySelector(`.lesson-toc-item.active`);
+      if(tocItem){
+        tocItem.classList.toggle('done', nowDone);
+        const num = tocItem.querySelector('.tc-num');
+        if(num) num.innerHTML = nowDone ? SIDE_ICONS.check : num.textContent;
       }
-    }catch(err){
+    }catch(e2){
       alert('تعذّر تحديث حالة الدرس.');
     }
     btn.disabled = false;
   });
 
-  wireInlineStarPicker('lessonPageStarPicker', async (val) => {
+  wireInlineStarPicker('lessonDetailStarPicker', async (val) => {
     try{
       await setDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lesson.id}`), {
         type: 'lesson', targetId: lesson.id, courseId: course.id,
         studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
         rating: val, createdAt: serverTimestamp(),
       });
-      const fresh = await fetchTargetRatingsMap('lesson', course.id);
-      const r = fresh[lesson.id];
-      const summary = document.getElementById('lessonRatingSummary');
-      if(summary && r) summary.innerHTML = `${starRowHTML(r.avg)} ${r.avg.toFixed(1)} (${r.count})`;
-    }catch(e){
+      showSuccessToast('تم حفظ تقييمك!', '');
+    }catch(e3){
       alert('تعذّر حفظ تقييمك.');
     }
   });
@@ -4844,7 +5269,7 @@ async function manageRenderContent(area, course){
                 <div class="lesson-type-icon">${LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text}</div>
                 <div style="flex:1;">
                   <div style="font-weight:600;">${l.title} ${l.isPreviewFree ? '<span class="preview-pill">معاينة مجانية</span>' : ''}</div>
-                  <div style="font-size:12px;color:var(--muted);">${LESSON_TYPE_LABEL[l.type] || ''}</div>
+                  <div style="font-size:12px;color:var(--muted);">${LESSON_TYPE_LABEL[l.type] || ''}${l.resourcesCount ? ` · ${l.resourcesCount} مرفق إضافي` : ''}</div>
                 </div>
                 <button class="btn btn-sm btn-danger" data-dellesson="${l.id}">حذف</button>
               </div>
@@ -4856,7 +5281,7 @@ async function manageRenderContent(area, course){
                   <input type="text" class="lessonTitle" required />
                 </div>
                 <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
-                  <label>النوع</label>
+                  <label>النوع الأساسي</label>
                   <select class="lessonType">
                     <option value="drive">فيديو (Google Drive)</option>
                     <option value="youtube">فيديو (YouTube)</option>
@@ -4869,9 +5294,20 @@ async function manageRenderContent(area, course){
                 </div>
               </div>
               <div class="field" style="margin-bottom:0;">
-                <label>المحتوى (رابط الفيديو/الملف/الرابط، أو النص لو نوع "نص")</label>
+                <label>المحتوى الأساسي (رابط الفيديو/الملف/الرابط، أو النص لو نوع "نص")</label>
                 <input type="text" class="lessonContent" required placeholder="مثال: https://drive.google.com/file/d/XXXX/view" />
                 <div class="field-hint">لو Google Drive: تأكد إن صلاحية المشاركة "أي شخص لديه الرابط" وإلا الطلاب مش هيقدروا يشوفوا الفيديو.</div>
+              </div>
+              <div class="field" style="margin-bottom:0;">
+                <label>وصف الدرس (اختياري — يظهر في أعلى صفحة الدرس)</label>
+                <textarea class="lessonDescription" rows="2" placeholder="ملخص قصير عن محتوى الدرس..."></textarea>
+              </div>
+              <div>
+                <label style="display:block;font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">مرفقات إضافية (اختياري — مثال: ملف PDF مع الفيديو، رابط تمارين...)</label>
+                <div class="lessonResourcesArea" style="display:flex;flex-direction:column;gap:8px;"></div>
+                <button type="button" class="btn btn-ghost btn-sm addResourceRowBtn" style="margin-top:8px;">
+                  <span class="side-ic" style="width:13px;height:13px;">${SIDE_ICONS.plus}</span> إضافة مرفق
+                </button>
               </div>
               <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;">
                 <input type="checkbox" class="lessonPreviewFree" style="width:16px;height:16px;accent-color:var(--violet-700);" />
@@ -4915,6 +5351,32 @@ async function manageRenderContent(area, course){
         });
       });
 
+      // Dynamic "extra attachment" row builder for the add-lesson form — lets admin attach
+      // more than one file/link to a single lesson (e.g. a video + a PDF handout together).
+      const RESOURCE_TYPE_OPTIONS = `
+        <option value="pdf">ملف PDF</option>
+        <option value="drive">فيديو (Google Drive)</option>
+        <option value="youtube">فيديو (YouTube)</option>
+        <option value="file">ملف</option>
+        <option value="link">رابط</option>
+      `;
+      modArea.querySelectorAll('.addResourceRowBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const wrap = btn.closest('.addLessonForm').querySelector('.lessonResourcesArea');
+          const row = document.createElement('div');
+          row.className = 'resource-row';
+          row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center;';
+          row.innerHTML = `
+            <input type="text" class="res-title" placeholder="اسم المرفق (مثال: ملخص الدرس)" style="flex:1;min-width:140px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <select class="res-type" style="height:38px;border:1px solid var(--line);border-radius:9px;padding:0 8px;font-size:13px;">${RESOURCE_TYPE_OPTIONS}</select>
+            <input type="text" class="res-url" placeholder="الرابط" style="flex:1.4;min-width:160px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <button type="button" class="icon-action danger removeResourceRowBtn" title="حذف المرفق">${SIDE_ICONS.trash}</button>
+          `;
+          row.querySelector('.removeResourceRowBtn').addEventListener('click', () => row.remove());
+          wrap.appendChild(row);
+        });
+      });
+
       modArea.querySelectorAll('.addLessonForm').forEach(form => {
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
@@ -4922,16 +5384,23 @@ async function manageRenderContent(area, course){
           const title = form.querySelector('.lessonTitle').value.trim();
           const type = form.querySelector('.lessonType').value;
           const content = form.querySelector('.lessonContent').value.trim();
+          const description = form.querySelector('.lessonDescription').value.trim();
           const isPreviewFree = form.querySelector('.lessonPreviewFree').checked;
+          const resources = Array.from(form.querySelectorAll('.resource-row')).map(row => ({
+            title: row.querySelector('.res-title').value.trim(),
+            type: row.querySelector('.res-type').value,
+            url: row.querySelector('.res-url').value.trim(),
+          })).filter(r => r.url);
           if(!title || !content) return;
           try{
             const ref = await addDoc(collection(db, 'lessons'), {
-              courseId: course.id, moduleId: modId, title, type, isPreviewFree,
+              courseId: course.id, moduleId: modId, title, type, description, isPreviewFree,
+              resourcesCount: resources.length,
               order: lessons.filter(l => l.moduleId === modId).length,
               createdAt: serverTimestamp(),
             });
-            await setDoc(doc(db, 'lessons', ref.id, 'private', 'content'), { content });
-            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, type, content, isPreviewFree });
+            await setDoc(doc(db, 'lessons', ref.id, 'private', 'content'), { content, resources });
+            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, type, description, content, resources, isPreviewFree, resourcesCount: resources.length });
             renderModules();
           }catch(e){
             alert('تعذّر إضافة الدرس.');
@@ -5792,6 +6261,8 @@ async function loadAdminTab(tab){
   if(tab === 'overview') return adminRenderOverview(area);
   if(tab === 'users') return adminRenderUsers(area);
   if(tab === 'categories') return adminRenderCategories(area);
+  if(tab === 'archive') return adminRenderArchive(area);
+  if(tab === 'library') return adminRenderLibraryReview(area);
   if(tab === 'courses') return adminRenderCourses(area);
   if(tab === 'review') return adminRenderCourseReview(area);
   if(tab === 'payments') return adminRenderPayments(area);
@@ -6092,6 +6563,10 @@ async function adminRenderCategories(area){
             <label>وصف مختصر</label>
             <input type="text" id="catDesc" placeholder="وصف القسم" />
           </div>
+          <div class="field" style="margin-bottom:0;flex:2;min-width:220px;">
+            <label>رابط صورة القسم (اختياري)</label>
+            <input type="url" id="catImage" placeholder="https://..." />
+          </div>
           <button type="submit" class="btn btn-primary" style="height:44px;">
             <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة قسم
           </button>
@@ -6116,7 +6591,7 @@ async function adminRenderCategories(area){
         return `
           <div class="cat-tree-root" data-root-id="${root.id}" style="border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px;">
             <div class="table-widget-row">
-              <div class="avatar-sm">${SIDE_ICONS.tag}</div>
+              <div class="avatar-sm" ${root.imageUrl ? `style="padding:0;overflow:hidden;"` : ''}>${root.imageUrl ? `<img src="${root.imageUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />` : SIDE_ICONS.tag}</div>
               <div class="grow">
                 <div class="t1">${root.name || ''}</div>
                 <div class="t2">${root.description || ''}${subs.length ? ` · ${subs.length} مجال فرعي` : ''}</div>
@@ -6202,10 +6677,11 @@ async function adminRenderCategories(area){
       e.preventDefault();
       const name = document.getElementById('catName').value.trim();
       const description = document.getElementById('catDesc').value.trim();
+      const imageUrl = document.getElementById('catImage').value.trim();
       if(!name) return;
       try{
-        const ref = await addDoc(collection(db, 'categories'), { name, description, parentId: null, createdAt: serverTimestamp() });
-        cats.push({ id: ref.id, name, description, parentId: null });
+        const ref = await addDoc(collection(db, 'categories'), { name, description, imageUrl: imageUrl || null, parentId: null, createdAt: serverTimestamp() });
+        cats.push({ id: ref.id, name, description, imageUrl: imageUrl || null, parentId: null });
         categoriesCache = null;
         renderList();
         document.getElementById('addCategoryForm').reset();
@@ -6218,6 +6694,165 @@ async function adminRenderCategories(area){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل الأقسام.</div>`;
   }
 }
+
+/* ---------------- ADMIN: ARCHIVE ROOM ---------------- */
+async function adminRenderArchive(area){
+  try{
+    const snap = await getDocs(collection(db, 'archiveLectures'));
+    let items = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>إضافة محاضرة لغرفة الأرشيف</h3></div>
+        <form id="addArchiveForm" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <div class="field" style="margin-bottom:0;flex:2;min-width:160px;">
+              <label>عنوان المحاضرة</label>
+              <input type="text" id="arcTitle" required />
+            </div>
+            <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
+              <label>النوع</label>
+              <select id="arcType">
+                <option value="drive">فيديو (Google Drive)</option>
+                <option value="youtube">فيديو (YouTube)</option>
+                <option value="pdf">ملف PDF</option>
+                <option value="file">ملف</option>
+                <option value="link">رابط</option>
+              </select>
+            </div>
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>الرابط</label>
+            <input type="text" id="arcUrl" required placeholder="https://..." />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>وصف مختصر (اختياري)</label>
+            <input type="text" id="arcDesc" />
+          </div>
+          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">إضافة للأرشيف</button>
+        </form>
+      </div>
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>محاضرات الأرشيف الحالية</h3></div>
+        <div id="archiveAdminList"></div>
+      </div>
+    `;
+
+    function renderList(){
+      const listEl = document.getElementById('archiveAdminList');
+      if(items.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد محاضرات بعد.</div>`;
+        return;
+      }
+      listEl.innerHTML = items.map(it => `
+        <div class="table-widget-row">
+          <div class="avatar-sm">${LESSON_TYPE_ICON[it.type] || LESSON_TYPE_ICON.file}</div>
+          <div class="grow">
+            <div class="t1">${it.title}</div>
+            <div class="t2">${it.description || LESSON_TYPE_LABEL[it.type] || ''}</div>
+          </div>
+          <button type="button" class="icon-action danger" data-id="${it.id}" title="حذف">${SIDE_ICONS.trash}</button>
+        </div>
+      `).join('');
+      listEl.querySelectorAll('button[data-id]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('حذف هذه المحاضرة من الأرشيف؟')) return;
+          try{
+            await deleteDoc(doc(db, 'archiveLectures', btn.dataset.id));
+            items = items.filter(x => x.id !== btn.dataset.id);
+            renderList();
+          }catch(e){
+            alert('تعذّر الحذف.');
+          }
+        });
+      });
+    }
+    renderList();
+
+    document.getElementById('addArchiveForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('arcTitle').value.trim();
+      const type = document.getElementById('arcType').value;
+      const url = document.getElementById('arcUrl').value.trim();
+      const description = document.getElementById('arcDesc').value.trim();
+      if(!title || !url) return;
+      try{
+        const ref = await addDoc(collection(db, 'archiveLectures'), {
+          title, type, url, description, uploadedBy: currentUser.uid, createdAt: serverTimestamp(),
+        });
+        items.unshift({ id: ref.id, title, type, url, description });
+        renderList();
+        document.getElementById('addArchiveForm').reset();
+        showSuccessToast('تمت الإضافة للأرشيف!', title);
+      }catch(e){
+        alert('تعذّر إضافة المحاضرة.');
+      }
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الأرشيف.</div>`;
+  }
+}
+
+/* ---------------- ADMIN: LIBRARY REVIEW ---------------- */
+async function adminRenderLibraryReview(area){
+  try{
+    const snap = await getDocs(collection(db, 'libraryWorks'));
+    let works = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head"><h3>مراجعة أعمال المكتبة</h3></div>
+        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">وافق على العمل عشان يظهر للمستخدمين في المكتبة، أو ارفضه.</p>
+        <div id="libraryReviewList"></div>
+      </div>
+    `;
+
+    function renderList(){
+      const listEl = document.getElementById('libraryReviewList');
+      if(works.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد أعمال مرسلة بعد.</div>`;
+        return;
+      }
+      listEl.innerHTML = works.map(w => `
+        <div class="table-widget-row">
+          <img src="${(w.images && w.images[0]) || ''}" style="width:44px;height:44px;border-radius:9px;object-fit:cover;flex-shrink:0;" />
+          <div class="grow">
+            <div class="t1">${w.title || 'بدون عنوان'}</div>
+            <div class="t2">${w.authorName || ''} · ${LIBRARY_GROUPS.find(g => g.key === w.group)?.label || w.group} · ${(w.images||[]).length} صفحة · ${LIBRARY_STATUS_LABEL[w.status] || w.status}</div>
+          </div>
+          <a href="#/library-work/${w.id}" target="_blank" class="btn btn-ghost btn-sm">معاينة</a>
+          ${w.status !== 'approved' ? `<button type="button" class="btn btn-sm btn-primary" data-approve="${w.id}">قبول</button>` : ''}
+          ${w.status !== 'rejected' ? `<button type="button" class="btn btn-sm btn-danger" data-reject="${w.id}">رفض</button>` : ''}
+        </div>
+      `).join('');
+
+      listEl.querySelectorAll('button[data-approve]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try{
+            await updateDoc(doc(db, 'libraryWorks', btn.dataset.approve), { status: 'approved' });
+            const w = works.find(x => x.id === btn.dataset.approve); if(w) w.status = 'approved';
+            renderList();
+          }catch(e){ alert('تعذّر تحديث حالة العمل.'); }
+        });
+      });
+      listEl.querySelectorAll('button[data-reject]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          try{
+            await updateDoc(doc(db, 'libraryWorks', btn.dataset.reject), { status: 'rejected' });
+            const w = works.find(x => x.id === btn.dataset.reject); if(w) w.status = 'rejected';
+            renderList();
+          }catch(e){ alert('تعذّر تحديث حالة العمل.'); }
+        });
+      });
+    }
+    renderList();
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل أعمال المكتبة.</div>`;
+  }
+}
+const LIBRARY_STATUS_LABEL = { pending:'قيد المراجعة', approved:'مقبول', rejected:'مرفوض' };
 
 async function adminRenderCourses(area){
   try{
