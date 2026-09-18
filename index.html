@@ -381,6 +381,102 @@
   /* Bottom sheet (used for "account" and admin "more") */
   .sheet-overlay{position:fixed;inset:0;background:rgba(34,21,48,0.45);z-index:60;display:flex;align-items:flex-end;}
   .sheet-panel{background:#fff;width:100%;border-radius:20px 20px 0 0;padding:18px 20px calc(18px + env(safe-area-inset-bottom));max-height:78vh;overflow-y:auto;}
+
+  /* ---- Clickable hero stats (rating / students / units / lessons) on the course detail page ---- */
+  .hero-stat-btn{
+    display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.24);color:#fff;font:inherit;font-size:13px;
+    padding:6px 13px;border-radius:999px;cursor:pointer;transition:background .2s ease,transform .2s ease,box-shadow .2s ease;
+  }
+  .hero-stat-btn:hover{background:rgba(255,255,255,0.24);transform:translateY(-2px);box-shadow:0 8px 18px -8px rgba(0,0,0,0.35);}
+  .hero-stat-btn:active{transform:translateY(0) scale(0.96);}
+
+  /* ---- Premium course-stat modal (rating / students / units / lessons) ---- */
+  .cm-overlay{
+    position:fixed;inset:0;z-index:85;display:flex;align-items:center;justify-content:center;
+    background:rgba(20,12,32,0.55);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+    padding:18px;opacity:0;animation:cmFade .25s ease forwards;
+  }
+  .cm-overlay.leaving{animation:cmFadeOut .2s ease forwards;}
+  @keyframes cmFade{to{opacity:1;}}
+  @keyframes cmFadeOut{to{opacity:0;}}
+  .cm-panel{
+    background:#fff;width:100%;max-width:460px;max-height:86vh;overflow-y:auto;
+    border-radius:24px;position:relative;box-shadow:0 30px 80px -20px rgba(34,21,48,0.55);
+    transform:translateY(26px) scale(0.94);opacity:0;
+    animation:cmPanelIn .45s cubic-bezier(.34,1.56,.64,1) .05s forwards;
+  }
+  .cm-overlay.leaving .cm-panel{animation:cmPanelOut .2s ease forwards;}
+  @keyframes cmPanelIn{to{transform:translateY(0) scale(1);opacity:1;}}
+  @keyframes cmPanelOut{to{transform:translateY(14px) scale(0.96);opacity:0;}}
+  .cm-close{
+    position:absolute;top:14px;left:14px;width:32px;height:32px;border-radius:50%;
+    background:rgba(255,255,255,0.9);color:var(--violet-900);display:flex;align-items:center;
+    justify-content:center;cursor:pointer;border:none;z-index:2;box-shadow:0 4px 12px rgba(0,0,0,0.16);transition:transform .15s;
+  }
+  .cm-close:hover{transform:scale(1.08);}
+  .cm-head{
+    padding:26px 24px 20px;border-radius:24px 24px 0 0;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--violet-700),var(--violet-900));
+  }
+  .cm-head::after{
+    content:'';position:absolute;inset:0;background:radial-gradient(circle at 88% -15%, rgba(226,163,59,0.4), transparent 55%);
+  }
+  .cm-head-ic{
+    position:relative;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,0.16);
+    display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+    animation:cmHeadIcIn .5s cubic-bezier(.34,1.56,.64,1) .1s both;
+  }
+  @keyframes cmHeadIcIn{0%{transform:scale(0) rotate(-20deg);}100%{transform:scale(1) rotate(0);}}
+  .cm-head h3{position:relative;margin:0 0 4px;font-size:18px;}
+  .cm-head p{position:relative;margin:0;font-size:12.5px;opacity:0.85;}
+  .cm-body{padding:22px 24px 26px;}
+  .cm-empty{padding:30px 6px;text-align:center;color:var(--muted);font-size:13.5px;}
+
+  /* review modal — big animated star picker */
+  .cm-star-row{display:flex;justify-content:center;gap:8px;margin:6px 0 4px;}
+  .cm-star-row span{cursor:pointer;display:inline-flex;transition:transform .18s cubic-bezier(.34,1.56,.64,1);color:var(--line);}
+  .cm-star-row span svg{width:36px;height:36px;}
+  .cm-star-row span:hover{transform:scale(1.2) rotate(-6deg);}
+  .cm-star-row span.lit{color:var(--amber-500);animation:cmStarPop .35s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes cmStarPop{0%{transform:scale(0.55);}60%{transform:scale(1.3);}100%{transform:scale(1);}}
+  .cm-star-label{text-align:center;font-size:13px;color:var(--violet-700);font-weight:800;min-height:18px;margin-bottom:14px;transition:opacity .15s;}
+
+  /* students list */
+  .cm-student-row{
+    display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);
+    opacity:0;transform:translateY(6px);animation:cmRowIn .35s ease forwards;
+  }
+  .cm-student-row:last-child{border-bottom:none;}
+  @keyframes cmRowIn{to{opacity:1;transform:translateY(0);}}
+  .cm-avatar-sm{
+    width:38px;height:38px;border-radius:50%;background:var(--mist);color:var(--violet-700);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;
+  }
+
+  /* units / lessons list */
+  .cm-unit-block{margin-bottom:18px;}
+  .cm-unit-block:last-child{margin-bottom:0;}
+  .cm-unit-head{
+    display:flex;align-items:center;gap:8px;justify-content:space-between;font-weight:800;color:var(--violet-900);
+    font-size:14px;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--mist);
+  }
+  .cm-unit-num{
+    width:24px;height:24px;border-radius:8px;background:var(--violet-700);color:#fff;font-size:12px;
+    display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .cm-lesson-row{
+    display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;font-size:13.5px;
+    background:var(--mist);margin-bottom:6px;opacity:0;transform:translateY(6px);animation:cmRowIn .32s ease forwards;color:var(--ink);
+  }
+  .cm-lesson-ic{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff;color:var(--violet-700);}
+  .cm-type-group-label{
+    font-size:12px;font-weight:800;color:var(--amber-600);margin:16px 0 8px;display:flex;align-items:center;gap:6px;
+  }
+  .cm-type-group-label:first-child{margin-top:0;}
+  .cm-type-count{
+    background:var(--mist);color:var(--violet-700);border-radius:999px;padding:1px 9px;font-size:11px;font-weight:800;
+  }
   .sheet-handle{width:38px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 18px;}
   .sheet-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--violet-900);margin-bottom:16px;}
   .sheet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 8px;}
@@ -965,6 +1061,71 @@
     .ccard-cta svg{width:12px;height:12px;}
     .course-row-track .course-card{width:150px;}
   }
+
+  /* ================= SUCCESS TOAST — delightful animated confirmation for "add" actions ================= */
+  #successToastLayer{
+    position:fixed;top:22px;left:50%;transform:translateX(-50%);z-index:400;
+    display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;
+    width:100%;padding:0 16px;
+  }
+  .success-toast{
+    pointer-events:auto;cursor:pointer;
+    display:flex;align-items:center;gap:14px;
+    background:#fff;border:1.5px solid var(--line);
+    border-radius:16px;padding:13px 20px 13px 16px;
+    box-shadow:0 24px 60px -18px rgba(34,21,48,0.4);
+    min-width:230px;max-width:380px;
+    opacity:0;transform:translateY(-30px) scale(0.85);
+    animation: toastIn .55s cubic-bezier(.34,1.56,.64,1) forwards;
+    position:relative;overflow:visible;
+  }
+  .success-toast.leaving{ animation: toastOut .3s ease forwards; }
+  @keyframes toastIn{
+    0%{opacity:0;transform:translateY(-30px) scale(0.8);}
+    60%{opacity:1;transform:translateY(4px) scale(1.04);}
+    100%{opacity:1;transform:translateY(0) scale(1);}
+  }
+  @keyframes toastOut{ to{opacity:0;transform:translateY(-16px) scale(0.9);} }
+  .success-toast .st-icon-wrap{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;position:relative;
+    background:linear-gradient(135deg,#3FBE7B,#1F9159);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px -6px rgba(31,145,89,0.6);
+    animation: stPop .5s cubic-bezier(.34,1.56,.64,1) .08s both;
+  }
+  @keyframes stPop{ 0%{transform:scale(0);} 65%{transform:scale(1.18);} 100%{transform:scale(1);} }
+  .success-toast .st-icon-wrap svg{overflow:visible;}
+  .success-toast .st-check-path{
+    stroke-dasharray:24;stroke-dashoffset:24;
+    animation: stDraw .35s ease .32s forwards;
+  }
+  @keyframes stDraw{ to{ stroke-dashoffset:0; } }
+  .success-toast .st-ring{
+    position:absolute;inset:-6px;border-radius:50%;
+    border:2px solid #3FBE7B;opacity:0;
+    animation: stRing .7s ease .12s forwards;
+  }
+  @keyframes stRing{
+    0%{transform:scale(0.6);opacity:0.75;}
+    100%{transform:scale(1.7);opacity:0;}
+  }
+  .success-toast .st-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .success-toast .st-title{font-size:14.5px;font-weight:800;color:var(--violet-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .success-toast .st-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px;}
+  .success-toast .st-confetti{position:absolute;inset:0;pointer-events:none;overflow:visible;}
+  .success-toast .st-confetti span{
+    position:absolute;top:19px;width:6px;height:6px;border-radius:2px;opacity:0;
+    animation: confettiPop .75s ease forwards;
+  }
+  @keyframes confettiPop{
+    0%{opacity:0;transform:translate(0,0) rotate(0deg) scale(0.4);}
+    12%{opacity:1;}
+    100%{opacity:0;transform:translate(var(--tx), var(--ty)) rotate(var(--tr)) scale(1);}
+  }
+  @media (max-width:520px){
+    #successToastLayer{top:14px;}
+    .success-toast{max-width:none;width:100%;}
+  }
 </style>
 </head>
 <body>
@@ -1068,6 +1229,65 @@ const storage = getStorage(app);
 
 let currentUser = null;
 let currentProfile = null;
+
+/* ---------------- SUCCESS TOAST (delightful animated confirmation for "add" actions) ----------------
+   A small, self-contained "yes, that worked!" moment: a green circle pops in, a checkmark draws
+   itself, a soft pulse ring expands outward, and a little confetti burst fires around it — then
+   the toast settles and auto-dismisses. Used across the admin panel any time something new is
+   created (a category, a sub-category, a course, a payment method, a certificate, a notification…). */
+function ensureToastLayer(){
+  let layer = document.getElementById('successToastLayer');
+  if(!layer){
+    layer = document.createElement('div');
+    layer.id = 'successToastLayer';
+    document.body.appendChild(layer);
+  }
+  return layer;
+}
+const TOAST_CONFETTI_COLORS = ['#6E4BAF', '#E2A33B', '#3FBE7B', '#3B6FBF', '#C98826'];
+function toastConfettiHTML(){
+  let out = '';
+  const n = 10;
+  for(let i = 0; i < n; i++){
+    const angle = (Math.PI * 2 * i) / n + (Math.random() * 0.5);
+    const dist = 32 + Math.random() * 24;
+    const tx = Math.round(Math.cos(angle) * dist);
+    const ty = Math.round(Math.sin(angle) * dist - 8);
+    const tr = Math.round(Math.random() * 360 - 180);
+    const color = TOAST_CONFETTI_COLORS[i % TOAST_CONFETTI_COLORS.length];
+    const delay = (Math.random() * 0.12).toFixed(2);
+    out += `<span style="right:20px;background:${color};--tx:${tx}px;--ty:${ty}px;--tr:${tr}deg;animation-delay:${delay}s;"></span>`;
+  }
+  return out;
+}
+function showSuccessToast(title, subtitle){
+  const layer = ensureToastLayer();
+  const toast = document.createElement('div');
+  toast.className = 'success-toast';
+  toast.innerHTML = `
+    <div class="st-confetti">${toastConfettiHTML()}</div>
+    <div class="st-icon-wrap">
+      <span class="st-ring"></span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <path class="st-check-path" d="M5 13l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="st-text">
+      <span class="st-title">${title}</span>
+      ${subtitle ? `<span class="st-sub">${subtitle}</span>` : ''}
+    </div>
+  `;
+  layer.appendChild(toast);
+  let dismissed = false;
+  const remove = () => {
+    if(dismissed) return;
+    dismissed = true;
+    toast.classList.add('leaving');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  };
+  const timer = setTimeout(remove, 2800);
+  toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
+}
 
 /* ---------------- ICONS (inline SVG, stroke style) ---------------- */
 const ICONS = {
@@ -2375,6 +2595,12 @@ async function renderCourseDetail(courseId){
     `;
   }).join('');
 
+  // Rating / students / units / lessons chips become clickable, animated stat buttons for a
+  // student who owns the course; anyone else just sees the plain read-only chips as before.
+  const statTag = (action, innerHTML) => isEnrolledStudent
+    ? `<button type="button" class="hero-stat-btn" data-stat="${action}">${innerHTML}</button>`
+    : `<span>${innerHTML}</span>`;
+
   app.innerHTML = `
     ${!isCourseApproved(course) ? `
       <div style="background:var(--amber-500);color:var(--violet-900);text-align:center;padding:8px;font-size:13px;font-weight:700;">
@@ -2386,10 +2612,10 @@ async function renderCourseDetail(courseId){
         <h2 style="color:#fff;margin:0 0 8px;font-size:26px;">${course.title || 'كورس'}</h2>
         <p style="color:#fff;opacity:0.85;font-size:14.5px;max-width:60ch;margin:0 0 6px;">${course.description ? course.description.slice(0,140) : ''}</p>
         <div class="hero-meta-row">
-          ${reviewData.count ? `<span>${starRowHTML(reviewData.avg)} <span style="margin-right:4px;">${reviewData.avg.toFixed(1)} (${reviewData.count} تقييم)</span></span>` : `<span>لا توجد تقييمات بعد</span>`}
-          <span>${SIDE_ICONS.users} ${studentsCount} طالب</span>
-          <span>${SIDE_ICONS.layers} ${modules.length} وحدة</span>
-          <span>${SIDE_ICONS.playCircle} ${lessons.length} محاضرة</span>
+          ${statTag('reviews', reviewData.count ? `${starRowHTML(reviewData.avg)} <span style="margin-right:4px;">${reviewData.avg.toFixed(1)} (${reviewData.count} تقييم)</span>` : `لا توجد تقييمات بعد`)}
+          ${statTag('students', `${SIDE_ICONS.users} ${studentsCount} طالب`)}
+          ${statTag('units', `${SIDE_ICONS.layers} ${modules.length} وحدة`)}
+          ${statTag('lessons', `${SIDE_ICONS.playCircle} ${lessons.length} محاضرة`)}
           ${course.durationText ? `<span>${SIDE_ICONS.clock} ${course.durationText}</span>` : ''}
           ${course.level ? `<span>${course.level}</span>` : ''}
         </div>
@@ -2481,6 +2707,273 @@ async function renderCourseDetail(courseId){
       </div>
     </div>
   `;
+
+  // The rating / students / units / lessons chips in the hero are only clickable for a
+  // student who actually owns the course — everyone else sees the same plain <span> row
+  // as before, with no click behaviour.
+  if(isEnrolledStudent){
+    document.querySelectorAll('.hero-meta-row .hero-stat-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const stat = btn.dataset.stat;
+        if(stat === 'reviews') openCourseReviewModal(course);
+        else if(stat === 'students') openCourseStudentsModal(course);
+        else if(stat === 'units') openCourseUnitsModal(course, modules, lessons);
+        else if(stat === 'lessons') openCourseLessonsModal(course, modules, lessons);
+      });
+    });
+  }
+}
+
+/* ================================================================
+   PREMIUM COURSE-STAT MODALS
+   Triggered from the clickable hero chips on the course detail page
+   (rating / students / units / lessons) — enrolled students only.
+   ================================================================ */
+
+function closeCourseModal(){
+  const existing = document.getElementById('activeCourseModal');
+  if(!existing) return;
+  existing.classList.add('leaving');
+  setTimeout(() => existing.remove(), 200);
+}
+
+function openCourseModal({ title, subtitle, headIcon, bodyHTML }){
+  closeCourseModal();
+  const overlay = document.createElement('div');
+  overlay.className = 'cm-overlay';
+  overlay.id = 'activeCourseModal';
+  overlay.innerHTML = `
+    <div class="cm-panel">
+      <button type="button" class="cm-close" data-close-cm aria-label="إغلاق">${SIDE_ICONS.close}</button>
+      <div class="cm-head">
+        ${headIcon ? `<div class="cm-head-ic">${headIcon}</div>` : ''}
+        <h3>${title}</h3>
+        ${subtitle ? `<p>${subtitle}</p>` : ''}
+      </div>
+      <div class="cm-body">${bodyHTML}</div>
+    </div>
+  `;
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) closeCourseModal(); });
+  overlay.querySelector('[data-close-cm]').addEventListener('click', closeCourseModal);
+  document.addEventListener('keydown', function escHandler(e){
+    if(e.key === 'Escape'){ closeCourseModal(); document.removeEventListener('keydown', escHandler); }
+  });
+  document.body.appendChild(overlay);
+  return overlay;
+}
+
+/* A bigger, standalone star SVG for the review modal's hero-sized picker (the shared
+   SIDE_ICONS.starFilled is sized for compact inline use, too small here). */
+function cmBigStarSVG(){
+  return `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14 18.18 21 12 17.27 5.82 21 7.5 14 2 9.24 8.91 8.63 12 2"/></svg>`;
+}
+const CM_STAR_LABELS = { 1:'ضعيف', 2:'مقبول', 3:'جيد', 4:'جيد جدًا', 5:'ممتاز! 🌟' };
+
+/* ---------------- 1) RATING — beautiful review-submission modal ---------------- */
+async function openCourseReviewModal(course){
+  const overlay = openCourseModal({
+    title: 'قيّم هذا الكورس',
+    subtitle: 'رأيك بيساعد طلاب تانيين يختاروا صح',
+    headIcon: SIDE_ICONS.starFilled,
+    bodyHTML: `<div id="cmReviewBody" class="cm-empty">جارٍ التحميل...</div>`,
+  });
+  const body = overlay.querySelector('#cmReviewBody');
+
+  let existing = null, instructorExisting = null;
+  try{
+    const courseReviewId = `${currentUser.uid}_course_${course.id}`;
+    const existingSnap = await getDoc(doc(db, 'reviews', courseReviewId));
+    existing = existingSnap.exists() ? existingSnap.data() : null;
+    if(course.instructorId){
+      const instSnap = await getDoc(doc(db, 'reviews', `${currentUser.uid}_instructor_${course.instructorId}`));
+      instructorExisting = instSnap.exists() ? instSnap.data() : null;
+    }
+  }catch(e){ /* start fresh if it fails */ }
+
+  if(!document.getElementById('activeCourseModal')) return; // closed while loading
+
+  body.className = '';
+  body.innerHTML = `
+    <div class="cm-star-row" id="cmCourseStars" data-value="${existing?.rating || 0}">
+      ${[1,2,3,4,5].map(i => `<span data-star="${i}" class="${i <= (existing?.rating||0) ? 'lit' : ''}">${cmBigStarSVG()}</span>`).join('')}
+    </div>
+    <div class="cm-star-label" id="cmCourseStarLabel">${existing?.rating ? CM_STAR_LABELS[existing.rating] : ''}</div>
+    <div class="field">
+      <label>تعليقك (اختياري)</label>
+      <input type="text" id="cmCourseComment" value="${existing?.comment ? existing.comment.replace(/"/g,'&quot;') : ''}" placeholder="شاركنا رأيك في الكورس" />
+    </div>
+    ${course.instructorId ? `
+      <h4 style="font-size:14px;color:var(--violet-900);margin:20px 0 4px;text-align:center;">تقييمك للمدرب</h4>
+      <div class="cm-star-row" id="cmInstructorStars" data-value="${instructorExisting?.rating || 0}" style="gap:6px;">
+        ${[1,2,3,4,5].map(i => `<span data-star="${i}" class="${i <= (instructorExisting?.rating||0) ? 'lit' : ''}" style="transform:scale(0.75);">${cmBigStarSVG()}</span>`).join('')}
+      </div>
+    ` : ''}
+    <button class="btn btn-primary btn-full" id="cmSubmitReviewBtn" style="margin-top:18px;">${existing ? 'تحديث تقييمي' : 'إرسال التقييم'}</button>
+    <div id="cmReviewAlert" style="margin-top:12px;"></div>
+  `;
+
+  const wireBigStars = (rowId, labelId) => {
+    const row = document.getElementById(rowId);
+    row.querySelectorAll('[data-star]').forEach(star => {
+      star.addEventListener('click', () => {
+        const val = Number(star.dataset.star);
+        row.dataset.value = val;
+        row.querySelectorAll('[data-star]').forEach(s => s.classList.toggle('lit', Number(s.dataset.star) <= val));
+        if(labelId) document.getElementById(labelId).textContent = CM_STAR_LABELS[val] || '';
+      });
+    });
+  };
+  wireBigStars('cmCourseStars', 'cmCourseStarLabel');
+  if(course.instructorId) wireBigStars('cmInstructorStars', null);
+
+  document.getElementById('cmSubmitReviewBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('cmSubmitReviewBtn');
+    const alertBox = document.getElementById('cmReviewAlert');
+    const courseRating = Number(document.getElementById('cmCourseStars').dataset.value || 0);
+    if(courseRating === 0){
+      alertBox.innerHTML = `<div class="alert alert-error">اختر تقييماً بالنجوم أولاً.</div>`;
+      return;
+    }
+    const comment = document.getElementById('cmCourseComment').value.trim();
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> جارٍ الإرسال...`;
+    try{
+      await setDoc(doc(db, 'reviews', `${currentUser.uid}_course_${course.id}`), {
+        type: 'course', targetId: course.id, courseId: course.id,
+        studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
+        rating: courseRating, comment: comment || null, createdAt: serverTimestamp(),
+      });
+      if(course.instructorId){
+        const instructorRating = Number(document.getElementById('cmInstructorStars')?.dataset.value || 0);
+        if(instructorRating > 0){
+          await setDoc(doc(db, 'reviews', `${currentUser.uid}_instructor_${course.instructorId}`), {
+            type: 'instructor', targetId: course.instructorId, courseId: course.id,
+            studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
+            rating: instructorRating, createdAt: serverTimestamp(),
+          });
+        }
+      }
+      closeCourseModal();
+      showSuccessToast('تم إرسال تقييمك!', 'شكراً لمشاركتك رأيك معانا');
+    }catch(e){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال التقييم، حاول مرة أخرى.</div>`;
+      btn.disabled = false;
+      btn.textContent = existing ? 'تحديث تقييمي' : 'إرسال التقييم';
+    }
+  });
+}
+
+/* ---------------- 2) STUDENTS — who else is enrolled in this course ---------------- */
+async function openCourseStudentsModal(course){
+  const overlay = openCourseModal({
+    title: 'زملاؤك في الكورس',
+    subtitle: 'كل الطلاب المشتركين معك حالياً',
+    headIcon: SIDE_ICONS.users,
+    bodyHTML: `<div id="cmStudentsBody" class="cm-empty">جارٍ التحميل...</div>`,
+  });
+  const body = overlay.querySelector('#cmStudentsBody');
+  try{
+    const snap = await getDocs(query(collection(db, 'enrollments'), where('courseId','==', course.id), where('status','==','approved')));
+    const students = snap.docs.map(d => d.data()).filter(s => s.studentId);
+    if(!document.getElementById('activeCourseModal')) return;
+    if(students.length === 0){
+      body.innerHTML = `<div class="cm-empty">لسه ما فيه طلاب تانيين مشتركين في الكورس ده.</div>`;
+      return;
+    }
+    body.className = '';
+    body.innerHTML = `
+      <div style="font-size:12.5px;color:var(--muted);margin:-4px 0 12px;">${students.length} طالب مسجّل في هذا الكورس</div>
+      ${students.map((s, i) => {
+        const name = s.studentName || 'طالب';
+        const isMe = s.studentId === currentUser?.uid;
+        return `
+          <div class="cm-student-row" style="animation-delay:${Math.min(i * 0.04, 0.5)}s;">
+            <div class="cm-avatar-sm">${name.trim()[0]?.toUpperCase() || '؟'}</div>
+            <div style="min-width:0;flex:1;">
+              <div style="font-weight:700;font-size:13.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${name}${isMe ? ' (أنت)' : ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    `;
+  }catch(e){
+    if(document.getElementById('activeCourseModal')) body.innerHTML = `<div class="cm-empty">تعذّر تحميل قائمة الطلاب.</div>`;
+  }
+}
+
+/* ---------------- 3) UNITS — the course's modules, neatly organised ---------------- */
+function openCourseUnitsModal(course, modules, lessons){
+  let bodyHTML;
+  if(modules.length === 0){
+    bodyHTML = `<div class="cm-empty">لسه ما اتضافت وحدات لهذا الكورس.</div>`;
+  }else{
+    bodyHTML = modules.map((m, mi) => {
+      const modLessons = lessons.filter(l => l.moduleId === m.id).sort((a,b) => (a.order||0)-(b.order||0));
+      return `
+        <div class="cm-unit-block">
+          <div class="cm-unit-head">
+            <span style="display:flex;align-items:center;gap:8px;"><span class="cm-unit-num">${mi+1}</span>${m.title}</span>
+            <span style="font-weight:600;font-size:11.5px;color:var(--muted);">${modLessons.length} محاضرة</span>
+          </div>
+          ${modLessons.length ? modLessons.map((l, li) => `
+            <div class="cm-lesson-row" style="animation-delay:${Math.min((mi*3+li)*0.03,0.5)}s;">
+              <span class="cm-lesson-ic">${LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text}</span>
+              <span style="flex:1;">${l.title}</span>
+              <span style="font-size:11px;color:var(--muted);flex-shrink:0;">${LESSON_TYPE_LABEL[l.type] || ''}</span>
+            </div>
+          `).join('') : `<div class="cm-empty" style="padding:10px 0;">لسه ما فيه محاضرات في هذه الوحدة.</div>`}
+        </div>
+      `;
+    }).join('');
+  }
+  openCourseModal({
+    title: `وحدات الكورس (${modules.length})`,
+    subtitle: 'كل وحدة ومحتواها مرتّبة بالترتيب',
+    headIcon: SIDE_ICONS.layers,
+    bodyHTML,
+  });
+}
+
+/* ---------------- 4) LESSONS — all lessons, grouped by content type ---------------- */
+function openCourseLessonsModal(course, modules, lessons){
+  const moduleTitleById = Object.fromEntries(modules.map(m => [m.id, m.title]));
+  let bodyHTML;
+  if(lessons.length === 0){
+    bodyHTML = `<div class="cm-empty">لسه ما اتضافت محاضرات لهذا الكورس.</div>`;
+  }else{
+    const order = ['drive','youtube','video','pdf','file','link','text'];
+    const groups = {};
+    lessons.forEach(l => { const t = l.type || 'text'; (groups[t] = groups[t] || []).push(l); });
+    const orderedTypes = [...order.filter(t => groups[t]), ...Object.keys(groups).filter(t => !order.includes(t))];
+    let idx = 0;
+    bodyHTML = `<div style="font-size:12.5px;color:var(--muted);margin:-4px 0 4px;">${lessons.length} محاضرة موزّعة على ${modules.length} وحدة</div>`;
+    bodyHTML += orderedTypes.map(type => {
+      const items = groups[type];
+      const rows = items.map(l => {
+        const row = `
+          <div class="cm-lesson-row" style="animation-delay:${Math.min(idx*0.03,0.5)}s;">
+            <span class="cm-lesson-ic">${LESSON_TYPE_ICON[type] || LESSON_TYPE_ICON.text}</span>
+            <div style="flex:1;min-width:0;">
+              <div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${l.title}</div>
+              ${l.moduleId && moduleTitleById[l.moduleId] ? `<div style="font-size:11px;color:var(--muted);">${moduleTitleById[l.moduleId]}</div>` : ''}
+            </div>
+          </div>
+        `;
+        idx++;
+        return row;
+      }).join('');
+      return `
+        <div class="cm-type-group-label">${LESSON_TYPE_ICON[type] || LESSON_TYPE_ICON.text} ${LESSON_TYPE_LABEL[type] || type} <span class="cm-type-count">${items.length}</span></div>
+        ${rows}
+      `;
+    }).join('');
+  }
+  openCourseModal({
+    title: `محاضرات الكورس (${lessons.length})`,
+    subtitle: 'مقسّمة حسب النوع — فيديو، PDF وغيرها',
+    headIcon: SIDE_ICONS.playCircle,
+    bodyHTML,
+  });
 }
 
 /* ---------------- INSTRUCTOR PUBLIC PROFILE ---------------- */
@@ -5575,6 +6068,7 @@ async function adminRenderCategories(area){
             cats.push({ id: ref.id, name, description, parentId });
             categoriesCache = null;
             renderList();
+            showSuccessToast('تمت إضافة المجال الفرعي!', name);
           }catch(e){
             alert('تعذّر إضافة المجال الفرعي.');
           }
@@ -5594,6 +6088,7 @@ async function adminRenderCategories(area){
         categoriesCache = null;
         renderList();
         document.getElementById('addCategoryForm').reset();
+        showSuccessToast('تمت إضافة القسم بنجاح!', name);
       }catch(e){
         alert('تعذّر إضافة القسم.');
       }
@@ -5772,6 +6267,7 @@ async function adminRenderCourses(area){
           document.getElementById('courseCategory'),
           cats
         );
+        showSuccessToast('تمت إضافة الكورس بنجاح!', title);
       }catch(e){
         alert('تعذّر إضافة الكورس.');
       }
@@ -6191,6 +6687,7 @@ async function adminRenderCertificates(area){
         certs.push({ id: ref.id, studentId: enrollment.studentId, studentName: enrollment.studentName, courseId: enrollment.courseId, courseTitle: enrollment.courseTitle, note, issueDate });
         renderCertList();
         document.getElementById('issueCertForm').reset();
+        showSuccessToast('تم إصدار الشهادة بنجاح!', enrollment.studentName || '');
       }catch(e){
         alert('تعذّر إصدار الشهادة.');
       }
@@ -6301,6 +6798,7 @@ async function adminRenderPaymentMethods(area){
         methods.push({ id: ref.id, label, accountName, accountNumber, instructions, active: true, order: methods.length });
         renderList();
         document.getElementById('addPaymentMethodForm').reset();
+        showSuccessToast('تمت إضافة وسيلة الدفع!', label);
       }catch(e){
         alert('تعذّر إضافة وسيلة الدفع.');
       }
@@ -6703,6 +7201,7 @@ async function adminRenderNotifications(area){
         renderNotifList();
         document.getElementById('notifForm').reset();
         alertBox.innerHTML = `<div class="alert alert-success">تم إرسال الإشعار.</div>`;
+        showSuccessToast('تم إرسال الإشعار بنجاح!', title);
       }catch(e){
         alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال الإشعار.</div>`;
       }
