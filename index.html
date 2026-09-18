@@ -328,8 +328,8 @@
   .icon-btn .dot-badge{position:absolute;top:7px;left:7px;width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
   .notif-item{padding:10px 12px;border-radius:10px;}
   .notif-item:hover{background:var(--paper);}
-  .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.5;}
+  .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
+  .notif-item .t2{font-size:12px;color:var(--muted);margin-top:2px;}
   .app-content{padding:28px;max-width:1180px;}
   .app-topbar-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:15.5px;color:var(--violet-900);display:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:58%;}
 
@@ -532,7 +532,7 @@
     font-family:'Cairo',sans-serif;flex-shrink:0;
   }
   .table-widget-row .grow{flex:1;min-width:0;}
-  .table-widget-row .t1{font-size:13.5px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .table-widget-row .t1{font-size:13.5px;font-weight:700;color:var(--ink);}
   .table-widget-row .t2{font-size:12px;color:var(--muted);}
   .icon-action{
     width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;
@@ -835,35 +835,32 @@
   }
   .star-row{display:inline-flex;align-items:center;gap:2px;color:var(--amber-500);}
   .star-row.outline-empty{color:var(--line);}
-
-  /* Rating summary — stacked and fully centered (the old side-by-side flex layout used
-     to lean toward one edge in RTL once it wrapped on narrower screens); distribution
-     bars sit below as their own full-width block. */
-  .rating-score-block{text-align:center;padding:4px 0 2px;margin-bottom:16px;}
-  .rating-score-block .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:42px;color:var(--violet-900);line-height:1;}
-  .rating-score-block .stars{display:flex;justify-content:center;margin:8px 0 6px;}
-  .rating-score-block .stars .star-row svg{width:18px;height:18px;}
-  .rating-score-block .count{font-size:12.5px;color:var(--muted);}
-  .rating-bars-v2{display:flex;flex-direction:column;gap:6px;margin-bottom:20px;padding-bottom:18px;border-bottom:1px solid var(--line);}
+  .rating-summary{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
+  .rating-big{text-align:center;}
+  .rating-big .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:38px;color:var(--violet-900);line-height:1;}
+  .rating-big .count{font-size:12px;color:var(--muted);margin-top:6px;}
+  .rating-bars{flex:1;min-width:180px;display:flex;flex-direction:column;gap:5px;}
   .rating-bar-row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);}
   .rating-bar-track{flex:1;height:7px;background:var(--mist);border-radius:99px;overflow:hidden;}
   .rating-bar-fill{height:100%;background:var(--amber-500);border-radius:99px;}
+  .review-item{padding:14px 0;border-top:1px solid var(--line);}
+  .review-item:first-child{border-top:none;}
+  .review-item .rh{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+  .review-item .rname{font-weight:700;font-size:13.5px;color:var(--ink);}
+  .review-item .rdate{font-size:11.5px;color:var(--muted);}
+  .review-item .rcomment{font-size:13.5px;color:var(--muted);line-height:1.7;}
 
-  /* Review cards — avatar + a single-line, ellipsis-truncated name (so a long name or a
-     long list of reviewers never breaks or over-stretches the layout) + stars, with the
-     comment underneath. Shared by the inline preview and the "see all reviews" modal. */
-  .review-list{display:flex;flex-direction:column;gap:14px;}
-  .review-card{display:flex;gap:11px;}
-  .rc-avatar{
-    width:36px;height:36px;border-radius:50%;background:var(--mist);color:var(--violet-700);
-    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;
+  .curriculum-module{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;}
+  .curriculum-module-head{padding:14px 16px;background:var(--paper);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;color:var(--violet-900);}
+  .curriculum-lesson{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:13.5px;}
+  .curriculum-lesson .lk{
+    width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    background:var(--mist);color:var(--muted);
   }
-  .rc-body{flex:1;min-width:0;}
-  .rc-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:3px;}
-  .rc-name{font-weight:700;font-size:13.5px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;}
-  .rc-top .star-row{flex-shrink:0;}
-  .rc-top .star-row svg{width:12px;height:12px;}
-  .rc-comment{font-size:13.5px;color:var(--muted);line-height:1.7;}
+  .curriculum-lesson.unlocked .lk{background:#E9F5EE;color:var(--success);}
+  .curriculum-lesson .lname{flex:1;color:var(--ink);}
+  .curriculum-lesson.locked .lname{color:var(--muted);}
+  .preview-pill{font-size:10.5px;font-weight:700;color:var(--violet-700);background:var(--mist);padding:2px 9px;border-radius:99px;}
 
   .learn-points{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
   .learn-point{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;color:var(--ink);line-height:1.6;}
@@ -965,7 +962,7 @@
   .module-accordion-body{display:none;}
   .module-accordion.open > .module-accordion-body{display:block;}
 
-  .lesson-row{border-top:1px solid var(--line);}
+  .lesson-row{border-top:1px solid var(--line);display:block;text-decoration:none;color:inherit;}
   .lesson-row:first-child{border-top:none;}
   .lesson-row-head{display:flex;align-items:center;gap:10px;padding:12px 16px;cursor:pointer;}
   .lesson-row-head .lr-num{font-size:11.5px;color:var(--muted);width:16px;flex-shrink:0;text-align:center;}
@@ -982,18 +979,37 @@
   .lesson-row.open > .lesson-row-body{display:block;}
   .lesson-rate-box{background:var(--paper);border-radius:12px;padding:14px;margin-top:14px;}
 
-  /* Curriculum preview on the course detail page reuses .lesson-row-head directly (no
-     expandable body), so it needs its own border/hover/locked treatment. */
-  .module-accordion-body > .lesson-row-head{border-top:1px solid var(--line);}
-  .module-accordion-body > .lesson-row-head:first-child{border-top:none;}
-  .module-accordion-body > .lesson-row-head[data-goto-learn]{cursor:pointer;transition:background .15s;}
-  .module-accordion-body > .lesson-row-head[data-goto-learn]:hover{background:var(--paper);}
-  .module-accordion-body > .lesson-row-head.locked{opacity:0.65;}
-  .module-accordion-body > .lesson-row-head.locked .lr-icon{background:var(--mist);color:var(--muted);}
-  .preview-pill{
-    background:#E9F5EE;color:var(--success);font-size:10.5px;font-weight:800;
-    padding:2.5px 9px;border-radius:999px;flex-shrink:0;
+  /* Dedicated lesson page */
+  .lesson-breadcrumb{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:16px;}
+  .lesson-breadcrumb .lb-sep{color:var(--line);}
+  .lesson-breadcrumb .lb-current{color:var(--violet-800);font-weight:700;}
+  .lesson-page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap;margin-bottom:18px;}
+  .lesson-page-titlewrap h2{margin:8px 0 8px;font-size:21px;color:var(--violet-900);font-family:'Cairo',sans-serif;}
+  .lesson-type-badge{display:inline-flex;align-items:center;gap:6px;background:var(--mist);color:var(--violet-700);font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:999px;}
+  .lesson-page-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--muted);}
+  .lesson-page-meta span{display:flex;align-items:center;gap:5px;}
+  .lesson-text-body{color:var(--ink);font-size:14.5px;line-height:1.9;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .lesson-nav-buttons{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line);}
+  .lesson-outline .widget-head{margin-bottom:10px;}
+  .lesson-outline-list{display:flex;flex-direction:column;gap:4px;max-height:520px;overflow-y:auto;}
+  .lesson-outline-item{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+    text-decoration:none;color:var(--ink);font-size:13px;font-weight:600;transition:background .2s,color .2s;
   }
+  .lesson-outline-item:hover{background:var(--paper);}
+  .lesson-outline-item .loi-num{
+    width:24px;height:24px;border-radius:50%;background:var(--mist);color:var(--violet-700);
+    display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;
+  }
+  .lesson-outline-item.done .loi-num{background:#E9F5EE;color:var(--success);}
+  .lesson-outline-item.active{background:linear-gradient(135deg,var(--violet-600),var(--violet-800));color:#fff;}
+  .lesson-outline-item.active .loi-num{background:rgba(255,255,255,.25);color:#fff;}
+  .lesson-outline-item .loi-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  @media (max-width:860px){ .lesson-outline{grid-column:1/-1;} }
+
+  .lesson-row-head:hover{background:var(--paper);}
+  .lesson-row-head:hover .chev{transform:translateX(-3px);color:var(--violet-600);}
+
   .lecture-card, .exam-card{
     display:flex;justify-content:space-between;align-items:center;gap:14px;
     padding:16px 18px;border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:#fff;
@@ -1029,6 +1045,7 @@
     .detail-grid{grid-template-columns:1fr;margin-top:-24px;}
     .hero-cta-btn{width:100%;justify-content:center;}
     .learn-points{grid-template-columns:1fr;}
+    .rating-summary{flex-direction:column;align-items:flex-start;}
     .cat-grid{grid-template-columns:repeat(3,1fr);}
     .terms-grid{grid-template-columns:1fr;}
     .devices-wrap{height:260px;}
@@ -1413,6 +1430,7 @@ function router(){
   else if(path.startsWith('#/register')) renderRegister();
   else if(path.startsWith('#/dashboard')) renderDashboard(params.get('tab'));
   else if(path.startsWith('#/learn/')) renderLearnRoom(path.split('#/learn/')[1]);
+  else if(path.startsWith('#/lesson/')) renderLessonPage(path.split('#/lesson/')[1]);
   else if(path.startsWith('#/manage/')) renderManageCourse(path.split('#/manage/')[1]);
   else if(path.startsWith('#/exam/')) renderExamTake(path.split('#/exam/')[1]);
   else if(path.startsWith('#/course/')) renderCourseDetail(path.split('#/course/')[1]);
@@ -2051,25 +2069,6 @@ function starRowHTML(rating){
   return `<span class="star-row">${stars}</span>`;
 }
 
-/* A single review — avatar initial + name (truncated so a long name never breaks the row)
-   + stars, with an optional comment underneath. Shared between the inline preview on the
-   course detail page and the "see all reviews" modal so both look identical. */
-function reviewCardHTML(r){
-  const name = (r.studentName || 'طالب').trim();
-  return `
-    <div class="review-card">
-      <div class="rc-avatar">${name[0]?.toUpperCase() || '؟'}</div>
-      <div class="rc-body">
-        <div class="rc-top">
-          <span class="rc-name">${name}</span>
-          <span class="star-row">${starRowHTML(r.rating)}</span>
-        </div>
-        ${r.comment ? `<div class="rc-comment">${r.comment}</div>` : ''}
-      </div>
-    </div>
-  `;
-}
-
 /* Fetches all reviews for a course and returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
 /* Fetches all reviews of a given type ('course' or 'instructor') for a target id, returns { avg, count, distribution:[c5,c4,c3,c2,c1], items } */
 async function fetchReviewsFor(type, targetId){
@@ -2539,47 +2538,27 @@ async function renderCourseDetail(courseId){
   // What you'll learn
   const whatToLearn = Array.isArray(course.whatToLearn) ? course.whatToLearn.filter(Boolean) : [];
 
-  // Curriculum tree — a collapsible, type-aware accordion (reuses the same visual language
-  // as the in-course content browser) so a course with many modules/lessons stays compact
-  // and scannable instead of dumping everything open at once.
+  // Curriculum tree
   const curriculumHTML = modules.length === 0
     ? `<div class="empty-state" style="padding:24px 0;">لسه ما اتضاف محتوى لهذا الكورس.</div>`
-    : modules.map((m, mi) => {
-        const modLessons = lessons.filter(l => l.moduleId === m.id).sort((a,b) => (a.order||0)-(b.order||0));
+    : modules.map(m => {
+        const modLessons = lessons.filter(l => l.moduleId === m.id);
         return `
-          <div class="module-accordion ${mi === 0 ? 'open' : ''}" data-curriculum-module>
-            <div class="module-accordion-head" data-toggle-curriculum-module>
-              <div class="mh-left">
-                <div class="mh-num">${mi+1}</div>
-                <div>
-                  <div class="mh-title">${m.title}</div>
-                  <div class="mh-meta">${modLessons.length} محاضرة</div>
+          <div class="curriculum-module">
+            <div class="curriculum-module-head"><span>${m.title}</span><span style="font-weight:600;font-size:12px;color:var(--muted);">${modLessons.length} محاضرة</span></div>
+            ${modLessons.map((l, idx) => {
+              const unlocked = isApproved || l.isPreviewFree;
+              return `
+                <div class="curriculum-lesson ${unlocked ? 'unlocked' : 'locked'}">
+                  <span class="lk">${unlocked ? SIDE_ICONS.playCircle : SIDE_ICONS.lock}</span>
+                  <span class="lname">${l.title}</span>
+                  ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
                 </div>
-              </div>
-              <span class="chev">${SIDE_ICONS.chevronLeft}</span>
-            </div>
-            <div class="module-accordion-body">
-              ${modLessons.length === 0
-                ? `<div class="empty-state" style="padding:14px 16px;">لا توجد محاضرات في هذه الوحدة بعد.</div>`
-                : modLessons.map((l, idx) => {
-                    const unlocked = isApproved || l.isPreviewFree;
-                    const clickable = isApproved; // free-preview items are flagged, not deep-linked
-                    return `
-                      <div class="lesson-row-head ${unlocked ? '' : 'locked'}" ${clickable ? 'data-goto-learn role="button" tabindex="0"' : ''}>
-                        <span class="lr-num">${idx+1}</span>
-                        <div class="lr-icon">${unlocked ? (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text) : SIDE_ICONS.lock}</div>
-                        <div class="lr-title">${l.title}</div>
-                        ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
-                        ${clickable ? `<span class="chev">${SIDE_ICONS.chevronLeft}</span>` : ''}
-                      </div>
-                    `;
-                  }).join('')
-              }
-            </div>
+              `;
+            }).join('')}
           </div>
         `;
       }).join('');
-
 
   // Next scheduled lecture (date/time preview only unless enrolled)
   const todayStr = new Date().toISOString().slice(0,10);
@@ -2702,16 +2681,23 @@ async function renderCourseDetail(courseId){
           <div class="detail-card">
             <h3>تقييمات الطلاب</h3>
             ${reviewData.count ? `
-              <div class="rating-score-block">
-                <div class="num">${reviewData.avg.toFixed(1)}</div>
-                <div class="stars">${starRowHTML(reviewData.avg)}</div>
-                <div class="count">${reviewData.count} تقييم</div>
+              <div class="rating-summary">
+                <div class="rating-big">
+                  <div class="num">${reviewData.avg.toFixed(1)}</div>
+                  <div>${starRowHTML(reviewData.avg)}</div>
+                  <div class="count">${reviewData.count} تقييم</div>
+                </div>
+                <div class="rating-bars">${ratingBarsHTML}</div>
               </div>
-              <div class="rating-bars-v2">${ratingBarsHTML}</div>
-              <div class="review-list">
-                ${reviewData.items.slice(0,4).map(reviewCardHTML).join('')}
-              </div>
-              ${reviewData.count > 4 ? `<button type="button" class="btn btn-ghost btn-full" id="viewAllReviewsBtn" style="margin-top:6px;">عرض كل التقييمات (${reviewData.count})</button>` : ''}
+              ${reviewData.items.slice(0,6).map(r => `
+                <div class="review-item">
+                  <div class="rh">
+                    <span class="rname">${r.studentName || 'طالب'}</span>
+                    <span class="star-row">${starRowHTML(r.rating)}</span>
+                  </div>
+                  ${r.comment ? `<div class="rcomment">${r.comment}</div>` : ''}
+                </div>
+              `).join('')}
             ` : `<div class="empty-state" style="padding:20px 0;">لا توجد تقييمات بعد لهذا الكورس.</div>`}
           </div>
         </div>
@@ -2754,21 +2740,6 @@ async function renderCourseDetail(courseId){
       </div>
     </div>
   `;
-
-  // "See all reviews" opens the full scrollable list so a popular course with dozens of
-  // ratings never turns this card into an endless scroll on the page itself.
-  document.getElementById('viewAllReviewsBtn')?.addEventListener('click', () => openAllReviewsModal(reviewData));
-
-  // Curriculum accordion: first module open by default, others collapse to keep a
-  // course with many modules/lessons compact and scannable.
-  document.querySelectorAll('[data-toggle-curriculum-module]').forEach(head => {
-    head.addEventListener('click', () => head.closest('[data-curriculum-module]').classList.toggle('open'));
-  });
-  // Unlocked lessons (enrolled/admin) jump straight into the full content browser.
-  document.querySelectorAll('[data-goto-learn]').forEach(row => {
-    row.addEventListener('click', () => { location.hash = `#/learn/${course.id}`; });
-    row.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); location.hash = `#/learn/${course.id}`; } });
-  });
 
   // The rating / students / units / lessons chips in the hero are only clickable for a
   // student who actually owns the course — everyone else sees the same plain <span> row
@@ -3035,16 +3006,6 @@ function openCourseLessonsModal(course, modules, lessons){
     subtitle: 'مقسّمة حسب النوع — فيديو، PDF وغيرها',
     headIcon: SIDE_ICONS.playCircle,
     bodyHTML,
-  });
-}
-
-/* ---------------- 5) ALL REVIEWS — full scrollable list, opened from "عرض كل التقييمات" ---------------- */
-function openAllReviewsModal(reviewData){
-  openCourseModal({
-    title: `كل التقييمات (${reviewData.count})`,
-    subtitle: `بمتوسط ${reviewData.avg.toFixed(1)} من 5`,
-    headIcon: SIDE_ICONS.starFilled,
-    bodyHTML: `<div class="review-list">${reviewData.items.map(reviewCardHTML).join('')}</div>`,
   });
 }
 
@@ -4372,22 +4333,17 @@ async function learnRenderReview(area, course){
 
 async function learnRenderContent(area, course){
   try{
-    const [modSnap, lesSnap, progressSnap, lessonRatings, myLessonReviewsSnap] = await Promise.all([
+    const [modSnap, lesSnap, progressSnap, lessonRatings] = await Promise.all([
       getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))),
       getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))),
       getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
       fetchTargetRatingsMap('lesson', course.id),
-      getDocs(query(collection(db, 'reviews'), where('courseId','==', course.id), where('type','==','lesson'), where('studentId','==', currentUser.uid))),
     ]);
     const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
-    const lessons = (await Promise.all(
-      lesSnap.docs.map(d => fetchLessonWithContent(d.id, d.data()))
-    )).sort((a,b) => (a.order||0) - (b.order||0));
+    const lessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
     const completedIds = new Set(
       progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId)
     );
-    const myLessonRatings = {};
-    myLessonReviewsSnap.docs.forEach(d => { const r = d.data(); myLessonRatings[r.targetId] = r.rating; });
 
     if(modules.length === 0){
       area.innerHTML = `<div class="empty-state">لا يوجد محتوى منشور لهذا الكورس بعد.</div>`;
@@ -4426,35 +4382,16 @@ async function learnRenderContent(area, course){
                 : modLessons.map((l, li) => {
                     const isDone = completedIds.has(l.id);
                     const rating = lessonRatings[l.id];
-                    const myRating = myLessonRatings[l.id] || 0;
                     return `
-                      <div class="lesson-row" data-lesson-row="${l.id}">
-                        <div class="lesson-row-head ${isDone ? 'done' : ''}" data-toggle-lesson data-done-icon>
+                      <a href="#/lesson/${l.id}" class="lesson-row" data-lesson-row="${l.id}">
+                        <div class="lesson-row-head ${isDone ? 'done' : ''}" data-done-icon>
                           <span class="lr-num">${li+1}</span>
                           <div class="lr-icon">${isDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text)}</div>
                           <div class="lr-title">${l.title}</div>
                           ${rating ? `<div class="lr-rating">${SIDE_ICONS.starFilled} ${rating.avg.toFixed(1)}</div>` : ''}
                           <span class="chev">${SIDE_ICONS.chevronLeft}</span>
                         </div>
-                        <div class="lesson-row-body">
-                          ${l.type === 'text'
-                            ? `<div style="color:var(--muted);font-size:13.5px;white-space:pre-line;line-height:1.8;">${l.content || ''}</div>`
-                            : lessonContentPreviewHTML(l)
-                          }
-                          <div style="margin-top:14px;">
-                            <button class="btn btn-sm ${isDone ? 'btn-primary' : 'btn-ghost'}" data-lesson-id="${l.id}" data-completed="${isDone}" data-complete-btn>
-                              ${isDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل'}
-                            </button>
-                          </div>
-                          <div class="lesson-rate-box">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                              <span style="font-size:12.5px;font-weight:700;color:var(--violet-900);">قيّم هذا الدرس</span>
-                              <span style="font-size:12px;color:var(--muted);" data-lesson-rating-summary>${rating ? `${starRowHTML(rating.avg)} (${rating.count})` : 'لا توجد تقييمات بعد'}</span>
-                            </div>
-                            ${starPickerHTML(`lessonStarPicker-${l.id}`, myRating)}
-                          </div>
-                        </div>
-                      </div>
+                      </a>
                     `;
                   }).join('')
               }
@@ -4467,70 +4404,182 @@ async function learnRenderContent(area, course){
     area.querySelectorAll('[data-toggle-module]').forEach(head => {
       head.addEventListener('click', () => head.closest('.module-accordion').classList.toggle('open'));
     });
-    area.querySelectorAll('[data-toggle-lesson]').forEach(head => {
-      head.addEventListener('click', () => head.closest('.lesson-row').classList.toggle('open'));
-    });
-
-    lessons.forEach(l => {
-      wireInlineStarPicker(`lessonStarPicker-${l.id}`, async (val) => {
-        try{
-          await setDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${l.id}`), {
-            type: 'lesson', targetId: l.id, courseId: course.id,
-            studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
-            rating: val, createdAt: serverTimestamp(),
-          });
-          const row = area.querySelector(`[data-lesson-row="${l.id}"] [data-lesson-rating-summary]`);
-          const fresh = await fetchTargetRatingsMap('lesson', course.id);
-          const r = fresh[l.id];
-          if(row && r) row.innerHTML = `${starRowHTML(r.avg)} (${r.count})`;
-        }catch(e){
-          alert('تعذّر حفظ تقييمك.');
-        }
-      });
-    });
-
-    // Mark-complete updates the DOM in place instead of a full re-render, so open
-    // accordion sections stay open after the click.
-    area.querySelectorAll('[data-complete-btn]').forEach(btn => {
-      btn.addEventListener('click', async (e) => {
-        e.stopPropagation();
-        const lessonId = btn.dataset.lessonId;
-        const wasDone = btn.dataset.completed === 'true';
-        const nowDone = !wasDone;
-        btn.disabled = true;
-        try{
-          await setDoc(doc(db, 'progress', `${currentUser.uid}_${lessonId}`), {
-            studentId: currentUser.uid,
-            courseId: course.id,
-            lessonId,
-            completed: nowDone,
-            completedAt: serverTimestamp(),
-          });
-          btn.dataset.completed = nowDone ? 'true' : 'false';
-          btn.innerHTML = nowDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل';
-          btn.classList.toggle('btn-primary', nowDone);
-          btn.classList.toggle('btn-ghost', !nowDone);
-          const row = btn.closest('.lesson-row');
-          const head = row?.querySelector('[data-done-icon]');
-          const icon = head?.querySelector('.lr-icon');
-          if(head) head.classList.toggle('done', nowDone);
-          if(icon) icon.innerHTML = nowDone ? SIDE_ICONS.check : (LESSON_TYPE_ICON[lessons.find(x=>x.id===lessonId)?.type] || LESSON_TYPE_ICON.text);
-
-          const doneNow = area.querySelectorAll('[data-done-icon].done').length;
-          const pctNow = totalLessons ? Math.round((doneNow / totalLessons) * 100) : 0;
-          const progressText = document.getElementById('courseProgressText');
-          const progressFill = document.getElementById('courseProgressFill');
-          if(progressText) progressText.textContent = `${doneNow} / ${totalLessons} (${pctNow}%)`;
-          if(progressFill) progressFill.style.width = `${pctNow}%`;
-        }catch(e){
-          alert('تعذّر تحديث حالة الدرس.');
-        }
-        btn.disabled = false;
-      });
-    });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل المحتوى.</div>`;
   }
+}
+
+/* ---------------- DEDICATED LESSON PAGE ---------------- */
+async function renderLessonPage(lessonId){
+  const app = document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">لازم تسجّل الدخول الأول.</p><a href="#/login" class="btn btn-primary">تسجيل الدخول</a></div></div>`;
+    return;
+  }
+
+  renderShell('dashboard');
+  const appContent = document.getElementById('appContent');
+  appContent.innerHTML = `<div class="empty-state">جارٍ تحميل الدرس...</div>`;
+
+  let lessonSnap = null;
+  try{ lessonSnap = await getDoc(doc(db, 'lessons', lessonId)); }catch(e){ /* ignore */ }
+
+  if(!lessonSnap || !lessonSnap.exists()){
+    appContent.innerHTML = `<div class="dash-card" style="text-align:center;"><p>هذا الدرس غير موجود.</p><a href="#/dashboard" class="btn btn-primary">الرجوع للوحة التحكم</a></div>`;
+    return;
+  }
+
+  const lesson = await fetchLessonWithContent(lessonSnap.id, lessonSnap.data());
+
+  let course = null;
+  try{
+    const cSnap = await getDoc(doc(db, 'courses', lesson.courseId));
+    if(cSnap.exists()) course = { id: cSnap.id, ...cSnap.data() };
+  }catch(e){ /* ignore */ }
+
+  if(!course){
+    appContent.innerHTML = `<div class="dash-card" style="text-align:center;"><p>الكورس التابع لهذا الدرس غير موجود.</p><a href="#/dashboard" class="btn btn-primary">الرجوع للوحة التحكم</a></div>`;
+    return;
+  }
+
+  const enrollment = await getEnrollmentStatusForCourse(course.id);
+  const authorized = (enrollment && enrollment.status === 'approved') || canManageCourse(course);
+  if(!authorized){
+    appContent.innerHTML = `
+      <div class="locked-box">
+        <h3 style="color:var(--violet-900);margin-bottom:10px;">لسه ما اتفعّل وصولك لهذا الكورس</h3>
+        <p style="margin-bottom:20px;">لازم تسجّل وتنتظر موافقة الإدارة على دفعك أولاً.</p>
+        <a href="#/course/${course.id}" class="btn btn-primary">الذهاب لصفحة الكورس</a>
+      </div>
+    `;
+    return;
+  }
+
+  let moduleData = null;
+  try{
+    const mSnap = await getDoc(doc(db, 'modules', lesson.moduleId));
+    if(mSnap.exists()) moduleData = { id: mSnap.id, ...mSnap.data() };
+  }catch(e){ /* ignore */ }
+
+  const [lesSnap, progressSnap, ratingsMap, myReviewSnap] = await Promise.all([
+    getDocs(query(collection(db, 'lessons'), where('moduleId','==', lesson.moduleId))),
+    getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
+    fetchTargetRatingsMap('lesson', course.id),
+    getDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lesson.id}`)).catch(() => null),
+  ]);
+
+  const siblingLessons = lesSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  const myIndex = siblingLessons.findIndex(l => l.id === lesson.id);
+  const prevLesson = myIndex > 0 ? siblingLessons[myIndex - 1] : null;
+  const nextLesson = (myIndex >= 0 && myIndex < siblingLessons.length - 1) ? siblingLessons[myIndex + 1] : null;
+
+  const completedIds = new Set(progressSnap.docs.map(d => d.data()).filter(p => p.completed).map(p => p.lessonId));
+  const isDone = completedIds.has(lesson.id);
+  const rating = ratingsMap[lesson.id];
+  const myRating = (myReviewSnap && myReviewSnap.exists && myReviewSnap.exists()) ? myReviewSnap.data().rating : 0;
+  const typeLabel = LESSON_TYPE_LABEL[lesson.type] || 'محتوى';
+  const chevronRight = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+  appContent.innerHTML = `
+    <a href="#/learn/${course.id}" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع لقاعة الكورس</a>
+    <div class="lesson-breadcrumb">
+      <span>${course.title}</span>
+      <span class="lb-sep">/</span>
+      <span>${moduleData ? moduleData.title : 'الفصل'}</span>
+      <span class="lb-sep">/</span>
+      <span class="lb-current">${lesson.title}</span>
+    </div>
+    <div class="widget-grid">
+      <div class="widget widget-span-3">
+        <div class="lesson-page-head">
+          <div class="lesson-page-titlewrap">
+            <span class="lesson-type-badge">${LESSON_TYPE_ICON[lesson.type] || LESSON_TYPE_ICON.text} ${typeLabel}</span>
+            <h2>${lesson.title}</h2>
+            <div class="lesson-page-meta">
+              ${myIndex >= 0 ? `<span>${SIDE_ICONS.layers} الدرس ${myIndex + 1} من ${siblingLessons.length}</span>` : ''}
+              <span id="lessonRatingSummary">${rating ? `${starRowHTML(rating.avg)} ${rating.avg.toFixed(1)} (${rating.count})` : 'لا توجد تقييمات بعد'}</span>
+            </div>
+          </div>
+          <button class="btn btn-sm ${isDone ? 'btn-primary' : 'btn-ghost'}" data-completed="${isDone}" id="lessonCompleteBtn">
+            ${isDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل'}
+          </button>
+        </div>
+
+        <div class="lesson-viewer-box">
+          ${lesson.type === 'text'
+            ? `<div class="lesson-text-body">${(lesson.content || '').replace(/\n/g, '<br>')}</div>`
+            : lessonContentPreviewHTML(lesson)
+          }
+        </div>
+
+        <div class="lesson-rate-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:13px;font-weight:700;color:var(--violet-900);">قيّم هذا الدرس</span>
+          </div>
+          ${starPickerHTML('lessonPageStarPicker', myRating)}
+        </div>
+
+        <div class="lesson-nav-buttons">
+          ${prevLesson ? `<a href="#/lesson/${prevLesson.id}" class="btn btn-ghost">${SIDE_ICONS.back} الدرس السابق</a>` : `<span></span>`}
+          ${nextLesson ? `<a href="#/lesson/${nextLesson.id}" class="btn btn-primary">الدرس التالي ${chevronRight}</a>` : `<a href="#/learn/${course.id}" class="btn btn-primary">${SIDE_ICONS.check} إنهاء والرجوع لقاعة الكورس</a>`}
+        </div>
+      </div>
+
+      <div class="widget lesson-outline">
+        <div class="widget-head"><h3>دروس هذا الفصل</h3></div>
+        <div class="lesson-outline-list">
+          ${siblingLessons.map((l, i) => `
+            <a href="#/lesson/${l.id}" class="lesson-outline-item ${l.id === lesson.id ? 'active' : ''} ${completedIds.has(l.id) ? 'done' : ''}">
+              <span class="loi-num">${completedIds.has(l.id) ? SIDE_ICONS.check : (i + 1)}</span>
+              <span class="loi-title">${l.title}</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('lessonCompleteBtn').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const wasDone = btn.dataset.completed === 'true';
+    const nowDone = !wasDone;
+    btn.disabled = true;
+    try{
+      await setDoc(doc(db, 'progress', `${currentUser.uid}_${lesson.id}`), {
+        studentId: currentUser.uid, courseId: course.id, lessonId: lesson.id,
+        completed: nowDone, completedAt: serverTimestamp(),
+      });
+      btn.dataset.completed = nowDone ? 'true' : 'false';
+      btn.innerHTML = nowDone ? `${SIDE_ICONS.check} مكتمل` : 'وضع كمكتمل';
+      btn.classList.toggle('btn-primary', nowDone);
+      btn.classList.toggle('btn-ghost', !nowDone);
+      const outlineItem = document.querySelector('.lesson-outline-item.active');
+      if(outlineItem){
+        outlineItem.classList.toggle('done', nowDone);
+        const numEl = outlineItem.querySelector('.loi-num');
+        if(numEl) numEl.innerHTML = nowDone ? SIDE_ICONS.check : String(myIndex + 1);
+      }
+    }catch(err){
+      alert('تعذّر تحديث حالة الدرس.');
+    }
+    btn.disabled = false;
+  });
+
+  wireInlineStarPicker('lessonPageStarPicker', async (val) => {
+    try{
+      await setDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lesson.id}`), {
+        type: 'lesson', targetId: lesson.id, courseId: course.id,
+        studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
+        rating: val, createdAt: serverTimestamp(),
+      });
+      const fresh = await fetchTargetRatingsMap('lesson', course.id);
+      const r = fresh[lesson.id];
+      const summary = document.getElementById('lessonRatingSummary');
+      if(summary && r) summary.innerHTML = `${starRowHTML(r.avg)} ${r.avg.toFixed(1)} (${r.count})`;
+    }catch(e){
+      alert('تعذّر حفظ تقييمك.');
+    }
+  });
 }
 
 async function learnRenderLectures(area, course){
