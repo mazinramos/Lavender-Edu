@@ -341,13 +341,42 @@
     box-shadow:0 -10px 24px -18px rgba(34,21,48,0.25);
   }
   .bottom-nav-item{
-    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-    padding:6px 2px;border-radius:12px;color:var(--muted);font-size:10.5px;font-weight:700;
+    flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+    padding:7px 2px 6px;border-radius:14px;color:var(--muted);font-size:10.5px;font-weight:700;
     position:relative;background:none;border:none;font-family:inherit;cursor:pointer;
+    transition:color .25s ease;-webkit-tap-highlight-color:transparent;
   }
-  .bottom-nav-item .side-ic{width:22px;height:22px;}
-  .bottom-nav-item.active{color:var(--violet-700);}
+  .bottom-nav-item > *{position:relative;z-index:1;}
+  .bottom-nav-item:active{transform:scale(.93);}
+  .bottom-nav-item .side-ic{
+    width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+    transition:background .3s ease, color .3s ease, transform .35s cubic-bezier(.34,1.56,.64,1), box-shadow .3s ease;
+  }
+  .bottom-nav-item span:last-child{display:block;transition:transform .25s ease;}
+  /* Top accent bar — grows in under the active tab */
+  .bottom-nav-item::after{
+    content:'';position:absolute;top:0;left:50%;width:0;height:3px;border-radius:0 0 6px 6px;
+    background:linear-gradient(90deg,var(--violet-600),var(--violet-800));
+    transform:translateX(-50%);transition:width .3s cubic-bezier(.34,1.56,.64,1);
+  }
+  .bottom-nav-item.active{color:var(--violet-700);animation:navItemPop .4s cubic-bezier(.34,1.56,.64,1);}
+  .bottom-nav-item.active::after{width:26px;}
+  .bottom-nav-item.active .side-ic{
+    background:linear-gradient(135deg,var(--violet-600),var(--violet-800));color:#fff;
+    transform:translateY(-3px) scale(1.08);
+    box-shadow:0 6px 14px -6px rgba(110,75,175,.6);
+  }
+  .bottom-nav-item.active span:last-child{transform:translateY(-1px);}
+  @media (hover:hover){
+    .bottom-nav-item:not(.active):hover{color:var(--violet-600);}
+  }
+  @keyframes navItemPop{
+    0%{transform:scale(.8);}
+    55%{transform:scale(1.06);}
+    100%{transform:scale(1);}
+  }
   .bottom-nav-item .nav-dot{position:absolute;top:1px;left:calc(50% - 3px);width:6px;height:6px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
+  .bottom-nav-item .dot-badge{position:absolute;top:3px;left:calc(50% + 9px);width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;z-index:2;}
 
   /* Bottom sheet (used for "account" and admin "more") */
   .sheet-overlay{position:fixed;inset:0;background:rgba(34,21,48,0.45);z-index:60;display:flex;align-items:flex-end;}
@@ -377,6 +406,24 @@
   }
   .stat-card-v3 .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;color:var(--violet-900);}
   .stat-card-v3 .lbl{font-size:12.5px;color:var(--muted);}
+  .stat-card-v3 .arrow-hint{margin-inline-start:auto;color:var(--line);flex-shrink:0;transition:color .2s,transform .2s;}
+
+  /* Clickable stat/profile widgets */
+  button.stat-link{width:100%;text-align:inherit;}
+  .stat-link{display:block;text-decoration:none;color:inherit;font-family:inherit;font-size:inherit;cursor:pointer;
+    transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s,border-color .22s;}
+  .stat-link:hover{transform:translateY(-4px);box-shadow:0 16px 32px -20px rgba(42,25,72,.35);border-color:var(--violet-600);}
+  .stat-link:hover .arrow-hint{color:var(--violet-600);transform:translateX(-3px);}
+  .stat-link:active{transform:translateY(-1px);}
+
+  .profile-header-card{display:flex;align-items:center;gap:18px;flex-wrap:wrap;}
+  .profile-header-card .avatar-circle{width:72px;height:72px;font-size:26px;flex-shrink:0;}
+  .profile-header-info{flex:1;min-width:200px;}
+  .profile-header-info h2{margin:0 0 4px;font-size:19px;color:var(--violet-900);font-family:'Cairo',sans-serif;}
+  .profile-meta-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;}
+  .profile-meta-row .pmi{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);}
+  .profile-meta-row .pmi .side-ic{color:var(--violet-700);width:15px;height:15px;flex-shrink:0;display:flex;}
+  .profile-header-actions{margin-inline-start:auto;display:flex;gap:10px;flex-wrap:wrap;}
 
   .chart-box{position:relative;height:200px;}
   .chart-box.small{height:150px;}
@@ -520,23 +567,103 @@
   }
   .cat-tab.active{background:var(--violet-700);color:#fff;border-color:var(--violet-700);}
   .cat-tab:hover:not(.active){border-color:var(--violet-600);}
-  .course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
   .course-card{
-    background:#fff;border:1.5px solid var(--line);border-radius:16px;overflow:hidden;
-    display:flex;flex-direction:column;transition:border-color .15s, transform .15s;
+    background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    display:flex;flex-direction:column;text-decoration:none;color:inherit;
+    transition:border-color .2s, transform .2s, box-shadow .2s;
+    box-shadow:0 2px 10px -6px rgba(42,25,72,0.10);
   }
-  .course-card:hover{border-color:var(--violet-600);transform:translateY(-3px);}
-  .course-thumb{
-    height:130px;background:linear-gradient(135deg,var(--violet-600),var(--violet-800));
+  .course-card:hover{border-color:var(--violet-600);transform:translateY(-5px);box-shadow:0 22px 34px -20px rgba(42,25,72,0.28);}
+  .course-card-thumb{
+    position:relative;height:100px;flex-shrink:0;overflow:hidden;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,var(--violet-600),var(--violet-800));
+  }
+  .course-card-thumb::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at 85% -10%, rgba(255,255,255,.35), transparent 55%);
+    pointer-events:none;
+  }
+  .course-card-thumb::after{
+    content:'';position:absolute;width:130px;height:130px;border-radius:50%;
+    background:rgba(255,255,255,.12);filter:blur(1px);bottom:-56px;right:-40px;pointer-events:none;
+    transition:transform .4s cubic-bezier(.22,1,.36,1);
+  }
+  .course-card:hover .course-card-thumb::after{transform:scale(1.3);}
+  .course-card-mark{
+    position:relative;z-index:1;width:42px;height:42px;border-radius:12px;
+    background:rgba(255,255,255,.2);backdrop-filter:blur(3px);border:1px solid rgba(255,255,255,.32);
     display:flex;align-items:center;justify-content:center;color:#fff;
-    font-family:'Cairo',sans-serif;font-weight:700;font-size:15px;padding:14px;text-align:center;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;
   }
-  .course-body{padding:18px;display:flex;flex-direction:column;gap:10px;flex:1;}
-  .course-body h3{font-size:16px;margin:0;color:var(--violet-900);}
-  .course-meta{display:flex;gap:8px;flex-wrap:wrap;font-size:12px;}
-  .pill{background:var(--mist);color:var(--violet-800);padding:3px 10px;border-radius:999px;font-weight:600;}
-  .course-price{font-family:'Cairo',sans-serif;font-weight:800;font-size:18px;color:var(--violet-800);margin-top:auto;}
+  .course-card-ribbon{
+    position:absolute;top:12px;left:12px;z-index:2;
+    background:rgba(255,255,255,.94);color:var(--violet-800);
+    font-size:11px;font-weight:800;padding:4px 10px;border-radius:999px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.14);
+  }
+  .course-card-ribbon.free{background:var(--success);color:#fff;}
+  .course-card-ribbon.discount{background:var(--amber-500);color:#fff;}
+  .course-card-body{padding:13px 16px 15px;display:flex;flex-direction:column;gap:6px;flex:1;}
+  .course-card-tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .pill{background:var(--mist);color:var(--violet-800);padding:3px 10px;border-radius:999px;font-weight:600;font-size:12px;}
+  .ccard-cat-pill{padding:3px 10px;border-radius:999px;font-weight:700;font-size:12px;}
+  .ccard-level{
+    display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;
+    color:var(--violet-700);background:#fff;border:1px solid var(--line);padding:2.5px 9px;border-radius:999px;
+  }
+  .course-card-body h3{
+    font-size:15px;margin:0;color:var(--violet-900);line-height:1.4;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:42px;
+  }
+  /* Instructor name + rating + duration share ONE compact line instead of two separate rows */
+  .ccard-meta-row{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--muted);flex-wrap:wrap;min-height:18px;}
+  .ccard-meta-row .av{
+    width:18px;height:18px;border-radius:50%;background:var(--mist);color:var(--violet-700);
+    display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;
+  }
+  .ccard-meta-row .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:78px;}
+  .ccard-meta-row .st{display:flex;align-items:center;gap:3px;flex-shrink:0;}
+  .ccard-meta-row .dot{opacity:0.5;flex-shrink:0;}
+  .ccard-meta-row .star-row svg{width:11px;height:11px;}
+  .ccard-meta-row .rating-val{color:var(--ink);font-weight:700;}
+  .course-card-footer{
+    margin-top:auto;padding-top:10px;border-top:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:8px;
+  }
+  .course-price{font-family:'Cairo',sans-serif;font-weight:800;font-size:16.5px;color:var(--violet-800);}
+  .course-price .price-old{color:var(--muted);text-decoration:line-through;font-weight:600;font-size:11.5px;margin-inline-end:5px;}
+  .ccard-cta{
+    display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
+    background:var(--mist);color:var(--violet-700);flex-shrink:0;transition:.2s;
+  }
+  .course-card:hover .ccard-cta{background:var(--violet-700);color:#fff;}
   .empty-state{text-align:center;padding:60px 20px;color:var(--muted);font-size:14.5px;}
+
+  /* Horizontal scroll rows (per-category browsing) */
+  .course-row-wrap{margin-bottom:34px;}
+  .course-row-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:14px;}
+  .course-row-title{display:flex;align-items:center;gap:9px;min-width:0;}
+  .course-row-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+  .course-row-title h3{margin:0;font-size:16.5px;color:var(--violet-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .course-row-count{font-size:12px;color:var(--muted);font-weight:600;flex-shrink:0;}
+  .course-row-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .course-row-nav-btn{
+    width:32px;height:32px;border-radius:50%;border:1.5px solid var(--line);background:#fff;
+    display:flex;align-items:center;justify-content:center;color:var(--violet-800);cursor:pointer;transition:.15s;flex-shrink:0;
+  }
+  .course-row-nav-btn:hover{background:var(--mist);border-color:var(--violet-600);}
+  .course-row-nav-btn:disabled{opacity:0.3;cursor:default;pointer-events:none;}
+  .course-row-viewport{overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;margin:0 -4px;padding:4px 4px 8px;}
+  .course-row-viewport::-webkit-scrollbar{display:none;}
+  .course-row-track{display:flex;gap:18px;}
+  .course-row-track .course-card{flex:0 0 auto;width:250px;}
+  @media (max-width:640px){
+    .course-row-nav{display:none;}
+    .course-row-track .course-card{width:198px;}
+  }
+
 
   /* Promo carousel (home page ad-style cards) */
   .promo-section{padding:8px 0 6px;}
@@ -600,6 +727,14 @@
 
   .hero-meta-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;color:#fff;opacity:0.9;font-size:13px;}
   .hero-meta-row span{display:flex;align-items:center;gap:6px;}
+  .hero-cta-btn{
+    display:inline-flex;align-items:center;gap:8px;margin-top:22px;
+    padding:13px 30px;font-size:15px;box-shadow:0 14px 30px -12px rgba(0,0,0,0.35);
+  }
+  .enrolled-badge{
+    display:flex;align-items:center;gap:8px;background:#E9F5EE;color:var(--success);
+    font-weight:700;font-size:13.5px;padding:12px 14px;border-radius:12px;
+  }
   .star-row{display:inline-flex;align-items:center;gap:2px;color:var(--amber-500);}
   .star-row.outline-empty{color:var(--line);}
   .rating-summary{display:flex;gap:28px;align-items:center;flex-wrap:wrap;margin-bottom:18px;}
@@ -776,8 +911,9 @@
     .footer-grid{grid-template-columns:1fr 1fr;}
     .nav-links{display:none;}
     .nav-search{display:none;}
-    .course-grid{grid-template-columns:1fr 1fr;}
+    .course-grid{grid-template-columns:1fr 1fr;gap:16px;}
     .detail-grid{grid-template-columns:1fr;margin-top:-24px;}
+    .hero-cta-btn{width:100%;justify-content:center;}
     .learn-points{grid-template-columns:1fr;}
     .rating-summary{flex-direction:column;align-items:flex-start;}
     .cat-grid{grid-template-columns:repeat(3,1fr);}
@@ -810,10 +946,22 @@
   @media (max-width:520px){
     .steps{grid-template-columns:1fr;}
     .footer-grid{grid-template-columns:1fr;}
-    .course-grid{grid-template-columns:1fr;}
+    .course-grid{grid-template-columns:1fr 1fr;gap:12px;}
     .cat-grid{grid-template-columns:repeat(2,1fr);}
     .app-topbar{padding:12px 14px;}
     .topbar-search{display:none;}
+    .course-card-thumb{height:96px;}
+    .course-card-mark{width:40px;height:40px;font-size:16px;border-radius:11px;}
+    .course-card-ribbon{top:8px;left:8px;font-size:9.5px;padding:3px 8px;}
+    .course-card-body{padding:12px 12px 14px;gap:6px;}
+    .course-card-body h3{font-size:13px;min-height:36px;}
+    .ccard-meta-row{font-size:10.5px;gap:5px;min-height:16px;}
+    .ccard-meta-row .av{width:16px;height:16px;font-size:8.5px;}
+    .ccard-meta-row .nm{max-width:56px;}
+    .course-price{font-size:14px;}
+    .ccard-cta{width:25px;height:25px;}
+    .ccard-cta svg{width:12px;height:12px;}
+    .course-row-track .course-card{width:150px;}
   }
 </style>
 </head>
@@ -930,10 +1078,10 @@ const ICONS = {
 
 const DOMAINS = [
   { key:'medical', title:'المجال الطبي', desc:'تمريض، مختبرات، صيدلة، وطوارئ — بمحاضرات مباشرة وامتحانات.', tint:'#F3EEFB' },
-  { key:'tech', title:'الحاسوب والتقنية', desc:'Excel، أمن سيبراني، ومهارات تقنية عملية.', tint:'#EEF3FB' },
-  { key:'english', title:'اللغة الإنجليزية', desc:'من Beginner لـ Advanced بمستويات واضحة.', tint:'#FBF3EE' },
-  { key:'voice', title:'التعليق الصوتي', desc:'تأهيل المبتدئين لاحتراف التعليق الصوتي.', tint:'#EEFBF3' },
-  { key:'writing', title:'الكتابة', desc:'مساحة للكتّاب الجدد لتطوير مهاراتهم ونشر أعمالهم.', tint:'#FBEEF3' },
+  { key:'tech', title:'الحاسوب والتقنية', desc:'Excel، أمن سيبراني، ومهارات تقنية عملية.', tint:'#EDE4F9' },
+  { key:'english', title:'اللغة الإنجليزية', desc:'من Beginner لـ Advanced بمستويات واضحة.', tint:'#F1E9FB' },
+  { key:'voice', title:'التعليق الصوتي', desc:'تأهيل المبتدئين لاحتراف التعليق الصوتي.', tint:'#E7DDF7' },
+  { key:'writing', title:'الكتابة', desc:'مساحة للكتّاب الجدد لتطوير مهاراتهم ونشر أعمالهم.', tint:'#EFE3FA' },
 ];
 
 // Small icon set for hero floating cards + stats band (v2 design)
@@ -994,6 +1142,17 @@ Object.assign(SIDE_ICONS, {
   clock: MICRO_ICONS.clock,
   layers: MICRO_ICONS.layers,
   chevronLeft: MICRO_ICONS.chevronLeft,
+  // Added so every icon in a given list (sidebar tabs, meta rows, stat cards) is visually
+  // distinct from its neighbours — several spots used to share grid/dashboard/card icons.
+  tag: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 2H4a2 2 0 0 0-2 2v8.5a2 2 0 0 0 .59 1.41l9.5 9.5a2 2 0 0 0 2.82 0l7.5-7.5a2 2 0 0 0 0-2.82l-9.5-9.5A2 2 0 0 0 12.5 2z"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor" stroke="none"/></svg>',
+  levelBars: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20v-6"/><path d="M12 20V9"/><path d="M20 20V4"/></svg>',
+  gear: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82A1.65 1.65 0 0 0 3 13.09H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  folder: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>',
+  wallet: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v2"/><path d="M3 7v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2H5a2 2 0 0 1-2-2z"/><circle cx="17" cy="13" r="1.3" fill="currentColor" stroke="none"/></svg>',
+  trendUp: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="15 6 21 6 21 12"/></svg>',
+  clipboardCheck: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 3h6a1 1 0 0 1 1 1v1H8V4a1 1 0 0 1 1-1z"/><polyline points="9 13 11 15 15 10.5"/></svg>',
+  moreDots: '<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>',
+  graduationCap: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>',
 });
 
 const STEPS = [
@@ -1026,6 +1185,7 @@ function router(){
   else if(path.startsWith('#/course/')) renderCourseDetail(path.split('#/course/')[1]);
   else if(path.startsWith('#/instructor/')) renderInstructorProfile(path.split('#/instructor/')[1]);
   else if(path.startsWith('#/enroll/')) renderEnrollForm(path.split('#/enroll/')[1]);
+  else if(path.startsWith('#/my-exams')) renderMyExamResults();
   else if(path.startsWith('#/courses')) renderCourses();
   else renderHome();
 
@@ -1283,28 +1443,38 @@ async function loadFeaturedCourses(){
       area.innerHTML = `<div class="empty-state">كورساتنا الأولى في الطريق — تابعنا قريباً.</div>`;
       return;
     }
-    const sorted = [...courses].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 5);
-    area.innerHTML = `<div class="course-grid">${sorted.map(courseCardHTML).join('')}</div>`;
+    const sorted = [...courses].sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0)).slice(0, 10);
+    area.innerHTML = `
+      <div class="course-row-viewport">
+        <div class="course-row-track">${sorted.map(courseCardHTML).join('')}</div>
+      </div>
+    `;
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات.</div>`;
   }
 }
 
 /* ---------------- HOME PROMO CAROUSEL ---------------- */
-const PROMO_GRADIENTS = [
-  ['#7C5CC4','#4B2E86'],
-  ['#5B8DEF','#2B4C91'],
-  ['#E2A33B','#A9631B'],
-  ['#3FB68B','#1F6E52'],
-  ['#D97B98','#9C3F63'],
+// On-brand gradient system: every color here is one of the platform's own
+// tokens (violet = primary identity, amber = the same accent already used
+// for CTAs/pricing). Violet shades rotate for regular domain/course slides;
+// amber is reserved specifically for "deal" slides (discounted or free
+// courses) so the color change actually communicates something instead of
+// being decorative — no more random blue/green/pink that don't belong to
+// the platform at all.
+const PROMO_VIOLET_SHADES = [
+  ['#7C5CC4','#3E2566'],
+  ['#6E4BAF','#2A1948'],
+  ['#5A3B92','#221530'],
 ];
+const PROMO_AMBER_SHADE = ['#E2A33B','#96601C'];
 
 function promoArrowSVG(){
   return `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>`;
 }
 
 function promoDomainSlide(d, idx){
-  const [g1,g2] = PROMO_GRADIENTS[idx % PROMO_GRADIENTS.length];
+  const [g1,g2] = PROMO_VIOLET_SHADES[idx % PROMO_VIOLET_SHADES.length];
   return {
     href: '#/courses',
     gradient: `linear-gradient(135deg,${g1},${g2})`,
@@ -1316,7 +1486,6 @@ function promoDomainSlide(d, idx){
 }
 
 function promoCourseSlide(c, idx){
-  const [g1,g2] = PROMO_GRADIENTS[(idx + 2) % PROMO_GRADIENTS.length];
   const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
   const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
   let badge = 'كورس جديد';
@@ -1326,6 +1495,9 @@ function promoCourseSlide(c, idx){
   } else if(isFree){
     badge = 'مجاني';
   }
+  // Deal slides get the amber accent (same color as every "buy now"/price
+  // element on the site); everything else stays in the violet family.
+  const [g1,g2] = (hasDiscount || isFree) ? PROMO_AMBER_SHADE : PROMO_VIOLET_SHADES[(idx + 1) % PROMO_VIOLET_SHADES.length];
   const domainMatch = DOMAINS.find(d => d.title === c.categoryName);
   const icon = domainMatch ? (ICONS[domainMatch.key] || '') : MICRO_ICONS.book;
   const desc = c.description ? String(c.description).slice(0, 70) + (c.description.length > 70 ? '…' : '') : (c.categoryName || 'كورس متاح الآن على المنصة');
@@ -1667,30 +1839,102 @@ async function fetchTargetRatingsMap(type, courseId){
   }
 }
 
+/* Every category ("field") gets its own consistent color, generated automatically from its id —
+   so new categories added later are colored the same way with no extra setup. Used for the small
+   category pill on each course card and the dot next to a category's row heading. The course
+   thumbnail itself stays a constant brand violet (not per-category). */
+const CATEGORY_COLOR_PALETTE = [
+  '#6E4BAF', '#3B6FBF', '#C98826', '#2F7A4F', '#B3413A',
+  '#8C4BAF', '#2E8AA6', '#A6482E', '#5C7A2F', '#6B4B8A',
+];
+function categoryColor(seed){
+  const s = String(seed || 'قسم');
+  let hash = 0;
+  for(let i = 0; i < s.length; i++){ hash = (hash * 31 + s.charCodeAt(i)) >>> 0; }
+  return CATEGORY_COLOR_PALETTE[hash % CATEGORY_COLOR_PALETTE.length];
+}
+
 function courseCardHTML(c){
   const hasDiscount = c.discountPrice !== undefined && c.discountPrice !== null && Number(c.discountPrice) < Number(c.price || 0);
   const isFree = (c.price === 0 || c.price === '0') && !hasDiscount;
   const finalPrice = hasDiscount ? c.discountPrice : c.price;
+  const discountPct = hasDiscount && Number(c.price) > 0 ? Math.round((1 - Number(c.discountPrice) / Number(c.price)) * 100) : 0;
   const priceHTML = isFree
     ? `<div class="course-price">مجاني</div>`
-    : `<div class="course-price">${hasDiscount ? `<span class="price-old" style="font-size:12px;">${c.price} ج.س</span>` : ''}${finalPrice ? `${finalPrice} ج.س` : 'غير محدد'}</div>`;
+    : `<div class="course-price">${hasDiscount ? `<span class="price-old">${c.price} ج.س</span>` : ''}${finalPrice !== undefined && finalPrice !== null && finalPrice !== '' ? `${finalPrice} ج.س` : 'غير محدد'}</div>`;
   const ratingHTML = c.ratingCount
-    ? `<div style="display:flex;align-items:center;gap:5px;">${starRowHTML(c.ratingAvg)}<span style="font-size:11.5px;color:var(--muted);">(${c.ratingCount})</span></div>`
+    ? `<span class="st">${starRowHTML(c.ratingAvg)}<span class="rating-val">${Number(c.ratingAvg || 0).toFixed(1)}</span></span>`
     : '';
+  const durationHTML = c.durationText ? `<span class="st">${SIDE_ICONS.clock}${c.durationText}</span>` : '';
+  const catColor = c.categoryName ? categoryColor(c.categoryId || c.categoryName) : null;
+  const ribbon = isFree
+    ? `<span class="course-card-ribbon free">مجاني</span>`
+    : hasDiscount
+      ? `<span class="course-card-ribbon discount">خصم ${discountPct}%</span>`
+      : '';
+  const markInitial = (c.title || 'ك').trim()[0]?.toUpperCase() || 'ك';
+  const instrInitial = (c.instructorName || 'م').trim()[0]?.toUpperCase() || 'م';
+  const instructorHTML = c.instructorName ? `<span class="av">${instrInitial}</span><span class="nm">${c.instructorName}</span>` : '';
+  const metaParts = [instructorHTML, ratingHTML, durationHTML].filter(Boolean);
+
   return `
     <a href="#/course/${c.id}" class="course-card">
-      <div class="course-thumb">${c.title || 'كورس'}</div>
-      <div class="course-body">
-        <h3>${c.title || 'بدون عنوان'}</h3>
-        <div class="course-meta">
-          ${c.categoryName ? `<span class="pill">${c.categoryName}</span>` : ''}
-          ${c.level ? `<span class="pill">${c.level}</span>` : ''}
+      <div class="course-card-thumb">
+        ${ribbon}
+        <div class="course-card-mark">${markInitial}</div>
+      </div>
+      <div class="course-card-body">
+        <div class="course-card-tags">
+          ${c.categoryName ? `<span class="ccard-cat-pill" style="background:${catColor}20;color:${catColor};">${c.categoryName}</span>` : ''}
+          ${c.level ? `<span class="ccard-level">${SIDE_ICONS.layers}${c.level}</span>` : ''}
         </div>
-        ${ratingHTML}
-        ${priceHTML}
+        <h3>${c.title || 'بدون عنوان'}</h3>
+        ${metaParts.length ? `<div class="ccard-meta-row">${metaParts.join('<span class="dot">·</span>')}</div>` : ''}
+        <div class="course-card-footer">
+          ${priceHTML}
+          <span class="ccard-cta">${SIDE_ICONS.back}</span>
+        </div>
       </div>
     </a>
   `;
+}
+
+/* A horizontally-scrollable row of course cards for one category ("field") — lets the student
+   browse a domain by scrolling sideways instead of paging through a single giant grid. */
+function courseRowHTML(title, courses, rowId, dotColor){
+  return `
+    <div class="course-row-wrap">
+      <div class="course-row-head">
+        <div class="course-row-title">
+          ${dotColor ? `<span class="course-row-dot" style="background:${dotColor};"></span>` : ''}
+          <h3>${title}</h3>
+          <span class="course-row-count">${courses.length} كورس</span>
+        </div>
+        <div class="course-row-actions">
+          <button type="button" class="course-row-nav-btn" data-row-nav="${rowId}" data-dir="next" aria-label="التالي">${SIDE_ICONS.arrowNext}</button>
+          <button type="button" class="course-row-nav-btn" data-row-nav="${rowId}" data-dir="prev" aria-label="السابق">${SIDE_ICONS.back}</button>
+        </div>
+      </div>
+      <div class="course-row-viewport" id="${rowId}">
+        <div class="course-row-track">${courses.map(courseCardHTML).join('')}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* Wires the prev/next buttons for every .course-row-viewport inside container.
+   RTL scroll containers use negative scrollLeft as content moves left (per the CSSOM View spec,
+   as implemented by current Chrome/Firefox/Safari) — so "next" (forward, visually leftward) is a
+   negative delta and "prev" is positive. Native drag/touch/wheel scrolling always works regardless. */
+function wireCourseRowNav(container){
+  container.querySelectorAll('[data-row-nav]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const viewport = document.getElementById(btn.dataset.rowNav);
+      if(!viewport) return;
+      const amount = Math.round(viewport.clientWidth * 0.85);
+      viewport.scrollBy({ left: btn.dataset.dir === 'next' ? -amount : amount, behavior: 'smooth' });
+    });
+  });
 }
 
 async function renderCourses(){
@@ -1724,7 +1968,26 @@ async function renderCourses(){
 
   function renderList(filter){
     const area = document.getElementById('coursesArea');
-    const filtered = filter === 'all' ? courses : courses.filter(c => c.categoryId === filter);
+    if(filter === 'all'){
+      const groups = [];
+      categories.forEach(cat => {
+        const catName = cat.name || cat.title || 'قسم';
+        const catCourses = courses.filter(c => c.categoryId === cat.id);
+        if(catCourses.length) groups.push({ id: cat.id, name: catName, courses: catCourses });
+      });
+      const groupedIds = new Set(categories.map(cat => cat.id));
+      const leftover = courses.filter(c => !c.categoryId || !groupedIds.has(c.categoryId));
+      if(leftover.length) groups.push({ id: '__other', name: 'كورسات أخرى', courses: leftover });
+
+      if(groups.length === 0){
+        area.innerHTML = `<div class="empty-state">لا توجد كورسات منشورة حالياً — تابعنا قريباً.</div>`;
+        return;
+      }
+      area.innerHTML = groups.map((g, i) => courseRowHTML(g.name, g.courses, `courseRow-${i}`, categoryColor(g.id))).join('');
+      wireCourseRowNav(area);
+      return;
+    }
+    const filtered = courses.filter(c => c.categoryId === filter);
     if(filtered.length === 0){
       area.innerHTML = `<div class="empty-state">لا توجد كورسات في هذا القسم حالياً.</div>`;
       return;
@@ -1878,6 +2141,8 @@ async function renderCourseDetail(courseId){
   let enrollment = null;
   if(currentUser) enrollment = await getEnrollmentStatusForCourse(course.id);
   const isApproved = (enrollment && enrollment.status === 'approved') || canManageCourse(course);
+  // A student who actually owns this course (bought/approved) — price & buy CTA no longer relevant to them.
+  const isEnrolledStudent = enrollment && enrollment.status === 'approved';
 
   // Price block
   const hasDiscount = course.discountPrice !== undefined && course.discountPrice !== null && Number(course.discountPrice) < Number(course.price || 0);
@@ -1953,7 +2218,7 @@ async function renderCourseDetail(courseId){
   `;
   if(currentUser && enrollment){
     if(enrollment.status === 'approved'){
-      ctaHTML = `<a href="#/learn/${course.id}" class="btn btn-amber btn-full">ابدأ التعلم</a>`;
+      ctaHTML = '';
     } else if(enrollment.status === 'pending_payment'){
       ctaHTML = `<a href="#/enroll/${course.id}" class="btn btn-primary btn-full">إتمام الدفع</a>`;
     } else if(enrollment.status === 'payment_submitted' || enrollment.status === 'under_review' || enrollment.status === 'pending'){
@@ -2003,6 +2268,7 @@ async function renderCourseDetail(courseId){
           ${course.durationText ? `<span>${SIDE_ICONS.clock} ${course.durationText}</span>` : ''}
           ${course.level ? `<span>${course.level}</span>` : ''}
         </div>
+        ${isEnrolledStudent ? `<a href="#/learn/${course.id}" class="btn btn-amber hero-cta-btn">${SIDE_ICONS.playCircle} ابدأ التعلم</a>` : ''}
       </div>
     </div>
     <div class="container">
@@ -2054,13 +2320,18 @@ async function renderCourseDetail(courseId){
 
         <div>
           <div class="detail-card" style="align-self:start;">
-            <div class="price-block">${priceHTML}</div>
-            <div style="margin-top:16px;">${ctaHTML}</div>
+            ${isEnrolledStudent ? `
+              <div class="enrolled-badge">${SIDE_ICONS.check} أنت مشترك في هذا الكورس</div>
+              <a href="#/learn/${course.id}" class="btn btn-amber btn-full" style="margin-top:14px;">ابدأ التعلم</a>
+            ` : `
+              <div class="price-block">${priceHTML}</div>
+              <div style="margin-top:16px;">${ctaHTML}</div>
+            `}
             ${manageLink}
             ${nextLectureHTML}
             <div class="meta-list">
-              <div class="mi"><span class="side-ic">${SIDE_ICONS.grid}</span> ${course.categoryName || 'بدون قسم'}</div>
-              <div class="mi"><span class="side-ic">${SIDE_ICONS.dashboard}</span> المستوى: ${course.level || 'غير محدد'}</div>
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.tag}</span> ${course.categoryName || 'بدون قسم'}</div>
+              <div class="mi"><span class="side-ic">${SIDE_ICONS.levelBars}</span> المستوى: ${course.level || 'غير محدد'}</div>
               <div class="mi"><span class="side-ic">${SIDE_ICONS.users}</span> ${studentsCount} طالب مسجل</div>
               <div class="mi"><span class="side-ic">${SIDE_ICONS.layers}</span> ${modules.length} وحدة · ${lessons.length} محاضرة</div>
               ${course.durationText ? `<div class="mi"><span class="side-ic">${SIDE_ICONS.clock}</span> ${course.durationText}</div>` : ''}
@@ -2559,12 +2830,12 @@ function renderBarChart(canvasId, labels, values, color){
 const ADMIN_TABS = [
   { key:'overview', label:'نظرة عامة', icon: SIDE_ICONS.dashboard },
   { key:'users', label:'المستخدمون', icon: SIDE_ICONS.users },
-  { key:'categories', label:'الأقسام', icon: SIDE_ICONS.grid },
+  { key:'categories', label:'الأقسام', icon: SIDE_ICONS.tag },
   { key:'courses', label:'الكورسات', icon: SIDE_ICONS.book },
-  { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.exam },
+  { key:'review', label:'مراجعة الكورسات', icon: SIDE_ICONS.clipboardCheck },
   { key:'payments', label:'المدفوعات', icon: SIDE_ICONS.card },
-  { key:'finance', label:'التحليلات المالية', icon: SIDE_ICONS.card },
-  { key:'payment-methods', label:'وسائل الدفع', icon: SIDE_ICONS.card },
+  { key:'finance', label:'التحليلات المالية', icon: SIDE_ICONS.trendUp },
+  { key:'payment-methods', label:'وسائل الدفع', icon: SIDE_ICONS.wallet },
   { key:'certificates', label:'الشهادات', icon: SIDE_ICONS.certificate },
   { key:'live-sessions', label:'المحاضرات المباشرة', icon: SIDE_ICONS.video },
   { key:'attendance', label:'الحضور', icon: SIDE_ICONS.calendar },
@@ -2572,7 +2843,7 @@ const ADMIN_TABS = [
   { key:'community', label:'المجتمع', icon: SIDE_ICONS.chatBubble },
   { key:'reviews', label:'التقييمات', icon: SIDE_ICONS.starFilled },
   { key:'notifications', label:'الإشعارات', icon: SIDE_ICONS.bell },
-  { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.grid },
+  { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.gear },
 ];
 
 function shellSideLinks(activeKey){
@@ -2611,7 +2882,7 @@ function bottomNavHTML(activeKey, currentPath){
         </a>
       `).join('')}
       <button type="button" class="bottom-nav-item" id="bottomNavMoreBtn">
-        <span class="side-ic">${SIDE_ICONS.grid}</span><span>المزيد</span>
+        <span class="side-ic">${SIDE_ICONS.moreDots}</span><span>المزيد</span>
       </button>
     `;
   }
@@ -4164,10 +4435,11 @@ async function renderStudentDashboard(){
   renderShell('dashboard');
   const app = document.getElementById('appContent');
   app.innerHTML = `
+    ${profileHeaderHTML()}
     <div class="widget-grid" id="studentStatCards">
       <div class="widget widget-4"><div class="empty-state">جارٍ التحميل...</div></div>
     </div>
-    <div class="widget widget-4">
+    <div class="widget widget-4" id="myLearningWidget">
       <div class="widget-head"><h3>كورساتي (My Learning)</h3></div>
       <div id="myLearningArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
     </div>
@@ -4182,11 +4454,11 @@ async function renderStudentDashboard(){
       </div>
     </div>
     <div class="widget-grid">
-      <div class="widget widget-2">
+      <div class="widget widget-2" id="enrollmentsWidget">
         <div class="widget-head"><h3>طلبات التسجيل</h3></div>
         <div id="enrollmentsArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
       </div>
-      <div class="widget widget-2">
+      <div class="widget widget-2" id="certificatesWidget">
         <div class="widget-head"><h3>شهاداتي</h3></div>
         <div id="certificatesArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
       </div>
@@ -4215,14 +4487,15 @@ async function loadStudentStats(){
     const rejected = items.filter(i => i.status === 'rejected' || i.status === 'cancelled').length;
     const examsPassed = examResultsSnap.docs.filter(d => d.data().passed).length;
 
-    area.innerHTML = `
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${items.length}</div><div class="lbl">إجمالي التسجيلات</div></div></div></div>
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.check}</div><div><div class="num">${approved}</div><div class="lbl">كورسات مفعّلة</div></div></div></div>
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pending}</div><div class="lbl">قيد المراجعة</div></div></div></div>
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.certificate}</div><div><div class="num" id="certCountNum">—</div><div class="lbl">شهادات</div></div></div></div>
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.exam}</div><div><div class="num">${examResultsSnap.docs.length}</div><div class="lbl">امتحانات منجزة</div></div></div></div>
-      <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.starFilled}</div><div><div class="num">${examsPassed}</div><div class="lbl">امتحانات ناجحة</div></div></div></div>
-    `;
+    area.innerHTML = [
+      statCardV3HTML({ icon: SIDE_ICONS.book, num: items.length, label: 'إجمالي التسجيلات', iconBg:'var(--mist)', iconColor:'var(--violet-700)', scrollTarget:'enrollmentsWidget' }),
+      statCardV3HTML({ icon: SIDE_ICONS.check, num: approved, label: 'كورسات مفعّلة', iconBg:'#E9F5EE', iconColor:'var(--success)', scrollTarget:'myLearningWidget' }),
+      statCardV3HTML({ icon: SIDE_ICONS.card, num: pending, label: 'قيد المراجعة', iconBg:'#FCF3E3', iconColor:'var(--amber-600)', scrollTarget:'enrollmentsWidget' }),
+      statCardV3HTML({ icon: SIDE_ICONS.certificate, num: `<span id="certCountNum">—</span>`, label: 'شهادات', iconBg:'var(--mist)', iconColor:'var(--violet-700)', scrollTarget:'certificatesWidget' }),
+      statCardV3HTML({ icon: SIDE_ICONS.exam, num: examResultsSnap.docs.length, label: 'امتحانات منجزة', iconBg:'#EEF3FB', iconColor:'#3B6FBF', href:'#/my-exams' }),
+      statCardV3HTML({ icon: SIDE_ICONS.starFilled, num: examsPassed, label: 'امتحانات ناجحة', iconBg:'#E9F5EE', iconColor:'var(--success)', href:'#/my-exams' }),
+    ].join('');
+    wireScrollLinks();
 
     renderDonutChart('studentStatusChart', [
       { label:'مفعّل', value: approved, color:'#2F7A4F' },
@@ -4378,11 +4651,145 @@ function agendaItemHTML(l){
   `;
 }
 
+/* ---------------- SHARED: PROFESSIONAL PROFILE HEADER + CLICKABLE STAT CARDS ---------------- */
+const PROFILE_ICONS = {
+  mail: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>`,
+  phone: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>`,
+};
+
+/* Professional profile header shown at the top of the student/instructor dashboard.
+   Reads currentUser/currentProfile directly so callers don't need to pass anything. */
+function profileHeaderHTML(){
+  const name = currentProfile?.name || currentUser?.email || 'مستخدم';
+  const email = currentProfile?.email || currentUser?.email || '';
+  const phone = currentProfile?.phone || '';
+  const role = currentProfile?.role || 'student';
+  const roleLabelText = ROLE_LABEL[role] || 'طالب';
+  const initial = name.trim()[0]?.toUpperCase() || '؟';
+
+  let joinedText = '';
+  try{
+    if(currentProfile?.createdAt?.seconds){
+      joinedText = new Date(currentProfile.createdAt.seconds * 1000).toLocaleDateString('ar-EG', { year:'numeric', month:'long' });
+    }
+  }catch(e){ /* ignore */ }
+
+  const metaItems = [
+    email ? `<span class="pmi"><span class="side-ic">${PROFILE_ICONS.mail}</span>${email}</span>` : '',
+    phone ? `<span class="pmi"><span class="side-ic">${PROFILE_ICONS.phone}</span>${phone}</span>` : '',
+    joinedText ? `<span class="pmi"><span class="side-ic">${SIDE_ICONS.calendar}</span>عضو منذ ${joinedText}</span>` : '',
+    role === 'instructor' && currentProfile?.specialty ? `<span class="pmi"><span class="side-ic">${SIDE_ICONS.certificate}</span>${currentProfile.specialty}</span>` : '',
+  ].filter(Boolean).join('');
+
+  const actionsHTML = role === 'instructor'
+    ? `<div class="profile-header-actions"><a href="#/instructor/${currentUser.uid}" class="btn btn-ghost btn-sm">عرض ملفي العام</a></div>`
+    : '';
+
+  return `
+    <div class="widget widget-4" style="margin-bottom:20px;">
+      <div class="profile-header-card">
+        <div class="avatar-circle">${initial}</div>
+        <div class="profile-header-info">
+          <h2>${name}</h2>
+          <span class="role-badge">${roleLabelText}</span>
+          <div class="profile-meta-row">${metaItems}</div>
+        </div>
+        ${actionsHTML}
+      </div>
+    </div>
+  `;
+}
+
+/* Builds one clickable stat card. Pass either href (real navigation) or scrollTarget
+   (the id of a widget further down the same dashboard page to scroll to smoothly). */
+function statCardV3HTML({ icon, num, label, iconBg, iconColor, href, scrollTarget }){
+  const inner = `
+    <div class="stat-card-v3">
+      <div class="ic" style="background:${iconBg};color:${iconColor};">${icon}</div>
+      <div><div class="num">${num}</div><div class="lbl">${label}</div></div>
+      <span class="arrow-hint">${SIDE_ICONS.chevronLeft}</span>
+    </div>
+  `;
+  if(href) return `<a href="${href}" class="widget stat-link">${inner}</a>`;
+  return `<button type="button" class="widget stat-link" data-scroll-target="${scrollTarget}">${inner}</button>`;
+}
+
+/* Wires up every [data-scroll-target] button rendered by statCardV3HTML to smooth-scroll
+   to the matching widget id, without touching location.hash (the app's hash-based router
+   would otherwise try to treat the id as a route and redirect to the home page). */
+function wireScrollLinks(){
+  document.querySelectorAll('[data-scroll-target]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById(el.dataset.scrollTarget)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+}
+
+/* ---------------- MY EXAM RESULTS (student) ---------------- */
+async function renderMyExamResults(){
+  if(!currentUser){
+    location.hash = '#/login';
+    return;
+  }
+  renderShell('dashboard');
+  const app = document.getElementById('appContent');
+  app.innerHTML = `
+    <div class="widget-head" style="margin-bottom:16px;">
+      <h3 style="font-size:17px;">نتائج امتحاناتي</h3>
+      <a href="#/dashboard" class="view-all-link" style="font-size:13px;display:inline-flex;align-items:center;gap:6px;">${SIDE_ICONS.back} الرجوع للوحة التحكم</a>
+    </div>
+    <div class="widget widget-4" id="myExamResultsArea"><div class="empty-state">جارٍ التحميل...</div></div>
+  `;
+
+  const area = document.getElementById('myExamResultsArea');
+  try{
+    const snap = await getDocs(query(collection(db, 'examResults'), where('studentId','==', currentUser.uid)));
+    const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if(results.length === 0){
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما دخلت أي امتحان.</div>`;
+      return;
+    }
+
+    const examIds = [...new Set(results.map(r => r.examId))];
+    const examTitles = {};
+    await Promise.all(examIds.map(async id => {
+      try{
+        const s = await getDoc(doc(db, 'exams', id));
+        if(s.exists()) examTitles[id] = s.data().title;
+      }catch(e){ /* ignore */ }
+    }));
+
+    const allCourses = await fetchCourses();
+    const courseMap = Object.fromEntries(allCourses.map(c => [c.id, c]));
+
+    const sorted = [...results].sort((a,b) => (b.submittedAt?.seconds || 0) - (a.submittedAt?.seconds || 0));
+
+    area.innerHTML = sorted.map(r => {
+      const pct = r.total ? Math.round((r.score / r.total) * 100) : 0;
+      const d = r.submittedAt?.seconds ? new Date(r.submittedAt.seconds * 1000) : null;
+      const dateText = d ? d.toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }) : '';
+      return `
+        <div class="table-widget-row" style="align-items:center;">
+          <div class="avatar-sm" style="background:${r.passed ? 'var(--success)' : 'var(--danger)'};">${r.score}/${r.total}</div>
+          <div class="grow">
+            <div class="t1">${examTitles[r.examId] || 'امتحان'} <span class="status-badge ${r.passed ? 'status-approved' : 'status-rejected'}" style="margin-right:6px;">${r.passed ? 'ناجح' : 'راسب'}</span></div>
+            <div class="t2">${courseMap[r.courseId]?.title || ''} ${dateText ? '· ' + dateText : ''} · ${pct}%</div>
+          </div>
+          ${courseMap[r.courseId] ? `<a href="#/learn/${r.courseId}" class="icon-action" title="الرجوع لقاعة الكورس">${SIDE_ICONS.playCircle}</a>` : ''}
+        </div>
+      `;
+    }).join('');
+  }catch(e){
+    area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل نتائج الامتحانات.</div>`;
+  }
+}
+
 /* ---------------- INSTRUCTOR DASHBOARD ---------------- */
 async function renderInstructorDashboard(){
   renderShell('dashboard');
   const app = document.getElementById('appContent');
   app.innerHTML = `
+    ${profileHeaderHTML()}
     <div class="widget-grid" id="instructorStatCards">
       <div class="widget widget-4"><div class="empty-state">جارٍ التحميل...</div></div>
     </div>
@@ -4396,7 +4803,7 @@ async function renderInstructorDashboard(){
         <div id="instructorAgenda"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
       </div>
     </div>
-    <div class="widget widget-4">
+    <div class="widget widget-4" id="instructorCoursesWidget">
       <div class="widget-head">
         <h3>كورساتي</h3>
         <button class="btn btn-ghost btn-sm" id="newCourseToggleBtn">
@@ -4531,23 +4938,30 @@ async function loadInstructorCourses(){
       return;
     }
 
-    const withCounts = await Promise.all(courses.map(async c => {
-      let studentsCount = 0;
-      try{
-        const cq = query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved'));
-        const cs = await getCountFromServer(cq);
-        studentsCount = cs.data().count;
-      }catch(e){ /* ignore */ }
-      return { ...c, studentsCount };
-    }));
+    const [withCounts, ratingData] = await Promise.all([
+      Promise.all(courses.map(async c => {
+        let studentsCount = 0;
+        try{
+          const cq = query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved'));
+          const cs = await getCountFromServer(cq);
+          studentsCount = cs.data().count;
+        }catch(e){ /* ignore */ }
+        return { ...c, studentsCount };
+      })),
+      fetchReviewsFor('instructor', currentUser.uid),
+    ]);
 
     const publishedOnly = withCounts.filter(isCourseApproved);
     const totalStudents = withCounts.reduce((s,c) => s + c.studentsCount, 0);
+    const pendingReview = withCounts.filter(c => c.status === 'pending_review').length;
     if(statArea){
-      statArea.innerHTML = `
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.book}</div><div><div class="num">${withCounts.length}</div><div class="lbl">إجمالي كورساتي</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.users}</div><div><div class="num">${totalStudents}</div><div class="lbl">إجمالي الطلاب</div></div></div></div>
-      `;
+      statArea.innerHTML = [
+        statCardV3HTML({ icon: SIDE_ICONS.book, num: withCounts.length, label: 'إجمالي كورساتي', iconBg:'var(--mist)', iconColor:'var(--violet-700)', scrollTarget:'instructorCoursesWidget' }),
+        statCardV3HTML({ icon: SIDE_ICONS.users, num: totalStudents, label: 'إجمالي الطلاب', iconBg:'#E9F5EE', iconColor:'var(--success)', scrollTarget:'instructorCoursesWidget' }),
+        statCardV3HTML({ icon: SIDE_ICONS.card, num: pendingReview, label: 'قيد المراجعة', iconBg:'#FCF3E3', iconColor:'var(--amber-600)', scrollTarget:'instructorCoursesWidget' }),
+        statCardV3HTML({ icon: SIDE_ICONS.starFilled, num: ratingData.count ? ratingData.avg.toFixed(1) : '—', label: `متوسط التقييم (${ratingData.count})`, iconBg:'#EEF3FB', iconColor:'#3B6FBF', href:`#/instructor/${currentUser.uid}` }),
+      ].join('');
+      wireScrollLinks();
     }
 
     renderBarChart('instructorBarChart', publishedOnly.map(c => c.title), publishedOnly.map(c => c.studentsCount), '#6E4BAF');
@@ -4565,7 +4979,7 @@ async function loadInstructorCourses(){
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-end;">
             <div style="display:flex;gap:6px;">
-              <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.grid}</a>
+              <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.folder}</a>
               ${status === 'approved' ? `<a href="#/course/${c.id}" class="icon-action" title="عرض الصفحة العامة">${SIDE_ICONS.playCircle}</a>` : ''}
             </div>
             ${canSubmit ? `<button class="btn btn-sm btn-primary" data-submit-review="${c.id}">إرسال للمراجعة</button>` : ''}
@@ -4664,11 +5078,11 @@ async function adminRenderOverview(area){
     area.innerHTML = `
       <div class="widget-grid">
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.users}</div><div><div class="num">${studentCount}</div><div class="lbl">طالب</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.book}</div><div><div class="num">${instructorCount}</div><div class="lbl">مدرب</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.grid}</div><div><div class="num">${courseCount}</div><div class="lbl">كورس</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.graduationCap}</div><div><div class="num">${instructorCount}</div><div class="lbl">مدرب</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${courseCount}</div><div class="lbl">كورس</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pendingCount}</div><div class="lbl">طلب دفع معلّق</div></div></div></div>
         <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.exam}</div><div><div class="num">${reviewCount}</div><div class="lbl">كورس يحتاج مراجعة</div></div></div></div>
-        <div class="widget widget-span-3"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
+        <div class="widget widget-span-3"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.wallet}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
       </div>
       <div class="widget-grid">
         <div class="widget widget-2">
@@ -4947,7 +5361,7 @@ async function adminRenderCategories(area){
       }
       listEl.innerHTML = cats.map(c => `
         <div class="table-widget-row">
-          <div class="avatar-sm">${SIDE_ICONS.grid}</div>
+          <div class="avatar-sm">${SIDE_ICONS.tag}</div>
           <div class="grow">
             <div class="t1">${c.name || ''}</div>
             <div class="t2">${c.description || ''}</div>
@@ -5082,7 +5496,7 @@ async function adminRenderCourses(area){
             <div class="t1">${c.title} <span class="status-badge ${COURSE_STATUS_CLASS[c.status || 'approved']}" style="margin-right:6px;">${COURSE_STATUS_LABEL[c.status || 'approved']}</span></div>
             <div class="t2">${c.categoryName || 'بدون قسم'} ${c.instructorName ? '· ' + c.instructorName : ''}</div>
           </div>
-          <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.grid}</a>
+          <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.folder}</a>
           <button class="icon-action danger" data-id="${c.id}" title="حذف">${SIDE_ICONS.trash}</button>
         </div>
       `).join('');
