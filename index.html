@@ -100,6 +100,10 @@
   .hero h1{font-size:44px;line-height:1.28;font-weight:800;color:var(--violet-900);margin:0 0 20px;}
   .hero p.lead{font-size:18px;line-height:1.8;color:var(--muted);margin:0 0 32px;max-width:52ch;}
   .hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;}
+  .hero-actions .btn{transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease,background .15s;}
+  .hero-actions .btn-primary{box-shadow:0 10px 24px -10px rgba(110,75,175,0.5);}
+  .hero-actions .btn:hover{transform:translateY(-3px);}
+  .hero-actions .btn-primary:hover{box-shadow:0 16px 32px -12px rgba(110,75,175,0.6);}
   .hero-trust{display:flex;gap:22px;flex-wrap:wrap;font-size:14px;color:var(--muted);}
   .hero-trust span{display:flex;align-items:center;gap:7px;}
   .dot{width:6px;height:6px;border-radius:50%;background:var(--amber-500);}
@@ -181,12 +185,30 @@
   }
 
   /* Hero v2 — badge, two-tone heading, trust row, floating cards */
+  .hero{position:relative;overflow:hidden;padding:76px 0 64px;}
+  .hero::before{
+    content:'';position:absolute;top:-20%;right:-10%;width:60%;height:140%;
+    background:radial-gradient(circle, rgba(110,75,175,0.08), transparent 65%);
+    pointer-events:none;z-index:0;
+  }
+  .hero-grid{position:relative;z-index:1;}
+  .hero-grid > div:first-child > *{opacity:0;animation:heroFadeUp .6s cubic-bezier(.22,1,.36,1) forwards;}
+  .eyebrow-pill{animation-delay:.02s;}
+  .hero h1{animation-delay:.1s;}
+  .hero p.lead{animation-delay:.18s;}
+  .hero-actions{animation-delay:.26s;}
+  .trust-row{animation-delay:.34s;}
+  @keyframes heroFadeUp{0%{opacity:0;transform:translateY(16px);}100%{opacity:1;transform:translateY(0);}}
   .eyebrow-pill{
     display:inline-flex;align-items:center;gap:7px;background:var(--mist);color:var(--violet-700);
     padding:7px 16px;border-radius:999px;font-size:12.5px;font-weight:700;margin-bottom:20px;
+    box-shadow:0 2px 10px -4px rgba(110,75,175,0.3);
   }
   .eyebrow-pill .dot-live{width:6px;height:6px;border-radius:50%;background:var(--success);}
-  .hero h1 .accent{color:var(--violet-600);}
+  .hero h1 .accent{
+    background:linear-gradient(100deg,var(--violet-700),var(--violet-500) 55%,var(--amber-500));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
   .trust-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
   .avatar-stack{display:flex;align-items:center;}
   .avatar-stack .a{
@@ -602,6 +624,108 @@
   .cm-type-count{
     background:var(--mist);color:var(--violet-700);border-radius:999px;padding:1px 9px;font-size:11px;font-weight:800;
   }
+
+  /* ---- Global search: nav trigger + full modal ---- */
+  .nav-search-trigger{
+    display:flex;align-items:center;gap:9px;background:var(--mist);border:1px solid transparent;
+    border-radius:999px;padding:8px 14px;color:var(--muted);font-size:13px;font-family:inherit;
+    cursor:pointer;transition:background .2s,border-color .2s,transform .15s;flex-shrink:0;
+  }
+  .nav-search-trigger:hover{background:#EDE4F9;border-color:var(--violet-600);color:var(--violet-800);}
+  .nav-search-trigger:active{transform:scale(.96);}
+  .nav-search-trigger .nst-ic{display:flex;color:var(--violet-700);flex-shrink:0;}
+  .nav-search-trigger .nst-label{white-space:nowrap;}
+  .nav-search-trigger .nst-kbd{
+    font-size:10.5px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;color:var(--muted);margin-inline-start:4px;
+  }
+  @media (max-width:640px){
+    .nav-search-trigger{padding:9px;border-radius:50%;}
+    .nav-search-trigger .nst-label, .nav-search-trigger .nst-kbd{display:none;}
+  }
+
+  .search-modal-overlay{
+    position:fixed;inset:0;z-index:120;display:flex;align-items:flex-start;justify-content:center;
+    background:rgba(20,12,32,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    padding:9vh 16px 16px;opacity:0;animation:smFade .3s ease forwards;
+  }
+  .search-modal-overlay.closing{animation:smFadeOut .22s ease forwards;}
+  @keyframes smFade{to{opacity:1;}}
+  @keyframes smFadeOut{to{opacity:0;}}
+  .search-modal-panel{
+    width:100%;max-width:600px;max-height:78vh;display:flex;flex-direction:column;
+    background:#fff;border-radius:22px;overflow:hidden;position:relative;
+    box-shadow:0 40px 100px -24px rgba(34,21,48,0.6);
+    transform:translateY(-34px) scale(0.92);opacity:0;
+    animation:smPanelIn .5s cubic-bezier(.22,1.4,.36,1) .06s forwards;
+  }
+  .search-modal-overlay.closing .search-modal-panel{animation:smPanelOut .2s ease forwards;}
+  @keyframes smPanelIn{
+    0%{transform:translateY(-34px) scale(0.92);opacity:0;}
+    60%{transform:translateY(4px) scale(1.01);opacity:1;}
+    100%{transform:translateY(0) scale(1);opacity:1;}
+  }
+  @keyframes smPanelOut{to{transform:translateY(-18px) scale(0.95);opacity:0;}}
+  .search-modal-panel::before{
+    content:'';position:absolute;inset:0;border-radius:22px;padding:1.5px;pointer-events:none;
+    background:linear-gradient(120deg,var(--violet-600),var(--amber-500),var(--violet-600));
+    background-size:220% 220%;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    animation:smBorderGlow 5s linear infinite;opacity:0.55;
+  }
+  @keyframes smBorderGlow{0%{background-position:0% 50%;}100%{background-position:200% 50%;}}
+  .search-modal-head{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line);flex-shrink:0;}
+  .search-modal-head .sm-ic{color:var(--violet-700);display:flex;flex-shrink:0;animation:smIcPulse 2s ease-in-out infinite;}
+  @keyframes smIcPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  .search-modal-head input{
+    flex:1;border:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink);background:transparent;
+  }
+  .search-modal-head input::placeholder{color:var(--muted);}
+  .sm-close{
+    width:32px;height:32px;border-radius:50%;background:var(--mist);color:var(--muted);border:none;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:background .15s,transform .15s;
+  }
+  .sm-close:hover{background:#EDE4F9;color:var(--violet-800);transform:rotate(90deg);}
+  .search-modal-filters{display:flex;align-items:center;gap:8px;padding:12px 20px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--line);}
+  .sm-filter-chip{
+    flex-shrink:0;background:var(--mist);border:1px solid transparent;color:var(--violet-800);
+    font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:999px;cursor:pointer;font-family:inherit;
+    transition:background .15s,color .15s,transform .15s;white-space:nowrap;
+  }
+  .sm-filter-chip:hover{transform:translateY(-1px);}
+  .sm-filter-chip.active{background:linear-gradient(135deg,var(--violet-600),var(--violet-800));color:#fff;}
+  .sm-filter-sep{width:1px;height:20px;background:var(--line);flex-shrink:0;}
+  .search-modal-body{flex:1;overflow-y:auto;padding:8px 12px 18px;}
+  .sm-section-label{font-size:11.5px;font-weight:800;color:var(--muted);padding:12px 10px 6px;}
+  .sm-result-row{
+    display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:13px;text-decoration:none;
+    color:var(--ink);opacity:0;transform:translateY(6px);animation:smRowIn .3s ease forwards;
+  }
+  .sm-result-row:hover{background:var(--mist);}
+  @keyframes smRowIn{to{opacity:1;transform:translateY(0);}}
+  .sm-r-ic{width:38px;height:38px;border-radius:11px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .sm-r-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .sm-r-title{font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sm-r-sub{font-size:11.5px;color:var(--muted);}
+  .sm-r-chev{color:var(--muted);flex-shrink:0;width:12px;}
+  .sm-empty{text-align:center;padding:50px 20px;color:var(--muted);}
+  .sm-empty-ic{width:52px;height:52px;border-radius:50%;background:var(--mist);color:var(--violet-600);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;}
+  .sm-empty-title{font-weight:700;font-size:14.5px;color:var(--violet-900);margin-bottom:4px;}
+  .sm-empty-sub{font-size:12.5px;}
+  @media (max-width:640px){
+    .search-modal-overlay{padding:0;align-items:stretch;}
+    .search-modal-panel{max-width:none;max-height:none;height:100%;border-radius:0;}
+  }
+
+  /* ---- Sliding bottom-nav active indicator ---- */
+  .bottom-nav-indicator{
+    position:absolute;top:6px;height:38px;border-radius:13px;
+    background:linear-gradient(135deg,var(--violet-600),var(--violet-800));
+    box-shadow:0 6px 14px -6px rgba(110,75,175,.6);
+    transition:left .45s cubic-bezier(.22,1.4,.36,1), width .45s cubic-bezier(.22,1.4,.36,1);
+    z-index:0;pointer-events:none;
+  }
+  .bottom-nav-indicator.no-anim{transition:none;}
   .sheet-handle{width:38px;height:4px;background:var(--line);border-radius:99px;margin:0 auto 18px;}
   .sheet-title{font-family:'Cairo',sans-serif;font-weight:800;font-size:16px;color:var(--violet-900);margin-bottom:16px;}
   .sheet-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px 8px;}
@@ -1308,12 +1432,11 @@
       <a href="#domains">المجالات</a>
       <a href="#how">كيف تعمل</a>
     </div>
-    <form class="nav-search" id="navSearchForm">
-      <input type="text" id="navSearchInput" placeholder="ابحث عن كورس..." />
-      <button type="submit" aria-label="بحث">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      </button>
-    </form>
+    <button type="button" class="nav-search-trigger" id="globalSearchBtn" aria-label="بحث">
+      <span class="nst-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></span>
+      <span class="nst-label">ابحث في المنصة...</span>
+      <span class="nst-kbd">Ctrl K</span>
+    </button>
     <div class="nav-cta" id="navAuthArea"></div>
   </div>
 </nav>
@@ -1372,7 +1495,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp, collection,
-  getCountFromServer, query, where, getDocs, addDoc, updateDoc, deleteDoc, arrayUnion
+  getCountFromServer, query, where, getDocs, addDoc, updateDoc, deleteDoc, arrayUnion, runTransaction
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import {
   getStorage, ref, uploadBytes, getDownloadURL
@@ -1599,6 +1722,7 @@ function renderGlobalBottomNav(path, tabParam){
   nav.style.display = '';
   nav.innerHTML = bottomNavHTML(activeKey, path);
   wireBottomNav(activeKey);
+  positionBottomNavIndicator(true);
 }
 window.addEventListener('hashchange', router);
 
@@ -2008,7 +2132,6 @@ async function renderPromoCarousel(){
       const idx = Number(dot.dataset.dotIndex);
       goTo(idx);
       setActiveDot(idx);
-      restartAutoplay();
     });
   });
 
@@ -2022,27 +2145,147 @@ async function renderPromoCarousel(){
     });
   }, { root: viewport, threshold: [0.6] });
   cards.forEach(c => promoObserver.observe(c));
+  // No autoplay/auto-scroll here on purpose — the carousel only moves when the visitor
+  // actually swipes or taps a dot, so the page holds still while they read.
+}
 
-  function startAutoplay(){
-    if(promoAutoplayTimer) clearInterval(promoAutoplayTimer);
-    promoAutoplayTimer = setInterval(() => {
-      goTo(currentIndex + 1);
-    }, 4200);
-  }
-  function stopAutoplay(){
-    if(promoAutoplayTimer){ clearInterval(promoAutoplayTimer); promoAutoplayTimer = null; }
-  }
-  function restartAutoplay(){
-    stopAutoplay();
-    startAutoplay();
+/* ---------------- GLOBAL SEARCH MODAL ----------------
+   One search entry point for the whole public site (courses + categories), opened from the
+   nav button, Ctrl/Cmd+K, or a prefilled call. Filters an in-memory list as the visitor
+   types — no per-keystroke network round trip. */
+let searchIndexCache = null;
+async function getSearchIndex(){
+  if(searchIndexCache) return searchIndexCache;
+  const [allCourses, cats] = await Promise.all([fetchCourses(), fetchCategories()]);
+  searchIndexCache = { courses: allCourses.filter(isCourseApproved), cats };
+  return searchIndexCache;
+}
+
+function searchModalKeyHandler(e){
+  if(e.key === 'Escape') closeSearchModal();
+}
+
+function closeSearchModal(){
+  const overlay = document.getElementById('searchModalOverlay');
+  if(!overlay) return;
+  overlay.classList.add('closing');
+  document.removeEventListener('keydown', searchModalKeyHandler);
+  document.body.style.overflow = '';
+  setTimeout(() => overlay.remove(), 220);
+}
+
+async function openSearchModal(prefill){
+  if(document.getElementById('searchModalOverlay')) return;
+  const { courses, cats } = await getSearchIndex();
+  const roots = rootCategories(cats);
+
+  const overlay = document.createElement('div');
+  overlay.id = 'searchModalOverlay';
+  overlay.className = 'search-modal-overlay';
+  overlay.innerHTML = `
+    <div class="search-modal-panel">
+      <div class="search-modal-head">
+        <span class="sm-ic">${SIDE_ICONS.search}</span>
+        <input type="text" id="searchModalInput" placeholder="ابحث عن كورس، قسم، مدرب..." autocomplete="off" />
+        <button type="button" class="sm-close" id="searchModalCloseBtn" aria-label="إغلاق">${SIDE_ICONS.close}</button>
+      </div>
+      <div class="search-modal-filters" id="searchModalFilters">
+        <button type="button" class="sm-filter-chip active" data-cat="all">الكل</button>
+        ${roots.map(r => `<button type="button" class="sm-filter-chip" data-cat="${r.id}">${r.name}</button>`).join('')}
+        <span class="sm-filter-sep"></span>
+        <button type="button" class="sm-filter-chip" data-free>مجاني فقط</button>
+      </div>
+      <div class="search-modal-body" id="searchModalResults"></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  const input = overlay.querySelector('#searchModalInput');
+  const resultsEl = overlay.querySelector('#searchModalResults');
+  let activeCat = 'all';
+  let freeOnly = false;
+
+  function renderResults(){
+    const q = input.value.trim().toLowerCase();
+    let list = courses;
+    if(activeCat !== 'all') list = list.filter(c => courseRootCategoryId(c) === activeCat);
+    if(freeOnly) list = list.filter(c => !c.price || Number(c.price) === 0);
+    if(q){
+      list = list.filter(c =>
+        (c.title || '').toLowerCase().includes(q) ||
+        (c.description || '').toLowerCase().includes(q) ||
+        (c.instructorName || '').toLowerCase().includes(q) ||
+        (c.categoryName || '').toLowerCase().includes(q)
+      );
+    }
+    const matchedCats = q ? cats.filter(c => (c.name || '').toLowerCase().includes(q)) : [];
+
+    if(list.length === 0 && matchedCats.length === 0){
+      resultsEl.innerHTML = `
+        <div class="sm-empty">
+          <div class="sm-empty-ic">${SIDE_ICONS.search}</div>
+          <div class="sm-empty-title">${q ? `مفيش نتائج لـ "${input.value.trim()}"` : 'ابدأ الكتابة للبحث في الكورسات والأقسام'}</div>
+          <div class="sm-empty-sub">${q ? 'جرّب كلمة تانية أو غيّر الفلتر فوق.' : ''}</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    if(matchedCats.length){
+      html += `<div class="sm-section-label">الأقسام</div>`;
+      html += matchedCats.slice(0, 4).map((c, i) => `
+        <a href="#/courses?cat=${c.id}" class="sm-result-row" data-nav style="animation-delay:${i * 0.03}s;">
+          <span class="sm-r-ic">${SIDE_ICONS.tag}</span>
+          <span class="sm-r-body"><span class="sm-r-title">${c.name}</span><span class="sm-r-sub">قسم</span></span>
+          <span class="sm-r-chev">${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `).join('');
+    }
+    if(list.length){
+      html += `<div class="sm-section-label">الكورسات (${list.length})</div>`;
+      html += list.slice(0, 25).map((c, i) => `
+        <a href="#/course/${c.id}" class="sm-result-row" data-nav style="animation-delay:${(matchedCats.length ? matchedCats.length : 0) * 0.03 + i * 0.03}s;">
+          <span class="sm-r-ic">${SIDE_ICONS.book}</span>
+          <span class="sm-r-body"><span class="sm-r-title">${c.title || ''}</span><span class="sm-r-sub">${c.categoryName ? c.categoryName + ' · ' : ''}${c.price ? c.price + ' ج.س' : 'مجاني'}</span></span>
+          <span class="sm-r-chev">${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `).join('');
+    }
+    resultsEl.innerHTML = html;
   }
 
-  viewport.addEventListener('mouseenter', stopAutoplay);
-  viewport.addEventListener('mouseleave', startAutoplay);
-  viewport.addEventListener('touchstart', stopAutoplay, { passive: true });
-  viewport.addEventListener('touchend', startAutoplay);
+  let debounceTimer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(renderResults, 150);
+  });
 
-  startAutoplay();
+  overlay.querySelectorAll('.sm-filter-chip[data-cat]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      overlay.querySelectorAll('.sm-filter-chip[data-cat]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeCat = chip.dataset.cat;
+      renderResults();
+    });
+  });
+  overlay.querySelector('.sm-filter-chip[data-free]').addEventListener('click', function(){
+    freeOnly = !freeOnly;
+    this.classList.toggle('active', freeOnly);
+    renderResults();
+  });
+
+  overlay.addEventListener('click', (e) => {
+    if(e.target === overlay) closeSearchModal();
+    if(e.target.closest('[data-nav]')) closeSearchModal();
+  });
+  overlay.querySelector('#searchModalCloseBtn').addEventListener('click', closeSearchModal);
+  document.addEventListener('keydown', searchModalKeyHandler);
+
+  if(prefill){ input.value = prefill; }
+  renderResults();
+  requestAnimationFrame(() => input.focus());
 }
 
 /* ---------------- AUTH ERROR MESSAGES ---------------- */
@@ -3745,16 +3988,33 @@ async function fetchCommunicationSettings(){
   }
 }
 const DEFAULT_ADMIN_WHATSAPP = '249112160178'; // +249 11 216 0178 — used whenever the admin hasn't set a different number in Settings → Communication
-/* A short, human-friendly order code (e.g. "LV-260919-K3P9X") instead of exposing the raw
-   Firestore document id — easy for a student to copy into a bank-transfer note, and for the
-   admin to search/match against. Derived from the doc's own id, so no separate counter needed. */
-function buildOrderNumber(docId){
+
+/* A single counter document (settings/orderCounter) that every new order atomically increments
+   by 1 via a transaction. This guarantees a strictly unique, gapless sequence number across ALL
+   users — never derived from randomness — so no two orders can ever end up with the same number,
+   no matter how many students are checking out at once. */
+async function getNextOrderSequence(){
+  const counterRef = doc(db, 'settings', 'orderCounter');
+  const next = await runTransaction(db, async (tx) => {
+    const snap = await tx.get(counterRef);
+    const current = snap.exists() ? (snap.data().value || 0) : 0;
+    const value = current + 1;
+    tx.set(counterRef, { value }, { merge: true });
+    return value;
+  });
+  return next;
+}
+
+/* Order code: LV-YYYYMMDD-##### — today's full date, then the guaranteed-unique sequence
+   number padded to 5 digits (e.g. "LV-20260911-00001"). Short enough for a student to write as
+   a bank-transfer note, and sortable/searchable for the admin. */
+function buildOrderNumber(seq){
   const d = new Date();
-  const yy = String(d.getFullYear()).slice(-2);
+  const yyyy = d.getFullYear();
   const mm = String(d.getMonth() + 1).padStart(2, '0');
   const dd = String(d.getDate()).padStart(2, '0');
-  const shortCode = docId.slice(-5).toUpperCase();
-  return `LV-${yy}${mm}${dd}-${shortCode}`;
+  const seqStr = String(seq).padStart(5, '0');
+  return `LV-${yyyy}${mm}${dd}-${seqStr}`;
 }
 function buildPaymentNotificationMessage(course, enrollment){
   const lines = [
@@ -3768,6 +4028,17 @@ function buildPaymentNotificationMessage(course, enrollment){
 }
 
 /* ---------------- ENROLLMENT / CHECKOUT (multi-step, manual payment) ---------------- */
+/* Rebuilds the same WhatsApp link + message the checkout step already used — for the optional
+   "didn't open? try again" fallback on the status page, and for a fresh page load where the
+   enrollment is already under review. */
+async function buildWaFallbackInfo(course, enrollment){
+  const comms = await fetchCommunicationSettings();
+  const message = buildPaymentNotificationMessage(course, enrollment);
+  const waNumber = (comms?.whatsappNumber || DEFAULT_ADMIN_WHATSAPP).replace(/\D/g,'');
+  const waLink = comms?.whatsappLink || `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+  return { waLink, message };
+}
+
 async function renderEnrollForm(courseId){
   const app = document.getElementById('app');
 
@@ -3816,12 +4087,9 @@ async function renderEnrollForm(courseId){
     `;
     return;
   }
-  if(enrollment && enrollment.status === 'under_review'){
-    renderCheckoutStatusPage(course, enrollment, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
-    return;
-  }
-  if(enrollment && enrollment.status === 'payment_submitted'){
-    renderCheckoutStep3(course, enrollment);
+  if(enrollment && (enrollment.status === 'under_review' || enrollment.status === 'payment_submitted')){
+    const waInfo = enrollment.finalAmount ? await buildWaFallbackInfo(course, enrollment) : null;
+    renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.', waInfo);
     return;
   }
   if(enrollment && enrollment.status === 'pending_payment'){
@@ -3832,17 +4100,40 @@ async function renderEnrollForm(courseId){
   renderCheckoutStep1(course);
 }
 
-function renderCheckoutStatusPage(course, enrollment, message){
+function renderCheckoutStatusPage(course, enrollment, message, waFallback){
   const app = document.getElementById('app');
   app.innerHTML = `
     <div class="dash-wrap">
       <div class="dash-card" style="text-align:center;">
         <span class="status-badge ${STATUS_CLASS[enrollment.status]}" style="margin-bottom:14px;display:inline-block;">${STATUS_LABEL[enrollment.status]}</span>
         <p style="color:var(--muted);">${message}</p>
-        <a href="#/dashboard" class="btn btn-ghost" style="margin-top:10px;">الرجوع إلى لوحة التحكم</a>
+        ${waFallback ? `
+          <div style="text-align:right;margin-top:18px;">
+            <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">ما فتح واتساب تلقائي عندك؟ اضغط هنا:</p>
+            <button class="notify-btn" id="statusWaBtn">${SIDE_ICONS.chatBubble} فتح واتساب الإدارة</button>
+            <div class="copy-box">
+              <span>نص الرسالة الجاهز</span>
+              <button class="icon-action" id="statusCopyMsgBtn" title="نسخ">${SIDE_ICONS.copy}</button>
+            </div>
+          </div>
+        ` : ''}
+        <a href="#/dashboard" class="btn btn-ghost" style="margin-top:14px;">الرجوع إلى لوحة التحكم</a>
       </div>
     </div>
   `;
+  if(waFallback){
+    document.getElementById('statusWaBtn').addEventListener('click', () => {
+      window.open(waFallback.waLink, '_blank', 'noopener');
+    });
+    document.getElementById('statusCopyMsgBtn').addEventListener('click', () => {
+      navigator.clipboard?.writeText(waFallback.message).then(() => {
+        const btn = document.getElementById('statusCopyMsgBtn');
+        const original = btn.innerHTML;
+        btn.innerHTML = SIDE_ICONS.check;
+        setTimeout(() => { btn.innerHTML = original; }, 1500);
+      }).catch(() => {});
+    });
+  }
 }
 
 /* Step 1 — confirm price/discount and choose a payment method */
@@ -3857,7 +4148,7 @@ async function renderCheckoutStep1(course){
   app.innerHTML = `
     <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
       <div class="auth-card" style="max-width:520px;">
-        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot"></div><div class="checkout-step-dot"></div></div>
+        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot"></div></div>
         <h2>تأكيد الاشتراك</h2>
         <p class="sub">${course.title}</p>
         <div id="checkoutAlert"></div>
@@ -3911,7 +4202,8 @@ async function renderCheckoutStep1(course){
     btn.innerHTML = `<span class="spinner"></span> جارٍ التأكيد...`;
     try{
       const newRef = doc(collection(db, 'enrollments'));
-      const orderNumber = buildOrderNumber(newRef.id);
+      const seq = await getNextOrderSequence();
+      const orderNumber = buildOrderNumber(seq);
       await setDoc(newRef, {
         studentId: currentUser.uid,
         studentName: currentProfile?.name || currentUser.email,
@@ -3922,13 +4214,13 @@ async function renderCheckoutStep1(course){
         finalAmount,
         paymentMethodId: selectedMethod ? selectedMethod.value : null,
         notificationSent: false,
-        status: isFree ? 'payment_submitted' : 'pending_payment',
+        status: isFree ? 'under_review' : 'pending_payment',
         orderNumber,
         createdAt: serverTimestamp(),
       });
-      const newEnrollment = { id: newRef.id, orderNumber, courseId: course.id, courseTitle: course.title, finalAmount, paymentMethodId: selectedMethod ? selectedMethod.value : null, status: isFree ? 'payment_submitted' : 'pending_payment' };
+      const newEnrollment = { id: newRef.id, orderNumber, courseId: course.id, courseTitle: course.title, finalAmount, paymentMethodId: selectedMethod ? selectedMethod.value : null, status: isFree ? 'under_review' : 'pending_payment' };
       if(isFree){
-        renderCheckoutStep3(course, newEnrollment);
+        renderCheckoutStatusPage(course, newEnrollment, 'طلبك قيد المراجعة الآن. الإدارة هتفعّل الكورس بعد الموافقة.', null);
       } else {
         renderCheckoutStep2(course, newEnrollment);
       }
@@ -3943,18 +4235,16 @@ async function renderCheckoutStep1(course){
 /* Step 2 — show chosen payment account + upload proof */
 async function renderCheckoutStep2(course, enrollment){
   const app = document.getElementById('app');
-  let method = null;
-  if(enrollment.paymentMethodId){
-    try{
-      const snap = await getDoc(doc(db, 'paymentMethods', enrollment.paymentMethodId));
-      if(snap.exists()) method = snap.data();
-    }catch(e){ /* ignore */ }
-  }
+  const [methodSnap, comms] = await Promise.all([
+    enrollment.paymentMethodId ? getDoc(doc(db, 'paymentMethods', enrollment.paymentMethodId)).catch(() => null) : Promise.resolve(null),
+    fetchCommunicationSettings(),
+  ]);
+  const method = methodSnap && methodSnap.exists() ? methodSnap.data() : null;
 
   app.innerHTML = `
     <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
       <div class="auth-card" style="max-width:520px;">
-        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot"></div></div>
+        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div></div>
         <h2>إتمام الدفع</h2>
         <p class="sub">${course.title} — ${enrollment.finalAmount} ج.س</p>
         <div id="checkoutAlert"></div>
@@ -3983,8 +4273,8 @@ async function renderCheckoutStep2(course, enrollment){
             <label>مرجع العملية / رقم التحويل (اختياري)</label>
             <input type="text" id="paymentRef" placeholder="مثال: 8842051" />
           </div>
-          <p style="font-size:12.5px;color:var(--muted);margin:0 0 16px;">حوّل المبلغ لبيانات الحساب فوق، واكتب رقم طلبك في ملاحظة التحويل لو أمكن، وبعدها اضغط "تم الدفع" — هيتفتح لك واتساب الإدارة تلقائياً برسالة جاهزة فيها رقم طلبك.</p>
-          <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">تم الدفع، متابعة</button>
+          <p style="font-size:12.5px;color:var(--muted);margin:0 0 16px;">حوّل المبلغ لبيانات الحساب فوق، واكتب رقم طلبك في ملاحظة التحويل لو أمكن. بعدها اضغط الزر تحت — هيتفتح لك واتساب الإدارة تلقائياً برسالة جاهزة، وابعت صورة إشعار التحويل هناك عشان الإدارة تتحقق بسرعة.</p>
+          <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">${SIDE_ICONS.chatBubble} تم الدفع، فتح واتساب الإدارة</button>
         </form>
         <button class="btn btn-ghost btn-full" id="cancelCheckoutBtn" style="margin-top:10px;">إلغاء الطلب</button>
       </div>
@@ -4011,111 +4301,44 @@ async function renderCheckoutStep2(course, enrollment){
     }
   });
 
+  // The one and only place this checkout opens WhatsApp: a single click here does everything
+  // (opens the chat with a ready message, saves the payment ref, and moves the request to
+  // "under review") instead of asking the student to press a second button on a following screen.
   document.getElementById('proofForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submitProofBtn');
     const alertBox = document.getElementById('checkoutAlert');
     const paymentRef = document.getElementById('paymentRef').value.trim();
+    const updatedEnrollment = { ...enrollment, paymentRef };
+    const message = buildPaymentNotificationMessage(course, updatedEnrollment);
+    const waNumber = (comms?.whatsappNumber || DEFAULT_ADMIN_WHATSAPP).replace(/\D/g,'');
+    const waLink = comms?.whatsappLink || `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+
+    // Open first, synchronously, before any await — this keeps it tied to the click so
+    // browsers don't treat it as a blocked popup.
+    window.open(waLink, '_blank', 'noopener');
+
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> جارٍ الإرسال...`;
     try{
       await updateDoc(doc(db, 'enrollments', enrollment.id), {
-        status: 'payment_submitted',
+        status: 'under_review',
         paymentRef: paymentRef || null,
         submittedAt: serverTimestamp(),
+        notificationSent: true,
+        notificationSentAt: serverTimestamp(),
       });
-
-      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef }, true);
+      renderCheckoutStatusPage(
+        course,
+        { ...updatedEnrollment, status: 'under_review' },
+        'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.',
+        { waLink, message }
+      );
     }catch(err){
       alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء الإرسال، حاول مرة أخرى.</div>`;
       btn.disabled = false;
-      btn.textContent = 'تم الدفع، متابعة';
+      btn.innerHTML = `${SIDE_ICONS.chatBubble} تم الدفع، فتح واتساب الإدارة`;
     }
-  });
-}
-
-/* Step 3 — thank you + WhatsApp/Telegram notification. autoOpenWa is only true when we just
-   arrived here from the step-2 submit click (a real user gesture) — never on a plain page
-   reload/revisit, so we don't pop open a new tab unprompted. */
-async function renderCheckoutStep3(course, enrollment, autoOpenWa){
-  const app = document.getElementById('app');
-  const comms = await fetchCommunicationSettings();
-  const message = buildPaymentNotificationMessage(course, enrollment);
-
-  const hasWhatsapp = true; // always available now — falls back to DEFAULT_ADMIN_WHATSAPP if admin hasn't set one
-  const hasTelegram = comms && (comms.telegramUsername || comms.telegramLink);
-  const waNumber = (comms?.whatsappNumber || DEFAULT_ADMIN_WHATSAPP).replace(/\D/g,'');
-  const waLink = comms?.whatsappLink || `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
-  const tgLink = comms?.telegramLink || (comms?.telegramUsername ? `https://t.me/${comms.telegramUsername.replace('@','')}` : null);
-
-  app.innerHTML = `
-    <div class="auth-wrap" style="align-items:flex-start;padding-top:48px;">
-      <div class="auth-card" style="max-width:520px;">
-        <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div></div>
-        <h2>تم تأكيد دفعك</h2>
-        <p class="sub">${autoOpenWa ? 'هنفتح لك واتساب الإدارة تلقائياً برسالة جاهزة — كل اللي عليك تبعت صورة إشعار التحويل بعدها.' : 'اضغط الزر تحت لفتح واتساب الإدارة برسالة جاهزة، وابعت صورة إشعار التحويل بعدها.'}</p>
-        <div id="notifyAlert"></div>
-
-        <button class="notify-btn" id="waNotifyBtn">${SIDE_ICONS.chatBubble} فتح واتساب الإدارة</button>
-        ${hasTelegram ? `<button class="notify-btn" id="tgNotifyBtn">${SIDE_ICONS.paperPlane} إرسال إشعار عبر تلغرام</button>` : ''}
-
-        <div class="copy-box">
-          <span>نص الرسالة الجاهز</span>
-          <button class="icon-action" id="copyMsgBtn" title="نسخ">${SIDE_ICONS.copy}</button>
-        </div>
-
-        <button class="btn btn-primary btn-full" id="finishCheckoutBtn" style="margin-top:20px;">تم — انتظار المراجعة</button>
-      </div>
-    </div>
-  `;
-
-  // Best-effort auto-open — only right after the click that got us here (a real user gesture),
-  // never on a cold reload/revisit. If a popup blocker still catches it, the button above is a
-  // guaranteed fallback either way.
-  if(autoOpenWa){
-    try{
-      window.open(waLink, '_blank', 'noopener');
-    }catch(e){ /* ignore — button remains as fallback */ }
-  }
-
-  document.getElementById('copyMsgBtn').addEventListener('click', () => {
-    navigator.clipboard?.writeText(message).then(() => {
-      document.getElementById('notifyAlert').innerHTML = `<div class="alert alert-success">تم نسخ الرسالة.</div>`;
-    }).catch(() => {});
-  });
-
-  async function markNotified(){
-    try{
-      await updateDoc(doc(db, 'enrollments', enrollment.id), {
-        notificationSent: true,
-        notificationSentAt: serverTimestamp(),
-        status: 'under_review',
-      });
-    }catch(e){ /* non-fatal — proof is already saved */ }
-  }
-
-  const waBtn = document.getElementById('waNotifyBtn');
-  if(waBtn){
-    waBtn.addEventListener('click', async () => {
-      window.open(waLink, '_blank', 'noopener');
-      await markNotified();
-      renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
-    });
-  }
-  const tgBtn = document.getElementById('tgNotifyBtn');
-  if(tgBtn){
-    tgBtn.addEventListener('click', async () => {
-      window.open(tgLink, '_blank', 'noopener');
-      await markNotified();
-      renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.');
-    });
-  }
-
-  document.getElementById('finishCheckoutBtn').addEventListener('click', async () => {
-    try{
-      await updateDoc(doc(db, 'enrollments', enrollment.id), { status: 'under_review' });
-    }catch(e){ /* ignore */ }
-    renderCheckoutStatusPage(course, { ...enrollment, status: 'under_review' }, 'طلبك قيد المراجعة الآن. الإدارة هتتحقق من دفعك وتفعّل الكورس بعد الموافقة.');
   });
 }
 
@@ -4228,6 +4451,7 @@ function bottomNavHTML(activeKey, currentPath){
   if(currentProfile?.role === 'admin'){
     const primary = ADMIN_BOTTOM_PRIMARY_KEYS.map(k => ADMIN_TABS.find(t => t.key === k)).filter(Boolean);
     return `
+      <div class="bottom-nav-indicator" id="bottomNavIndicator"></div>
       ${primary.map(t => `
         <a href="#/dashboard?tab=${t.key}" class="bottom-nav-item admin-bottom-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
           <span class="side-ic">${t.icon}</span><span>${t.label}</span>
@@ -4244,6 +4468,7 @@ function bottomNavHTML(activeKey, currentPath){
   const isDash = activeKey === 'dashboard';
 
   return `
+    <div class="bottom-nav-indicator" id="bottomNavIndicator"></div>
     <a href="#/" class="bottom-nav-item ${isHome ? 'active' : ''}">
       <span class="side-ic">${SIDE_ICONS.home}</span><span>الرئيسية</span>
     </a>
@@ -4261,6 +4486,32 @@ function bottomNavHTML(activeKey, currentPath){
     </button>
   `;
 }
+
+/* Slides the little pill behind the active bottom-nav icon to that icon's exact position.
+   instant=true skips the transition (used right after a fresh render, so the indicator is
+   already in place under the correct tab the instant the bar appears — no sliding-in from
+   nowhere on first paint) — every later call (tab switch, resize) animates normally. */
+function positionBottomNavIndicator(instant){
+  const nav = document.getElementById('globalBottomNav');
+  const indicator = document.getElementById('bottomNavIndicator');
+  const active = nav?.querySelector('.bottom-nav-item.active');
+  if(!nav || !indicator || !active){ if(indicator) indicator.style.opacity = '0'; return; }
+  const navRect = nav.getBoundingClientRect();
+  const itemRect = active.getBoundingClientRect();
+  if(instant) indicator.classList.add('no-anim');
+  indicator.style.left = (itemRect.left - navRect.left + 4) + 'px';
+  indicator.style.width = (itemRect.width - 8) + 'px';
+  indicator.style.opacity = '1';
+  if(instant){
+    void indicator.offsetWidth;
+    requestAnimationFrame(() => indicator.classList.remove('no-anim'));
+  }
+}
+let bottomNavResizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(bottomNavResizeTimer);
+  bottomNavResizeTimer = setTimeout(() => positionBottomNavIndicator(true), 120);
+});
 
 function closeSheet(){
   const existing = document.getElementById('activeSheetOverlay');
@@ -4605,6 +4856,7 @@ function renderShell(activeKey){
       const titleEl = document.querySelector('.app-topbar-title');
       if(titleEl) titleEl.textContent = shellTopbarTitle(link.dataset.tab);
       document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === link.dataset.tab));
+      positionBottomNavIndicator(false);
     });
   });
 
@@ -9160,10 +9412,13 @@ onAuthStateChanged(auth, async (user) => {
 renderNav();
 router();
 
-// Nav search — sends the visitor to the courses page
-document.getElementById('navSearchForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  location.hash = '#/courses';
+// Global search — button in the nav opens the full search modal; Ctrl/Cmd+K does too, from anywhere.
+document.getElementById('globalSearchBtn')?.addEventListener('click', () => openSearchModal());
+document.addEventListener('keydown', (e) => {
+  if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k'){
+    e.preventDefault();
+    openSearchModal();
+  }
 });
 </script>
 </body>
