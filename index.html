@@ -420,6 +420,37 @@
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);position:relative;cursor:pointer;flex-shrink:0;
   }
   .icon-btn .dot-badge{position:absolute;top:7px;left:7px;width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
+  /* Admin system-alert badges — pending-action counts shown right on the sidebar tab that
+     needs attention (payments / library / course review), so nothing is buried. */
+  .tab-count-badge{
+    background:var(--danger);color:#fff;font-size:10.5px;font-weight:800;
+    border-radius:999px;min-width:18px;height:18px;padding:0 5px;line-height:1;
+    display:inline-flex;align-items:center;justify-content:center;
+    margin-inline-start:auto;flex-shrink:0;
+  }
+  .admin-alert-toast{
+    pointer-events:auto;cursor:pointer;
+    display:flex;align-items:center;gap:14px;
+    background:#fff;border:1.5px solid var(--line);
+    border-radius:16px;padding:13px 20px 13px 16px;
+    box-shadow:0 24px 60px -18px rgba(34,21,48,0.4);
+    min-width:230px;max-width:380px;
+    opacity:0;transform:translateY(-30px) scale(0.85);
+    animation: toastIn .55s cubic-bezier(.34,1.56,.64,1) forwards;
+    position:relative;overflow:visible;
+  }
+  .admin-alert-toast.leaving{ animation: toastOut .3s ease forwards; }
+  .admin-alert-toast .at-icon-wrap{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;position:relative;color:#fff;
+    background:linear-gradient(135deg,var(--amber-500),var(--amber-600));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 18px -6px rgba(201,136,38,0.55);
+    animation: stPop .5s cubic-bezier(.34,1.56,.64,1) .08s both;
+  }
+  .admin-alert-toast .at-text{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .admin-alert-toast .at-title{font-size:14.5px;font-weight:800;color:var(--violet-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .admin-alert-toast .at-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px;}
+  @media (max-width:520px){ .admin-alert-toast{max-width:none;width:100%;} }
   .notif-item{padding:10px 12px;border-radius:10px;}
   .notif-item:hover{background:var(--paper);}
   .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
@@ -3564,6 +3595,52 @@ async function openStudentProfileModal(studentId, studentName, opts = {}){
   }
 }
 
+/* "أعمالي في المكتبة" — a widget shared by the student and instructor dashboards, since
+   both roles can submit to the writing library (content / poetry / novels). */
+function libraryWorksWidgetHTML(){
+  return `
+    <div class="widget widget-4" id="myLibraryWorksWidget">
+      <div class="widget-head">
+        <h3>أعمالي في المكتبة</h3>
+        <button type="button" class="btn btn-primary btn-sm" id="submitLibraryWorkBtn">${SIDE_ICONS.plus} أضف عملاً</button>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">نصوص، أشعار أو روايات ترفعها للمكتبة — تظهر للجميع بعد موافقة الإدارة.</p>
+      <div id="myLibraryWorksArea"><div class="empty-state" style="padding:16px 0;">جارٍ التحميل...</div></div>
+    </div>
+  `;
+}
+
+function wireLibraryWorksWidget(){
+  document.getElementById('submitLibraryWorkBtn')?.addEventListener('click', () => openLibrarySubmitModal(LIBRARY_GROUPS[0].key));
+  loadMyLibraryWorks();
+}
+
+async function loadMyLibraryWorks(){
+  const area = document.getElementById('myLibraryWorksArea');
+  if(!area) return;
+  try{
+    const snap = await getDocs(query(collection(db, 'libraryWorks'), where('authorId','==', currentUser.uid)));
+    const works = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    if(works.length === 0){
+      area.innerHTML = `<div class="empty-state" style="padding:16px 0;">لسه ما أضفت أي عمل في المكتبة.</div>`;
+      return;
+    }
+    area.innerHTML = works.map(w => {
+      const groupLabel = LIBRARY_GROUPS.find(g => g.key === w.group)?.label || w.group;
+      return `
+        <a href="#/library-work/${w.id}" class="table-widget-row">
+          <div class="avatar-sm">${SIDE_ICONS.book}</div>
+          <div class="grow"><div class="t1">${w.title || 'بدون عنوان'}</div><div class="t2">${groupLabel}</div></div>
+          <span class="status-badge ${STATUS_CLASS[w.status] || 'status-pending'}">${STATUS_LABEL[w.status] || w.status}</span>
+        </a>
+      `;
+    }).join('');
+  }catch(e){
+    area.innerHTML = `<div class="empty-state" style="padding:16px 0;">تعذّر تحميل أعمالك.</div>`;
+  }
+}
+
 /* ---------------- INSTRUCTOR PUBLIC PROFILE ---------------- */
 async function renderInstructorProfile(instructorId){
   const app = document.getElementById('app');
@@ -4277,6 +4354,129 @@ function shellTopbarTitle(activeKey){
   return map[activeKey] || 'لوحة التحكم';
 }
 
+/* ================================================================
+   ADMIN SYSTEM ALERTS — pending-action counts read live from the same
+   collections the admin tabs already query (pending payments, library
+   submissions awaiting review, courses awaiting review) rather than a
+   separate notifications log, so there's nothing extra to keep in sync.
+   Polls while an admin is on any admin page; a rising count plays a
+   short tone and shows a toast pointing at the tab that needs it.
+   ================================================================ */
+let adminAlertsPollerStarted = false;
+let adminAlertsLastCounts = null;
+
+async function getAdminPendingCounts(){
+  try{
+    const [paySnap, librarySnap, reviewSnap] = await Promise.all([
+      getCountFromServer(query(collection(db, 'enrollments'), where('status','in',['pending','payment_submitted','under_review']))),
+      getCountFromServer(query(collection(db, 'libraryWorks'), where('status','==','pending'))),
+      getCountFromServer(query(collection(db, 'courses'), where('status','==','pending_review'))),
+    ]);
+    return {
+      payments: paySnap.data().count,
+      library: librarySnap.data().count,
+      review: reviewSnap.data().count,
+    };
+  }catch(e){
+    return null;
+  }
+}
+
+/* A short two-note chime via the Web Audio API — no audio file to host or load. Browsers
+   block audio before the first user gesture on the page; that's fine, it just means the
+   very first alert of a session may arrive silent. */
+function playAdminAlertSound(){
+  try{
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const playTone = (freq, start, duration) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, ctx.currentTime + start);
+      gain.gain.linearRampToValueAtTime(0.18, ctx.currentTime + start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + start + duration);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + start);
+      osc.stop(ctx.currentTime + start + duration + 0.05);
+    };
+    playTone(880, 0, 0.14);
+    playTone(1320, 0.12, 0.18);
+  }catch(e){ /* sound is a nicety — never let it break the page */ }
+}
+
+function showAdminAlertToast(title, subtitle, goToTab){
+  const layer = ensureToastLayer();
+  const toast = document.createElement('div');
+  toast.className = 'admin-alert-toast';
+  toast.innerHTML = `
+    <div class="at-icon-wrap">${SIDE_ICONS.bell}</div>
+    <div class="at-text">
+      <span class="at-title">${title}</span>
+      ${subtitle ? `<span class="at-sub">${subtitle}</span>` : ''}
+    </div>
+  `;
+  layer.appendChild(toast);
+  let dismissed = false;
+  const remove = () => {
+    if(dismissed) return;
+    dismissed = true;
+    toast.classList.add('leaving');
+    toast.addEventListener('animationend', () => toast.remove(), { once: true });
+  };
+  const timer = setTimeout(remove, 4500);
+  toast.addEventListener('click', () => {
+    clearTimeout(timer); remove();
+    if(goToTab) location.hash = `#/dashboard?tab=${goToTab}`;
+  });
+}
+
+function applyAdminAlertBadges(counts){
+  const map = { payments:'payments', library:'library', review:'review' };
+  Object.entries(map).forEach(([countKey, tabKey]) => {
+    document.querySelectorAll(`.side-link[data-tab="${tabKey}"] .tab-count-badge`).forEach(el => el.remove());
+    const n = counts[countKey];
+    if(!n) return;
+    const lbl = document.querySelector(`.side-link[data-tab="${tabKey}"] .lbl-text`);
+    if(!lbl) return;
+    const badge = document.createElement('span');
+    badge.className = 'tab-count-badge';
+    badge.textContent = n > 99 ? '99+' : String(n);
+    lbl.insertAdjacentElement('afterend', badge);
+  });
+}
+
+async function pollAdminAlerts(){
+  if(currentProfile?.role !== 'admin') return;
+  const counts = await getAdminPendingCounts();
+  if(!counts) return;
+  applyAdminAlertBadges(counts);
+  if(adminAlertsLastCounts){
+    if(counts.payments > adminAlertsLastCounts.payments){
+      playAdminAlertSound();
+      showAdminAlertToast('طلب دفع جديد', `${counts.payments} طلب بانتظار المراجعة`, 'payments');
+    }
+    if(counts.library > adminAlertsLastCounts.library){
+      playAdminAlertSound();
+      showAdminAlertToast('عمل جديد في المكتبة', `${counts.library} عمل بانتظار المراجعة`, 'library');
+    }
+    if(counts.review > adminAlertsLastCounts.review){
+      playAdminAlertSound();
+      showAdminAlertToast('كورس جديد بانتظار المراجعة', `${counts.review} كورس بانتظار الموافقة`, 'review');
+    }
+  }
+  adminAlertsLastCounts = counts;
+}
+
+function startAdminAlertsPoller(){
+  if(adminAlertsPollerStarted || currentProfile?.role !== 'admin') return;
+  adminAlertsPollerStarted = true;
+  pollAdminAlerts();
+  setInterval(pollAdminAlerts, 25000);
+}
+
 function renderShell(activeKey){
   const app = document.getElementById('app');
   const name = currentProfile?.name || currentUser?.email || 'مستخدم';
@@ -4348,6 +4548,11 @@ function renderShell(activeKey){
   });
 
   wireNotificationBell();
+
+  if(isAdminRole){
+    if(adminAlertsLastCounts) applyAdminAlertBadges(adminAlertsLastCounts);
+    startAdminAlertsPoller();
+  }
 }
 
 /* Fetches notifications relevant to the current user: broadcast-to-all, direct-to-user,
@@ -6080,6 +6285,7 @@ async function renderStudentDashboard(){
         <div id="certificatesArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
       </div>
     </div>
+    ${libraryWorksWidgetHTML()}
   `;
 
   loadStudentStats();
@@ -6087,6 +6293,7 @@ async function renderStudentDashboard(){
   loadMyEnrollments();
   loadStudentAgenda();
   loadMyCertificates();
+  wireLibraryWorksWidget();
 }
 
 async function loadStudentStats(){
@@ -6609,6 +6816,7 @@ async function renderInstructorDashboard(){
       <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">كل الطلاب المشتركين في كورساتك — اضغط على أي طالب لعرض ملفه وحضوره في موادك.</p>
       <div id="instructorStudentsArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
     </div>
+    ${libraryWorksWidgetHTML()}
     <div class="widget widget-4">
       <div class="widget-head"><h3>ملفي الشخصي العام</h3></div>
       <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 16px;">هذه البيانات تظهر للطلاب في صفحتك الشخصية وصفحة أي كورس تدرّسه.</p>
@@ -6629,6 +6837,7 @@ async function renderInstructorDashboard(){
   loadInstructorCourses();
   loadInstructorAgenda();
   loadInstructorStudents();
+  wireLibraryWorksWidget();
 
   document.getElementById('newCourseToggleBtn').addEventListener('click', () => {
     document.getElementById('newCourseForm').classList.toggle('hidden');
