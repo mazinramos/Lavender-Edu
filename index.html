@@ -272,10 +272,54 @@
   .lesson-nav-btn .lnb-dir{font-size:11px;color:var(--muted);font-weight:600;}
   .lesson-nav-btn .lnb-title{font-size:13.5px;font-weight:700;color:var(--violet-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22ch;}
   .lesson-nav-btn.next{flex-direction:row-reverse;text-align:left;}
+  .lesson-container-float{margin-top:-40px;padding-bottom:64px;}
   @media (max-width:880px){
     .lesson-layout{grid-template-columns:1fr;}
     .lesson-toc{position:static;max-height:none;}
   }
+
+  /* Single-content-item hero CTA — big, animated, styled per content type */
+  .lesson-hero-btn{
+    display:inline-flex;align-items:center;gap:13px;margin-top:22px;
+    padding:15px 26px;border-radius:16px;border:none;cursor:pointer;
+    background:linear-gradient(120deg,var(--amber-500),var(--amber-600),var(--amber-500));
+    background-size:220% 220%;color:#241536;font-family:'Cairo',sans-serif;
+    font-weight:800;font-size:15px;box-shadow:0 18px 36px -14px rgba(0,0,0,0.5);
+    transition:transform .2s,box-shadow .2s;
+    animation:lheroShift 4s ease-in-out infinite;
+  }
+  .lesson-hero-btn:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 24px 46px -16px rgba(0,0,0,0.55);}
+  .lesson-hero-btn:active{transform:translateY(-1px) scale(0.99);}
+  .lesson-hero-btn .lhb-icon{
+    width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.35);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    animation:lheroPulseIcon 1.8s ease-in-out infinite;
+  }
+  .lesson-hero-btn .lhb-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px;}
+  .lesson-hero-btn .lhb-sub{font-size:11px;font-weight:600;opacity:0.75;}
+  .lesson-hero-btn.type-live{background:linear-gradient(120deg,#e14b4b,#b52d2d,#e14b4b);background-size:220% 220%;color:#fff;}
+  .lesson-hero-btn .live-dot{width:11px;height:11px;border-radius:50%;background:#fff;animation:liveDotPulse 1.2s ease-in-out infinite;flex-shrink:0;}
+  @keyframes lheroShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+  @keyframes lheroPulseIcon{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  @keyframes liveDotPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.35;transform:scale(1.5);}}
+
+  /* Multi-content-item list — horizontal "floating tile" cards, matching the domain/category
+     tiles used elsewhere on the site */
+  .lesson-items-list{display:flex;flex-direction:column;gap:10px;}
+  .lesson-item-card{
+    display:flex;align-items:center;gap:13px;width:100%;text-align:right;
+    padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:#fff;
+    cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;
+  }
+  .lesson-item-card:hover{transform:translateY(-3px);box-shadow:0 20px 40px -26px rgba(34,21,48,0.28);border-color:var(--violet-600);}
+  .lesson-item-card .lic-ic{width:42px;height:42px;border-radius:12px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .lesson-item-card.type-live .lic-ic{background:#FBEAEA;color:#c0392b;}
+  .lesson-item-card .lic-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .lesson-item-card .lic-title{font-weight:700;font-size:14px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .lesson-item-card .lic-sub{font-size:11.5px;color:var(--muted);}
+  .lesson-item-card.is-live .lic-sub{color:#c0392b;font-weight:700;}
+  .lesson-item-card .lic-chev{color:var(--muted);flex-shrink:0;width:12px;}
+  .lesson-item-card .live-dot{width:9px;height:9px;border-radius:50%;background:#c0392b;animation:liveDotPulse 1.2s ease-in-out infinite;flex-shrink:0;}
 
   /* Archive room + Library (writing) */
   .lib-group-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;}
@@ -637,12 +681,13 @@
   .auth-card .sub{font-size:14px;color:var(--muted);margin:0 0 26px;}
   .field{margin-bottom:16px;}
   .field label{display:block;font-size:13.5px;font-weight:600;margin-bottom:7px;color:var(--ink);}
-  .field input{
+  .field input, .field textarea{
     width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);
     font-size:14.5px;font-family:inherit;background:var(--paper);
     transition:border-color .15s;
   }
-  .field input:focus{outline:none;border-color:var(--violet-600);}
+  .field input:focus, .field textarea:focus{outline:none;border-color:var(--violet-600);}
+  .field textarea{resize:vertical;line-height:1.7;}
   .field-hint{font-size:12px;color:var(--muted);margin-top:6px;}
   .auth-foot{margin-top:20px;text-align:center;font-size:14px;color:var(--muted);}
   .auth-foot a{color:var(--violet-700);font-weight:700;}
@@ -902,14 +947,19 @@
 
   .curriculum-module{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;overflow:hidden;}
   .curriculum-module-head{padding:14px 16px;background:var(--paper);display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:14px;color:var(--violet-900);}
-  .curriculum-lesson{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:13.5px;}
+  .curriculum-lesson{display:flex;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:13.5px;text-decoration:none;color:inherit;}
+  .curriculum-lesson.unlocked{cursor:pointer;transition:background .15s;}
+  .curriculum-lesson.unlocked:hover{background:var(--mist);}
+  .curriculum-lesson.locked{cursor:not-allowed;}
   .curriculum-lesson .lk{
     width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;
     background:var(--mist);color:var(--muted);
   }
-  .curriculum-lesson.unlocked .lk{background:#E9F5EE;color:var(--success);}
-  .curriculum-lesson .lname{flex:1;color:var(--ink);}
+  .curriculum-lesson.unlocked .lk{background:var(--violet-700);color:#fff;}
+  .curriculum-lesson .lname{flex:1;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .curriculum-lesson.locked .lname{color:var(--muted);}
+  .curriculum-lesson .ltype-pill{font-size:10.5px;font-weight:700;color:var(--amber-700, var(--amber-600));background:#FCF3E3;padding:2px 9px;border-radius:99px;flex-shrink:0;}
+  .curriculum-lesson .chev{color:var(--muted);flex-shrink:0;width:12px;}
   .preview-pill{font-size:10.5px;font-weight:700;color:var(--violet-700);background:var(--mist);padding:2px 9px;border-radius:99px;}
 
   .learn-points{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px;}
@@ -2764,14 +2814,24 @@ async function fetchLessonWithContent(id, data){
   const base = { id, ...data };
   try{
     const contentSnap = await getDoc(doc(db, 'lessons', id, 'private', 'content'));
-    const contentData = contentSnap.exists() ? contentSnap.data() : {};
-    base.content = contentData.content || '';
-    // Extra attachments beyond the lesson's primary video/PDF/text (added from the lesson
-    // editor in the manage-course screen) — each is { title, type, url }.
-    base.resources = Array.isArray(contentData.resources) ? contentData.resources : [];
+    const cd = contentSnap.exists() ? contentSnap.data() : {};
+    if(Array.isArray(cd.items) && cd.items.length){
+      base.items = cd.items;
+    }else{
+      // Legacy shape from before multi-item lessons: a single primary { content } plus an
+      // optional `resources` array of extra attachments — normalize both into one `items` list.
+      const legacyItems = [];
+      if(cd.content) legacyItems.push({ title: data.title, type: data.type || 'link', value: cd.content });
+      (Array.isArray(cd.resources) ? cd.resources : []).forEach(r => {
+        legacyItems.push({ title: r.title, type: r.type, value: r.url });
+      });
+      base.items = legacyItems;
+    }
+    // A live-lecture item whose scheduled window has already ended disappears from the
+    // lesson entirely, rather than lingering as a dead "join" link.
+    base.items = base.items.filter(it => !isLessonItemExpiredLive(it));
   }catch(e){
-    base.content = '';
-    base.resources = [];
+    base.items = [];
   }
   return base;
 }
@@ -2850,23 +2910,46 @@ async function renderCourseDetail(courseId){
   // What you'll learn
   const whatToLearn = Array.isArray(course.whatToLearn) ? course.whatToLearn.filter(Boolean) : [];
 
-  // Curriculum tree
+  // Curriculum tree — grouped by module, with a content-type filter (only shown when the
+  // course actually mixes types) and each unlocked lesson linking straight to its full page.
+  const CURRICULUM_TYPE_GROUPS = [
+    { key:'video', label:'فيديو', types:['drive','youtube','video'] },
+    { key:'pdf', label:'PDF', types:['pdf'] },
+    { key:'text', label:'نصوص', types:['text'] },
+    { key:'other', label:'ملفات وروابط', types:['file','link'] },
+  ];
+  const curriculumGroupOf = (type) => (CURRICULUM_TYPE_GROUPS.find(g => g.types.includes(type)) || CURRICULUM_TYPE_GROUPS[3]).key;
+  const availableCurriculumGroups = CURRICULUM_TYPE_GROUPS.filter(g => lessons.some(l => curriculumGroupOf(l.type) === g.key));
+
+  const curriculumFilterHTML = availableCurriculumGroups.length > 1 ? `
+    <div class="cat-tabs" id="curriculumFilterTabs" style="margin-bottom:16px;">
+      <button type="button" class="cat-tab active" data-filter="all">الكل</button>
+      ${availableCurriculumGroups.map(g => `<button type="button" class="cat-tab" data-filter="${g.key}">${g.label}</button>`).join('')}
+    </div>
+  ` : '';
+
   const curriculumHTML = modules.length === 0
     ? `<div class="empty-state" style="padding:24px 0;">لسه ما اتضاف محتوى لهذا الكورس.</div>`
     : modules.map(m => {
         const modLessons = lessons.filter(l => l.moduleId === m.id);
+        if(modLessons.length === 0) return '';
         return `
-          <div class="curriculum-module">
+          <div class="curriculum-module" data-curriculum-module>
             <div class="curriculum-module-head"><span>${m.title}</span><span style="font-weight:600;font-size:12px;color:var(--muted);">${modLessons.length} محاضرة</span></div>
-            ${modLessons.map((l, idx) => {
+            ${modLessons.map(l => {
               const unlocked = isApproved || l.isPreviewFree;
-              return `
-                <div class="curriculum-lesson ${unlocked ? 'unlocked' : 'locked'}">
-                  <span class="lk">${unlocked ? SIDE_ICONS.playCircle : SIDE_ICONS.lock}</span>
-                  <span class="lname">${l.title}</span>
-                  ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
-                </div>
+              const group = curriculumGroupOf(l.type);
+              const icon = unlocked ? (LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text) : SIDE_ICONS.lock;
+              const innerHTML = `
+                <span class="lk">${icon}</span>
+                <span class="lname">${l.title}</span>
+                <span class="ltype-pill">${LESSON_TYPE_LABEL[l.type] || ''}</span>
+                ${l.isPreviewFree && !isApproved ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
+                ${unlocked ? `<span class="chev">${SIDE_ICONS.chevronLeft}</span>` : ''}
               `;
+              return unlocked
+                ? `<a href="#/lesson/${l.id}" class="curriculum-lesson unlocked" data-curriculum-type="${group}">${innerHTML}</a>`
+                : `<div class="curriculum-lesson locked" data-curriculum-type="${group}">${innerHTML}</div>`;
             }).join('')}
           </div>
         `;
@@ -2987,6 +3070,7 @@ async function renderCourseDetail(courseId){
           <div class="detail-card">
             <h3>محتوى الكورس</h3>
             <p style="font-size:13px;color:var(--muted);margin:-8px 0 16px;">هذا الكورس يحتوي على ${lessons.length} محاضرة موزّعة على ${modules.length} وحدة تعليمية.</p>
+            ${curriculumFilterHTML}
             ${curriculumHTML}
           </div>
 
@@ -3064,6 +3148,27 @@ async function renderCourseDetail(courseId){
         else if(stat === 'students') openCourseStudentsModal(course);
         else if(stat === 'units') openCourseUnitsModal(course, modules, lessons);
         else if(stat === 'lessons') openCourseLessonsModal(course, modules, lessons);
+      });
+    });
+  }
+
+  // Content-type filter above the curriculum list — shows/hides lesson rows in place,
+  // hiding a whole module block if none of its lessons match the active filter.
+  const curriculumFilterTabsEl = document.getElementById('curriculumFilterTabs');
+  if(curriculumFilterTabsEl){
+    curriculumFilterTabsEl.addEventListener('click', (e) => {
+      const btn = e.target.closest('.cat-tab');
+      if(!btn) return;
+      curriculumFilterTabsEl.querySelectorAll('.cat-tab').forEach(b => b.classList.toggle('active', b === btn));
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('[data-curriculum-module]').forEach(modEl => {
+        let anyVisible = false;
+        modEl.querySelectorAll('.curriculum-lesson').forEach(row => {
+          const show = filter === 'all' || row.dataset.curriculumType === filter;
+          row.style.display = show ? '' : 'none';
+          if(show) anyVisible = true;
+        });
+        modEl.style.display = anyVisible ? '' : 'none';
       });
     });
   }
@@ -3319,6 +3424,110 @@ function openCourseLessonsModal(course, modules, lessons){
     headIcon: SIDE_ICONS.playCircle,
     bodyHTML,
   });
+}
+
+/* ================================================================
+   STUDENT ATTENDANCE — auto-logged per lesson (see renderLessonDetail's
+   logAttendance). Shared by the instructor's "طلابي" roster and the admin
+   users panel so both show the same data the same way.
+   ================================================================ */
+
+/* courseIds = null fetches every course the student has attendance in (admin/global
+   view); otherwise it's scoped to that list (an instructor's own courses). Filters out
+   the older per-live-lecture attendance docs (which use lectureId instead of lessonId —
+   same collection, a different admin tool, see adminRenderAttendance). */
+async function fetchStudentAttendance(studentId, courseIds){
+  let recs = [];
+  try{
+    if(courseIds && courseIds.length){
+      for(let i = 0; i < courseIds.length; i += 10){
+        const chunk = courseIds.slice(i, i + 10);
+        const snap = await getDocs(query(collection(db, 'attendance'), where('studentId','==', studentId), where('courseId','in', chunk)));
+        recs.push(...snap.docs.map(d => d.data()));
+      }
+    }else{
+      const snap = await getDocs(query(collection(db, 'attendance'), where('studentId','==', studentId)));
+      recs = snap.docs.map(d => d.data());
+    }
+  }catch(e){ /* leave recs empty — the caller shows an empty state */ }
+  recs = recs.filter(r => r.lessonId);
+  recs.sort((a,b) => (b.markedAt?.seconds||0) - (a.markedAt?.seconds||0));
+  const byCourse = {};
+  recs.forEach(r => {
+    const key = r.courseId || '—';
+    if(!byCourse[key]) byCourse[key] = { courseTitle: r.courseTitle || 'كورس', items: [] };
+    byCourse[key].items.push(r);
+  });
+  return { total: recs.length, byCourse };
+}
+
+function attendanceBlockHTML(summary){
+  const courseKeys = Object.keys(summary.byCourse);
+  if(courseKeys.length === 0){
+    return `<div class="cm-empty" style="padding:16px 0;">لسه ما فتح أي درس — لا يوجد سجل حضور.</div>`;
+  }
+  return courseKeys.map(key => {
+    const c = summary.byCourse[key];
+    return `
+      <div class="cm-unit-block">
+        <div class="cm-unit-head">
+          <span>${c.courseTitle}</span>
+          <span style="font-weight:600;font-size:11.5px;color:var(--muted);">${c.items.length} محاضرة حضرها</span>
+        </div>
+        ${c.items.slice(0,8).map(r => `
+          <div class="cm-lesson-row">
+            <span class="cm-lesson-ic" style="color:var(--success);">${SIDE_ICONS.check}</span>
+            <span style="flex:1;">${r.lessonTitle || 'درس'}</span>
+            <span style="font-size:11px;color:var(--muted);flex-shrink:0;">${r.markedAt?.toDate ? r.markedAt.toDate().toLocaleDateString('ar') : ''}</span>
+          </div>
+        `).join('')}
+        ${c.items.length > 8 ? `<div style="font-size:11.5px;color:var(--muted);text-align:center;margin-top:4px;">+${c.items.length - 8} محاضرة أخرى</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+/* Full student profile — used from an instructor's "طلابي" list (scoped to their own
+   courses) and from the admin users panel (courseIds: null = every course the student is
+   in). Enrollments + attendance load in, the rest of the modal chrome is the same premium
+   cm-modal used for the course-detail stat chips. */
+async function openStudentProfileModal(studentId, studentName, opts = {}){
+  const overlay = openCourseModal({
+    title: studentName || 'الطالب',
+    subtitle: opts.scopeLabel || 'الملف الشخصي وسجل الحضور',
+    headIcon: SIDE_ICONS.users,
+    bodyHTML: `<div id="cmStudentProfileBody" class="cm-empty">جارٍ التحميل...</div>`,
+  });
+  const body = overlay.querySelector('#cmStudentProfileBody');
+  try{
+    const courseIds = opts.courseIds || null;
+    const [enrollments, attendance] = await Promise.all([
+      (async () => {
+        let docs = [];
+        if(courseIds && courseIds.length){
+          for(let i = 0; i < courseIds.length; i += 10){
+            const chunk = courseIds.slice(i, i + 10);
+            const s = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', studentId), where('courseId','in', chunk), where('status','==','approved')));
+            docs.push(...s.docs.map(d => d.data()));
+          }
+        }else{
+          const s = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', studentId), where('status','==','approved')));
+          docs = s.docs.map(d => d.data());
+        }
+        return docs;
+      })(),
+      fetchStudentAttendance(studentId, courseIds),
+    ]);
+    if(!document.getElementById('activeCourseModal')) return; // closed while loading
+    body.className = '';
+    body.innerHTML = `
+      <div style="font-size:12.5px;color:var(--muted);margin:-4px 0 16px;">${enrollments.length} كورس مفعّل${opts.scopeLabel ? ' · ' + opts.scopeLabel : ''}</div>
+      <h4 style="font-size:14px;font-weight:800;color:var(--violet-900);margin:0 0 10px;">سجل الحضور</h4>
+      ${attendanceBlockHTML(attendance)}
+    `;
+  }catch(e){
+    if(document.getElementById('activeCourseModal')) body.innerHTML = `<div class="cm-empty">تعذّر تحميل بيانات الطالب.</div>`;
+  }
 }
 
 /* ---------------- INSTRUCTOR PUBLIC PROFILE ---------------- */
@@ -4240,7 +4449,7 @@ async function renderDashboard(tab){
 }
 
 /* ---------------- LEARNING ROOM (student) ---------------- */
-const LESSON_TYPE_LABEL = { drive:'فيديو (Google Drive)', youtube:'فيديو (YouTube)', video:'فيديو (رابط خارجي)', pdf:'ملف PDF', text:'نص', file:'ملف', link:'رابط' };
+const LESSON_TYPE_LABEL = { drive:'فيديو (Google Drive)', youtube:'فيديو (YouTube)', video:'فيديو (رابط خارجي)', pdf:'ملف PDF', text:'نص', file:'ملف', link:'رابط', live:'محاضرة مباشرة' };
 const LESSON_TYPE_ICON = {
   drive:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
   youtube:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>',
@@ -4249,42 +4458,37 @@ const LESSON_TYPE_ICON = {
   text:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>',
   file:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
   link:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  live:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
 };
 
-/* Renders inline preview for a lesson's content depending on its type. Tries embedding
-   Google Drive / YouTube video links and PDFs; falls back to an "open" button for anything
-   that can't be embedded (external URLs, or files whose sharing permissions block iframes). */
-function lessonContentPreviewHTML(lesson){
-  const url = lesson.content || '';
-  let embedUrl = null;
-
-  if(lesson.type === 'drive' || lesson.type === 'pdf'){
-    const m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if(m) embedUrl = `https://drive.google.com/file/d/${m[1]}/preview`;
-    else if(lesson.type === 'pdf') embedUrl = url; // assume a direct PDF URL
-  } else if(lesson.type === 'youtube'){
-    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/);
-    if(m) embedUrl = `https://www.youtube.com/embed/${m[1]}`;
-  }
-
-  if(lesson.type === 'pdf' && embedUrl){
-    return `
-      <div style="border-radius:12px;overflow:hidden;border:1px solid var(--line);margin:8px 0;">
-        <iframe src="${embedUrl}" style="width:100%;height:60vh;border:0;display:block;"></iframe>
-      </div>
-      <a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--violet-700);font-weight:600;">الملف ما ظاهر؟ افتحه في نافذة منفصلة</a>
-    `;
-  }
-  if(embedUrl){
-    return `
-      <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000;margin:8px 0;">
-        <iframe src="${embedUrl}" style="position:absolute;inset:0;width:100%;height:100%;border:0;" allow="autoplay; fullscreen" allowfullscreen></iframe>
-      </div>
-      <a href="${url}" target="_blank" rel="noopener" style="font-size:12px;color:var(--violet-700);font-weight:600;">الفيديو ما ظاهر؟ افتحه في نافذة منفصلة</a>
-    `;
-  }
-  const btnLabel = lesson.type === 'pdf' ? 'فتح الملف' : (lesson.type === 'file' ? 'تحميل الملف' : lesson.type === 'link' ? 'فتح الرابط' : 'فتح الفيديو');
-  return `<a href="${url}" target="_blank" rel="noopener" class="btn btn-primary btn-sm" style="margin-top:6px;">${btnLabel}</a>`;
+// A lesson can carry several content items (video + PDF + a scheduled live lecture, etc).
+// These helpers work on one item — { title, type, value, scheduledAt, durationMinutes } —
+// where `value` is a URL for every type except 'text' (raw text) and 'live' (join link).
+function lessonItemLiveWindow(item){
+  if(item.type !== 'live' || !item.scheduledAt) return null;
+  const start = new Date(item.scheduledAt).getTime();
+  if(Number.isNaN(start)) return null;
+  const durationMs = (item.durationMinutes || 120) * 60000;
+  return { start, end: start + durationMs };
+}
+function isLessonItemExpiredLive(item){
+  const win = lessonItemLiveWindow(item);
+  return win ? Date.now() > win.end : false;
+}
+function isLessonItemActiveLive(item){
+  const win = lessonItemLiveWindow(item);
+  if(!win) return false;
+  const now = Date.now();
+  return now >= win.start && now <= win.end;
+}
+function lessonItemOpenLabel(item){
+  if(item.type === 'live') return isLessonItemActiveLive(item) ? 'الانضمام الآن' : 'الانضمام للمحاضرة';
+  return item.type === 'pdf' ? 'فتح ملف PDF' : item.type === 'file' ? 'تحميل الملف' : item.type === 'link' ? 'فتح الرابط' : item.type === 'text' ? 'قراءة الدرس' : 'تشغيل الفيديو';
+}
+function formatArabicDateTime(iso){
+  try{
+    return new Date(iso).toLocaleString('ar-EG', { dateStyle:'medium', timeStyle:'short' });
+  }catch(e){ return ''; }
 }
 
 async function renderLearnRoom(courseId){
@@ -4711,7 +4915,7 @@ async function learnRenderContent(area, course){
                         </button>
                         <span class="lr-num" style="color:var(--muted);font-size:12px;flex-shrink:0;">${li+1}</span>
                         <div class="lr-title" style="flex:1;font-weight:600;font-size:14px;">${l.title}</div>
-                        ${l.resources && l.resources.length ? `<span style="font-size:11px;color:var(--muted);">+${l.resources.length} مرفق</span>` : ''}
+                        ${l.items && l.items.length > 1 ? `<span style="font-size:11px;color:var(--muted);">${l.items.length} عناصر</span>` : ''}
                         ${rating ? `<div class="lr-rating">${SIDE_ICONS.starFilled} ${rating.avg.toFixed(1)}</div>` : ''}
                         <span class="chev">${SIDE_ICONS.chevronLeft}</span>
                       </a>
@@ -4838,13 +5042,15 @@ async function renderLessonDetail(lessonId){
     return;
   }
 
-  const [modSnap, lesSnap, progressSnap, lessonRatings, myReviewSnap, allCats] = await Promise.all([
+  const [modSnap, lesSnap, progressSnap, lessonRatings, myReviewSnap, allCats, attendanceSnap, noteSnap] = await Promise.all([
     getDocs(query(collection(db, 'modules'), where('courseId','==', course.id))),
     getDocs(query(collection(db, 'lessons'), where('courseId','==', course.id))),
     getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', course.id))),
     fetchTargetRatingsMap('lesson', course.id),
     getDoc(doc(db, 'reviews', `${currentUser.uid}_lesson_${lessonId}`)).catch(() => null),
     fetchCategories(),
+    getDoc(doc(db, 'attendance', `${currentUser.uid}_${lessonId}`)).catch(() => null),
+    getDoc(doc(db, 'lessonNotes', `${currentUser.uid}_${lessonId}`)).catch(() => null),
   ]);
 
   const modules = modSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
@@ -4859,6 +5065,8 @@ async function renderLessonDetail(lessonId){
   const isDone = completedIds.has(lesson.id);
   const rating = lessonRatings[lesson.id];
   const myRating = (myReviewSnap && myReviewSnap.exists && myReviewSnap.exists()) ? (myReviewSnap.data().rating || 0) : 0;
+  const myAttendance = (attendanceSnap && attendanceSnap.exists && attendanceSnap.exists()) ? attendanceSnap.data().status : null;
+  const myNote = (noteSnap && noteSnap.exists && noteSnap.exists()) ? (noteSnap.data().text || '') : '';
 
   const flatIndex = allLessons.findIndex(l => l.id === lesson.id);
   const prevLesson = flatIndex > 0 ? allLessons[flatIndex - 1] : null;
@@ -4867,27 +5075,59 @@ async function renderLessonDetail(lessonId){
   const currentModule = modules.find(m => m.id === lesson.moduleId);
   const rootCat = allCats.find(c => c.id === courseRootCategoryId(course));
 
-  const mainContentHTML = lesson.type === 'text'
-    ? `<div style="color:var(--ink);font-size:15px;white-space:pre-line;line-height:2;">${lesson.content || 'لا يوجد محتوى نصي لهذا الدرس بعد.'}</div>`
-    : lessonContentPreviewHTML(lesson);
+  const items = lesson.items || [];
+  const singleItem = items.length === 1 ? items[0] : null;
 
-  const resourcesHTML = (lesson.resources && lesson.resources.length) ? `
+  // Single content item → one big animated "open" button lives in the purple hero, styled
+  // per content type. More than one item → no hero button; each item is its own floating
+  // card in the white area below instead, so the student can open whichever one they need.
+  const heroActionHTML = singleItem ? (() => {
+    const icon = LESSON_TYPE_ICON[singleItem.type] || LESSON_TYPE_ICON.text;
+    const label = lessonItemOpenLabel(singleItem);
+    if(singleItem.type === 'live'){
+      const active = isLessonItemActiveLive(singleItem);
+      const dt = singleItem.scheduledAt ? formatArabicDateTime(singleItem.scheduledAt) : '';
+      return `
+        <button type="button" class="lesson-hero-btn type-live ${active ? 'is-live' : ''}" data-open-item="0">
+          <span class="lhb-icon">${icon}</span>
+          <span class="lhb-text">
+            <span class="lhb-label">${active ? 'المحاضرة مباشرة الآن' : label}</span>
+            ${dt ? `<span class="lhb-sub">${dt}</span>` : ''}
+          </span>
+          ${active ? `<span class="live-dot"></span>` : ''}
+        </button>
+      `;
+    }
+    return `
+      <button type="button" class="lesson-hero-btn type-${singleItem.type}" data-open-item="0">
+        <span class="lhb-icon">${icon}</span>
+        <span class="lhb-label">${label}</span>
+      </button>
+    `;
+  })() : '';
+
+  const itemsListHTML = items.length > 1 ? `
     <div class="detail-card">
-      <h3>مرفقات الدرس</h3>
-      <div class="resource-list">
-        ${lesson.resources.map(r => `
-          <a href="${r.url}" target="_blank" rel="noopener" class="resource-item">
-            <div class="ri-ic">${LESSON_TYPE_ICON[r.type] || LESSON_TYPE_ICON.file}</div>
-            <div class="ri-body">
-              <div class="ri-title">${r.title || LESSON_TYPE_LABEL[r.type] || 'مرفق'}</div>
-              <div class="ri-type">${LESSON_TYPE_LABEL[r.type] || ''}</div>
-            </div>
-            <span class="side-ic">${SIDE_ICONS.chevronLeft}</span>
-          </a>
-        `).join('')}
+      <h3>محتوى الدرس</h3>
+      <div class="lesson-items-list">
+        ${items.map((it, idx) => {
+          const active = it.type === 'live' && isLessonItemActiveLive(it);
+          const dt = it.type === 'live' && it.scheduledAt ? formatArabicDateTime(it.scheduledAt) : '';
+          return `
+            <button type="button" class="lesson-item-card ${it.type === 'live' ? 'type-live' : ''} ${active ? 'is-live' : ''}" data-open-item="${idx}">
+              <span class="lic-ic">${LESSON_TYPE_ICON[it.type] || LESSON_TYPE_ICON.text}</span>
+              <span class="lic-body">
+                <span class="lic-title">${it.title || LESSON_TYPE_LABEL[it.type] || ''}</span>
+                <span class="lic-sub">${it.type === 'live' ? (active ? 'مباشر الآن' : `محاضرة مباشرة${dt ? ' · ' + dt : ''}`) : (LESSON_TYPE_LABEL[it.type] || '')}</span>
+              </span>
+              ${active ? `<span class="live-dot"></span>` : ''}
+              <span class="lic-chev">${SIDE_ICONS.chevronLeft}</span>
+            </button>
+          `;
+        }).join('')}
       </div>
     </div>
-  ` : '';
+  ` : (items.length === 0 ? `<div class="detail-card"><div class="empty-state">لا يوجد محتوى لهذا الدرس بعد.</div></div>` : '');
 
   const tocHTML = modules.map((m, mi) => {
     const modLessons = allLessons.filter(l => l.moduleId === m.id);
@@ -4906,7 +5146,7 @@ async function renderLessonDetail(lessonId){
   }).join('');
 
   app.innerHTML = `
-    <div class="detail-hero" style="padding-bottom:26px;">
+    <div class="detail-hero">
       <div class="container">
         <div class="lesson-breadcrumb">
           ${rootCat ? `<a href="#/courses?cat=${rootCat.id}">${rootCat.name}</a><span class="sep">/</span>` : ''}
@@ -4915,24 +5155,34 @@ async function renderLessonDetail(lessonId){
         </div>
         <h2 style="color:#fff;margin:0 0 8px;font-size:24px;">${lesson.title}</h2>
         <div class="hero-meta-row">
-          <span>${LESSON_TYPE_ICON[lesson.type] || ''} ${LESSON_TYPE_LABEL[lesson.type] || ''}</span>
+          ${items.length === 1 ? `<span>${LESSON_TYPE_ICON[items[0].type] || ''} ${LESSON_TYPE_LABEL[items[0].type] || ''}</span>` : (items.length > 1 ? `<span>${items.length} عناصر محتوى</span>` : '')}
           ${rating ? `<span>${starRowHTML(rating.avg)} ${rating.avg.toFixed(1)} (${rating.count})</span>` : ''}
           ${lesson.isPreviewFree ? `<span class="preview-pill">معاينة مجانية</span>` : ''}
         </div>
-        <a href="#/learn/${course.id}" class="btn btn-ghost" style="margin-top:14px;color:#fff;border-color:rgba(255,255,255,0.4);">${SIDE_ICONS.chevronLeft} الرجوع لمحتوى الكورس</a>
+        ${heroActionHTML}
       </div>
     </div>
-    <div class="container" style="margin-top:24px;">
+    <div class="container lesson-container-float">
       <div class="lesson-layout">
         <div>
-          <div class="detail-card">${mainContentHTML}</div>
+          ${itemsListHTML}
           ${lesson.description ? `
             <div class="detail-card">
               <h3>عن هذا الدرس</h3>
               <p style="color:var(--muted);line-height:1.9;font-size:14.5px;margin:0;">${lesson.description}</p>
             </div>
           ` : ''}
-          ${resourcesHTML}
+          <div class="detail-card">
+            <h3>ملاحظاتك على الدرس</h3>
+            <p style="font-size:13px;color:var(--muted);margin:-8px 0 14px;">دوّن أي حاجة تحب ترجع ليها بعدين — ملاحظاتك الخاصة بس، ما بيشوفها حد غيرك.</p>
+            <div class="field" style="margin-bottom:0;">
+              <textarea id="lessonNoteBox" rows="4" placeholder="اكتب ملاحظتك هنا...">${myNote}</textarea>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+              <span id="lessonNoteStatus" style="font-size:12px;color:var(--muted);"></span>
+              <button type="button" class="btn btn-primary btn-sm" id="saveNoteBtn">حفظ الملاحظة</button>
+            </div>
+          </div>
           <div class="detail-card">
             <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
               <button class="btn ${isDone ? 'btn-primary' : 'btn-ghost'}" id="lessonCompleteBtn" data-completed="${isDone}">
@@ -4967,6 +5217,42 @@ async function renderLessonDetail(lessonId){
     </div>
   `;
 
+  // Attendance is recorded automatically the moment a student actually opens/plays a
+  // content item — no manual "present/absent" buttons. One write per lesson (merge), and
+  // a one-time toast the first time it happens on this page load.
+  let attendanceLogged = !!myAttendance;
+  async function logAttendance(){
+    if(attendanceLogged) return;
+    attendanceLogged = true;
+    try{
+      await setDoc(doc(db, 'attendance', `${currentUser.uid}_${lesson.id}`), {
+        studentId: currentUser.uid, studentName: currentProfile?.name || currentUser.email,
+        courseId: course.id, courseTitle: course.title || '', instructorId: course.instructorId || null,
+        lessonId: lesson.id, lessonTitle: lesson.title || '', moduleId: lesson.moduleId || null,
+        status: 'present', markedAt: serverTimestamp(),
+      }, { merge: true });
+      showSuccessToast('تم تسجيل حضورك', 'حضورك في هذا الدرس اتسجّل تلقائياً');
+    }catch(e){ /* attendance is a background nicety — never block the lesson over it */ }
+  }
+
+  // Opening a content item: text opens inline in a modal (there's no external link to send
+  // it to); a live lecture and everything else opens its link/file in a new tab.
+  document.querySelectorAll('[data-open-item]').forEach(el => {
+    el.addEventListener('click', () => {
+      const item = items[Number(el.dataset.openItem)];
+      if(!item) return;
+      logAttendance();
+      if(item.type === 'text'){
+        openCourseModal({
+          title: item.title || lesson.title,
+          bodyHTML: `<div style="white-space:pre-line;line-height:2;font-size:14.5px;color:var(--ink);">${item.value || 'لا يوجد محتوى نصي.'}</div>`,
+        });
+      }else{
+        window.open(item.value, '_blank', 'noopener');
+      }
+    });
+  });
+
   document.getElementById('lessonCompleteBtn')?.addEventListener('click', async (e) => {
     const btn = e.currentTarget;
     const wasDone = btn.dataset.completed === 'true';
@@ -4991,6 +5277,27 @@ async function renderLessonDetail(lessonId){
       alert('تعذّر تحديث حالة الدرس.');
     }
     btn.disabled = false;
+  });
+
+  document.getElementById('saveNoteBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('saveNoteBtn');
+    const status = document.getElementById('lessonNoteStatus');
+    const text = document.getElementById('lessonNoteBox').value.trim();
+    btn.disabled = true;
+    const original = btn.textContent;
+    btn.textContent = 'جارٍ الحفظ...';
+    try{
+      await setDoc(doc(db, 'lessonNotes', `${currentUser.uid}_${lesson.id}`), {
+        studentId: currentUser.uid, courseId: course.id, lessonId: lesson.id,
+        text, updatedAt: serverTimestamp(),
+      });
+      status.textContent = 'تم الحفظ ✓';
+      setTimeout(() => { if(status.textContent === 'تم الحفظ ✓') status.textContent = ''; }, 2500);
+    }catch(e){
+      status.textContent = 'تعذّر الحفظ، حاول مرة أخرى.';
+    }
+    btn.disabled = false;
+    btn.textContent = original;
   });
 
   wireInlineStarPicker('lessonDetailStarPicker', async (val) => {
@@ -5269,45 +5576,27 @@ async function manageRenderContent(area, course){
                 <div class="lesson-type-icon">${LESSON_TYPE_ICON[l.type] || LESSON_TYPE_ICON.text}</div>
                 <div style="flex:1;">
                   <div style="font-weight:600;">${l.title} ${l.isPreviewFree ? '<span class="preview-pill">معاينة مجانية</span>' : ''}</div>
-                  <div style="font-size:12px;color:var(--muted);">${LESSON_TYPE_LABEL[l.type] || ''}${l.resourcesCount ? ` · ${l.resourcesCount} مرفق إضافي` : ''}</div>
+                  <div style="font-size:12px;color:var(--muted);">${(l.itemsCount || 1) > 1 ? `${l.itemsCount} عناصر محتوى` : (LESSON_TYPE_LABEL[l.type] || '')}</div>
                 </div>
                 <button class="btn btn-sm btn-danger" data-dellesson="${l.id}">حذف</button>
               </div>
             `).join('')}
             <form class="addLessonForm" data-modid="${m.id}" style="display:flex;flex-direction:column;gap:10px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);">
-              <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                <div class="field" style="margin-bottom:0;flex:2;min-width:160px;">
-                  <label>عنوان الدرس</label>
-                  <input type="text" class="lessonTitle" required />
-                </div>
-                <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
-                  <label>النوع الأساسي</label>
-                  <select class="lessonType">
-                    <option value="drive">فيديو (Google Drive)</option>
-                    <option value="youtube">فيديو (YouTube)</option>
-                    <option value="video">فيديو (رابط خارجي)</option>
-                    <option value="pdf">ملف PDF</option>
-                    <option value="text">نص</option>
-                    <option value="file">ملف</option>
-                    <option value="link">رابط</option>
-                  </select>
-                </div>
-              </div>
               <div class="field" style="margin-bottom:0;">
-                <label>المحتوى الأساسي (رابط الفيديو/الملف/الرابط، أو النص لو نوع "نص")</label>
-                <input type="text" class="lessonContent" required placeholder="مثال: https://drive.google.com/file/d/XXXX/view" />
-                <div class="field-hint">لو Google Drive: تأكد إن صلاحية المشاركة "أي شخص لديه الرابط" وإلا الطلاب مش هيقدروا يشوفوا الفيديو.</div>
+                <label>عنوان الدرس</label>
+                <input type="text" class="lessonTitle" required />
               </div>
               <div class="field" style="margin-bottom:0;">
                 <label>وصف الدرس (اختياري — يظهر في أعلى صفحة الدرس)</label>
                 <textarea class="lessonDescription" rows="2" placeholder="ملخص قصير عن محتوى الدرس..."></textarea>
               </div>
               <div>
-                <label style="display:block;font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">مرفقات إضافية (اختياري — مثال: ملف PDF مع الفيديو، رابط تمارين...)</label>
-                <div class="lessonResourcesArea" style="display:flex;flex-direction:column;gap:8px;"></div>
-                <button type="button" class="btn btn-ghost btn-sm addResourceRowBtn" style="margin-top:8px;">
-                  <span class="side-ic" style="width:13px;height:13px;">${SIDE_ICONS.plus}</span> إضافة مرفق
+                <label style="display:block;font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">محتوى الدرس (فيديو / PDF / نص / محاضرة مباشرة... يقدر يكون أكتر من عنصر في نفس الدرس)</label>
+                <div class="lessonContentItemsArea" style="display:flex;flex-direction:column;gap:10px;"></div>
+                <button type="button" class="btn btn-ghost btn-sm addContentItemBtn" style="margin-top:8px;">
+                  <span class="side-ic" style="width:13px;height:13px;">${SIDE_ICONS.plus}</span> إضافة عنصر محتوى
                 </button>
+                <div class="field-hint" style="margin-top:6px;">لو عنصر واحد بس: يظهر كزر كبير فوق في صفحة الدرس. لو أكتر من عنصر: يظهروا كلهم كقائمة يقدر الطالب يفتح أي واحد فيهم. المحاضرة المباشرة تختفي تلقائياً بعد انتهاء وقتها.</div>
               </div>
               <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);cursor:pointer;">
                 <input type="checkbox" class="lessonPreviewFree" style="width:16px;height:16px;accent-color:var(--violet-700);" />
@@ -5351,30 +5640,61 @@ async function manageRenderContent(area, course){
         });
       });
 
-      // Dynamic "extra attachment" row builder for the add-lesson form — lets admin attach
-      // more than one file/link to a single lesson (e.g. a video + a PDF handout together).
-      const RESOURCE_TYPE_OPTIONS = `
-        <option value="pdf">ملف PDF</option>
+      // Dynamic content-item row builder for the add-lesson form. Each row is one piece of
+      // content on the lesson (video / PDF / text / file / link / a scheduled live lecture);
+      // a lesson can carry several. The 'live' type swaps the URL field for a date+time+
+      // duration picker plus a join-link field.
+      const CONTENT_ITEM_TYPE_OPTIONS = `
         <option value="drive">فيديو (Google Drive)</option>
         <option value="youtube">فيديو (YouTube)</option>
+        <option value="video">فيديو (رابط خارجي)</option>
+        <option value="pdf">ملف PDF</option>
+        <option value="text">نص</option>
         <option value="file">ملف</option>
         <option value="link">رابط</option>
+        <option value="live">محاضرة مباشرة (بتاريخ ووقت محدد)</option>
       `;
-      modArea.querySelectorAll('.addResourceRowBtn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const wrap = btn.closest('.addLessonForm').querySelector('.lessonResourcesArea');
-          const row = document.createElement('div');
-          row.className = 'resource-row';
-          row.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center;';
-          row.innerHTML = `
-            <input type="text" class="res-title" placeholder="اسم المرفق (مثال: ملخص الدرس)" style="flex:1;min-width:140px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
-            <select class="res-type" style="height:38px;border:1px solid var(--line);border-radius:9px;padding:0 8px;font-size:13px;">${RESOURCE_TYPE_OPTIONS}</select>
-            <input type="text" class="res-url" placeholder="الرابط" style="flex:1.4;min-width:160px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
-            <button type="button" class="icon-action danger removeResourceRowBtn" title="حذف المرفق">${SIDE_ICONS.trash}</button>
-          `;
-          row.querySelector('.removeResourceRowBtn').addEventListener('click', () => row.remove());
-          wrap.appendChild(row);
+      function buildContentItemRow(){
+        const row = document.createElement('div');
+        row.className = 'content-item-row';
+        row.style.cssText = 'border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;';
+        row.innerHTML = `
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input type="text" class="ci-title" placeholder="اسم العنصر (اختياري)" style="flex:1;min-width:140px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <select class="ci-type" style="height:38px;border:1px solid var(--line);border-radius:9px;padding:0 8px;font-size:13px;">${CONTENT_ITEM_TYPE_OPTIONS}</select>
+            <button type="button" class="icon-action danger removeContentItemBtn" title="حذف العنصر">${SIDE_ICONS.trash}</button>
+          </div>
+          <div class="ci-normal-fields">
+            <input type="text" class="ci-value" placeholder="الرابط، أو النص لو نوع (نص)" style="width:100%;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+          </div>
+          <div class="ci-live-fields" style="display:none;gap:8px;flex-wrap:wrap;">
+            <input type="datetime-local" class="ci-live-start" style="flex:1;min-width:160px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <input type="number" class="ci-live-duration" min="10" step="5" value="120" placeholder="مدة المحاضرة (دقيقة)" style="width:150px;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <input type="text" class="ci-live-link" placeholder="رابط الانضمام (Zoom / Google Meet)" style="width:100%;height:38px;border:1px solid var(--line);border-radius:9px;padding:0 10px;font-size:13px;" />
+            <div class="field-hint">هتختفي المحاضرة من صفحة الدرس تلقائياً بعد ما وقتها + مدتها ينتهي.</div>
+          </div>
+        `;
+        const typeSelect = row.querySelector('.ci-type');
+        const normalFields = row.querySelector('.ci-normal-fields');
+        const liveFields = row.querySelector('.ci-live-fields');
+        typeSelect.addEventListener('change', () => {
+          const isLive = typeSelect.value === 'live';
+          normalFields.style.display = isLive ? 'none' : 'block';
+          liveFields.style.display = isLive ? 'flex' : 'none';
         });
+        row.querySelector('.removeContentItemBtn').addEventListener('click', () => row.remove());
+        return row;
+      }
+
+      modArea.querySelectorAll('.addContentItemBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const wrap = btn.closest('.addLessonForm').querySelector('.lessonContentItemsArea');
+          wrap.appendChild(buildContentItemRow());
+        });
+      });
+      // Every add-lesson form starts with one content-item row already in place.
+      modArea.querySelectorAll('.addLessonForm').forEach(form => {
+        form.querySelector('.lessonContentItemsArea').appendChild(buildContentItemRow());
       });
 
       modArea.querySelectorAll('.addLessonForm').forEach(form => {
@@ -5382,25 +5702,35 @@ async function manageRenderContent(area, course){
           e.preventDefault();
           const modId = form.dataset.modid;
           const title = form.querySelector('.lessonTitle').value.trim();
-          const type = form.querySelector('.lessonType').value;
-          const content = form.querySelector('.lessonContent').value.trim();
           const description = form.querySelector('.lessonDescription').value.trim();
           const isPreviewFree = form.querySelector('.lessonPreviewFree').checked;
-          const resources = Array.from(form.querySelectorAll('.resource-row')).map(row => ({
-            title: row.querySelector('.res-title').value.trim(),
-            type: row.querySelector('.res-type').value,
-            url: row.querySelector('.res-url').value.trim(),
-          })).filter(r => r.url);
-          if(!title || !content) return;
+          const items = Array.from(form.querySelectorAll('.content-item-row')).map(row => {
+            const type = row.querySelector('.ci-type').value;
+            const itemTitle = row.querySelector('.ci-title').value.trim();
+            if(type === 'live'){
+              const start = row.querySelector('.ci-live-start').value;
+              const duration = Number(row.querySelector('.ci-live-duration').value) || 120;
+              const link = row.querySelector('.ci-live-link').value.trim();
+              if(!start || !link) return null;
+              return { title: itemTitle, type, value: link, scheduledAt: new Date(start).toISOString(), durationMinutes: duration };
+            }
+            const value = row.querySelector('.ci-value').value.trim();
+            if(!value) return null;
+            return { title: itemTitle, type, value };
+          }).filter(Boolean);
+          if(!title || items.length === 0){
+            alert('اكتب عنوان الدرس وأضف عنصر محتوى واحد على الأقل ببياناته كاملة.');
+            return;
+          }
           try{
             const ref = await addDoc(collection(db, 'lessons'), {
-              courseId: course.id, moduleId: modId, title, type, description, isPreviewFree,
-              resourcesCount: resources.length,
+              courseId: course.id, moduleId: modId, title, description, isPreviewFree,
+              type: items[0].type, itemsCount: items.length,
               order: lessons.filter(l => l.moduleId === modId).length,
               createdAt: serverTimestamp(),
             });
-            await setDoc(doc(db, 'lessons', ref.id, 'private', 'content'), { content, resources });
-            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, type, description, content, resources, isPreviewFree, resourcesCount: resources.length });
+            await setDoc(doc(db, 'lessons', ref.id, 'private', 'content'), { items });
+            lessons.push({ id: ref.id, courseId: course.id, moduleId: modId, title, description, isPreviewFree, type: items[0].type, itemsCount: items.length, items });
             renderModules();
           }catch(e){
             alert('تعذّر إضافة الدرس.');
@@ -6062,6 +6392,17 @@ async function renderInstructorDashboard(){
       </form>
       <div id="instructorCoursesArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
     </div>
+    <div class="widget widget-4" id="instructorStudentsWidget">
+      <div class="widget-head">
+        <h3>طلابي</h3>
+        <div class="topbar-search" style="max-width:220px;">
+          <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.search}</span>
+          <input type="text" id="instrStudentSearch" placeholder="ابحث عن طالب..." />
+        </div>
+      </div>
+      <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">كل الطلاب المشتركين في كورساتك — اضغط على أي طالب لعرض ملفه وحضوره في موادك.</p>
+      <div id="instructorStudentsArea"><div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div></div>
+    </div>
     <div class="widget widget-4">
       <div class="widget-head"><h3>ملفي الشخصي العام</h3></div>
       <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 16px;">هذه البيانات تظهر للطلاب في صفحتك الشخصية وصفحة أي كورس تدرّسه.</p>
@@ -6081,6 +6422,7 @@ async function renderInstructorDashboard(){
   `;
   loadInstructorCourses();
   loadInstructorAgenda();
+  loadInstructorStudents();
 
   document.getElementById('newCourseToggleBtn').addEventListener('click', () => {
     document.getElementById('newCourseForm').classList.toggle('hidden');
@@ -6245,6 +6587,72 @@ async function loadInstructorAgenda(){
   }catch(e){
     area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل المحاضرات.</div>`;
   }
+}
+
+/* "طلابي" — every student enrolled (approved) in any of this instructor's courses, deduped
+   across courses, with a click-through to the shared student profile + attendance modal
+   (scoped to just this instructor's courses). */
+async function loadInstructorStudents(){
+  const area = document.getElementById('instructorStudentsArea');
+  if(!area) return;
+  try{
+    const coursesSnap = await getDocs(query(collection(db, 'courses'), where('instructorId','==', currentUser.uid)));
+    const courseIds = coursesSnap.docs.map(d => d.id);
+    if(courseIds.length === 0){
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك كورسات.</div>`;
+      return;
+    }
+    let enrollDocs = [];
+    for(let i = 0; i < courseIds.length; i += 10){
+      const chunk = courseIds.slice(i, i + 10);
+      const s = await getDocs(query(collection(db, 'enrollments'), where('courseId','in', chunk), where('status','==','approved')));
+      enrollDocs.push(...s.docs.map(d => d.data()));
+    }
+    const byStudent = {};
+    enrollDocs.forEach(e => {
+      if(!e.studentId) return;
+      if(!byStudent[e.studentId]) byStudent[e.studentId] = { studentId: e.studentId, studentName: e.studentName || 'طالب', courseIds: [] };
+      byStudent[e.studentId].courseIds.push(e.courseId);
+    });
+    const students = Object.values(byStudent).sort((a,b) => (a.studentName||'').localeCompare(b.studentName||'', 'ar'));
+
+    renderInstructorStudentsList(students);
+    document.getElementById('instrStudentSearch')?.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      renderInstructorStudentsList(q ? students.filter(s => (s.studentName||'').toLowerCase().includes(q)) : students);
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل قائمة الطلاب.</div>`;
+  }
+}
+
+function renderInstructorStudentsList(students){
+  const area = document.getElementById('instructorStudentsArea');
+  if(!area) return;
+  if(students.length === 0){
+    area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لا يوجد طلاب مطابقين.</div>`;
+    return;
+  }
+  area.innerHTML = students.map(s => `
+    <div class="table-widget-row" style="cursor:pointer;" data-open-student="${s.studentId}">
+      <div class="avatar-sm">${(s.studentName||'؟').trim()[0]?.toUpperCase() || '؟'}</div>
+      <div class="grow">
+        <div class="t1">${s.studentName}</div>
+        <div class="t2">${s.courseIds.length} كورس مشترك معاك</div>
+      </div>
+      <span class="side-ic" style="color:var(--muted);">${SIDE_ICONS.chevronLeft}</span>
+    </div>
+  `).join('');
+  area.querySelectorAll('[data-open-student]').forEach(row => {
+    row.addEventListener('click', () => {
+      const rec = students.find(x => x.studentId === row.dataset.openStudent);
+      if(!rec) return;
+      openStudentProfileModal(rec.studentId, rec.studentName, {
+        courseIds: rec.courseIds,
+        scopeLabel: 'كورساتك معه',
+      });
+    });
+  });
 }
 
 /* ---------------- ADMIN DASHBOARD ---------------- */
@@ -6478,10 +6886,11 @@ async function adminRenderUsers(area){
             </div>
           `;
         } else if(u.role === 'student'){
-          const [enrollSnap, certSnap, resultsSnap] = await Promise.all([
+          const [enrollSnap, certSnap, resultsSnap, attendance] = await Promise.all([
             getDocs(query(collection(db, 'enrollments'), where('studentId','==', u.id))),
             getDocs(query(collection(db, 'certificates'), where('studentId','==', u.id))),
             getDocs(query(collection(db, 'examResults'), where('studentId','==', u.id))),
+            fetchStudentAttendance(u.id, null),
           ]);
           const enrollments = enrollSnap.docs.map(d => d.data());
           const approvedCount = enrollments.filter(e => e.status === 'approved').length;
@@ -6497,6 +6906,8 @@ async function adminRenderUsers(area){
             ${enrollments.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد اشتراكات.</div>` : enrollments.map(e => `
               <div class="table-widget-row"><div class="grow"><div class="t1">${e.courseTitle || 'كورس'}</div><div class="t2">${e.finalAmount !== undefined ? e.finalAmount + ' ج.س' : ''}</div></div><span class="status-badge ${STATUS_CLASS[e.status]||'status-pending'}">${STATUS_LABEL[e.status]||e.status}</span></div>
             `).join('')}
+            <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin:16px 0 8px;">سجل الحضور (${attendance.total} محاضرة)</div>
+            ${attendanceBlockHTML(attendance)}
             <div style="margin-top:14px;">
               <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
             </div>
