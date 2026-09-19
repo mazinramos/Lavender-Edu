@@ -613,6 +613,39 @@
   .profile-meta-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;}
   .profile-meta-row .pmi{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);}
   .profile-meta-row .pmi .side-ic{color:var(--violet-700);width:15px;height:15px;flex-shrink:0;display:flex;}
+
+  /* Profile completeness — badge + nudge banner */
+  .incomplete-badge{
+    position:absolute;top:-3px;left:-3px;width:19px;height:19px;border-radius:50%;
+    background:var(--danger,#C0392B);color:#fff;font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;border:2px solid #fff;
+    animation:incompletePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes incompletePulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+  .avatar-badge-wrap{position:relative;display:inline-flex;flex-shrink:0;}
+  .profile-nudge-banner{
+    display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:14px;margin-bottom:18px;
+    background:linear-gradient(120deg,#FDEEDB,#FBE3D0);border:1px solid #F0C892;
+  }
+  .profile-nudge-banner .pnb-ic{
+    width:38px;height:38px;border-radius:50%;background:#E2A33B;color:#fff;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;
+    animation:incompletePulse 1.6s ease-in-out infinite;
+  }
+  .profile-nudge-banner .pnb-body{flex:1;min-width:0;}
+  .profile-nudge-banner .pnb-title{font-weight:800;font-size:14px;color:#7A4A14;margin-bottom:3px;}
+  .profile-nudge-banner .pnb-sub{font-size:12.5px;color:#8A5A22;}
+  .profile-nudge-banner .btn{flex-shrink:0;}
+
+  /* Admin student info grid + print */
+  .info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px;}
+  .info-item{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);}
+  .info-item .il{font-size:11px;color:var(--muted);margin-bottom:3px;}
+  .info-item .iv{font-size:13.5px;font-weight:700;color:var(--ink);}
+  .info-item.warn{border-color:#F0C892;background:#FDF3E7;}
+  .info-item.warn .iv{color:#B5651D;}
+  .verified-tick{display:inline-flex;align-items:center;gap:3px;color:var(--success);font-size:11px;font-weight:700;margin-right:6px;}
+  @media (max-width:560px){ .info-grid{grid-template-columns:1fr;} }
   .profile-header-actions{margin-inline-start:auto;display:flex;gap:10px;flex-wrap:wrap;}
 
   .chart-box{position:relative;height:200px;}
@@ -1292,7 +1325,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile
+  signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile, sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp, collection,
@@ -1490,6 +1523,7 @@ function router(){
   else if(path.startsWith('#/learn/')) renderLearnRoom(path.split('#/learn/')[1]);
   else if(path.startsWith('#/lesson/')) renderLessonDetail(path.split('#/lesson/')[1]);
   else if(path.startsWith('#/archive')) renderArchiveRoom();
+  else if(path.startsWith('#/profile')) renderMyProfile();
   else if(path.startsWith('#/library-work/')) renderLibraryWork(path.split('#/library-work/')[1]);
   else if(path.startsWith('#/library')) renderLibrary(params.get('group'));
   else if(path.startsWith('#/manage/')) renderManageCourse(path.split('#/manage/')[1]);
@@ -4239,7 +4273,7 @@ function shellTopbarTitle(activeKey){
   if(currentProfile?.role === 'admin'){
     return ADMIN_TABS.find(t => t.key === activeKey)?.label || 'لوحة الإدارة';
   }
-  const map = { dashboard:'لوحة التحكم' };
+  const map = { dashboard:'لوحة التحكم', profile:'ملفي الشخصي' };
   return map[activeKey] || 'لوحة التحكم';
 }
 
@@ -4390,6 +4424,39 @@ function wireNotificationBell(){
 
 /* ================= ROLE-BASED DASHBOARD ROUTER ================= */
 const ROLE_LABEL = { student: 'طالب', instructor: 'مدرب', admin: 'إدارة' };
+
+/* ---------------- PROFILE COMPLETENESS ----------------
+   A student's profile is "complete" once they've added a phone number, gender, birth date
+   and field of study, and confirmed their email — the things admin actually needs and that
+   make the account a verified real identity, not just an email/password pair. */
+function computeProfileCompleteness(u){
+  const checks = [
+    { key:'phone', label:'رقم الهاتف', done: !!(u && u.phone) },
+    { key:'emailVerified', label:'تأكيد البريد الإلكتروني', done: !!(currentUser && currentUser.emailVerified) },
+    { key:'gender', label:'الجنس', done: !!(u && u.gender) },
+    { key:'birthDate', label:'تاريخ الميلاد', done: !!(u && u.birthDate) },
+    { key:'major', label:'التخصص / المرحلة الدراسية', done: !!(u && u.major) },
+  ];
+  const missing = checks.filter(c => !c.done);
+  return { checks, missing, complete: missing.length === 0 };
+}
+
+function calcAge(birthDateStr){
+  if(!birthDateStr) return null;
+  const b = new Date(birthDateStr);
+  if(Number.isNaN(b.getTime())) return null;
+  const now = new Date();
+  let age = now.getFullYear() - b.getFullYear();
+  const m = now.getMonth() - b.getMonth();
+  if(m < 0 || (m === 0 && now.getDate() < b.getDate())) age--;
+  return age;
+}
+
+/* Small red "!" dot — dropped onto an avatar/nav icon to flag an incomplete profile. */
+function incompleteBadgeHTML(){
+  return `<span class="incomplete-badge" title="ملفك الشخصي غير مكتمل">!</span>`;
+}
+
 const STATUS_LABEL = {
   pending: 'قيد المراجعة',
   pending_payment: 'بانتظار الدفع',
@@ -5972,8 +6039,20 @@ async function manageRenderExams(area, course){
 async function renderStudentDashboard(){
   renderShell('dashboard');
   const app = document.getElementById('appContent');
+  const completeness = computeProfileCompleteness(currentProfile);
+  const nudgeHTML = !completeness.complete ? `
+    <div class="profile-nudge-banner">
+      <div class="pnb-ic">!</div>
+      <div class="pnb-body">
+        <div class="pnb-title">ملفك الشخصي غير مكتمل</div>
+        <div class="pnb-sub">أكمل ${completeness.missing.map(m => m.label).join('، ')} عشان توثّق حسابك وتقدر الإدارة تتواصل معاك بسهولة.</div>
+      </div>
+      <a href="#/profile" class="btn btn-primary btn-sm">إكمال الملف</a>
+    </div>
+  ` : '';
   app.innerHTML = `
     ${profileHeaderHTML()}
+    ${nudgeHTML}
     <div class="widget-grid" id="studentStatCards">
       <div class="widget widget-4"><div class="empty-state">جارٍ التحميل...</div></div>
     </div>
@@ -6204,6 +6283,7 @@ function profileHeaderHTML(){
   const role = currentProfile?.role || 'student';
   const roleLabelText = ROLE_LABEL[role] || 'طالب';
   const initial = name.trim()[0]?.toUpperCase() || '؟';
+  const completeness = role === 'student' ? computeProfileCompleteness(currentProfile) : null;
 
   let joinedText = '';
   try{
@@ -6221,12 +6301,15 @@ function profileHeaderHTML(){
 
   const actionsHTML = role === 'instructor'
     ? `<div class="profile-header-actions"><a href="#/instructor/${currentUser.uid}" class="btn btn-ghost btn-sm">عرض ملفي العام</a></div>`
-    : '';
+    : (role === 'student' ? `<div class="profile-header-actions"><a href="#/profile" class="btn ${completeness.complete ? 'btn-ghost' : 'btn-primary'} btn-sm">${completeness.complete ? 'ملفي الشخصي' : 'أكمل ملفك الشخصي'}</a></div>` : '');
 
   return `
     <div class="widget widget-4" style="margin-bottom:20px;">
       <div class="profile-header-card">
-        <div class="avatar-circle">${initial}</div>
+        <span class="avatar-badge-wrap">
+          <div class="avatar-circle">${initial}</div>
+          ${completeness && !completeness.complete ? incompleteBadgeHTML() : ''}
+        </span>
         <div class="profile-header-info">
           <h2>${name}</h2>
           <span class="role-badge">${roleLabelText}</span>
@@ -6236,6 +6319,129 @@ function profileHeaderHTML(){
       </div>
     </div>
   `;
+}
+
+/* ---------------- MY PROFILE (edit personal details, verify account) ----------------
+   Route: #/profile. Any signed-in user can view/edit this, but the completeness checklist
+   and nudges are really aimed at students — it's what the admin's student table below reads. */
+async function renderMyProfile(){
+  const app = document.getElementById('app');
+  if(!currentUser){
+    app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">لازم تسجّل الدخول الأول.</p><a href="#/login" class="btn btn-primary">تسجيل الدخول</a></div></div>`;
+    return;
+  }
+  renderShell('profile');
+  const area = document.getElementById('appContent');
+  const u = currentProfile || {};
+  const completeness = computeProfileCompleteness(u);
+  const age = calcAge(u.birthDate);
+
+  area.innerHTML = `
+    <div class="widget widget-4" style="margin-bottom:20px;">
+      <div class="profile-header-card">
+        <span class="avatar-badge-wrap">
+          <div class="avatar-circle" style="width:72px;height:72px;font-size:26px;">${(u.name || currentUser.email || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
+          ${!completeness.complete ? incompleteBadgeHTML() : ''}
+        </span>
+        <div class="profile-header-info">
+          <h2>${u.name || currentUser.email}</h2>
+          <span class="role-badge">${ROLE_LABEL[u.role] || 'طالب'}</span>
+          ${age !== null ? `<div class="profile-meta-row"><span class="pmi">عمرك ${age} سنة</span></div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    ${!completeness.complete ? `
+      <div class="profile-nudge-banner">
+        <div class="pnb-ic">!</div>
+        <div class="pnb-body">
+          <div class="pnb-title">ملفك الشخصي مكتمل ${5 - completeness.missing.length} من 5</div>
+          <div class="pnb-sub">أكمل البيانات تحت عشان توثّق حسابك: ${completeness.missing.map(m => m.label).join('، ')}.</div>
+        </div>
+      </div>
+    ` : `
+      <div class="alert alert-success" style="margin-bottom:20px;">ملفك الشخصي مكتمل بالكامل، شكراً لتوثيق حسابك.</div>
+    `}
+
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>البريد الإلكتروني</h3></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700;font-size:14px;">${currentUser.email}</div>
+          <div style="font-size:12px;color:${currentUser.emailVerified ? 'var(--success)' : '#B5651D'};margin-top:3px;">
+            ${currentUser.emailVerified ? `${SIDE_ICONS.check} موثّق` : 'غير موثّق بعد'}
+          </div>
+        </div>
+        ${!currentUser.emailVerified ? `<button type="button" class="btn btn-ghost btn-sm" id="sendVerifyEmailBtn">إرسال رابط التوثيق</button>` : ''}
+      </div>
+      <div id="verifyEmailAlert" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>بياناتي الشخصية</h3></div>
+      <form id="myProfileForm" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="profPhone" value="${u.phone || ''}" placeholder="09XXXXXXXX" />
+          </div>
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>الجنس</label>
+            <select id="profGender">
+              <option value="" ${!u.gender ? 'selected' : ''}>اختر...</option>
+              <option value="male" ${u.gender==='male'?'selected':''}>ذكر</option>
+              <option value="female" ${u.gender==='female'?'selected':''}>أنثى</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>تاريخ الميلاد</label>
+            <input type="date" id="profBirthDate" value="${u.birthDate || ''}" />
+          </div>
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>التخصص / المرحلة الدراسية</label>
+            <input type="text" id="profMajor" value="${u.major || ''}" placeholder="مثال: طالبة تمريض - السنة الثانية" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ البيانات</button>
+        <div id="myProfileAlert"></div>
+      </form>
+    </div>
+  `;
+
+  document.getElementById('sendVerifyEmailBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    const alertBox = document.getElementById('verifyEmailAlert');
+    try{
+      await sendEmailVerification(currentUser);
+      alertBox.innerHTML = `<div class="alert alert-success">تم إرسال رابط التوثيق لبريدك، افتحه وأكّد ثم ارجع هنا.</div>`;
+    }catch(e2){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال رابط التوثيق، حاول بعد قليل.</div>`;
+    }
+    btn.disabled = false;
+  });
+
+  document.getElementById('myProfileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertBox = document.getElementById('myProfileAlert');
+    const phone = document.getElementById('profPhone').value.trim();
+    const gender = document.getElementById('profGender').value;
+    const birthDate = document.getElementById('profBirthDate').value;
+    const major = document.getElementById('profMajor').value.trim();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try{
+      await updateDoc(doc(db, 'users', currentUser.uid), { phone: phone || null, gender: gender || null, birthDate: birthDate || null, major: major || null });
+      currentProfile = { ...currentProfile, phone: phone || null, gender: gender || null, birthDate: birthDate || null, major: major || null };
+      alertBox.innerHTML = `<div class="alert alert-success">تم حفظ بياناتك.</div>`;
+      renderMyProfile();
+    }catch(e2){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر حفظ البيانات، حاول مرة أخرى.</div>`;
+      btn.disabled = false;
+    }
+  });
 }
 
 /* Builds one clickable stat card. Pass either href (real navigation) or scrollTarget
@@ -6742,6 +6948,101 @@ async function adminRenderOverview(area){
   }
 }
 
+/* Opens a new tab with a branded, printable "student data card" (used by the admin's
+   student detail panel) and triggers the print dialog — the student's name is the page
+   <title>, which browsers use as the default filename when the person picks "Save as PDF". */
+function printStudentReport(u, data){
+  const logoSrc = document.querySelector('.brand-mark')?.src || '';
+  const win = window.open('', '_blank');
+  if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
+
+  const item = (label, value, warn) => `
+    <div class="pr-item ${warn ? 'warn' : ''}"><div class="pl">${label}</div><div class="pv">${value}</div></div>
+  `;
+  const enrollmentsRows = data.enrollments.length
+    ? data.enrollments.map(e => `
+        <tr><td>${e.courseTitle || 'كورس'}</td><td>${e.finalAmount !== undefined ? e.finalAmount + ' ج.س' : '—'}</td><td>${STATUS_LABEL[e.status] || e.status}</td></tr>
+      `).join('')
+    : `<tr><td colspan="3" style="text-align:center;color:#888;">لا توجد اشتراكات</td></tr>`;
+
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <title>${u.name || 'بيانات الطالب'}</title>
+      <style>
+        @page { margin: 20mm 16mm; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Tahoma', 'Segoe UI', sans-serif; color:#241536; margin:0; padding:0 6mm; }
+        .pr-header { display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #5B2A86; padding-bottom:14px; margin-bottom:22px; }
+        .pr-brand { display:flex; align-items:center; gap:10px; }
+        .pr-brand img { width:44px; height:44px; border-radius:10px; }
+        .pr-brand .name { font-size:20px; font-weight:800; color:#5B2A86; }
+        .pr-meta { text-align:left; font-size:11px; color:#777; }
+        .pr-title { text-align:center; margin: 6px 0 26px; }
+        .pr-title h1 { font-size:22px; margin:0 0 4px; color:#241536; }
+        .pr-title .sub { font-size:12.5px; color:#777; }
+        .pr-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-bottom:26px; }
+        .pr-item { border:1px solid #E4DCEF; border-radius:10px; padding:10px 14px; background:#FAF8FD; }
+        .pr-item.warn { border-color:#F0C892; background:#FDF3E7; }
+        .pl { font-size:10.5px; color:#8A7A9C; margin-bottom:3px; }
+        .pv { font-size:13.5px; font-weight:700; }
+        h2.pr-sec { font-size:14px; color:#5B2A86; border-bottom:2px solid #EDE4F9; padding-bottom:6px; margin:26px 0 12px; }
+        table { width:100%; border-collapse:collapse; font-size:12.5px; }
+        th, td { padding:8px 10px; border-bottom:1px solid #EEE; text-align:right; }
+        th { background:#F4EEFA; color:#5B2A86; font-weight:700; }
+        .pr-footer { margin-top:40px; text-align:center; font-size:10.5px; color:#999; border-top:1px solid #EEE; padding-top:10px; }
+      </style>
+    </head>
+    <body>
+      <div class="pr-header">
+        <div class="pr-brand">
+          ${logoSrc ? `<img src="${logoSrc}" alt="لافندر" />` : ''}
+          <span class="name">لافندر</span>
+        </div>
+        <div class="pr-meta">تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' })}</div>
+      </div>
+      <div class="pr-title">
+        <h1>بطاقة بيانات الطالب</h1>
+        <div class="sub">${u.name || ''}</div>
+      </div>
+      <div class="pr-grid">
+        ${item('الاسم الكامل', u.name || '—')}
+        ${item('البريد الإلكتروني', u.email || '—')}
+        ${item('رقم الهاتف', u.phone || 'غير مسجّل', !u.phone)}
+        ${item('الجنس', data.genderLabel || 'غير محدد', !u.gender)}
+        ${item('العمر', data.age !== null ? data.age + ' سنة' : 'غير محدد', !u.birthDate)}
+        ${item('التخصص / المرحلة الدراسية', u.major || 'غير محدد', !u.major)}
+        ${item('تاريخ الانضمام', data.joinedDate)}
+        ${item('حالة الحساب', u.status === 'disabled' ? 'معطّل' : 'نشط')}
+      </div>
+
+      <h2 class="pr-sec">ملخص النشاط</h2>
+      <div class="pr-grid">
+        ${item('عدد طلبات الاشتراك', data.enrollments.length)}
+        ${item('الكورسات المفعّلة', data.enrollments.filter(e => e.status === 'approved').length)}
+        ${item('الشهادات', data.certCount)}
+        ${item('الامتحانات المنجزة', data.resultsCount)}
+      </div>
+
+      <h2 class="pr-sec">اشتراكاته</h2>
+      <table>
+        <thead><tr><th>الكورس</th><th>المبلغ</th><th>الحالة</th></tr></thead>
+        <tbody>${enrollmentsRows}</tbody>
+      </table>
+
+      <h2 class="pr-sec">سجل الحضور</h2>
+      <div style="font-size:12.5px;">إجمالي المحاضرات المحضورة: ${data.attendance.total}</div>
+
+      <div class="pr-footer">تم إصدار هذه البطاقة آلياً من منصة لافندر</div>
+      <script>window.onload = () => { setTimeout(() => window.print(), 350); };<\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
 async function adminRenderUsers(area){
   try{
     const snap = await getDocs(collection(db, 'users'));
@@ -6894,14 +7195,35 @@ async function adminRenderUsers(area){
           ]);
           const enrollments = enrollSnap.docs.map(d => d.data());
           const approvedCount = enrollments.filter(e => e.status === 'approved').length;
+          const completeness = computeProfileCompleteness(u);
+          const age = calcAge(u.birthDate);
+          const genderLabel = u.gender === 'male' ? 'ذكر' : (u.gender === 'female' ? 'أنثى' : '');
+          const joinedDate = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }) : '—';
+
           panel.innerHTML = `
             <div class="learn-points" style="margin-bottom:16px;">
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.book}</span><span>${enrollments.length} طلب اشتراك</span></div>
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.check}</span><span>${approvedCount} كورس مفعّل</span></div>
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.certificate}</span><span>${certSnap.docs.length} شهادة</span></div>
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.exam}</span><span>${resultsSnap.docs.length} امتحان منجز</span></div>
+              <div class="learn-point"><span class="lp-ic">${completeness.complete ? SIDE_ICONS.check : '!'}</span><span>الملف الشخصي ${5 - completeness.missing.length}/5</span></div>
             </div>
-            ${u.phone ? `<div style="font-size:13px;margin-bottom:12px;"><strong>الهاتف:</strong> ${u.phone}</div>` : ''}
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div style="font-size:13px;font-weight:700;color:var(--violet-900);">بيانات الطالب</div>
+              <button type="button" class="btn btn-ghost btn-sm" data-print-student="${u.id}">${SIDE_ICONS.card} طباعة</button>
+            </div>
+            <div class="info-grid">
+              <div class="info-item"><div class="il">الاسم الكامل</div><div class="iv">${u.name || '—'}</div></div>
+              <div class="info-item"><div class="il">البريد الإلكتروني</div><div class="iv">${u.email || '—'}</div></div>
+              <div class="info-item ${u.phone ? '' : 'warn'}"><div class="il">رقم الهاتف</div><div class="iv">${u.phone || 'غير مسجّل'}</div></div>
+              <div class="info-item ${u.gender ? '' : 'warn'}"><div class="il">الجنس</div><div class="iv">${genderLabel || 'غير محدد'}</div></div>
+              <div class="info-item ${u.birthDate ? '' : 'warn'}"><div class="il">العمر</div><div class="iv">${age !== null ? age + ' سنة' : 'غير محدد'}</div></div>
+              <div class="info-item ${u.major ? '' : 'warn'}"><div class="il">التخصص / المرحلة الدراسية</div><div class="iv">${u.major || 'غير محدد'}</div></div>
+              <div class="info-item"><div class="il">تاريخ الانضمام</div><div class="iv">${joinedDate}</div></div>
+              <div class="info-item"><div class="il">حالة الحساب</div><div class="iv">${u.status === 'disabled' ? 'معطّل' : 'نشط'}</div></div>
+            </div>
+
             <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">اشتراكاته</div>
             ${enrollments.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد اشتراكات.</div>` : enrollments.map(e => `
               <div class="table-widget-row"><div class="grow"><div class="t1">${e.courseTitle || 'كورس'}</div><div class="t2">${e.finalAmount !== undefined ? e.finalAmount + ' ج.س' : ''}</div></div><span class="status-badge ${STATUS_CLASS[e.status]||'status-pending'}">${STATUS_LABEL[e.status]||e.status}</span></div>
@@ -6912,6 +7234,11 @@ async function adminRenderUsers(area){
               <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
             </div>
           `;
+
+          panel.querySelector('[data-print-student]')?.addEventListener('click', () => {
+            printStudentReport(u, { enrollments, certCount: certSnap.docs.length, resultsCount: resultsSnap.docs.length, attendance, completeness, age, genderLabel, joinedDate });
+          });
+
         } else {
           panel.innerHTML = `
             <div style="font-size:13px;color:var(--muted);">تاريخ الإنشاء: ${u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar') : '—'}</div>
