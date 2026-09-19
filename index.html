@@ -3732,8 +3732,16 @@ async function fetchCommunicationSettings(){
     return null;
   }
 }
+const DEFAULT_ADMIN_WHATSAPP = '249112160178'; // +249 11 216 0178 — used whenever the admin hasn't set a different number in Settings → Communication
 function buildPaymentNotificationMessage(course, enrollment){
-  return `أريد تأكيد دفع كورس: ${course.title}\nاسم الطالب: ${currentProfile?.name || currentUser.email}\nرقم الطلب: ${enrollment.id}\nالمبلغ: ${enrollment.finalAmount} ج.س`;
+  const lines = [
+    `أريد تأكيد دفع كورس: ${course.title}`,
+    `اسم الطالب: ${currentProfile?.name || currentUser.email}`,
+    `المبلغ: ${enrollment.finalAmount} ج.س`,
+  ];
+  if(enrollment.paymentRef) lines.push(`مرجع العملية: ${enrollment.paymentRef}`);
+  lines.push(`رقم الطلب: ${enrollment.id}`);
+  return lines.join('\n');
 }
 
 /* ---------------- ENROLLMENT / CHECKOUT (multi-step, manual payment) ---------------- */
@@ -3973,7 +3981,7 @@ async function renderCheckoutStep2(course, enrollment){
         submittedAt: serverTimestamp(),
       });
 
-      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef });
+      renderCheckoutStep3(course, { ...enrollment, status: 'payment_submitted', paymentRef }, true);
     }catch(err){
       alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء الإرسال، حاول مرة أخرى.</div>`;
       btn.disabled = false;
@@ -3982,17 +3990,18 @@ async function renderCheckoutStep2(course, enrollment){
   });
 }
 
-/* Step 3 — thank you + WhatsApp/Telegram notification (honest: only logs that the button was pressed) */
-async function renderCheckoutStep3(course, enrollment){
+/* Step 3 — thank you + WhatsApp/Telegram notification. autoOpenWa is only true when we just
+   arrived here from the step-2 submit click (a real user gesture) — never on a plain page
+   reload/revisit, so we don't pop open a new tab unprompted. */
+async function renderCheckoutStep3(course, enrollment, autoOpenWa){
   const app = document.getElementById('app');
   const comms = await fetchCommunicationSettings();
   const message = buildPaymentNotificationMessage(course, enrollment);
 
-  const hasWhatsapp = comms && (comms.whatsappNumber || comms.whatsappLink);
+  const hasWhatsapp = true; // always available now — falls back to DEFAULT_ADMIN_WHATSAPP if admin hasn't set one
   const hasTelegram = comms && (comms.telegramUsername || comms.telegramLink);
-  const waLink = comms?.whatsappNumber
-    ? `https://wa.me/${comms.whatsappNumber.replace(/\D/g,'')}?text=${encodeURIComponent(message)}`
-    : comms?.whatsappLink;
+  const waNumber = (comms?.whatsappNumber || DEFAULT_ADMIN_WHATSAPP).replace(/\D/g,'');
+  const waLink = comms?.whatsappLink || `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
   const tgLink = comms?.telegramLink || (comms?.telegramUsername ? `https://t.me/${comms.telegramUsername.replace('@','')}` : null);
 
   app.innerHTML = `
@@ -4000,12 +4009,11 @@ async function renderCheckoutStep3(course, enrollment){
       <div class="auth-card" style="max-width:520px;">
         <div class="checkout-steps"><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div><div class="checkout-step-dot done"></div></div>
         <h2>تم تأكيد دفعك</h2>
-        <p class="sub">آخر خطوة: أرسل إشعاراً للإدارة للتحقق السريع (اختياري لكنه بيسرّع المراجعة).</p>
+        <p class="sub">${autoOpenWa ? 'هنفتح لك واتساب الإدارة تلقائياً برسالة جاهزة — كل اللي عليك تبعت صورة إشعار التحويل بعدها.' : 'اضغط الزر تحت لفتح واتساب الإدارة برسالة جاهزة، وابعت صورة إشعار التحويل بعدها.'}</p>
         <div id="notifyAlert"></div>
 
-        ${hasWhatsapp ? `<button class="notify-btn" id="waNotifyBtn">${SIDE_ICONS.chatBubble} إرسال إشعار عبر واتساب</button>` : ''}
+        <button class="notify-btn" id="waNotifyBtn">${SIDE_ICONS.chatBubble} فتح واتساب الإدارة</button>
         ${hasTelegram ? `<button class="notify-btn" id="tgNotifyBtn">${SIDE_ICONS.paperPlane} إرسال إشعار عبر تلغرام</button>` : ''}
-        ${(!hasWhatsapp && !hasTelegram) ? `<div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">لسه الإدارة ما حددت وسيلة تواصل للتحقق السريع — طلبك هيتراجع يدوياً.</div>` : ''}
 
         <div class="copy-box">
           <span>نص الرسالة الجاهز</span>
@@ -4016,6 +4024,15 @@ async function renderCheckoutStep3(course, enrollment){
       </div>
     </div>
   `;
+
+  // Best-effort auto-open — only right after the click that got us here (a real user gesture),
+  // never on a cold reload/revisit. If a popup blocker still catches it, the button above is a
+  // guaranteed fallback either way.
+  if(autoOpenWa){
+    try{
+      window.open(waLink, '_blank', 'noopener');
+    }catch(e){ /* ignore — button remains as fallback */ }
+  }
 
   document.getElementById('copyMsgBtn').addEventListener('click', () => {
     navigator.clipboard?.writeText(message).then(() => {
@@ -8959,7 +8976,8 @@ async function adminRenderSettings(area){
         <form id="commSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
           <div class="field" style="margin-bottom:0;">
             <label>رقم واتساب (بصيغة دولية بدون +، مثال: 249912345678)</label>
-            <input type="text" id="waNumber" value="${comms.whatsappNumber || ''}" placeholder="249912345678" />
+            <input type="text" id="waNumber" value="${comms.whatsappNumber || ''}" placeholder="249112160178" />
+            <div class="field-hint">لو سبته فاضي، هيستخدم النظام رقم الإدارة الافتراضي +249 11 216 0178.</div>
           </div>
           <div class="field" style="margin-bottom:0;">
             <label>أو رابط واتساب جاهز (اختياري بدل الرقم)</label>
