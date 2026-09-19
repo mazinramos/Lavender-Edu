@@ -778,6 +778,18 @@
   .payment-method-option.selected{border-color:var(--violet-600);background:var(--mist);}
   .payment-method-option input{width:17px;height:17px;accent-color:var(--violet-700);flex-shrink:0;}
   .payment-account-box{background:var(--mist);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--violet-800);line-height:1.9;margin-bottom:18px;}
+  .order-number-box{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:linear-gradient(135deg,var(--violet-700),var(--violet-900));border-radius:12px;
+    padding:14px 18px;margin-bottom:18px;color:#fff;
+  }
+  .order-number-box .lbl{font-size:11.5px;opacity:0.8;margin-bottom:3px;}
+  .order-number-box .val{font-size:17px;font-weight:800;letter-spacing:0.5px;font-family:monospace,'Cairo',sans-serif;}
+  .order-number-box .copy-order-btn{
+    display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);
+    color:#fff;padding:8px 14px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;flex-shrink:0;
+  }
+  .order-number-box .copy-order-btn:hover{background:rgba(255,255,255,.26);}
   .copy-box{
     display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--paper);
     border:1.5px dashed var(--line);border-radius:10px;padding:10px 14px;font-size:12.5px;color:var(--muted);margin-top:10px;
@@ -3733,14 +3745,25 @@ async function fetchCommunicationSettings(){
   }
 }
 const DEFAULT_ADMIN_WHATSAPP = '249112160178'; // +249 11 216 0178 — used whenever the admin hasn't set a different number in Settings → Communication
+/* A short, human-friendly order code (e.g. "LV-260919-K3P9X") instead of exposing the raw
+   Firestore document id — easy for a student to copy into a bank-transfer note, and for the
+   admin to search/match against. Derived from the doc's own id, so no separate counter needed. */
+function buildOrderNumber(docId){
+  const d = new Date();
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const shortCode = docId.slice(-5).toUpperCase();
+  return `LV-${yy}${mm}${dd}-${shortCode}`;
+}
 function buildPaymentNotificationMessage(course, enrollment){
   const lines = [
-    `أريد تأكيد دفع كورس: ${course.title}`,
+    `تأكيد دفع كورس: ${course.title}`,
     `اسم الطالب: ${currentProfile?.name || currentUser.email}`,
     `المبلغ: ${enrollment.finalAmount} ج.س`,
   ];
   if(enrollment.paymentRef) lines.push(`مرجع العملية: ${enrollment.paymentRef}`);
-  lines.push(`رقم الطلب: ${enrollment.id}`);
+  lines.push(`رقم الطلب: ${enrollment.orderNumber || enrollment.id}`);
   return lines.join('\n');
 }
 
@@ -3887,7 +3910,9 @@ async function renderCheckoutStep1(course){
     btn.disabled = true;
     btn.innerHTML = `<span class="spinner"></span> جارٍ التأكيد...`;
     try{
-      const ref = await addDoc(collection(db, 'enrollments'), {
+      const newRef = doc(collection(db, 'enrollments'));
+      const orderNumber = buildOrderNumber(newRef.id);
+      await setDoc(newRef, {
         studentId: currentUser.uid,
         studentName: currentProfile?.name || currentUser.email,
         courseId: course.id,
@@ -3898,9 +3923,10 @@ async function renderCheckoutStep1(course){
         paymentMethodId: selectedMethod ? selectedMethod.value : null,
         notificationSent: false,
         status: isFree ? 'payment_submitted' : 'pending_payment',
+        orderNumber,
         createdAt: serverTimestamp(),
       });
-      const newEnrollment = { id: ref.id, courseId: course.id, courseTitle: course.title, finalAmount, paymentMethodId: selectedMethod ? selectedMethod.value : null, status: isFree ? 'payment_submitted' : 'pending_payment' };
+      const newEnrollment = { id: newRef.id, orderNumber, courseId: course.id, courseTitle: course.title, finalAmount, paymentMethodId: selectedMethod ? selectedMethod.value : null, status: isFree ? 'payment_submitted' : 'pending_payment' };
       if(isFree){
         renderCheckoutStep3(course, newEnrollment);
       } else {
@@ -3933,6 +3959,14 @@ async function renderCheckoutStep2(course, enrollment){
         <p class="sub">${course.title} — ${enrollment.finalAmount} ج.س</p>
         <div id="checkoutAlert"></div>
 
+        <div class="order-number-box">
+          <div>
+            <div class="lbl">رقم طلبك — اكتبه كملاحظة/تعليق مع التحويل</div>
+            <div class="val" id="orderNumberVal">${enrollment.orderNumber || enrollment.id}</div>
+          </div>
+          <button type="button" class="copy-order-btn" id="copyOrderNumberBtn">${SIDE_ICONS.copy} نسخ</button>
+        </div>
+
         ${method ? `
           <div class="payment-account-box">
             <strong>${method.label}</strong><br/>
@@ -3949,13 +3983,23 @@ async function renderCheckoutStep2(course, enrollment){
             <label>مرجع العملية / رقم التحويل (اختياري)</label>
             <input type="text" id="paymentRef" placeholder="مثال: 8842051" />
           </div>
-          <p style="font-size:12.5px;color:var(--muted);margin:0 0 16px;">حوّل المبلغ لبيانات الحساب فوق، وبعدها اضغط "تم الدفع" — هتقدر بعدها تبعت إشعار واتساب للإدارة للتحقق السريع.</p>
+          <p style="font-size:12.5px;color:var(--muted);margin:0 0 16px;">حوّل المبلغ لبيانات الحساب فوق، واكتب رقم طلبك في ملاحظة التحويل لو أمكن، وبعدها اضغط "تم الدفع" — هيتفتح لك واتساب الإدارة تلقائياً برسالة جاهزة فيها رقم طلبك.</p>
           <button type="submit" class="btn btn-primary btn-full" id="submitProofBtn">تم الدفع، متابعة</button>
         </form>
         <button class="btn btn-ghost btn-full" id="cancelCheckoutBtn" style="margin-top:10px;">إلغاء الطلب</button>
       </div>
     </div>
   `;
+
+  document.getElementById('copyOrderNumberBtn').addEventListener('click', () => {
+    const val = document.getElementById('orderNumberVal').textContent.trim();
+    navigator.clipboard?.writeText(val).then(() => {
+      const btn = document.getElementById('copyOrderNumberBtn');
+      const original = btn.innerHTML;
+      btn.innerHTML = `${SIDE_ICONS.check} تم النسخ`;
+      setTimeout(() => { btn.innerHTML = original; }, 1800);
+    }).catch(() => {});
+  });
 
   document.getElementById('cancelCheckoutBtn').addEventListener('click', async () => {
     if(!confirm('هل تريد إلغاء طلب الاشتراك؟')) return;
@@ -8128,22 +8172,30 @@ async function adminRenderPayments(area){
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head"><h3>طلبات الاشتراك والدفع</h3></div>
-        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما ضغط "تم الدفع" — منتظرين منه، مش من الإدارة. التحقق من الدفع بيتم عبر واتساب مباشرة مع الطالب، مش برفع صورة إثبات.</p>
+        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما ضغط "تم الدفع" — منتظرين منه، مش من الإدارة. التحقق من الدفع بيتم عبر واتساب مباشرة مع الطالب، مش برفع صورة إثبات. كل طالب بيوصله رقم طلب مميز يكتبه في ملاحظة التحويل — استخدمه هنا للبحث ومطابقة الإشعار.</p>
+        <div class="field" style="margin-bottom:14px;max-width:320px;">
+          <input type="text" id="paymentsSearchInput" placeholder="بحث برقم الطلب، اسم الطالب، أو الكورس..." />
+        </div>
         <div id="paymentsList"></div>
       </div>
     `;
 
-    function renderList(){
+    function renderList(filterText){
       const listEl = document.getElementById('paymentsList');
-      if(enrollments.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد طلبات تسجيل حتى الآن.</div>`;
+      const q = (filterText || '').trim().toLowerCase();
+      const filtered = !q ? enrollments : enrollments.filter(e => {
+        const orderNum = (e.orderNumber || e.id || '').toLowerCase();
+        return orderNum.includes(q) || (e.studentName || '').toLowerCase().includes(q) || (e.courseTitle || '').toLowerCase().includes(q);
+      });
+      if(filtered.length === 0){
+        listEl.innerHTML = `<div class="empty-state">${q ? 'لا توجد طلبات مطابقة.' : 'لا توجد طلبات تسجيل حتى الآن.'}</div>`;
         return;
       }
-      listEl.innerHTML = enrollments.map(e => `
+      listEl.innerHTML = filtered.map(e => `
         <div class="table-widget-row" style="align-items:flex-start;">
           <div class="avatar-sm">${(e.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
           <div class="grow">
-            <div class="t1">${e.studentName || 'طالب'}</div>
+            <div class="t1">${e.studentName || 'طالب'} <span style="font-family:monospace;font-weight:700;color:var(--violet-700);font-size:12px;">#${e.orderNumber || e.id}</span></div>
             <div class="t2">${e.courseTitle || 'كورس'}</div>
             <div class="t2">${e.finalAmount !== undefined ? `المبلغ: ${e.finalAmount} ج.س · ` : ''}مرجع الدفع: ${e.paymentRef || '—'}</div>
             <div class="t2">${e.notificationSent ? `${SIDE_ICONS.check} تم إرسال إشعار واتساب/تلغرام` : 'لم يُرسل إشعار بعد'}</div>
@@ -8174,7 +8226,7 @@ async function adminRenderPayments(area){
               else await revokeCourseAccess(en.studentId, en.courseId);
             }
             if(en) en.status = newStatus;
-            renderList();
+            renderList(document.getElementById('paymentsSearchInput')?.value);
           }catch(e){
             alert('تعذّر تحديث حالة الطلب.');
             btn.disabled = false;
@@ -8183,6 +8235,7 @@ async function adminRenderPayments(area){
       });
     }
     renderList();
+    document.getElementById('paymentsSearchInput').addEventListener('input', (e) => renderList(e.target.value));
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل طلبات الدفع.</div>`;
   }
