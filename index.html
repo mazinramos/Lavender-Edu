@@ -442,6 +442,12 @@
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);position:relative;cursor:pointer;flex-shrink:0;
   }
   .icon-btn .dot-badge{position:absolute;top:7px;left:7px;width:7px;height:7px;border-radius:50%;background:var(--amber-500);border:1.5px solid #fff;}
+  .icon-btn .count-badge{
+    position:absolute;top:-6px;left:-6px;background:var(--danger);color:#fff;
+    font-size:10.5px;font-weight:800;border-radius:999px;min-width:19px;height:19px;padding:0 5px;
+    display:flex;align-items:center;justify-content:center;line-height:1;border:2px solid #fff;
+    animation:stPop .4s cubic-bezier(.34,1.56,.64,1);
+  }
   /* Admin system-alert badges — pending-action counts shown right on the sidebar tab that
      needs attention (payments / library / course review), so nothing is buried. */
   .tab-count-badge{
@@ -473,6 +479,18 @@
   .admin-alert-toast .at-title{font-size:14.5px;font-weight:800;color:var(--violet-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .admin-alert-toast .at-sub{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:230px;}
   @media (max-width:520px){ .admin-alert-toast{max-width:none;width:100%;} }
+
+  /* Dense "view as table" mode for the admin users list — every column visible at once,
+     so scanning or printing the whole student body doesn't require opening each one. */
+  .admin-data-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;}
+  .admin-data-table th{
+    background:var(--paper);color:var(--violet-900);font-weight:800;font-size:12px;
+    padding:10px 12px;text-align:right;border-bottom:2px solid var(--line);position:sticky;top:0;
+  }
+  .admin-data-table td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--ink);}
+  .admin-data-table tbody tr{cursor:pointer;transition:background .15s;}
+  .admin-data-table tbody tr:hover{background:var(--paper);}
+  .admin-data-table .cell-missing{color:var(--amber-600);font-weight:600;}
   .notif-item{padding:10px 12px;border-radius:10px;}
   .notif-item:hover{background:var(--paper);}
   .notif-item .t1{font-weight:700;font-size:13px;color:var(--ink);}
@@ -738,8 +756,22 @@
 
   /* Widgets */
   .widget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:20px;}
-  .widget{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;}
-  .widget-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+  .widget{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;
+    transition:box-shadow .25s ease,transform .25s ease,border-color .25s ease;
+    animation:widgetIn .45s cubic-bezier(.25,.8,.4,1) both;
+  }
+  .widget:hover{box-shadow:0 16px 36px -20px rgba(34,21,48,0.28);transform:translateY(-2px);border-color:var(--line);}
+  @keyframes widgetIn{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  /* Admin widget-grids stagger their children's entrance so a page full of stat cards
+     animates in like a wave instead of popping all at once. */
+  .widget-grid > .widget:nth-child(1){animation-delay:.02s;}
+  .widget-grid > .widget:nth-child(2){animation-delay:.07s;}
+  .widget-grid > .widget:nth-child(3){animation-delay:.12s;}
+  .widget-grid > .widget:nth-child(4){animation-delay:.17s;}
+  .widget-grid > .widget:nth-child(5){animation-delay:.22s;}
+  .widget-grid > .widget:nth-child(6){animation-delay:.27s;}
+  .widget-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .widget-head h3{font-size:14.5px;font-weight:700;color:var(--violet-900);margin:0;}
   .widget-2{grid-column:span 2;}
   .widget-4{grid-column:span 4;}
@@ -748,10 +780,20 @@
   .stat-card-v3{display:flex;align-items:center;gap:14px;}
   .stat-card-v3 .ic{
     width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    transition:transform .3s cubic-bezier(.34,1.56,.64,1);
   }
+  .widget:hover .stat-card-v3 .ic{transform:scale(1.1) rotate(-4deg);}
   .stat-card-v3 .num{font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;color:var(--violet-900);}
   .stat-card-v3 .lbl{font-size:12.5px;color:var(--muted);}
   .stat-card-v3 .arrow-hint{margin-inline-start:auto;color:var(--line);flex-shrink:0;transition:color .2s,transform .2s;}
+
+  /* Admin list/table rows fade+slide in, staggered by position, and lift slightly on
+     hover — the same "alive" feel applied consistently everywhere a list is rendered. */
+  .table-widget-row{transition:background .18s ease,transform .18s ease;animation:rowIn .35s ease both;}
+  .table-widget-row:hover{background:var(--paper);transform:translateX(-2px);}
+  [dir="rtl"] .table-widget-row:hover{transform:translateX(2px);}
+  @keyframes rowIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+  .table-widget-row:nth-child(n+1){animation-delay:calc(var(--row-i, 0) * 0.03s);}
 
   /* Clickable stat/profile widgets */
   button.stat-link{width:100%;text-align:inherit;}
@@ -1675,6 +1717,12 @@ function router(){
   const hash = location.hash || '#/';
   const [path, qs] = hash.split('?');
   const params = new URLSearchParams(qs || '');
+
+  // Admins live entirely inside their own dashboard shell (its own topbar/search/logout),
+  // so the public marketing nav above it is dead weight — every link on it points at a
+  // page admins are blocked from anyway. Hide it whenever an admin is signed in.
+  const navBar = document.querySelector('.nav');
+  if(navBar) navBar.style.display = (currentProfile?.role === 'admin') ? 'none' : '';
 
   // Admins never see the public marketplace/home/auth/checkout pages — force them straight to the admin panel.
   const adminBlockedRoutes = ['#/', '#/courses', '#/login', '#/register', '#/enroll/'];
@@ -4334,6 +4382,7 @@ async function renderCheckoutStep2(course, enrollment){
         'طلبك قيد المراجعة الآن. الإدارة بتتحقق من إشعارك وهتفعّل الكورس بعد الموافقة.',
         { waLink, message }
       );
+      showSuccessToast('تم إرسال طلبك!', 'الإدارة هتتحقق من إشعار الدفع وتفعّل الكورس بعد الموافقة');
     }catch(err){
       alertBox.innerHTML = `<div class="alert alert-error">حدث خطأ أثناء الإرسال، حاول مرة أخرى.</div>`;
       btn.disabled = false;
@@ -4758,6 +4807,30 @@ function applyAdminAlertBadges(counts){
     badge.textContent = n > 99 ? '99+' : String(n);
     lbl.insertAdjacentElement('afterend', badge);
   });
+  // The bell icon sits in the topbar on every admin page — the one spot visible "from
+  // outside" no matter which tab is open — so it carries the combined total.
+  const bell = document.getElementById('notifBellBtn');
+  if(bell){
+    bell.querySelectorAll('.count-badge').forEach(b => b.remove());
+    const total = (counts.payments||0) + (counts.library||0) + (counts.review||0);
+    if(total > 0){
+      const badge = document.createElement('span');
+      badge.className = 'count-badge';
+      badge.textContent = total > 99 ? '99+' : String(total);
+      bell.appendChild(badge);
+    }
+  }
+  // Sidebar "نظرة عامة" — the very first thing an admin sees on opening the dashboard —
+  // also carries the total so something new is obvious before drilling into any tab.
+  document.querySelectorAll('.side-link[data-tab="overview"] .tab-count-badge').forEach(el => el.remove());
+  const overviewLbl = document.querySelector('.side-link[data-tab="overview"] .lbl-text');
+  const total = (counts.payments||0) + (counts.library||0) + (counts.review||0);
+  if(overviewLbl && total > 0){
+    const badge = document.createElement('span');
+    badge.className = 'tab-count-badge';
+    badge.textContent = total > 99 ? '99+' : String(total);
+    overviewLbl.insertAdjacentElement('afterend', badge);
+  }
 }
 
 async function pollAdminAlerts(){
@@ -7473,6 +7546,31 @@ async function adminRenderOverview(area){
 /* Opens a new tab with a branded, printable "student data card" (used by the admin's
    student detail panel) and triggers the print dialog — the student's name is the page
    <title>, which browsers use as the default filename when the person picks "Save as PDF". */
+const PRINT_SHEET_CSS = `
+  @page { margin: 16mm 14mm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Tahoma', 'Segoe UI', sans-serif; color:#241536; margin:0; padding:0 6mm; }
+  .pr-header { display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #5B2A86; padding-bottom:14px; margin-bottom:22px; }
+  .pr-brand { display:flex; align-items:center; gap:10px; }
+  .pr-brand img { width:44px; height:44px; border-radius:10px; }
+  .pr-brand .name { font-size:20px; font-weight:800; color:#5B2A86; }
+  .pr-meta { text-align:left; font-size:11px; color:#777; }
+  .pr-title { text-align:center; margin: 6px 0 26px; }
+  .pr-title h1 { font-size:22px; margin:0 0 4px; color:#241536; }
+  .pr-title .sub { font-size:12.5px; color:#777; }
+  .pr-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-bottom:26px; }
+  .pr-item { border:1px solid #E4DCEF; border-radius:10px; padding:10px 14px; background:#FAF8FD; }
+  .pr-item.warn { border-color:#F0C892; background:#FDF3E7; }
+  .pl { font-size:10.5px; color:#8A7A9C; margin-bottom:3px; }
+  .pv { font-size:13.5px; font-weight:700; }
+  h2.pr-sec { font-size:14px; color:#5B2A86; border-bottom:2px solid #EDE4F9; padding-bottom:6px; margin:26px 0 12px; }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th, td { padding:8px 10px; border-bottom:1px solid #EEE; text-align:right; }
+  th { background:#F4EEFA; color:#5B2A86; font-weight:700; }
+  tr { break-inside: avoid; }
+  .pr-footer { margin-top:40px; text-align:center; font-size:10.5px; color:#999; border-top:1px solid #EEE; padding-top:10px; }
+`;
+
 function printStudentReport(u, data){
   const logoSrc = document.querySelector('.brand-mark')?.src || '';
   const win = window.open('', '_blank');
@@ -7493,29 +7591,7 @@ function printStudentReport(u, data){
     <head>
       <meta charset="UTF-8" />
       <title>${u.name || 'بيانات الطالب'}</title>
-      <style>
-        @page { margin: 20mm 16mm; }
-        * { box-sizing: border-box; }
-        body { font-family: 'Tahoma', 'Segoe UI', sans-serif; color:#241536; margin:0; padding:0 6mm; }
-        .pr-header { display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #5B2A86; padding-bottom:14px; margin-bottom:22px; }
-        .pr-brand { display:flex; align-items:center; gap:10px; }
-        .pr-brand img { width:44px; height:44px; border-radius:10px; }
-        .pr-brand .name { font-size:20px; font-weight:800; color:#5B2A86; }
-        .pr-meta { text-align:left; font-size:11px; color:#777; }
-        .pr-title { text-align:center; margin: 6px 0 26px; }
-        .pr-title h1 { font-size:22px; margin:0 0 4px; color:#241536; }
-        .pr-title .sub { font-size:12.5px; color:#777; }
-        .pr-grid { display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-bottom:26px; }
-        .pr-item { border:1px solid #E4DCEF; border-radius:10px; padding:10px 14px; background:#FAF8FD; }
-        .pr-item.warn { border-color:#F0C892; background:#FDF3E7; }
-        .pl { font-size:10.5px; color:#8A7A9C; margin-bottom:3px; }
-        .pv { font-size:13.5px; font-weight:700; }
-        h2.pr-sec { font-size:14px; color:#5B2A86; border-bottom:2px solid #EDE4F9; padding-bottom:6px; margin:26px 0 12px; }
-        table { width:100%; border-collapse:collapse; font-size:12.5px; }
-        th, td { padding:8px 10px; border-bottom:1px solid #EEE; text-align:right; }
-        th { background:#F4EEFA; color:#5B2A86; font-weight:700; }
-        .pr-footer { margin-top:40px; text-align:center; font-size:10.5px; color:#999; border-top:1px solid #EEE; padding-top:10px; }
-      </style>
+      <style>${PRINT_SHEET_CSS}</style>
     </head>
     <body>
       <div class="pr-header">
@@ -7565,22 +7641,90 @@ function printStudentReport(u, data){
   win.document.close();
 }
 
+/* Bulk print — every (filtered) user in one branded sheet, same columns for everyone, so
+   printing the whole student body gives a consistent record rather than one page per
+   student. Reuses the exact same header/footer/style as the single-student report. */
+function printAllUsersReport(list, roleLabel){
+  const logoSrc = document.querySelector('.brand-mark')?.src || '';
+  const win = window.open('', '_blank');
+  if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
+  const rows = list.map(u => {
+    const age = calcAge(u.birthDate);
+    const genderLabel = u.gender === 'male' ? 'ذكر' : (u.gender === 'female' ? 'أنثى' : '—');
+    return `
+      <tr>
+        <td>${u.name || 'بدون اسم'}</td>
+        <td>${u.email || '—'}</td>
+        <td>${u.phone || '—'}</td>
+        <td>${genderLabel}</td>
+        <td>${age !== null ? age : '—'}</td>
+        <td>${u.major || '—'}</td>
+        <td>${u.courseCount || 0}</td>
+        <td>${u.status === 'disabled' ? 'معطّل' : 'نشط'}</td>
+      </tr>
+    `;
+  }).join('');
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <title>${roleLabel || 'المستخدمون'} — لافندر</title>
+      <style>${PRINT_SHEET_CSS}</style>
+    </head>
+    <body>
+      <div class="pr-header">
+        <div class="pr-brand">
+          ${logoSrc ? `<img src="${logoSrc}" alt="لافندر" />` : ''}
+          <span class="name">لافندر</span>
+        </div>
+        <div class="pr-meta">تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' })}</div>
+      </div>
+      <div class="pr-title">
+        <h1>${roleLabel || 'المستخدمون'}</h1>
+        <div class="sub">${list.length} مستخدم</div>
+      </div>
+      <table>
+        <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الحالة</th></tr></thead>
+        <tbody>${rows || `<tr><td colspan="8" style="text-align:center;color:#888;">لا يوجد مستخدمون</td></tr>`}</tbody>
+      </table>
+      <div class="pr-footer">تم إصدار هذا التقرير آلياً من منصة لافندر</div>
+      <script>window.onload = () => { setTimeout(() => window.print(), 350); };<\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
 async function adminRenderUsers(area){
   try{
-    const snap = await getDocs(collection(db, 'users'));
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const [snap, enrollSnap] = await Promise.all([
+      getDocs(collection(db, 'users')),
+      getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))),
+    ]);
+    const courseCountByStudent = {};
+    enrollSnap.docs.forEach(d => {
+      const sid = d.data().studentId;
+      if(sid) courseCountByStudent[sid] = (courseCountByStudent[sid] || 0) + 1;
+    });
+    const users = snap.docs.map(d => ({ id: d.id, ...d.data(), courseCount: courseCountByStudent[d.id] || 0 }));
     const PAGE_SIZE = 10;
     let currentPage = 1;
     let currentRoleFilter = 'all';
     let currentSearch = '';
+    let currentView = 'list'; // 'list' (expandable cards, full detail) or 'table' (dense columns)
 
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head">
           <h3>المستخدمون</h3>
-          <div class="topbar-search" style="max-width:260px;">
-            <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.search}</span>
-            <input type="text" id="userSearch" placeholder="ابحث بالاسم أو البريد..." />
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <div class="topbar-search" style="max-width:260px;">
+              <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.search}</span>
+              <input type="text" id="userSearch" placeholder="ابحث بالاسم أو البريد..." />
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm" id="toggleUsersViewBtn">${SIDE_ICONS.layers} عرض كجدول</button>
+            <button type="button" class="btn btn-ghost btn-sm" id="printAllUsersBtn">${SIDE_ICONS.card} طباعة الكل</button>
           </div>
         </div>
         <div class="cat-tabs" id="roleFilterTabs">
@@ -7593,6 +7737,16 @@ async function adminRenderUsers(area){
         <div id="usersPagination" style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px;font-size:13px;color:var(--muted);"></div>
       </div>
     `;
+
+    document.getElementById('printAllUsersBtn').addEventListener('click', () => {
+      const roleLabels = { all:'كل المستخدمين', student:'الطلاب', instructor:'المدربون', admin:'الإداريون' };
+      printAllUsersReport(getFiltered(), roleLabels[currentRoleFilter]);
+    });
+    document.getElementById('toggleUsersViewBtn').addEventListener('click', (e) => {
+      currentView = currentView === 'list' ? 'table' : 'list';
+      e.currentTarget.innerHTML = currentView === 'list' ? `${SIDE_ICONS.layers} عرض كجدول` : `${SIDE_ICONS.layers} عرض كقائمة`;
+      renderUsersList();
+    });
 
     function getFiltered(){
       return users.filter(u => {
@@ -7615,6 +7769,43 @@ async function adminRenderUsers(area){
       if(currentPage > totalPages) currentPage = totalPages;
       const pageItems = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
 
+      if(currentView === 'table'){
+        listEl.innerHTML = `
+          <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
+            <table class="admin-data-table">
+              <thead><tr>
+                <th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th>
+                <th>التخصص</th><th>الكورسات المفعّلة</th><th>الدور</th><th>الحالة</th>
+              </tr></thead>
+              <tbody>
+                ${pageItems.map(u => {
+                  const age = calcAge(u.birthDate);
+                  const genderLabel = u.gender === 'male' ? 'ذكر' : (u.gender === 'female' ? 'أنثى' : '—');
+                  return `
+                    <tr data-open-profile="${u.id}">
+                      <td>${u.name || 'بدون اسم'}</td>
+                      <td>${u.email || '—'}</td>
+                      <td class="${u.phone ? '' : 'cell-missing'}">${u.phone || 'غير مسجّل'}</td>
+                      <td>${genderLabel}</td>
+                      <td>${age !== null ? age : '—'}</td>
+                      <td class="${u.major ? '' : 'cell-missing'}">${u.major || '—'}</td>
+                      <td>${u.courseCount || 0}</td>
+                      <td>${ROLE_LABEL[u.role] || u.role}</td>
+                      <td>${u.status === 'disabled' ? '<span class="status-badge status-rejected">معطّل</span>' : '<span class="status-badge status-approved">نشط</span>'}</td>
+                    </tr>
+                  `;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+        listEl.querySelectorAll('tr[data-open-profile]').forEach(row => {
+          row.addEventListener('click', () => {
+            const u = users.find(x => x.id === row.dataset.openProfile);
+            if(u) openStudentProfileModal(u.id, u.name || u.email, { courseIds: null, scopeLabel: 'الملف الكامل' });
+          });
+        });
+      } else {
       listEl.innerHTML = pageItems.map(u => `
         <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
           <div style="display:flex;align-items:center;gap:12px;width:100%;">
@@ -7632,6 +7823,7 @@ async function adminRenderUsers(area){
           <div id="userPanel-${u.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
         </div>
       `).join('');
+      }
 
       pagEl.innerHTML = totalPages > 1 ? `
         <button class="btn btn-ghost btn-sm" id="prevPageBtn" ${currentPage<=1?'disabled':''}>السابق</button>
@@ -8094,6 +8286,7 @@ async function adminRenderLibraryReview(area){
             await updateDoc(doc(db, 'libraryWorks', btn.dataset.approve), { status: 'approved' });
             const w = works.find(x => x.id === btn.dataset.approve); if(w) w.status = 'approved';
             renderList();
+            showSuccessToast('تم نشر العمل!', w?.title || '');
           }catch(e){ alert('تعذّر تحديث حالة العمل.'); }
         });
       });
@@ -8400,6 +8593,7 @@ async function adminRenderCourseReview(area){
             coursesCache = null;
             pending = pending.filter(c => c.id !== course.id);
             renderList();
+            if(decision === 'approve') showSuccessToast('تم قبول الكورس!', course.title || '');
           }catch(e){
             alert('تعذّر تحديث حالة الكورس.');
             btn.disabled = false;
@@ -8479,6 +8673,7 @@ async function adminRenderPayments(area){
             }
             if(en) en.status = newStatus;
             renderList(document.getElementById('paymentsSearchInput')?.value);
+            if(newStatus === 'approved') showSuccessToast('تم قبول الطلب!', en ? `${en.studentName || 'الطالب'} — ${en.courseTitle || ''}` : '');
           }catch(e){
             alert('تعذّر تحديث حالة الطلب.');
             btn.disabled = false;
