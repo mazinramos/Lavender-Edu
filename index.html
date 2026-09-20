@@ -433,7 +433,7 @@
   }
   .topbar-search{
     display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);
-    border-radius:10px;padding:8px 14px;flex:1;max-width:320px;color:var(--muted);
+    border-radius:10px;padding:8px 14px;flex:1;max-width:320px;min-width:0;color:var(--muted);
   }
   .topbar-search input{border:none;background:transparent;outline:none;font-family:inherit;font-size:13.5px;width:100%;color:var(--ink);}
   .topbar-actions{display:flex;align-items:center;gap:14px;}
@@ -485,7 +485,7 @@
   .admin-data-table{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap;}
   .admin-data-table th{
     background:var(--paper);color:var(--violet-900);font-weight:800;font-size:12px;
-    padding:10px 12px;text-align:right;border-bottom:2px solid var(--line);position:sticky;top:0;
+    padding:10px 12px;text-align:right;border-bottom:2px solid var(--line);
   }
   .admin-data-table td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--ink);}
   .admin-data-table tbody tr{cursor:pointer;transition:background .15s;}
@@ -773,6 +773,14 @@
   .widget-grid > .widget:nth-child(6){animation-delay:.27s;}
   .widget-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .widget-head h3{font-size:14.5px;font-weight:700;color:var(--violet-900);margin:0;}
+  /* Classic flexbox trap: a flex item's default min-width is `auto`, which means it refuses
+     to shrink below its content's natural width even inside a wrapping flex row — so a search
+     box or button group can silently overflow its column and visually sit on top of whatever
+     is below it instead of wrapping cleanly. Every widget-head (and the toolbars/tab rows
+     that follow the same "title + controls" pattern all over the admin panels) gets this
+     safety net so that never happens again. */
+  .widget-head > *{min-width:0;}
+  .cat-tabs, .search-modal-filters{min-width:0;}
   .widget-2{grid-column:span 2;}
   .widget-4{grid-column:span 4;}
   .widget-span-3{grid-column:span 3;}
@@ -1855,7 +1863,7 @@ async function renderHome(){
       <div class="container">
         <div class="section-head">
           <h2>مجالات تقدر تبدأ فيها اليوم</h2>
-          <p>كل مجال مصمم عشان يوصلك لمهارة حقيقية، مش مجرد فيديوهات متفرقة.</p>
+          <p>كل مجال مصمم ليوصلك إلى مهارة حقيقية، وليس مجرد فيديوهات متفرقة.</p>
         </div>
         <div class="cat-grid" id="catGrid">
           <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
@@ -1867,7 +1875,7 @@ async function renderHome(){
       <div class="container">
         <div class="section-head" style="margin-bottom:18px;">
           <h2>استكشف أكثر</h2>
-          <p>مساحات إضافية على المنصة، مش تابعة لكورس معيّن.</p>
+          <p>مساحات إضافية على المنصة، غير تابعة لكورس معيّن.</p>
         </div>
         <div class="cat-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;">
           <a href="#/archive" class="cat-tile">
@@ -1934,7 +1942,7 @@ async function renderHome(){
         <div>
           <div class="section-head" style="margin-bottom:0;">
             <h2>تعلّم في وقتك وعلى راحتك</h2>
-            <p>سواء على اللابتوب أو التليفون، المحتوى بتاعك متاح ليك وقت ما تكون جاهز.</p>
+            <p>سواء على الحاسوب أو الهاتف، محتواك متاح لك في الوقت الذي يناسبك.</p>
           </div>
           <div class="terms-features">
             <div class="terms-feature">
@@ -2611,6 +2619,19 @@ function courseRootCategoryId(c){
   return c.parentCategoryId || c.categoryId || null;
 }
 
+/* An instructor's "field" for display purposes: their own stated specialty if they set one,
+   otherwise the actual domain(s) their published courses sit under — computed live from the
+   courses themselves rather than a separate label that can drift out of sync with reality. */
+function instructorDomainLabel(u, cats){
+  if(u.specialty) return u.specialty;
+  const courses = u.coursesTaught || [];
+  if(courses.length === 0) return null;
+  const rootIds = [...new Set(courses.map(c => courseRootCategoryId(c)).filter(Boolean))];
+  const names = rootIds.map(id => cats.find(c => c.id === id)?.name).filter(Boolean);
+  const uniqueNames = [...new Set(names)];
+  return uniqueNames.length ? uniqueNames.join(' · ') : null;
+}
+
 /* Rotating icon/tint pool so any admin-created root category automatically gets a distinct,
    on-brand look without needing per-category configuration — same visual system as the old
    hardcoded DOMAINS list (violet tints, stroke icons), just generated instead of hardcoded. */
@@ -2883,7 +2904,7 @@ async function renderArchiveRoom(){
       <div class="container">
         <div class="section-head">
           <h2>غرفة الأرشيف</h2>
-          <p>محاضرات عامة للمراجعة — مش تابعة لكورس معيّن.</p>
+          <p>محاضرات عامة للمراجعة — غير تابعة لكورس معيّن.</p>
         </div>
         <div id="archiveListArea"><div class="empty-state">جارٍ التحميل...</div></div>
       </div>
@@ -3318,7 +3339,7 @@ async function renderCourseDetail(courseId){
   ` : '';
 
   const curriculumHTML = modules.length === 0
-    ? `<div class="empty-state" style="padding:24px 0;">لسه ما اتضاف محتوى لهذا الكورس.</div>`
+    ? `<div class="empty-state" style="padding:24px 0;">لم يُضَف محتوى لهذا الكورس بعد.</div>`
     : modules.map(m => {
         const modLessons = lessons.filter(l => l.moduleId === m.id);
         if(modLessons.length === 0) return '';
@@ -3612,7 +3633,7 @@ const CM_STAR_LABELS = { 1:'ضعيف', 2:'مقبول', 3:'جيد', 4:'جيد ج�
 async function openCourseReviewModal(course){
   const overlay = openCourseModal({
     title: 'قيّم هذا الكورس',
-    subtitle: 'رأيك بيساعد طلاب تانيين يختاروا صح',
+    subtitle: 'رأيك يساعد طلاباً آخرين على الاختيار الصحيح',
     headIcon: SIDE_ICONS.starFilled,
     bodyHTML: `<div id="cmReviewBody" class="cm-empty">جارٍ التحميل...</div>`,
   });
@@ -3716,7 +3737,7 @@ async function openCourseStudentsModal(course){
     const students = snap.docs.map(d => d.data()).filter(s => s.studentId);
     if(!document.getElementById('activeCourseModal')) return;
     if(students.length === 0){
-      body.innerHTML = `<div class="cm-empty">لسه ما فيه طلاب تانيين مشتركين في الكورس ده.</div>`;
+      body.innerHTML = `<div class="cm-empty">لا يوجد طلاب آخرون مشتركون في هذا الكورس.</div>`;
       return;
     }
     body.className = '';
@@ -3744,7 +3765,7 @@ async function openCourseStudentsModal(course){
 function openCourseUnitsModal(course, modules, lessons){
   let bodyHTML;
   if(modules.length === 0){
-    bodyHTML = `<div class="cm-empty">لسه ما اتضافت وحدات لهذا الكورس.</div>`;
+    bodyHTML = `<div class="cm-empty">لم تُضَف وحدات لهذا الكورس بعد.</div>`;
   }else{
     bodyHTML = modules.map((m, mi) => {
       const modLessons = lessons.filter(l => l.moduleId === m.id).sort((a,b) => (a.order||0)-(b.order||0));
@@ -3760,7 +3781,7 @@ function openCourseUnitsModal(course, modules, lessons){
               <span style="flex:1;">${l.title}</span>
               <span style="font-size:11px;color:var(--muted);flex-shrink:0;">${LESSON_TYPE_LABEL[l.type] || ''}</span>
             </div>
-          `).join('') : `<div class="cm-empty" style="padding:10px 0;">لسه ما فيه محاضرات في هذه الوحدة.</div>`}
+          `).join('') : `<div class="cm-empty" style="padding:10px 0;">لا توجد محاضرات في هذه الوحدة بعد.</div>`}
         </div>
       `;
     }).join('');
@@ -3778,7 +3799,7 @@ function openCourseLessonsModal(course, modules, lessons){
   const moduleTitleById = Object.fromEntries(modules.map(m => [m.id, m.title]));
   let bodyHTML;
   if(lessons.length === 0){
-    bodyHTML = `<div class="cm-empty">لسه ما اتضافت محاضرات لهذا الكورس.</div>`;
+    bodyHTML = `<div class="cm-empty">لم تُضَف محاضرات لهذا الكورس بعد.</div>`;
   }else{
     const order = ['drive','youtube','video','pdf','file','link','text'];
     const groups = {};
@@ -3853,7 +3874,7 @@ async function fetchStudentAttendance(studentId, courseIds){
 function attendanceBlockHTML(summary){
   const courseKeys = Object.keys(summary.byCourse);
   if(courseKeys.length === 0){
-    return `<div class="cm-empty" style="padding:16px 0;">لسه ما فتح أي درس — لا يوجد سجل حضور.</div>`;
+    return `<div class="cm-empty" style="padding:16px 0;">لم يتم فتح أي درس بعد — لا يوجد سجل حضور.</div>`;
   }
   return courseKeys.map(key => {
     const c = summary.byCourse[key];
@@ -3947,7 +3968,7 @@ async function loadMyLibraryWorks(){
     const works = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       .sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
     if(works.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:16px 0;">لسه ما أضفت أي عمل في المكتبة.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:16px 0;">لم تُضِف أي عمل في المكتبة بعد.</div>`;
       return;
     }
     area.innerHTML = works.map(w => {
@@ -3988,11 +4009,13 @@ async function renderInstructorProfile(instructorId){
     return;
   }
 
-  const [coursesSnap, ratingData] = await Promise.all([
+  const [coursesSnap, ratingData, cats] = await Promise.all([
     getDocs(query(collection(db, 'courses'), where('instructorId','==', instructorId))),
     fetchReviewsFor('instructor', instructorId),
+    fetchCategories(),
   ]);
   const courses = coursesSnap.docs.map(d => ({ id: d.id, ...d.data() })).filter(isCourseApproved);
+  const domainLabel = instructorDomainLabel({ ...instructor, coursesTaught: courses }, cats);
 
   const studentsCounts = await Promise.all(courses.map(c =>
     getCountFromServer(query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved'))).catch(()=>null)
@@ -4006,7 +4029,7 @@ async function renderInstructorProfile(instructorId){
           <div class="avatar-circle" style="width:76px;height:76px;font-size:28px;background:#fff;color:var(--violet-800);">${(instructor.name||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
           <div>
             <h2 style="margin:0 0 4px;font-size:24px;color:#fff;">${instructor.name || 'مدرب'}</h2>
-            ${instructor.specialty ? `<div style="opacity:0.85;font-size:14px;">${instructor.specialty}</div>` : ''}
+            ${domainLabel ? `<div style="opacity:0.85;font-size:14px;">${domainLabel}</div>` : ''}
             <div class="hero-meta-row" style="margin-top:10px;">
               ${ratingData.count ? `<span>${starRowHTML(ratingData.avg)} ${ratingData.avg.toFixed(1)} (${ratingData.count})</span>` : `<span>لا توجد تقييمات بعد</span>`}
               <span>${SIDE_ICONS.book} ${courses.length} كورس</span>
@@ -4178,7 +4201,7 @@ function renderCheckoutStatusPage(course, enrollment, message, waFallback){
         <p style="color:var(--muted);">${message}</p>
         ${waFallback ? `
           <div style="text-align:right;margin-top:18px;">
-            <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">ما فتح واتساب تلقائي عندك؟ اضغط هنا:</p>
+            <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">لم يفتح واتساب تلقائياً لديك؟ اضغط هنا:</p>
             <button class="notify-btn" id="statusWaBtn">${SIDE_ICONS.chatBubble} فتح واتساب الإدارة</button>
             <div class="copy-box">
               <span>نص الرسالة الجاهز</span>
@@ -4231,7 +4254,7 @@ async function renderCheckoutStep1(course){
         ${isFree ? '' : `
           <h4 style="font-size:14px;color:var(--violet-900);margin:0 0 10px;">اختر طريقة الدفع</h4>
           ${methods.length === 0
-            ? `<div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">لسه الإدارة ما أضافت وسائل دفع — تواصل معانا مباشرة لإتمام الاشتراك.</div>`
+            ? `<div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">لم تُضِف الإدارة وسائل دفع بعد — تواصل معنا مباشرة لإتمام الاشتراك.</div>`
             : `<div id="paymentMethodsList">
                 ${methods.map((m,i) => `
                   <label class="payment-method-option ${i===0?'selected':''}" data-id="${m.id}">
@@ -5198,7 +5221,7 @@ async function renderLearnRoom(courseId){
   if(!authorized){
     app.innerHTML = `
       <div class="locked-box">
-        <h3 style="color:var(--violet-900);margin-bottom:10px;">لسه ما اتفعّل وصولك لهذا الكورس</h3>
+        <h3 style="color:var(--violet-900);margin-bottom:10px;">لم يتم تفعيل وصولك لهذا الكورس بعد</h3>
         <p style="margin-bottom:20px;">لازم تسجّل وتنتظر موافقة الإدارة على دفعك أولاً.</p>
         <a href="#/course/${course.id}" class="btn btn-primary">الذهاب لصفحة الكورس</a>
       </div>
@@ -6463,7 +6486,7 @@ async function manageRenderLectures(area, course){
         <div class="field" style="margin-bottom:0;">
           <label>رابط المحاضرة (Zoom / Google Meet)</label>
           <input type="url" id="lecLink" required placeholder="https://..." />
-          <div class="field-hint">الرابط محفوظ بشكل منفصل ومقفول — الزوار وغير المشتركين بيشوفوا التاريخ والوقت بس، مش الرابط.</div>
+          <div class="field-hint">الرابط محفوظ بشكل منفصل ومقفل — يرى الزوار وغير المشتركين التاريخ والوقت فقط، وليس الرابط.</div>
         </div>
         <button type="submit" class="btn btn-primary" style="align-self:flex-start;">إضافة محاضرة</button>
       </form>
@@ -6745,7 +6768,7 @@ async function loadMyLearningCards(){
     const enrollSnap = await getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid), where('status','==','approved')));
     const enrollments = enrollSnap.docs.map(d => d.data());
     if(enrollments.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك كورسات مفعّلة — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات</a>.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لا توجد لديك كورسات مفعّلة — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات</a>.</div>`;
       return;
     }
 
@@ -6807,7 +6830,7 @@ async function loadStudentAgenda(){
     const enrollSnap = await getDocs(query(collection(db,'enrollments'), where('studentId','==',currentUser.uid), where('status','==','approved')));
     const courseIds = [...new Set(enrollSnap.docs.map(d => d.data().courseId))];
     if(courseIds.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك كورسات مفعّلة.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لا توجد لديك كورسات مفعّلة.</div>`;
       return;
     }
     const upcoming = await fetchUpcomingLectures(courseIds);
@@ -6830,7 +6853,7 @@ async function loadMyCertificates(){
     const numEl = document.getElementById('certCountNum');
     if(numEl) numEl.textContent = certs.length;
     if(certs.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك شهادات صادرة.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لا توجد لديك شهادات صادرة.</div>`;
       return;
     }
     area.innerHTML = certs.map(c => `
@@ -7104,7 +7127,7 @@ async function renderMyExamResults(){
     const snap = await getDocs(query(collection(db, 'examResults'), where('studentId','==', currentUser.uid)));
     const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if(results.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما دخلت أي امتحان.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لم تدخل أي امتحان بعد.</div>`;
       return;
     }
 
@@ -7316,7 +7339,7 @@ async function loadInstructorCourses(){
     const snap = await getDocs(query(collection(db, 'courses'), where('instructorId', '==', currentUser.uid)));
     const courses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     if(courses.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما أنشأت أي كورس — اضغط "كورس جديد" فوق.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لم تُنشئ أي كورس بعد — اضغط "كورس جديد" فوق.</div>`;
       if(statArea) statArea.innerHTML = `<div class="widget widget-4"><div class="empty-state">لا توجد بيانات بعد.</div></div>`;
       return;
     }
@@ -7421,7 +7444,7 @@ async function loadInstructorStudents(){
     const coursesSnap = await getDocs(query(collection(db, 'courses'), where('instructorId','==', currentUser.uid)));
     const courseIds = coursesSnap.docs.map(d => d.id);
     if(courseIds.length === 0){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما عندك كورسات.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لا توجد لديك كورسات.</div>`;
       return;
     }
     let enrollDocs = [];
@@ -7664,7 +7687,7 @@ function printStudentReport(u, data){
 
 /* Same branded single-page report as printStudentReport, for an instructor instead —
    their own info grid plus the courses they teach, students taught, revenue and rating. */
-function printInstructorReport(u, data){
+function printInstructorReport(u, data, cats){
   const logoSrc = document.querySelector('.brand-mark')?.src || '';
   const win = window.open('', '_blank');
   if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
@@ -7702,7 +7725,7 @@ function printInstructorReport(u, data){
         ${item('الاسم الكامل', u.name || '—')}
         ${item('البريد الإلكتروني', u.email || '—')}
         ${item('رقم الهاتف', u.phone || 'غير مسجّل', !u.phone)}
-        ${item('التخصص', u.specialty || 'غير محدد', !u.specialty)}
+        ${item('التخصص / المجال', instructorDomainLabel(u, cats) || 'غير محدد', !instructorDomainLabel(u, cats))}
         ${item('تاريخ الانضمام', data.joinedDate)}
         ${item('حالة الحساب', u.status === 'disabled' ? 'معطّل' : 'نشط')}
       </div>
@@ -7732,7 +7755,7 @@ function printInstructorReport(u, data){
 /* Bulk print — every (filtered) user in one branded sheet, same columns for everyone, so
    printing the whole student body gives a consistent record rather than one page per
    student. Reuses the exact same header/footer/style as the single-student report. */
-function printAllUsersReport(list, roleLabel, isInstructorView){
+function printAllUsersReport(list, roleLabel, isInstructorView, cats){
   const logoSrc = document.querySelector('.brand-mark')?.src || '';
   const win = window.open('', '_blank');
   if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
@@ -7747,7 +7770,7 @@ function printAllUsersReport(list, roleLabel, isInstructorView){
           <td>${u.name || 'بدون اسم'}</td>
           <td>${u.email || '—'}</td>
           <td>${u.phone || '—'}</td>
-          <td>${u.specialty || '—'}</td>
+          <td>${instructorDomainLabel(u, cats) || '—'}</td>
           <td>${coursesLabel}</td>
           <td>${joinedDateOf(u)}</td>
           <td>${u.status === 'disabled' ? 'معطّل' : 'نشط'}</td>
@@ -7806,10 +7829,11 @@ function printAllUsersReport(list, roleLabel, isInstructorView){
 
 async function adminRenderUsers(area){
   try{
-    const [snap, enrollSnap, allCourses] = await Promise.all([
+    const [snap, enrollSnap, allCourses, cats] = await Promise.all([
       getDocs(collection(db, 'users')),
       getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))),
       fetchAllCoursesAdmin(),
+      fetchCategories(),
     ]);
     const courseCountByStudent = {};
     enrollSnap.docs.forEach(d => {
@@ -7858,7 +7882,7 @@ async function adminRenderUsers(area){
 
     document.getElementById('printAllUsersBtn').addEventListener('click', () => {
       const roleLabels = { all:'كل المستخدمين', student:'الطلاب', instructor:'المدربون', admin:'الإداريون' };
-      printAllUsersReport(getFiltered(), roleLabels[currentRoleFilter], currentRoleFilter === 'instructor');
+      printAllUsersReport(getFiltered(), roleLabels[currentRoleFilter], currentRoleFilter === 'instructor', cats);
     });
     document.getElementById('toggleUsersViewBtn').addEventListener('click', (e) => {
       currentView = currentView === 'list' ? 'table' : 'list';
@@ -7912,7 +7936,7 @@ async function adminRenderUsers(area){
                         <td>${u.name || 'بدون اسم'}</td>
                         <td>${u.email || '—'}</td>
                         <td class="${u.phone ? '' : 'cell-missing'}">${u.phone || 'غير مسجّل'}</td>
-                        <td class="${u.specialty ? '' : 'cell-missing'}">${u.specialty || 'غير محدد'}</td>
+                        <td class="${instructorDomainLabel(u, cats) ? '' : 'cell-missing'}">${instructorDomainLabel(u, cats) || 'غير محدد'}</td>
                         <td style="white-space:normal;max-width:320px;">${coursesLabel} ${u.coursesTaught.length ? `<span class="tab-count-badge" style="margin-inline-start:6px;">${u.coursesTaught.length}</span>` : ''}</td>
                         <td>${joinedDateOf(u)}</td>
                         <td>${statusCell}</td>
@@ -7949,7 +7973,7 @@ async function adminRenderUsers(area){
       listEl.innerHTML = pageItems.map(u => {
         const isInstructor = u.role === 'instructor';
         const line2 = isInstructor
-          ? [u.specialty || 'بدون تخصص محدد', `${u.coursesTaught.length} كورس`].join(' · ')
+          ? [instructorDomainLabel(u, cats) || 'بدون تخصص محدد', `${u.coursesTaught.length} كورس`].join(' · ')
           : (u.email || '');
         const line3 = isInstructor
           ? (u.coursesTaught.length ? u.coursesTaught.map(c => c.title).join('، ') : 'لا يدرّس أي كورس بعد') + ` — منضم منذ ${joinedDateOf(u)}`
@@ -8049,7 +8073,7 @@ async function adminRenderUsers(area){
               <div class="info-item"><div class="il">الاسم الكامل</div><div class="iv">${u.name || '—'}</div></div>
               <div class="info-item"><div class="il">البريد الإلكتروني</div><div class="iv">${u.email || '—'}</div></div>
               <div class="info-item ${u.phone ? '' : 'warn'}"><div class="il">رقم الهاتف</div><div class="iv">${u.phone || 'غير مسجّل'}</div></div>
-              <div class="info-item ${u.specialty ? '' : 'warn'}"><div class="il">التخصص</div><div class="iv">${u.specialty || 'غير محدد'}</div></div>
+              <div class="info-item ${instructorDomainLabel(u, cats) ? '' : 'warn'}"><div class="il">التخصص / المجال</div><div class="iv">${instructorDomainLabel(u, cats) || 'غير محدد'}</div></div>
               <div class="info-item"><div class="il">تاريخ الانضمام</div><div class="iv">${joinedDate}</div></div>
               <div class="info-item"><div class="il">حالة الحساب</div><div class="iv">${u.status === 'disabled' ? 'معطّل' : 'نشط'}</div></div>
             </div>
@@ -8065,7 +8089,7 @@ async function adminRenderUsers(area){
             </div>
           `;
           panel.querySelector('[data-print-instructor]')?.addEventListener('click', () => {
-            printInstructorReport(u, { courses, totalStudents, totalRevenue, ratingData, joinedDate });
+            printInstructorReport(u, { courses, totalStudents, totalRevenue, ratingData, joinedDate }, cats);
           });
         } else if(u.role === 'student'){
           const [enrollSnap, certSnap, resultsSnap, attendance] = await Promise.all([
@@ -8193,7 +8217,10 @@ async function adminRenderCategories(area){
       </div>
       <div class="widget widget-4">
         <div class="widget-head"><h3>الأقسام والمجالات الفرعية</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">كل قسم رئيسي ممكن يحتوي على أكتر من مجال فرعي. استخدم زر "+" جنب أي قسم لإضافة مجال فرعي تابع له.</p>
+        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">
+          كل مجال مستقل (مثل "المجال الطبي" أو "التعليق الصوتي") يجب إضافته من نموذج "إضافة قسم رئيسي جديد" فوق —
+          وليس من زر "+" هنا. زر "+" بجانب أي قسم يضيف <strong>مجالاً فرعياً تابعاً له</strong> فقط (يظهر تحته، وليس كقسم مستقل بذاته).
+        </p>
         <div id="categoriesList"></div>
       </div>
     `;
@@ -8227,6 +8254,7 @@ async function adminRenderCategories(area){
                       <div class="t1">${s.name || ''}</div>
                       <div class="t2">${s.description || ''}</div>
                     </div>
+                    <button type="button" class="icon-action" data-make-root="${s.id}" title="فصله كمجال رئيسي مستقل">${SIDE_ICONS.layers}</button>
                     <button type="button" class="icon-action danger" data-id="${s.id}" title="حذف المجال الفرعي">${SIDE_ICONS.trash}</button>
                   </div>
                 `).join('')}
@@ -8268,6 +8296,26 @@ async function adminRenderCategories(area){
       listEl.querySelectorAll('button[data-add-sub]').forEach(btn => {
         btn.addEventListener('click', () => {
           document.getElementById(`addSubForm-${btn.dataset.addSub}`)?.classList.toggle('hidden');
+        });
+      });
+
+      // Fixes the exact mix-up this button exists for: a category that should have been its
+      // own independent domain but got added as a sub-category under another one instead
+      // (easy to do by mistake — clicking "+" next to a root, instead of the main "add root
+      // category" form above). Clearing parentId is all that separates the two.
+      listEl.querySelectorAll('button[data-make-root]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if(!confirm('فصل هذا المجال كقسم رئيسي مستقل؟ سيظهر بعد ذلك كمجال منفصل في الصفحة الرئيسية.')) return;
+          try{
+            await updateDoc(doc(db, 'categories', btn.dataset.makeRoot), { parentId: null });
+            const c = cats.find(x => x.id === btn.dataset.makeRoot);
+            if(c) c.parentId = null;
+            categoriesCache = null;
+            renderList();
+            showSuccessToast('تم فصله كقسم رئيسي!', c?.name || '');
+          }catch(e){
+            alert('تعذّر تحويل المجال.');
+          }
         });
       });
 
@@ -8497,8 +8545,8 @@ async function adminRenderCourses(area){
           <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
             <div style="width:40px;height:40px;border-radius:10px;background:var(--amber-500);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">!</div>
             <div style="flex:1;min-width:220px;">
-              <div style="font-weight:800;color:var(--violet-900);margin-bottom:2px;">في ${legacyCourses.length} كورس قديم مش ظاهر للطلاب</div>
-              <div style="font-size:12.5px;color:var(--muted);">هذه الكورسات اتعملت قبل ما يكون في نظام "حالة الكورس" (معتمد/تحت المراجعة)، فما عندها حالة محددة — فمش بتظهر في الموقع رغم إنها موجودة فعليًا: ${legacyCourses.map(c => c.title).join('، ')}</div>
+              <div style="font-weight:800;color:var(--violet-900);margin-bottom:2px;">يوجد ${legacyCourses.length} كورس قديم غير ظاهر للطلاب</div>
+              <div style="font-size:12.5px;color:var(--muted);">تم إنشاء هذه الكورسات قبل إضافة نظام "حالة الكورس" (معتمد / قيد المراجعة)، ولذلك لا توجد لها حالة محددة، فهي لا تظهر في الموقع رغم وجودها فعلياً: ${legacyCourses.map(c => c.title).join('، ')}</div>
             </div>
             <button type="button" class="btn btn-primary btn-sm" id="fixLegacyCoursesBtn">تفعيلها كلها الآن</button>
           </div>
@@ -8822,7 +8870,7 @@ async function adminRenderPayments(area){
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head"><h3>طلبات الاشتراك والدفع</h3></div>
-        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" يعني الطالب لسه ما ضغط "تم الدفع" — منتظرين منه، مش من الإدارة. التحقق من الدفع بيتم عبر واتساب مباشرة مع الطالب، مش برفع صورة إثبات. كل طالب بيوصله رقم طلب مميز يكتبه في ملاحظة التحويل — استخدمه هنا للبحث ومطابقة الإشعار.</p>
+        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" تعني أن الطالب لم يضغط بعد على "تم الدفع" — في انتظاره هو، وليس الإدارة. يتم التحقق من الدفع عبر واتساب مباشرة مع الطالب، وليس برفع صورة إثبات. يصل كل طالب برقم طلب مميز يكتبه في ملاحظة التحويل — استخدمه هنا للبحث ومطابقة الإشعار.</p>
         <div class="field" style="margin-bottom:14px;max-width:320px;">
           <input type="text" id="paymentsSearchInput" placeholder="بحث برقم الطلب، اسم الطالب، أو الكورس..." />
         </div>
@@ -9754,7 +9802,7 @@ async function loadMyEnrollments(){
     const q = query(collection(db, 'enrollments'), where('studentId', '==', currentUser.uid));
     const snap = await getDocs(q);
     if(snap.empty){
-      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لسه ما سجّلت في أي كورس — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات</a>.</div>`;
+      area.innerHTML = `<div class="empty-state" style="padding:20px 0;">لم تسجّل في أي كورس بعد — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات</a>.</div>`;
       return;
     }
     area.innerHTML = snap.docs.map(d => {
