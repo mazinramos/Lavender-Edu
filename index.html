@@ -2499,15 +2499,36 @@ async function fetchCategories(){
   return categoriesCache;
 }
 
+/* Public/student-facing course list — only ever needs courses visible to everyone, and
+   under real security rules a signed-out or student request for the WHOLE unfiltered
+   `courses` collection is denied outright the moment even one draft/pending course exists
+   (Firestore rejects a list query entirely if any document it could return would fail the
+   rule — it doesn't silently drop the disallowed ones). Filtering by status in the query
+   itself is what makes this actually work under enforced rules, not just in test mode. */
 async function fetchCourses(){
   if(coursesCache) return coursesCache;
   try{
-    const snap = await getDocs(collection(db, 'courses'));
+    const snap = await getDocs(query(collection(db, 'courses'), where('status','==','approved')));
     coursesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   }catch(e){
     coursesCache = [];
   }
   return coursesCache;
+}
+
+/* Admin-only equivalent — drafts, pending-review and rejected courses included. Safe to
+   fetch unfiltered here because an admin's own read access isn't gated by status. Kept as
+   a separate cache from fetchCourses() so the two never contaminate each other. */
+let allCoursesAdminCache = null;
+async function fetchAllCoursesAdmin(){
+  if(allCoursesAdminCache) return allCoursesAdminCache;
+  try{
+    const snap = await getDocs(collection(db, 'courses'));
+    allCoursesAdminCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }catch(e){
+    allCoursesAdminCache = [];
+  }
+  return allCoursesAdminCache;
 }
 
 /* Renders a 5-star row for a given average rating (full/empty stars, kept simple and honest — no fabricated halves) */
@@ -7531,7 +7552,7 @@ async function adminRenderOverview(area){
       { label:'مدربون', value: instructorCount, color:'#3B6FBF' },
     ]);
 
-    const courses = await fetchCourses();
+    const courses = await fetchAllCoursesAdmin();
     const byCategory = {};
     courses.forEach(c => {
       const key = c.categoryName || 'بدون قسم';
@@ -7641,14 +7662,98 @@ function printStudentReport(u, data){
   win.document.close();
 }
 
-/* Bulk print — every (filtered) user in one branded sheet, same columns for everyone, so
-   printing the whole student body gives a consistent record rather than one page per
-   student. Reuses the exact same header/footer/style as the single-student report. */
-function printAllUsersReport(list, roleLabel){
+/* Same branded single-page report as printStudentReport, for an instructor instead —
+   their own info grid plus the courses they teach, students taught, revenue and rating. */
+function printInstructorReport(u, data){
   const logoSrc = document.querySelector('.brand-mark')?.src || '';
   const win = window.open('', '_blank');
   if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
+
+  const item = (label, value, warn) => `
+    <div class="pr-item ${warn ? 'warn' : ''}"><div class="pl">${label}</div><div class="pv">${value}</div></div>
+  `;
+  const coursesRows = data.courses.length
+    ? data.courses.map(c => `
+        <tr><td>${c.title}</td><td>${COURSE_STATUS_LABEL[c.status||'approved'] || c.status}</td></tr>
+      `).join('')
+    : `<tr><td colspan="2" style="text-align:center;color:#888;">لا توجد كورسات</td></tr>`;
+
+  win.document.write(`
+    <!DOCTYPE html>
+    <html lang="ar" dir="rtl">
+    <head>
+      <meta charset="UTF-8" />
+      <title>${u.name || 'بيانات المدرب'}</title>
+      <style>${PRINT_SHEET_CSS}</style>
+    </head>
+    <body>
+      <div class="pr-header">
+        <div class="pr-brand">
+          ${logoSrc ? `<img src="${logoSrc}" alt="لافندر" />` : ''}
+          <span class="name">لافندر</span>
+        </div>
+        <div class="pr-meta">تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' })}</div>
+      </div>
+      <div class="pr-title">
+        <h1>بطاقة بيانات المدرب</h1>
+        <div class="sub">${u.name || ''}</div>
+      </div>
+      <div class="pr-grid">
+        ${item('الاسم الكامل', u.name || '—')}
+        ${item('البريد الإلكتروني', u.email || '—')}
+        ${item('رقم الهاتف', u.phone || 'غير مسجّل', !u.phone)}
+        ${item('التخصص', u.specialty || 'غير محدد', !u.specialty)}
+        ${item('تاريخ الانضمام', data.joinedDate)}
+        ${item('حالة الحساب', u.status === 'disabled' ? 'معطّل' : 'نشط')}
+      </div>
+
+      <h2 class="pr-sec">ملخص النشاط</h2>
+      <div class="pr-grid">
+        ${item('عدد الكورسات', data.courses.length)}
+        ${item('إجمالي الطلاب', data.totalStudents)}
+        ${item('إجمالي الإيرادات', data.totalRevenue.toLocaleString('ar') + ' ج.س')}
+        ${item('التقييم', data.ratingData.count ? data.ratingData.avg.toFixed(1) + ' (' + data.ratingData.count + ' تقييم)' : 'بدون تقييم بعد')}
+      </div>
+
+      <h2 class="pr-sec">الكورسات التي يدرّسها</h2>
+      <table>
+        <thead><tr><th>الكورس</th><th>الحالة</th></tr></thead>
+        <tbody>${coursesRows}</tbody>
+      </table>
+
+      <div class="pr-footer">تم إصدار هذه البطاقة آلياً من منصة لافندر</div>
+      <script>window.onload = () => { setTimeout(() => window.print(), 350); };<\/script>
+    </body>
+    </html>
+  `);
+  win.document.close();
+}
+
+/* Bulk print — every (filtered) user in one branded sheet, same columns for everyone, so
+   printing the whole student body gives a consistent record rather than one page per
+   student. Reuses the exact same header/footer/style as the single-student report. */
+function printAllUsersReport(list, roleLabel, isInstructorView){
+  const logoSrc = document.querySelector('.brand-mark')?.src || '';
+  const win = window.open('', '_blank');
+  if(!win){ alert('يرجى السماح بالنوافذ المنبثقة عشان تقدر تطبع التقرير.'); return; }
+  const joinedDateOf = (u) => u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }) : '—';
   const rows = list.map(u => {
+    if(isInstructorView){
+      const coursesLabel = (u.coursesTaught && u.coursesTaught.length)
+        ? u.coursesTaught.map(c => c.title).join('، ')
+        : '—';
+      return `
+        <tr>
+          <td>${u.name || 'بدون اسم'}</td>
+          <td>${u.email || '—'}</td>
+          <td>${u.phone || '—'}</td>
+          <td>${u.specialty || '—'}</td>
+          <td>${coursesLabel}</td>
+          <td>${joinedDateOf(u)}</td>
+          <td>${u.status === 'disabled' ? 'معطّل' : 'نشط'}</td>
+        </tr>
+      `;
+    }
     const age = calcAge(u.birthDate);
     const genderLabel = u.gender === 'male' ? 'ذكر' : (u.gender === 'female' ? 'أنثى' : '—');
     return `
@@ -7664,6 +7769,9 @@ function printAllUsersReport(list, roleLabel){
       </tr>
     `;
   }).join('');
+  const headRow = isInstructorView
+    ? `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>التخصص</th><th>الكورسات التي يدرّسها</th><th>تاريخ الانضمام</th><th>الحالة</th>`
+    : `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الحالة</th>`;
   win.document.write(`
     <!DOCTYPE html>
     <html lang="ar" dir="rtl">
@@ -7685,7 +7793,7 @@ function printAllUsersReport(list, roleLabel){
         <div class="sub">${list.length} مستخدم</div>
       </div>
       <table>
-        <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الحالة</th></tr></thead>
+        <thead><tr>${headRow}</tr></thead>
         <tbody>${rows || `<tr><td colspan="8" style="text-align:center;color:#888;">لا يوجد مستخدمون</td></tr>`}</tbody>
       </table>
       <div class="pr-footer">تم إصدار هذا التقرير آلياً من منصة لافندر</div>
@@ -7698,16 +7806,26 @@ function printAllUsersReport(list, roleLabel){
 
 async function adminRenderUsers(area){
   try{
-    const [snap, enrollSnap] = await Promise.all([
+    const [snap, enrollSnap, allCourses] = await Promise.all([
       getDocs(collection(db, 'users')),
       getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))),
+      fetchAllCoursesAdmin(),
     ]);
     const courseCountByStudent = {};
     enrollSnap.docs.forEach(d => {
       const sid = d.data().studentId;
       if(sid) courseCountByStudent[sid] = (courseCountByStudent[sid] || 0) + 1;
     });
-    const users = snap.docs.map(d => ({ id: d.id, ...d.data(), courseCount: courseCountByStudent[d.id] || 0 }));
+    const coursesByInstructor = {};
+    allCourses.forEach(c => {
+      if(!c.instructorId) return;
+      (coursesByInstructor[c.instructorId] = coursesByInstructor[c.instructorId] || []).push(c);
+    });
+    const users = snap.docs.map(d => ({
+      id: d.id, ...d.data(),
+      courseCount: courseCountByStudent[d.id] || 0,
+      coursesTaught: coursesByInstructor[d.id] || [],
+    }));
     const PAGE_SIZE = 10;
     let currentPage = 1;
     let currentRoleFilter = 'all';
@@ -7740,7 +7858,7 @@ async function adminRenderUsers(area){
 
     document.getElementById('printAllUsersBtn').addEventListener('click', () => {
       const roleLabels = { all:'كل المستخدمين', student:'الطلاب', instructor:'المدربون', admin:'الإداريون' };
-      printAllUsersReport(getFiltered(), roleLabels[currentRoleFilter]);
+      printAllUsersReport(getFiltered(), roleLabels[currentRoleFilter], currentRoleFilter === 'instructor');
     });
     document.getElementById('toggleUsersViewBtn').addEventListener('click', (e) => {
       currentView = currentView === 'list' ? 'table' : 'list';
@@ -7769,16 +7887,38 @@ async function adminRenderUsers(area){
       if(currentPage > totalPages) currentPage = totalPages;
       const pageItems = filtered.slice((currentPage-1)*PAGE_SIZE, currentPage*PAGE_SIZE);
 
+      const joinedDateOf = (u) => u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }) : '—';
+
       if(currentView === 'table'){
+        const isInstructorView = currentRoleFilter === 'instructor';
         listEl.innerHTML = `
           <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;">
             <table class="admin-data-table">
               <thead><tr>
-                <th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th>
-                <th>التخصص</th><th>الكورسات المفعّلة</th><th>الدور</th><th>الحالة</th>
+                ${isInstructorView
+                  ? `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>التخصص</th><th>الكورسات التي يدرّسها</th><th>تاريخ الانضمام</th><th>الحالة</th>`
+                  : `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الدور</th><th>الحالة</th>`
+                }
               </tr></thead>
               <tbody>
                 ${pageItems.map(u => {
+                  const statusCell = u.status === 'disabled' ? '<span class="status-badge status-rejected">معطّل</span>' : '<span class="status-badge status-approved">نشط</span>';
+                  if(isInstructorView){
+                    const coursesLabel = u.coursesTaught.length
+                      ? u.coursesTaught.map(c => c.title).join('، ')
+                      : 'لا يدرّس أي كورس بعد';
+                    return `
+                      <tr data-open-profile="${u.id}">
+                        <td>${u.name || 'بدون اسم'}</td>
+                        <td>${u.email || '—'}</td>
+                        <td class="${u.phone ? '' : 'cell-missing'}">${u.phone || 'غير مسجّل'}</td>
+                        <td class="${u.specialty ? '' : 'cell-missing'}">${u.specialty || 'غير محدد'}</td>
+                        <td style="white-space:normal;max-width:320px;">${coursesLabel} ${u.coursesTaught.length ? `<span class="tab-count-badge" style="margin-inline-start:6px;">${u.coursesTaught.length}</span>` : ''}</td>
+                        <td>${joinedDateOf(u)}</td>
+                        <td>${statusCell}</td>
+                      </tr>
+                    `;
+                  }
                   const age = calcAge(u.birthDate);
                   const genderLabel = u.gender === 'male' ? 'ذكر' : (u.gender === 'female' ? 'أنثى' : '—');
                   return `
@@ -7791,7 +7931,7 @@ async function adminRenderUsers(area){
                       <td class="${u.major ? '' : 'cell-missing'}">${u.major || '—'}</td>
                       <td>${u.courseCount || 0}</td>
                       <td>${ROLE_LABEL[u.role] || u.role}</td>
-                      <td>${u.status === 'disabled' ? '<span class="status-badge status-rejected">معطّل</span>' : '<span class="status-badge status-approved">نشط</span>'}</td>
+                      <td>${statusCell}</td>
                     </tr>
                   `;
                 }).join('')}
@@ -7806,13 +7946,22 @@ async function adminRenderUsers(area){
           });
         });
       } else {
-      listEl.innerHTML = pageItems.map(u => `
+      listEl.innerHTML = pageItems.map(u => {
+        const isInstructor = u.role === 'instructor';
+        const line2 = isInstructor
+          ? [u.specialty || 'بدون تخصص محدد', `${u.coursesTaught.length} كورس`].join(' · ')
+          : (u.email || '');
+        const line3 = isInstructor
+          ? (u.coursesTaught.length ? u.coursesTaught.map(c => c.title).join('، ') : 'لا يدرّس أي كورس بعد') + ` — منضم منذ ${joinedDateOf(u)}`
+          : '';
+        return `
         <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
           <div style="display:flex;align-items:center;gap:12px;width:100%;">
             <div class="avatar-sm" style="${u.status==='disabled' ? 'background:var(--muted);' : ''}">${(u.name || u.email || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
             <div class="grow" style="cursor:pointer;" data-expand="${u.id}">
               <div class="t1">${u.name || 'بدون اسم'} ${u.status==='disabled' ? '<span class="status-badge status-rejected">معطّل</span>' : ''}</div>
-              <div class="t2">${u.email || ''}</div>
+              <div class="t2">${line2}</div>
+              ${line3 ? `<div class="t2" style="color:var(--muted);margin-top:2px;">${line3}</div>` : ''}
             </div>
             <select class="role-select" data-uid="${u.id}" style="width:auto;padding:7px 10px;">
               <option value="student" ${u.role==='student'?'selected':''}>طالب</option>
@@ -7822,7 +7971,8 @@ async function adminRenderUsers(area){
           </div>
           <div id="userPanel-${u.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
         </div>
-      `).join('');
+      `;
+      }).join('');
       }
 
       pagEl.innerHTML = totalPages > 1 ? `
@@ -7882,6 +8032,7 @@ async function adminRenderUsers(area){
             totalStudents += enrSnap.docs.length;
             totalRevenue += enrSnap.docs.reduce((s,d) => s + Number(d.data().finalAmount || 0), 0);
           }
+          const joinedDate = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' }) : '—';
           panel.innerHTML = `
             <div class="learn-points" style="margin-bottom:16px;">
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.book}</span><span>${courses.length} كورس</span></div>
@@ -7889,9 +8040,22 @@ async function adminRenderUsers(area){
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.card}</span><span>${totalRevenue.toLocaleString('ar')} ج.س إيرادات</span></div>
               <div class="learn-point"><span class="lp-ic">${SIDE_ICONS.starFilled}</span><span>${ratingData.count ? ratingData.avg.toFixed(1) + ' (' + ratingData.count + ' تقييم)' : 'بدون تقييم بعد'}</span></div>
             </div>
-            ${u.specialty ? `<div style="font-size:13px;margin-bottom:6px;"><strong>التخصص:</strong> ${u.specialty}</div>` : ''}
-            ${u.bio ? `<div style="font-size:13px;color:var(--muted);margin-bottom:12px;">${u.bio}</div>` : ''}
-            <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin-bottom:8px;">كورساته</div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <div style="font-size:13px;font-weight:700;color:var(--violet-900);">بيانات المدرب</div>
+              <button type="button" class="btn btn-ghost btn-sm" data-print-instructor="${u.id}">${SIDE_ICONS.card} طباعة</button>
+            </div>
+            <div class="info-grid">
+              <div class="info-item"><div class="il">الاسم الكامل</div><div class="iv">${u.name || '—'}</div></div>
+              <div class="info-item"><div class="il">البريد الإلكتروني</div><div class="iv">${u.email || '—'}</div></div>
+              <div class="info-item ${u.phone ? '' : 'warn'}"><div class="il">رقم الهاتف</div><div class="iv">${u.phone || 'غير مسجّل'}</div></div>
+              <div class="info-item ${u.specialty ? '' : 'warn'}"><div class="il">التخصص</div><div class="iv">${u.specialty || 'غير محدد'}</div></div>
+              <div class="info-item"><div class="il">تاريخ الانضمام</div><div class="iv">${joinedDate}</div></div>
+              <div class="info-item"><div class="il">حالة الحساب</div><div class="iv">${u.status === 'disabled' ? 'معطّل' : 'نشط'}</div></div>
+            </div>
+            ${u.bio ? `<div style="font-size:13px;color:var(--muted);margin:12px 0 0;line-height:1.7;"><strong style="color:var(--ink);">نبذة:</strong> ${u.bio}</div>` : ''}
+
+            <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin:16px 0 8px;">الكورسات التي يدرّسها (${courses.length})</div>
             ${courses.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد كورسات.</div>` : courses.map(c => `
               <div class="table-widget-row"><div class="grow"><div class="t1">${c.title}</div></div><span class="status-badge ${COURSE_STATUS_CLASS[c.status||'approved']}">${COURSE_STATUS_LABEL[c.status||'approved']}</span></div>
             `).join('')}
@@ -7900,6 +8064,9 @@ async function adminRenderUsers(area){
               <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
             </div>
           `;
+          panel.querySelector('[data-print-instructor]')?.addEventListener('click', () => {
+            printInstructorReport(u, { courses, totalStudents, totalRevenue, ratingData, joinedDate });
+          });
         } else if(u.role === 'student'){
           const [enrollSnap, certSnap, resultsSnap, attendance] = await Promise.all([
             getDocs(query(collection(db, 'enrollments'), where('studentId','==', u.id))),
@@ -9032,7 +9199,7 @@ async function adminRenderLiveSessions(area){
   try{
     const [lecSnap, courses] = await Promise.all([
       getDocs(collection(db, 'lectures')),
-      fetchCourses(),
+      fetchAllCoursesAdmin(),
     ]);
     const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
     let lectures = await Promise.all(lecSnap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
@@ -9071,7 +9238,7 @@ async function adminRenderLiveSessions(area){
 
 async function adminRenderAttendance(area){
   try{
-    const courses = await fetchCourses();
+    const courses = await fetchAllCoursesAdmin();
     area.innerHTML = `
       <div class="widget widget-4">
         <div class="widget-head"><h3>تسجيل الحضور</h3></div>
@@ -9164,7 +9331,7 @@ async function adminRenderExamsOverview(area){
   try{
     const [examSnap, courses] = await Promise.all([
       getDocs(collection(db, 'exams')),
-      fetchCourses(),
+      fetchAllCoursesAdmin(),
     ]);
     const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
     const exams = examSnap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -9220,7 +9387,7 @@ async function adminRenderCommunityModeration(area){
   try{
     const [msgSnap, courses] = await Promise.all([
       getDocs(collection(db, 'communityMessages')),
-      fetchCourses(),
+      fetchAllCoursesAdmin(),
     ]);
     const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
     let messages = msgSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
@@ -9310,7 +9477,7 @@ async function adminRenderNotifications(area){
   try{
     const [notifSnap, courses, instructorsSnap] = await Promise.all([
       getDocs(collection(db, 'notifications')),
-      fetchCourses(),
+      fetchAllCoursesAdmin(),
       getDocs(query(collection(db, 'users'), where('role','==','instructor'))),
     ]);
     let notifications = notifSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
