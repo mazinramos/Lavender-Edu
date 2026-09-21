@@ -2139,8 +2139,8 @@ function renderGlobalBottomNav(path, tabParam){
     return;
   }
   const activeKey = path.startsWith('#/dashboard')
-    ? (currentProfile?.role === 'admin' ? (tabParam || 'overview') : 'dashboard')
-    : null;
+    ? (currentProfile?.role === 'admin' ? (tabParam || 'overview') : 'profile')
+    : (path.startsWith('#/profile') ? 'profile' : null);
   nav.style.display = '';
   nav.innerHTML = bottomNavHTML(activeKey, path);
   wireBottomNav(activeKey);
@@ -2171,6 +2171,9 @@ function renderNav(){
 async function renderHome(){
   if(currentUser && currentProfile && currentProfile.role === 'student'){
     return renderStudentHome();
+  }
+  if(currentUser && currentProfile && currentProfile.role === 'instructor'){
+    return renderInstructorHome();
   }
   const app = document.getElementById('app');
   app.innerHTML = `
@@ -2363,6 +2366,62 @@ function timeGreeting(){
   return 'مساء الخير 🌇';
 }
 
+/* Shared by every signed-in role's home page (student, instructor, and any future role) —
+   the domains grid, the archive/library tiles, and the "latest courses" strip are the same
+   regardless of who's looking at them. */
+function homeExploreSectionsHTML(){
+  return `
+    <section class="section-alt" id="domains">
+      <div class="container">
+        <div class="section-head">
+          <h2>مجالات تقدر تستكشفها</h2>
+          <p>وسّع مهاراتك بمجال جديد في أي وقت.</p>
+        </div>
+        <div class="cat-grid" id="catGrid">
+          <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head" style="margin-bottom:18px;">
+          <h2>استكشف أكثر</h2>
+          <p>مساحات إضافية على المنصة، غير تابعة لكورس معيّن.</p>
+        </div>
+        <div class="cat-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;">
+          <a href="#/archive" class="cat-tile">
+            <div class="ic-wrap" style="background:#EDE4F9;color:var(--violet-700);">${SIDE_ICONS.folder}</div>
+            <h4>غرفة الأرشيف</h4>
+            <div class="count">محاضرات عامة للمراجعة</div>
+          </a>
+          <a href="#/library" class="cat-tile">
+            <div class="ic-wrap" style="background:#F1E9FB;color:var(--violet-700);">${SIDE_ICONS.book}</div>
+            <h4>المكتبة</h4>
+            <div class="count">كتابة محتوى · أشعار · روايات</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-alt">
+      <div class="container">
+        <div class="course-head-row">
+          <div class="section-head" style="margin-bottom:0;">
+            <h2>أحدث الكورسات على المنصة</h2>
+            <p>كورسات جديدة تقدر تنضم ليها.</p>
+          </div>
+          <a href="#/courses" class="view-all-link">
+            عرض كل الكورسات
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="15 6 9 12 15 18"/></svg>
+          </a>
+        </div>
+        <div id="featuredCoursesArea"><div class="empty-state">جارٍ تحميل الكورسات...</div></div>
+      </div>
+    </section>
+  `;
+}
+
 async function renderStudentHome(){
   const app = document.getElementById('app');
   const firstName = (currentProfile?.name || currentUser.email || 'صديقنا').trim().split(' ')[0];
@@ -2377,7 +2436,7 @@ async function renderStudentHome(){
           <p class="lead" id="studentHomeSubtitle">جارٍ تجهيز رحلتك التعليمية...</p>
           <div class="hero-actions" id="studentHomeActions">
             <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
-            <a href="#/dashboard" class="btn btn-ghost">لوحة التحكم</a>
+            <a href="#/profile" class="btn btn-ghost">حسابي</a>
           </div>
           <div class="trust-row" id="studentHomeStats">
             <div class="student-stat-chips">
@@ -2429,8 +2488,8 @@ async function renderStudentHome(){
             <h2>كورساتك</h2>
             <p>الكورسات اللي أنت مشترك فيها فعلياً.</p>
           </div>
-          <a href="#/dashboard" class="view-all-link">
-            لوحة التحكم كاملة
+          <a href="#/profile" class="view-all-link">
+            حسابي بالكامل
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="15 6 9 12 15 18"/></svg>
           </a>
         </div>
@@ -2438,54 +2497,7 @@ async function renderStudentHome(){
       </div>
     </section>
 
-    <section class="section-alt" id="domains">
-      <div class="container">
-        <div class="section-head">
-          <h2>مجالات تقدر تستكشفها</h2>
-          <p>وسّع مهاراتك بمجال جديد في أي وقت.</p>
-        </div>
-        <div class="cat-grid" id="catGrid">
-          <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
-        </div>
-      </div>
-    </section>
-
-    <section>
-      <div class="container">
-        <div class="section-head" style="margin-bottom:18px;">
-          <h2>استكشف أكثر</h2>
-          <p>مساحات إضافية على المنصة، غير تابعة لكورس معيّن.</p>
-        </div>
-        <div class="cat-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;">
-          <a href="#/archive" class="cat-tile">
-            <div class="ic-wrap" style="background:#EDE4F9;color:var(--violet-700);">${SIDE_ICONS.folder}</div>
-            <h4>غرفة الأرشيف</h4>
-            <div class="count">محاضرات عامة للمراجعة</div>
-          </a>
-          <a href="#/library" class="cat-tile">
-            <div class="ic-wrap" style="background:#F1E9FB;color:var(--violet-700);">${SIDE_ICONS.book}</div>
-            <h4>المكتبة</h4>
-            <div class="count">كتابة محتوى · أشعار · روايات</div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section-alt">
-      <div class="container">
-        <div class="course-head-row">
-          <div class="section-head" style="margin-bottom:0;">
-            <h2>أحدث الكورسات على المنصة</h2>
-            <p>كورسات جديدة تقدر تنضم ليها.</p>
-          </div>
-          <a href="#/courses" class="view-all-link">
-            عرض كل الكورسات
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="15 6 9 12 15 18"/></svg>
-          </a>
-        </div>
-        <div id="featuredCoursesArea"><div class="empty-state">جارٍ تحميل الكورسات...</div></div>
-      </div>
-    </section>
+    ${homeExploreSectionsHTML()}
   `;
 
   loadFeaturedCourses();
@@ -2574,12 +2586,90 @@ async function loadStudentHomeData(){
       if(actionsEl){
         actionsEl.innerHTML = `
           <a href="#/learn/${continueCourse.id}" class="btn btn-primary">استكمل من حيث توقفت</a>
-          <a href="#/dashboard" class="btn btn-ghost">لوحة التحكم</a>
+          <a href="#/profile" class="btn btn-ghost">حسابي</a>
         `;
       }
     }
   }catch(e){
     console.warn('student home data failed:', e.message);
+  }
+}
+
+/* An instructor lands on the same public home after login now (see the router) — greeted
+   by name with their own teaching snapshot up top, then the same explore-more sections
+   every role gets. */
+async function renderInstructorHome(){
+  const app = document.getElementById('app');
+  const firstName = (currentProfile?.name || currentUser.email || 'صديقنا').trim().split(' ')[0];
+
+  app.innerHTML = `
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow-pill"><span class="dot-live"></span> ${timeGreeting()}</span>
+          <h1>أهلاً بيك، <span class="accent">${firstName}</span></h1>
+          <p class="lead" id="instrHomeSubtitle">جارٍ تجهيز ملخّص نشاطك...</p>
+          <div class="hero-actions">
+            <a href="#/profile" class="btn btn-primary">حسابي</a>
+            <a href="#/courses" class="btn btn-ghost">تصفّح الكورسات</a>
+          </div>
+          <div class="trust-row" id="instrHomeStats">
+            <div class="student-stat-chips">
+              <span class="ssc"><strong>—</strong> كورس</span>
+              <span class="ssc"><strong>—</strong> طالب</span>
+              <span class="ssc"><strong>—</strong> بانتظار المراجعة</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual-v2">
+          <div class="hv-frame"><div class="hv-avatar"></div></div>
+          <div class="float-card fc-1"><span class="ic" style="background:var(--mist);color:var(--violet-700);">${MICRO_ICONS.instructors}</span>مدربون حقيقيون</div>
+          <div class="float-card fc-2"><span class="ic" style="background:#FCF3E3;color:var(--amber-600);">${MICRO_ICONS.live}</span>محاضرات مباشرة</div>
+          <div class="float-card fc-3"><span class="ic" style="background:#E9F5EE;color:var(--success);">${MICRO_ICONS.certificate}</span>شهادة إنجاز</div>
+          <div class="float-card fc-4"><span class="ic" style="background:var(--mist);color:var(--violet-700);">${MICRO_ICONS.infinity}</span>دخول مدى الحياة</div>
+        </div>
+      </div>
+    </section>
+
+    ${homeExploreSectionsHTML()}
+  `;
+
+  loadFeaturedCourses();
+  renderHomeDomains();
+  loadInstructorHomeData();
+}
+
+async function loadInstructorHomeData(){
+  try{
+    const snap = await getDocs(query(collection(db, 'courses'), where('instructorId','==', currentUser.uid)));
+    const courses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let totalStudents = 0;
+    for(const c of courses){
+      try{
+        const cs = await getCountFromServer(query(collection(db, 'enrollments'), where('courseId','==', c.id), where('status','==','approved')));
+        totalStudents += cs.data().count;
+      }catch(e){ /* one course's count failing shouldn't blank out the rest */ }
+    }
+    const pendingReview = courses.filter(c => c.status === 'pending_review').length;
+
+    const subtitleEl = document.getElementById('instrHomeSubtitle');
+    if(subtitleEl){
+      subtitleEl.textContent = courses.length
+        ? `بتدرّس ${courses.length} كورس لـ ${totalStudents} طالب.`
+        : 'جاهز تضيف أول كورس ليك؟ من صفحة حسابي تقدر تبدأ.';
+    }
+    const statsEl = document.getElementById('instrHomeStats');
+    if(statsEl){
+      statsEl.innerHTML = `
+        <div class="student-stat-chips">
+          <span class="ssc"><strong>${courses.length}</strong> كورس</span>
+          <span class="ssc"><strong>${totalStudents}</strong> طالب</span>
+          <span class="ssc"><strong>${pendingReview}</strong> بانتظار المراجعة</span>
+        </div>
+      `;
+    }
+  }catch(e){
+    console.warn('instructor home data failed:', e.message);
   }
 }
 
@@ -3034,7 +3124,10 @@ function renderLogin(){
     btn.innerHTML = `<span class="spinner"></span> جارٍ الدخول...`;
     try{
       await signInWithEmailAndPassword(auth, email, password);
-      location.hash = '#/dashboard';
+      // Straight to the home screen after login — not the profile/account page, per the
+      // "home is what a just-signed-in user should land on" instruction. Admins are
+      // force-redirected to their panel by the router regardless of what we set here.
+      location.hash = '#/';
     }catch(err){
       alertBox.innerHTML = `<div class="alert alert-error">${authErrorAr(err.code)}</div>`;
       btn.disabled = false;
@@ -3145,7 +3238,7 @@ function renderVerifyEmail(){
   // Nothing to verify (signed out) or nothing left to do here (already verified) — send
   // the visitor somewhere that actually makes sense for them instead of showing this page.
   if(!currentUser){ location.hash = '#/login'; return; }
-  if(currentUser.emailVerified){ location.hash = '#/dashboard'; return; }
+  if(currentUser.emailVerified){ location.hash = '#/'; return; }
 
   const email = currentUser.email || '';
   app.innerHTML = `
@@ -3206,7 +3299,7 @@ function renderVerifyEmail(){
     try{
       await currentUser.reload();
       if(currentUser.emailVerified){
-        playVerifyCelebration(() => { location.hash = '#/dashboard'; });
+        playVerifyCelebration(() => { location.hash = '#/'; });
       }else{
         alertBox.innerHTML = `<div class="alert alert-error">لسه ما ضغطت رابط التأكيد اللي في بريدك. افتح الإيميل الأول.</div>`;
         btn.disabled = false;
@@ -3233,7 +3326,7 @@ function renderVerifyEmail(){
       await currentUser.reload();
       if(currentUser.emailVerified){
         clearInterval(pollId);
-        playVerifyCelebration(() => { location.hash = '#/dashboard'; });
+        playVerifyCelebration(() => { location.hash = '#/'; });
       }
     }catch(e){ /* keep quietly polling */ }
   }, 5000);
@@ -4980,7 +5073,7 @@ function renderCheckoutStatusPage(course, enrollment, message, waFallback){
             </div>
           </div>
         ` : ''}
-        <a href="#/dashboard" class="btn btn-ghost" style="margin-top:14px;">الرجوع إلى لوحة التحكم</a>
+        <a href="#/profile" class="btn btn-ghost" style="margin-top:14px;">الرجوع لحسابي</a>
       </div>
     </div>
   `;
@@ -5300,8 +5393,11 @@ function shellSideLinks(activeKey){
 
   return `
     <div class="side-label">القائمة</div>
-    <a href="#/dashboard" class="side-link ${activeKey === 'dashboard' ? 'active' : ''}">
-      <span class="side-ic">${SIDE_ICONS.home}</span><span class="lbl-text">لوحة التحكم</span>
+    <a href="#/" class="side-link">
+      <span class="side-ic">${SIDE_ICONS.home}</span><span class="lbl-text">الرئيسية</span>
+    </a>
+    <a href="#/profile" class="side-link ${activeKey === 'profile' ? 'active' : ''}">
+      <span class="side-ic">${SIDE_ICONS.users}</span><span class="lbl-text">حسابي</span>
     </a>
     <a href="#/courses" class="side-link">
       <span class="side-ic">${SIDE_ICONS.book}</span><span class="lbl-text">تصفح الكورسات</span>
@@ -5334,25 +5430,27 @@ function bottomNavHTML(activeKey, currentPath){
 
   const isHome = currentPath === '#/';
   const isCourses = !!currentPath && currentPath.startsWith('#/courses');
-  const isDash = activeKey === 'dashboard';
+  const isLibrary = !!currentPath && currentPath.startsWith('#/library');
+  const isArchive = !!currentPath && currentPath.startsWith('#/archive');
+  const isProfile = activeKey === 'profile';
 
   return `
     <div class="bottom-nav-indicator" id="bottomNavIndicator"></div>
     <a href="#/" class="bottom-nav-item ${isHome ? 'active' : ''}">
       <span class="side-ic">${SIDE_ICONS.home}</span><span>الرئيسية</span>
     </a>
-    <a href="#/dashboard" class="bottom-nav-item ${isDash ? 'active' : ''}">
-      <span class="side-ic">${SIDE_ICONS.dashboard}</span><span>لوحة التحكم</span>
-    </a>
     <a href="#/courses" class="bottom-nav-item ${isCourses ? 'active' : ''}">
       <span class="side-ic">${SIDE_ICONS.book}</span><span>الكورسات</span>
     </a>
-    <button type="button" class="bottom-nav-item notif-badge-target" id="bottomNavNotifBtn">
-      <span class="side-ic">${SIDE_ICONS.bell}</span><span>الإشعارات</span>
-    </button>
-    <button type="button" class="bottom-nav-item" id="bottomNavAccountBtn">
+    <a href="#/library" class="bottom-nav-item ${isLibrary ? 'active' : ''}">
+      <span class="side-ic">${SIDE_ICONS.layers}</span><span>المكتبة</span>
+    </a>
+    <a href="#/archive" class="bottom-nav-item ${isArchive ? 'active' : ''}">
+      <span class="side-ic">${SIDE_ICONS.folder}</span><span>الأرشيف</span>
+    </a>
+    <a href="#/profile" class="bottom-nav-item ${isProfile ? 'active' : ''}">
       <span class="side-ic">${SIDE_ICONS.users}</span><span>حسابي</span>
-    </button>
+    </a>
   `;
 }
 
@@ -5425,7 +5523,7 @@ function openAccountSheet(){
       <div class="widget" style="padding:14px;grid-column:span 2;"><div class="empty-state" style="padding:6px 0;font-size:12px;">جارٍ تحميل ملخّص حسابك...</div></div>
     </div>
     <div class="sheet-grid" style="grid-template-columns:repeat(2,1fr);">
-      <a href="#/dashboard" class="sheet-grid-item" data-close-sheet><span class="ic-circle">${SIDE_ICONS.dashboard}</span>لوحة التحكم</a>
+      <a href="#/profile" class="sheet-grid-item" data-close-sheet><span class="ic-circle">${SIDE_ICONS.users}</span>حسابي</a>
       <button type="button" class="sheet-grid-item" id="sheetLogoutBtn"><span class="ic-circle" style="background:#FBEBEA;color:var(--danger);">${SIDE_ICONS.logout}</span>تسجيل الخروج</button>
     </div>
   `);
@@ -5531,8 +5629,7 @@ function shellTopbarTitle(activeKey){
   if(currentProfile?.role === 'admin'){
     return ADMIN_TABS.find(t => t.key === activeKey)?.label || 'لوحة الإدارة';
   }
-  const map = { dashboard:'لوحة التحكم', profile:'ملفي الشخصي' };
-  return map[activeKey] || 'لوحة التحكم';
+  return 'حسابي';
 }
 
 /* ================================================================
@@ -5979,9 +6076,11 @@ async function renderDashboard(tab){
     return;
   }
   const role = currentProfile?.role || 'student';
-  if(role === 'admin') renderAdminDashboard(tab);
-  else if(role === 'instructor') renderInstructorDashboard();
-  else renderStudentDashboard();
+  if(role === 'admin'){ renderAdminDashboard(tab); return; }
+  // "لوحة التحكم" no longer exists as its own page for students/instructors — حسابي
+  // (the profile page) is now the one place that has everything. #/dashboard is kept as a
+  // working redirect only so old links/bookmarks don't break.
+  if(location.hash !== '#/profile') location.hash = '#/profile';
 }
 
 /* ---------------- LEARNING ROOM (student) ---------------- */
@@ -6075,7 +6174,7 @@ async function renderLearnRoom(courseId){
   const lesCount = lesCountSnap ? lesCountSnap.data().count : 0;
 
   app.innerHTML = `
-    <a href="#/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع للوحة التحكم</a>
+    <a href="#/profile" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع لحسابي</a>
     <div class="dash-card">
       <div class="course-player-head">
         <div>
@@ -7039,7 +7138,7 @@ async function renderManageCourse(courseId){
   }
 
   app.innerHTML = `
-    <a href="#/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع للوحة التحكم</a>
+    <a href="#/profile" style="display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:14px;">${SIDE_ICONS.back} الرجوع لحسابي</a>
     <div class="dash-card">
       <h2 style="margin:0 0 22px;font-size:20px;color:var(--violet-900);">إدارة محتوى: ${course.title}</h2>
       <div class="sub-tabs" id="manageTabs">
@@ -7505,8 +7604,106 @@ async function manageRenderExams(area, course){
 }
 
 /* ---------------- STUDENT DASHBOARD ---------------- */
+/* Shared by the student and instructor "حسابي" pages: email-verification status, editable
+   personal fields, and the logout button — the exact same block, so both dashboards look
+   and behave identically for this part. (Admin's plain profile page keeps its own inline
+   copy since admin doesn't have a dashboard to fold this into.) */
+function profileEditorWidgetsHTML(u){
+  return `
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>البريد الإلكتروني</h3></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div style="font-weight:700;font-size:14px;">${currentUser.email}</div>
+          <div style="font-size:12px;color:${currentUser.emailVerified ? 'var(--success)' : '#B5651D'};margin-top:3px;">
+            ${currentUser.emailVerified ? `${SIDE_ICONS.check} موثّق` : 'غير موثّق بعد'}
+          </div>
+        </div>
+        ${!currentUser.emailVerified ? `<button type="button" class="btn btn-ghost btn-sm" id="sendVerifyEmailBtn">إرسال رابط التوثيق</button>` : ''}
+      </div>
+      <div id="verifyEmailAlert" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="widget widget-4">
+      <div class="widget-head"><h3>بياناتي الشخصية</h3></div>
+      <form id="myProfileForm" style="display:flex;flex-direction:column;gap:14px;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="profPhone" value="${u.phone || ''}" placeholder="09XXXXXXXX" />
+          </div>
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>الجنس</label>
+            <select id="profGender">
+              <option value="" ${!u.gender ? 'selected' : ''}>اختر...</option>
+              <option value="male" ${u.gender==='male'?'selected':''}>ذكر</option>
+              <option value="female" ${u.gender==='female'?'selected':''}>أنثى</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>تاريخ الميلاد</label>
+            <input type="date" id="profBirthDate" value="${u.birthDate || ''}" />
+          </div>
+          <div class="field" style="margin-bottom:0;flex:1;min-width:180px;">
+            <label>التخصص / المرحلة الدراسية</label>
+            <input type="text" id="profMajor" value="${u.major || ''}" placeholder="مثال: طالبة تمريض - السنة الثانية" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ البيانات</button>
+        <div id="myProfileAlert"></div>
+      </form>
+    </div>
+
+    <div class="widget widget-4">
+      <button type="button" class="btn btn-danger btn-full" id="profileLogoutBtn">${SIDE_ICONS.logout} تسجيل الخروج</button>
+    </div>
+  `;
+}
+
+function wireProfileEditorWidgets(afterSaveRerender){
+  document.getElementById('sendVerifyEmailBtn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    const alertBox = document.getElementById('verifyEmailAlert');
+    try{
+      await sendVerifyEmailSafe(currentUser);
+      alertBox.innerHTML = `<div class="alert alert-success">تم إرسال رابط التوثيق لبريدك، افتحه وأكّد ثم ارجع هنا.</div>`;
+    }catch(e2){
+      alertBox.innerHTML = `<div class="alert alert-error">${explainErr(e2, 'تعذّر إرسال رابط التوثيق.')}</div>`;
+    }
+    btn.disabled = false;
+  });
+
+  document.getElementById('myProfileForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const alertBox = document.getElementById('myProfileAlert');
+    const phone = document.getElementById('profPhone').value.trim();
+    const gender = document.getElementById('profGender').value;
+    const birthDate = document.getElementById('profBirthDate').value;
+    const major = document.getElementById('profMajor').value.trim();
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    try{
+      await updateDoc(doc(db, 'users', currentUser.uid), { phone: phone || null, gender: gender || null, birthDate: birthDate || null, major: major || null });
+      currentProfile = { ...currentProfile, phone: phone || null, gender: gender || null, birthDate: birthDate || null, major: major || null };
+      alertBox.innerHTML = `<div class="alert alert-success">تم حفظ بياناتك.</div>`;
+      afterSaveRerender();
+    }catch(e2){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر حفظ البيانات، حاول مرة أخرى.</div>`;
+      btn.disabled = false;
+    }
+  });
+
+  document.getElementById('profileLogoutBtn')?.addEventListener('click', async () => {
+    await signOut(auth);
+    location.hash = '#/';
+  });
+}
+
 async function renderStudentDashboard(){
-  renderShell('dashboard');
+  renderShell('profile');
   const app = document.getElementById('appContent');
   const completeness = computeProfileCompleteness(currentProfile);
   const nudgeHTML = !completeness.complete ? `
@@ -7516,7 +7713,6 @@ async function renderStudentDashboard(){
         <div class="pnb-title">ملفك الشخصي غير مكتمل</div>
         <div class="pnb-sub">أكمل ${completeness.missing.map(m => m.label).join('، ')} عشان توثّق حسابك وتقدر الإدارة تتواصل معاك بسهولة.</div>
       </div>
-      <a href="#/profile" class="btn btn-primary btn-sm">إكمال الملف</a>
     </div>
   ` : '';
   app.innerHTML = `
@@ -7550,6 +7746,7 @@ async function renderStudentDashboard(){
       </div>
     </div>
     ${libraryWorksWidgetHTML()}
+    ${profileEditorWidgetsHTML(currentProfile || {})}
   `;
 
   loadStudentStats();
@@ -7558,6 +7755,7 @@ async function renderStudentDashboard(){
   loadStudentAgenda();
   loadMyCertificates();
   wireLibraryWorksWidget();
+  wireProfileEditorWidgets(renderStudentDashboard);
 }
 
 async function loadStudentStats(){
@@ -7801,6 +7999,15 @@ async function renderMyProfile(){
     app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="text-align:center;"><p style="margin-bottom:18px;">لازم تسجّل الدخول الأول.</p><a href="#/login" class="btn btn-primary">تسجيل الدخول</a></div></div>`;
     return;
   }
+  // حسابي is now the one page for everything that used to be split between a separate
+  // "لوحة التحكم" and this profile editor — for a student/instructor it's their full
+  // dashboard (courses, stats, etc.) with the profile-editing + logout built right in.
+  // Admin accounts aren't self-registered and don't have a student/instructor dashboard to
+  // fold in, so they keep the plain editor below.
+  const role = currentProfile?.role || 'student';
+  if(role === 'instructor') return renderInstructorDashboard();
+  if(role === 'student') return renderStudentDashboard();
+
   renderShell('profile');
   const area = document.getElementById('appContent');
   const u = currentProfile || {};
@@ -7879,6 +8086,10 @@ async function renderMyProfile(){
         <div id="myProfileAlert"></div>
       </form>
     </div>
+
+    <div class="widget widget-4">
+      <button type="button" class="btn btn-danger btn-full" id="profileLogoutBtn">${SIDE_ICONS.logout} تسجيل الخروج</button>
+    </div>
   `;
 
   document.getElementById('sendVerifyEmailBtn')?.addEventListener('click', async (e) => {
@@ -7912,6 +8123,11 @@ async function renderMyProfile(){
       alertBox.innerHTML = `<div class="alert alert-error">تعذّر حفظ البيانات، حاول مرة أخرى.</div>`;
       btn.disabled = false;
     }
+  });
+
+  document.getElementById('profileLogoutBtn').addEventListener('click', async () => {
+    await signOut(auth);
+    location.hash = '#/';
   });
 }
 
@@ -7951,7 +8167,7 @@ async function renderMyExamResults(){
   app.innerHTML = `
     <div class="widget-head" style="margin-bottom:16px;">
       <h3 style="font-size:17px;">نتائج امتحاناتي</h3>
-      <a href="#/dashboard" class="view-all-link" style="font-size:13px;display:inline-flex;align-items:center;gap:6px;">${SIDE_ICONS.back} الرجوع للوحة التحكم</a>
+      <a href="#/profile" class="view-all-link" style="font-size:13px;display:inline-flex;align-items:center;gap:6px;">${SIDE_ICONS.back} الرجوع لحسابي</a>
     </div>
     <div class="widget widget-4" id="myExamResultsArea"><div class="empty-state">جارٍ التحميل...</div></div>
   `;
@@ -8001,7 +8217,7 @@ async function renderMyExamResults(){
 
 /* ---------------- INSTRUCTOR DASHBOARD ---------------- */
 async function renderInstructorDashboard(){
-  renderShell('dashboard');
+  renderShell('profile');
   const app = document.getElementById('appContent');
   app.innerHTML = `
     ${profileHeaderHTML()}
@@ -8097,11 +8313,13 @@ async function renderInstructorDashboard(){
         <div id="instrProfileAlert"></div>
       </form>
     </div>
+    ${profileEditorWidgetsHTML(currentProfile || {})}
   `;
   loadInstructorCourses();
   loadInstructorAgenda();
   loadInstructorStudents();
   wireLibraryWorksWidget();
+  wireProfileEditorWidgets(renderInstructorDashboard);
 
   document.getElementById('newCourseToggleBtn').addEventListener('click', () => {
     document.getElementById('newCourseForm').classList.toggle('hidden');
