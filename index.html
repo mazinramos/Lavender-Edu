@@ -221,6 +221,43 @@
   .trust-text{font-size:13px;color:var(--muted);}
   .trust-text strong{color:var(--ink);}
 
+  /* Personalized student-home stat chips (replace the guest trust-row content) */
+  .student-stat-chips{display:flex;flex-wrap:wrap;gap:10px;}
+  .ssc{
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 16px;
+    font-size:12.5px;color:var(--muted);box-shadow:0 2px 8px -5px rgba(42,25,72,0.18);
+  }
+  .ssc strong{color:var(--violet-800);font-family:'Cairo',sans-serif;font-size:14px;margin-inline-end:4px;}
+
+  /* "استكمل من حيث توقفت" spotlight card */
+  .continue-card{
+    display:flex;align-items:center;gap:18px;background:#fff;border:1px solid var(--line);
+    border-radius:20px;padding:20px 22px;text-decoration:none;color:inherit;
+    transition:transform .2s,box-shadow .2s,border-color .2s;
+    box-shadow:0 4px 16px -10px rgba(42,25,72,0.16);
+  }
+  .continue-card:hover{transform:translateY(-4px);box-shadow:0 24px 44px -22px rgba(42,25,72,0.32);border-color:var(--violet-600);}
+  .cc-mark{
+    width:58px;height:58px;border-radius:16px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--violet-600),var(--violet-800));color:#fff;
+    display:flex;align-items:center;justify-content:center;font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;
+  }
+  .cc-body{flex:1;min-width:0;}
+  .cc-body h3{margin:6px 0 10px;font-size:16px;color:var(--violet-900);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cc-progress-row{display:flex;align-items:center;gap:12px;}
+  .cc-progress-track{flex:1;height:8px;border-radius:999px;background:var(--mist);overflow:hidden;}
+  .cc-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--violet-600),var(--amber-500));transition:width .5s ease;}
+  .cc-progress-label{font-size:11.5px;color:var(--muted);font-weight:700;white-space:nowrap;flex-shrink:0;}
+  .cc-cta{
+    display:flex;align-items:center;gap:6px;flex-shrink:0;background:var(--mist);color:var(--violet-700);
+    font-weight:700;font-size:13px;padding:10px 16px;border-radius:12px;transition:background .15s,color .15s;
+  }
+  .continue-card:hover .cc-cta{background:var(--violet-700);color:#fff;}
+  @media (max-width:560px){
+    .continue-card{flex-wrap:wrap;padding:16px;}
+    .cc-cta{order:3;width:100%;justify-content:center;}
+  }
+
   .hero-visual-v2{position:relative;height:400px;}
   .hv-frame{
     position:absolute;top:6%;right:4%;width:74%;height:82%;border-radius:24px;
@@ -2132,6 +2169,9 @@ function renderNav(){
 
 /* ---------------- HOME ---------------- */
 async function renderHome(){
+  if(currentUser && currentProfile && currentProfile.role === 'student'){
+    return renderStudentHome();
+  }
   const app = document.getElementById('app');
   app.innerHTML = `
     <section class="hero">
@@ -2307,6 +2347,240 @@ async function renderHome(){
   loadFeaturedCourses();
   renderHomeDomains();
   renderPromoCarousel();
+}
+
+/* ---------------- PERSONALIZED HOME (logged-in student) ----------------
+   Route "#/" for a signed-in student swaps the marketing landing page for a real welcome
+   screen: a greeting, where they actually stand (active courses, lessons done, certificates),
+   a spotlight on whichever course they're mid-way through, their own enrolled courses, and —
+   kept close to the guest homepage on purpose — the same domain/archive/library discovery
+   sections, so a student can still find something new without leaving their own front door. */
+function timeGreeting(){
+  const h = new Date().getHours();
+  if(h < 5) return 'مساء الخير 🌙';
+  if(h < 12) return 'صباح الخير ☀️';
+  if(h < 17) return 'نهارك سعيد 🌤️';
+  return 'مساء الخير 🌇';
+}
+
+async function renderStudentHome(){
+  const app = document.getElementById('app');
+  const firstName = (currentProfile?.name || currentUser.email || 'صديقنا').trim().split(' ')[0];
+  const completeness = computeProfileCompleteness(currentProfile);
+
+  app.innerHTML = `
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow-pill"><span class="dot-live"></span> ${timeGreeting()}</span>
+          <h1>أهلاً بيك، <span class="accent">${firstName}</span></h1>
+          <p class="lead" id="studentHomeSubtitle">جارٍ تجهيز رحلتك التعليمية...</p>
+          <div class="hero-actions" id="studentHomeActions">
+            <a href="#/courses" class="btn btn-primary">تصفّح الكورسات</a>
+            <a href="#/dashboard" class="btn btn-ghost">لوحة التحكم</a>
+          </div>
+          <div class="trust-row" id="studentHomeStats">
+            <div class="student-stat-chips">
+              <span class="ssc"><strong>—</strong> كورس مفعّل</span>
+              <span class="ssc"><strong>—</strong> درس مكتمل</span>
+              <span class="ssc"><strong>—</strong> شهادة</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual-v2">
+          <div class="hv-frame"><div class="hv-avatar"></div></div>
+          <div class="float-card fc-1"><span class="ic" style="background:var(--mist);color:var(--violet-700);">${MICRO_ICONS.instructors}</span>مدربون حقيقيون</div>
+          <div class="float-card fc-2"><span class="ic" style="background:#FCF3E3;color:var(--amber-600);">${MICRO_ICONS.live}</span>محاضرات مباشرة</div>
+          <div class="float-card fc-3"><span class="ic" style="background:#E9F5EE;color:var(--success);">${MICRO_ICONS.certificate}</span>شهادة إنجاز</div>
+          <div class="float-card fc-4"><span class="ic" style="background:var(--mist);color:var(--violet-700);">${MICRO_ICONS.infinity}</span>دخول مدى الحياة</div>
+        </div>
+      </div>
+    </section>
+
+    ${!completeness.complete ? `
+      <section>
+        <div class="container">
+          <div class="profile-nudge-banner">
+            <div class="pnb-ic">!</div>
+            <div class="pnb-body">
+              <div class="pnb-title">ملفك الشخصي غير مكتمل</div>
+              <div class="pnb-sub">أكمل ${completeness.missing.map(m => m.label).join('، ')} عشان توثّق حسابك.</div>
+            </div>
+            <a href="#/profile" class="btn btn-primary btn-sm">إكمال الملف</a>
+          </div>
+        </div>
+      </section>
+    ` : ''}
+
+    <section class="section-alt" id="continueLearningSection" style="display:none;">
+      <div class="container">
+        <div class="section-head" style="margin-bottom:14px;">
+          <h2>استكمل من حيث توقفت</h2>
+          <p>أقرب كورس ليك لإكماله.</p>
+        </div>
+        <div id="continueLearningCard"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="course-head-row">
+          <div class="section-head" style="margin-bottom:0;">
+            <h2>كورساتك</h2>
+            <p>الكورسات اللي أنت مشترك فيها فعلياً.</p>
+          </div>
+          <a href="#/dashboard" class="view-all-link">
+            لوحة التحكم كاملة
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="15 6 9 12 15 18"/></svg>
+          </a>
+        </div>
+        <div id="myCoursesHomeArea"><div class="empty-state">جارٍ التحميل...</div></div>
+      </div>
+    </section>
+
+    <section class="section-alt" id="domains">
+      <div class="container">
+        <div class="section-head">
+          <h2>مجالات تقدر تستكشفها</h2>
+          <p>وسّع مهاراتك بمجال جديد في أي وقت.</p>
+        </div>
+        <div class="cat-grid" id="catGrid">
+          <div class="empty-state" style="padding:20px 0;">جارٍ التحميل...</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head" style="margin-bottom:18px;">
+          <h2>استكشف أكثر</h2>
+          <p>مساحات إضافية على المنصة، غير تابعة لكورس معيّن.</p>
+        </div>
+        <div class="cat-grid" style="grid-template-columns:repeat(2,1fr);max-width:640px;">
+          <a href="#/archive" class="cat-tile">
+            <div class="ic-wrap" style="background:#EDE4F9;color:var(--violet-700);">${SIDE_ICONS.folder}</div>
+            <h4>غرفة الأرشيف</h4>
+            <div class="count">محاضرات عامة للمراجعة</div>
+          </a>
+          <a href="#/library" class="cat-tile">
+            <div class="ic-wrap" style="background:#F1E9FB;color:var(--violet-700);">${SIDE_ICONS.book}</div>
+            <h4>المكتبة</h4>
+            <div class="count">كتابة محتوى · أشعار · روايات</div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-alt">
+      <div class="container">
+        <div class="course-head-row">
+          <div class="section-head" style="margin-bottom:0;">
+            <h2>أحدث الكورسات على المنصة</h2>
+            <p>كورسات جديدة تقدر تنضم ليها.</p>
+          </div>
+          <a href="#/courses" class="view-all-link">
+            عرض كل الكورسات
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><polyline points="15 6 9 12 15 18"/></svg>
+          </a>
+        </div>
+        <div id="featuredCoursesArea"><div class="empty-state">جارٍ تحميل الكورسات...</div></div>
+      </div>
+    </section>
+  `;
+
+  loadFeaturedCourses();
+  renderHomeDomains();
+  loadStudentHomeData();
+}
+
+async function loadStudentHomeData(){
+  try{
+    const [enrollSnap, certSnap, allCourses] = await Promise.all([
+      getDocs(query(collection(db, 'enrollments'), where('studentId','==', currentUser.uid), where('status','==','approved'))),
+      getDocs(query(collection(db, 'certificates'), where('studentId','==', currentUser.uid))),
+      fetchCourses(),
+    ]);
+    const courseMap = Object.fromEntries(allCourses.map(c => [c.id, c]));
+    const myCourses = enrollSnap.docs.map(d => courseMap[d.data().courseId]).filter(Boolean);
+
+    const subtitleEl = document.getElementById('studentHomeSubtitle');
+    if(subtitleEl){
+      subtitleEl.textContent = myCourses.length
+        ? `مستمر في ${myCourses.length} كورس — كمّل من وين وقفت.`
+        : 'جاهز تبدأ أول كورس ليك؟ استكشف المجالات المتاحة وابدأ رحلتك.';
+    }
+
+    const myCoursesArea = document.getElementById('myCoursesHomeArea');
+    if(myCoursesArea){
+      myCoursesArea.innerHTML = myCourses.length
+        ? `<div class="course-row-viewport"><div class="course-row-track">${myCourses.map(courseCardHTML).join('')}</div></div>`
+        : `<div class="empty-state">لسه ما اشتركت في أي كورس — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات المتاحة</a>.</div>`;
+    }
+
+    let totalCompleted = 0, continueCourse = null, continuePct = 0, continueDone = 0, continueTotal = 0;
+    if(myCourses.length){
+      const progressResults = await Promise.all(myCourses.map(async c => {
+        const [lesSnap, progSnap] = await Promise.all([
+          getDocs(query(collection(db, 'lessons'), where('courseId','==', c.id))),
+          getDocs(query(collection(db, 'progress'), where('studentId','==', currentUser.uid), where('courseId','==', c.id))),
+        ]);
+        const total = lesSnap.docs.length;
+        const done = progSnap.docs.map(d => d.data()).filter(p => p.completed).length;
+        return { course: c, total, done };
+      }));
+      progressResults.forEach(r => { totalCompleted += r.done; });
+      const inProgress = progressResults.filter(r => r.total > 0 && r.done < r.total);
+      const pick = inProgress.length
+        ? inProgress.sort((a, b) => (b.done / b.total) - (a.done / a.total))[0]
+        : progressResults.find(r => r.total > 0);
+      if(pick){
+        continueCourse = pick.course; continueDone = pick.done; continueTotal = pick.total;
+        continuePct = continueTotal ? Math.round((continueDone / continueTotal) * 100) : 0;
+      }
+    }
+
+    const statsEl = document.getElementById('studentHomeStats');
+    if(statsEl){
+      statsEl.innerHTML = `
+        <div class="student-stat-chips">
+          <span class="ssc"><strong>${myCourses.length}</strong> كورس مفعّل</span>
+          <span class="ssc"><strong>${totalCompleted}</strong> درس مكتمل</span>
+          <span class="ssc"><strong>${certSnap.docs.length}</strong> شهادة</span>
+        </div>
+      `;
+    }
+
+    const contSection = document.getElementById('continueLearningSection');
+    const contCard = document.getElementById('continueLearningCard');
+    if(continueCourse && contSection && contCard){
+      contSection.style.display = '';
+      const catColor = continueCourse.categoryName ? categoryColor(continueCourse.categoryId || continueCourse.categoryName) : null;
+      const mark = (continueCourse.title || 'ك').trim()[0]?.toUpperCase() || 'ك';
+      contCard.innerHTML = `
+        <a href="#/learn/${continueCourse.id}" class="continue-card">
+          <div class="cc-mark">${mark}</div>
+          <div class="cc-body">
+            ${continueCourse.categoryName ? `<span class="ccard-cat-pill" style="background:${catColor}20;color:${catColor};">${continueCourse.categoryName}</span>` : ''}
+            <h3>${continueCourse.title || ''}</h3>
+            <div class="cc-progress-row">
+              <div class="cc-progress-track"><div class="cc-progress-fill" style="width:${continuePct}%;"></div></div>
+              <span class="cc-progress-label">${continueDone}/${continueTotal} دروس · ${continuePct}%</span>
+            </div>
+          </div>
+          <span class="cc-cta">متابعة ${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `;
+      const actionsEl = document.getElementById('studentHomeActions');
+      if(actionsEl){
+        actionsEl.innerHTML = `
+          <a href="#/learn/${continueCourse.id}" class="btn btn-primary">استكمل من حيث توقفت</a>
+          <a href="#/dashboard" class="btn btn-ghost">لوحة التحكم</a>
+        `;
+      }
+    }
+  }catch(e){
+    console.warn('student home data failed:', e.message);
+  }
 }
 
 async function loadStats(){
