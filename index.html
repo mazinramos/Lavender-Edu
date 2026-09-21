@@ -431,6 +431,12 @@
     padding:16px 28px;background:#fff;border-bottom:1px solid var(--line);
     position:sticky;top:72px;z-index:5;
   }
+  /* The public nav is display:none for admins (see router()), so there's no 72px bar above
+     the shell to offset for anymore — the sticky topbar and sidebar sit flush at the very
+     top of the viewport instead, or they'd float down over the first row of page content. */
+  body.admin-no-topnav .app-shell{min-height:100vh;}
+  body.admin-no-topnav .app-topbar{top:0;}
+  body.admin-no-topnav .app-sidebar{top:0;height:100vh;}
   .topbar-search{
     display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--line);
     border-radius:10px;padding:8px 14px;flex:1;max-width:320px;min-width:0;color:var(--muted);
@@ -1075,8 +1081,9 @@
     margin-top:auto;padding-top:10px;border-top:1px solid var(--line);
     display:flex;align-items:center;justify-content:space-between;gap:8px;
   }
-  .course-price{font-family:'Cairo',sans-serif;font-weight:800;font-size:16.5px;color:var(--violet-800);}
-  .course-price .price-old{color:var(--muted);text-decoration:line-through;font-weight:600;font-size:11.5px;margin-inline-end:5px;}
+  .course-price{font-family:'Cairo',sans-serif;display:flex;flex-direction:column;align-items:flex-start;gap:1px;}
+  .course-price .price-final{font-weight:800;font-size:16.5px;color:var(--violet-800);white-space:nowrap;}
+  .course-price .price-old{display:block;color:var(--muted);text-decoration:line-through;font-weight:600;font-size:11px;white-space:nowrap;}
   .ccard-cta{
     display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;
     background:var(--mist);color:var(--violet-700);flex-shrink:0;transition:.2s;
@@ -1388,18 +1395,20 @@
     .cat-grid{grid-template-columns:repeat(2,1fr);}
     .app-topbar{padding:12px 14px;}
     .topbar-search{display:none;}
-    .course-card-thumb{height:96px;}
-    .course-card-mark{width:40px;height:40px;font-size:16px;border-radius:11px;}
-    .course-card-ribbon{top:8px;left:8px;font-size:9.5px;padding:3px 8px;}
-    .course-card-body{padding:12px 12px 14px;gap:6px;}
-    .course-card-body h3{font-size:13px;min-height:36px;}
+    .course-card-thumb{height:74px;}
+    .course-card-mark{width:34px;height:34px;font-size:14px;border-radius:10px;}
+    .course-card-ribbon{top:7px;left:7px;font-size:9px;padding:3px 7px;}
+    .course-card-body{padding:11px 12px 12px;gap:5px;}
+    .course-card-body h3{font-size:13px;min-height:auto;-webkit-line-clamp:1;}
     .ccard-meta-row{font-size:10.5px;gap:5px;min-height:16px;}
     .ccard-meta-row .av{width:16px;height:16px;font-size:8.5px;}
     .ccard-meta-row .nm{max-width:56px;}
-    .course-price{font-size:14px;}
+    .course-card-footer{padding-top:8px;}
+    .course-price .price-final{font-size:14px;}
+    .course-price .price-old{font-size:10px;}
     .ccard-cta{width:25px;height:25px;}
     .ccard-cta svg{width:12px;height:12px;}
-    .course-row-track .course-card{width:150px;}
+    .course-row-track .course-card{width:168px;}
   }
 
   /* ================= SUCCESS TOAST — delightful animated confirmation for "add" actions ================= */
@@ -1728,9 +1737,15 @@ function router(){
 
   // Admins live entirely inside their own dashboard shell (its own topbar/search/logout),
   // so the public marketing nav above it is dead weight — every link on it points at a
-  // page admins are blocked from anyway. Hide it whenever an admin is signed in.
+  // page admins are blocked from anyway. Hide it whenever an admin is signed in. The shell's
+  // sticky topbar/sidebar normally assume that 72px-tall public nav is sitting above them
+  // (top:72px), so hiding the nav without also telling them the truth left a stale 72px
+  // gap that made the sticky topbar float down over the first row of page content instead
+  // of sitting flush under it — the "admin-no-topnav" class is what corrects their offset.
   const navBar = document.querySelector('.nav');
-  if(navBar) navBar.style.display = (currentProfile?.role === 'admin') ? 'none' : '';
+  const isAdminUser = currentProfile?.role === 'admin';
+  if(navBar) navBar.style.display = isAdminUser ? 'none' : '';
+  document.body.classList.toggle('admin-no-topnav', isAdminUser);
 
   // Admins never see the public marketplace/home/auth/checkout pages — force them straight to the admin panel.
   const adminBlockedRoutes = ['#/', '#/courses', '#/login', '#/register', '#/enroll/'];
@@ -2678,8 +2693,8 @@ function courseCardHTML(c){
   const finalPrice = hasDiscount ? c.discountPrice : c.price;
   const discountPct = hasDiscount && Number(c.price) > 0 ? Math.round((1 - Number(c.discountPrice) / Number(c.price)) * 100) : 0;
   const priceHTML = isFree
-    ? `<div class="course-price">مجاني</div>`
-    : `<div class="course-price">${hasDiscount ? `<span class="price-old">${c.price} ج.س</span>` : ''}${finalPrice !== undefined && finalPrice !== null && finalPrice !== '' ? `${finalPrice} ج.س` : 'غير محدد'}</div>`;
+    ? `<div class="course-price"><span class="price-final">مجاني</span></div>`
+    : `<div class="course-price">${hasDiscount ? `<span class="price-old">${c.price} ج.س</span>` : ''}<span class="price-final">${finalPrice !== undefined && finalPrice !== null && finalPrice !== '' ? `${finalPrice} ج.س` : 'غير محدد'}</span></div>`;
   const ratingHTML = c.ratingCount
     ? `<span class="st">${starRowHTML(c.ratingAvg)}<span class="rating-val">${Number(c.ratingAvg || 0).toFixed(1)}</span></span>`
     : '';
@@ -7304,11 +7319,11 @@ async function renderInstructorDashboard(){
         parentCategoryId: parentCategoryId || null, parentCategoryName,
         instructorId: currentUser.uid, instructorName: currentProfile?.name || currentUser.email,
         price: 0, discountPrice: null,
-        status: 'draft',
+        status: 'approved',
         createdAt: serverTimestamp(),
       });
       coursesCache = null;
-      alertBox.innerHTML = `<div class="alert alert-success">تم حفظ الكورس كمسودة. اضغط "إدارة المحتوى" لإضافة الدروس، وبعدها "إرسال للمراجعة".</div>`;
+      alertBox.innerHTML = `<div class="alert alert-success">تم إنشاء الكورس وهو ظاهر للطلاب الآن. اضغط "إدارة المحتوى" لإضافة الوحدات والدروس.</div>`;
       document.getElementById('newCourseForm').reset();
       loadInstructorCourses();
     }catch(e){
@@ -8711,6 +8726,7 @@ async function adminRenderCourses(area){
           instructorId: instructorId || null,
           instructorName: instructor ? (instructor.name || instructor.email) : null,
           level: level || null,
+          status: 'approved',
           createdAt: serverTimestamp(),
         });
         courses.push({
@@ -8718,7 +8734,7 @@ async function adminRenderCourses(area){
           categoryId: categoryId || null, categoryName: category ? category.name : null,
           parentCategoryId: parentCategoryId || null, parentCategoryName: parentCategory ? parentCategory.name : null,
           instructorId: instructorId || null, instructorName: instructor ? (instructor.name || instructor.email) : null,
-          level: level || null,
+          level: level || null, status: 'approved',
         });
         coursesCache = null;
         renderList();
