@@ -1816,6 +1816,91 @@
 
   .tab-count-badge.is-new{background:var(--violet-600);animation:stPop .4s cubic-bezier(.34,1.56,.64,1);}
   .admin-bottom-link{position:relative;} .tab-count-badge.bn{position:absolute;top:2px;inset-inline-end:calc(50% - 26px);margin:0;min-width:16px;height:16px;font-size:9.5px;border:2px solid #fff;box-sizing:content-box;}
+
+  /* ================= ADMIN: PAYMENTS ================= */
+  .pay-head,.pay-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 92px 118px 104px 132px 118px;}
+  .pay-mono{font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:700;font-size:12px;color:var(--violet-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pay-amt{display:flex;flex-direction:column;} .pay-amt b{font-family:'Cairo',sans-serif;font-size:13.5px;color:var(--violet-900);} .pay-amt small{font-size:10.5px;color:var(--success);}
+  .pay-m{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pay-st{display:flex;flex-direction:column;gap:5px;align-items:flex-start;}
+  .pay-wait{font-style:normal;font-size:10.5px;font-weight:800;display:inline-flex;align-items:center;gap:4px;color:var(--muted);background:#F1EDF5;border-radius:99px;padding:2px 8px;}
+  .pay-wait.warm{background:#FFF4E0;color:#B5651D;} .pay-wait.hot{background:#FBEBEA;color:var(--danger);animation:arPulseBg 1.6s infinite;}
+  .pay-flag{font-style:normal;color:var(--danger);display:inline-flex;animation:arPulseBg 1.6s infinite;}
+  .icon-action.success{background:#E9F5EE;color:var(--success);border-color:#CFE8D9;} .icon-action.success:hover{background:var(--success);color:#fff;}
+  .pay-sub{display:block;color:var(--c) !important;font-weight:700;}
+  .ar-stat.pay-hot{border-color:var(--danger);animation:widgetIn .5s both,payGlow 2s infinite;} @keyframes payGlow{50%{box-shadow:0 0 0 5px rgba(179,65,58,.14);}}
+  .pay-sla{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;background:linear-gradient(120deg,#FBEBEA,#FFF4E0);border:1px solid #F0C9C6;animation:rowIn .5s both;}
+  .pay-sla > span{color:var(--danger);display:flex;} .pay-sla > div{flex:1;min-width:0;} .pay-sla b{display:block;font-size:13.5px;color:#8C2F29;} .pay-sla small{color:var(--muted);font-size:12px;} .pay-sla .btn{background:var(--danger);color:#fff;border:0;}
+  .pay-auto{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;margin-inline-start:auto;margin-inline-end:8px;} .pay-auto input{accent-color:var(--violet-700);}
+  .pay-hd small{opacity:.8;font-size:12px;} .pay-hd h3{font-size:28px !important;margin:2px 0 4px !important;font-family:'Cairo',sans-serif;} .pay-hd p{display:flex;align-items:center;gap:8px;font-family:monospace;} .pay-hd .ar-mini{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.3);}
+  .pay-body{padding-bottom:6px;}
+  .pay-warns{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+  .pay-warn{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border-radius:12px;font-size:12.5px;line-height:1.7;background:#FFF9EC;border:1px solid #F3DDB0;color:#7A5410;animation:rowIn .4s both;} .pay-warn > svg{flex-shrink:0;margin-top:2px;}
+  .pay-warn.hot{background:#FBEBEA;border-color:#F0C9C6;color:#8C2F29;}
+  .pay-who{display:flex;gap:12px;align-items:center;} .pay-who b{display:block;font-size:14px;} .pay-who small{display:block;color:var(--muted);font-size:12px;text-align:start;}
+  .pay-tl{position:relative;padding-inline-start:6px;} .pay-tl > div{display:flex;gap:14px;padding-bottom:16px;position:relative;animation:rowIn .4s both;}
+  .pay-tl > div::before{content:'';position:absolute;inset-inline-start:6px;top:16px;bottom:0;width:2px;background:var(--line);} .pay-tl > div:last-child::before{display:none;} .pay-tl > div:last-child{padding-bottom:0;}
+  .pay-tl i{width:14px;height:14px;border-radius:50%;background:var(--violet-600);border:3px solid #fff;box-shadow:0 0 0 2px var(--violet-600);flex-shrink:0;margin-top:3px;z-index:1;}
+  .pay-tl .ok i{background:var(--success);box-shadow:0 0 0 2px var(--success);} .pay-tl .bad i{background:var(--danger);box-shadow:0 0 0 2px var(--danger);}
+  .pay-tl .pulse i{background:var(--amber-500);box-shadow:0 0 0 2px var(--amber-500);animation:arPulseBg 1.4s infinite;}
+  .pay-tl b{display:block;font-size:13px;} .pay-tl small{display:block;color:var(--muted);font-size:11.5px;}
+  .pay-f{align-items:stretch;} .pay-f .btn{display:inline-flex;align-items:center;gap:6px;} .pay-f > .btn-primary{flex:1;justify-content:center;}
+  .pay-rej{width:100%;display:flex;flex-direction:column;gap:10px;animation:rowIn .3s both;} .pay-rej b{font-size:13px;color:var(--danger);} .pay-rej b small{color:var(--muted);font-weight:400;}
+  .pay-rs{display:flex;gap:6px;flex-wrap:wrap;} .pay-rs button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font-size:12px;color:var(--ink);transition:.2s;} .pay-rs button:hover{background:var(--mist);border-color:var(--violet-600);}
+  .pay-rej textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:13px;resize:none;} .pay-rej textarea:focus{outline:none;border-color:var(--danger);}
+  .pay-rb{display:flex;gap:8px;}
+  @media (max-width:1150px){ .pay-head,.pay-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 110px 100px 128px 112px;} .pay-head span:nth-child(4),.pay-list .pay-mono{display:none;} }
+  @media (max-width:760px){
+    .pay-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) auto;grid-template-areas:"c v m b" "s s x x" "a a a a";row-gap:8px;}
+    .pay-list .us-av{grid-area:v;} .pay-list .pay-amt{grid-area:b;align-items:flex-end;} .pay-list .pay-st{grid-area:s;flex-direction:row;align-items:center;} .pay-list .pay-m{grid-area:x;text-align:end;}
+    .ar-cards .pay-mono{display:block;} .ar-cards .pay-st{flex-direction:row;align-items:center;flex-wrap:wrap;}
+  }
+
+
+  /* ================= ADMIN: FINANCE ================= */
+  .fin-bar{display:flex;flex-direction:column;gap:12px;}
+  .fin-cust{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;} .fin-cust label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--muted);font-weight:700;}
+  .fin-cust input[type=date]{border:1px solid var(--line);border-radius:10px;padding:7px 10px;font-family:inherit;font-size:13px;background:var(--paper);color:var(--ink);}
+  .fin-tgs{margin-inline-start:auto;} .fin-per{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);flex-wrap:wrap;} .fin-per span{color:var(--violet-700);font-weight:700;} .fin-per svg{color:var(--violet-600);}
+  .fin-tg{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--ink);cursor:pointer;user-select:none;} .fin-tg input{display:none;}
+  .fin-tg i{width:36px;height:20px;border-radius:99px;background:var(--line);position:relative;transition:.25s;flex-shrink:0;} .fin-tg i::after{content:'';position:absolute;top:2px;inset-inline-start:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:.25s cubic-bezier(.34,1.56,.64,1);}
+  .fin-tg input:checked + i{background:var(--violet-600);} .fin-tg input:checked + i::after{transform:translateX(-16px);} [dir="ltr"] .fin-tg input:checked + i::after{transform:translateX(16px);}
+  .fin-ins{display:flex;gap:10px;flex-wrap:wrap;} .fin-ins:empty{display:none;}
+  .fin-ins > div{display:flex;align-items:center;gap:10px;background:linear-gradient(120deg,#fff,var(--mist));border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-size:12.5px;animation:rowIn .45s both;animation-delay:calc(var(--i)*.07s);}
+  .fin-ins span{width:30px;height:30px;border-radius:9px;background:var(--violet-700);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;} .fin-ins p{margin:0;line-height:1.6;} .fin-ins b{color:var(--violet-800);} .fin-ins a{color:var(--violet-700);font-weight:800;text-decoration:underline;}
+  .fin-dims{margin-bottom:14px;flex-wrap:wrap;} .fin .ov-top.ov-top{color:inherit;}
+  .fin-wd{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;height:210px;align-items:end;}
+  .fin-wd > div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:5px;animation:rowIn .4s both;animation-delay:calc(var(--i)*.06s);}
+  .fin-wd u{display:block;width:100%;border-radius:10px 10px 4px 4px;background:linear-gradient(var(--violet-600),#B9A2E0);transform-origin:bottom;animation:finUp .9s cubic-bezier(.22,1,.36,1);transition:filter .2s;} @keyframes finUp{from{transform:scaleY(0);}}
+  .fin-wd > div:hover u{filter:brightness(1.15);} .fin-wd .top u{background:linear-gradient(var(--amber-500),var(--amber-600));}
+  .fin-wd b{font-family:'Cairo',sans-serif;font-size:12px;color:var(--violet-900);} .fin-wd small{font-size:10.5px;color:var(--muted);}
+  .fin-fee{display:flex;align-items:flex-end;gap:10px;margin:-4px 0 14px;flex-wrap:wrap;} .fin-fee label{display:flex;flex-direction:column;gap:4px;font-size:11.5px;color:var(--muted);font-weight:700;}
+  .fin-fee input{width:120px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-family:inherit;font-size:14px;background:var(--paper);} .fin-fee input:focus{outline:none;border-color:var(--violet-600);}
+  .fin-th,.fin-tr{display:grid;grid-template-columns:minmax(0,1.5fr) 1fr 1fr 1.1fr;gap:10px;align-items:center;padding:10px 12px;font-size:12.5px;}
+  .fin-th{background:var(--paper);border-radius:10px;font-size:11.5px;font-weight:700;color:var(--muted);}
+  .fin-tr{border-bottom:1px solid var(--line);color:var(--ink);transition:.2s;animation:rowIn .4s both;animation-delay:calc(var(--i)*.05s);} a.fin-tr:hover{background:var(--paper);border-radius:12px;}
+  .fin-tr b{display:block;font-size:13px;} .fin-tr small{display:block;color:var(--muted);font-size:11px;} .fin-tr .due{font-weight:800;color:var(--success);font-family:'Cairo',sans-serif;}
+  .fin-tr.tot{border:0;background:var(--mist);border-radius:12px;margin-top:6px;font-weight:800;}
+  .fin-head,.fin-list .ar-item{grid-template-columns:104px 92px minmax(0,1fr) 112px 132px;gap:12px;}
+  .fin-row{color:inherit;} .fin-list .ar-item:hover{box-shadow:inset 3px 0 0 var(--c);}
+  @media (max-width:1000px){ .fin-head,.fin-list .ar-item{grid-template-columns:92px minmax(0,1fr) 120px;} .fin-head span:nth-child(2),.fin-head span:nth-child(4),.fin-list .pay-mono,.fin-list .pay-m{display:none;} }
+  @media (max-width:760px){ .fin-th,.fin-tr{grid-template-columns:minmax(0,1.3fr) 1fr 1fr;} .fin-th span:nth-child(3),.fin-tr span:nth-child(3){display:none;} .fin-wd{gap:4px;} .fin-wd small{font-size:9px;} .fin-tgs{margin-inline-start:0;} .fin-head{display:none;} .fin-list .ar-item{grid-template-columns:minmax(0,1fr) auto;} .fin-list .ar-dt{display:none;} }
+
+
+  /* ================= ADMIN: CERTIFICATES ================= */
+  .crt-main{margin-bottom:14px;width:fit-content;max-width:100%;overflow-x:auto;} .crt-main button{white-space:nowrap;padding:8px 16px;font-size:13px;}
+  .crt-head,.crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 150px 110px 176px;}
+  .crt-ic{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--amber-500),var(--amber-600));color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 16px -10px var(--amber-600);transition:transform .3s cubic-bezier(.34,1.56,.64,1);} .ar-item:hover .crt-ic{transform:scale(1.1) rotate(-6deg);}
+  .crt-ex{font-size:11.5px;color:var(--muted);background:#F1EDF5;border-radius:99px;padding:3px 10px;width:fit-content;} .crt-ex.ok{background:#E9F5EE;color:var(--success);font-weight:700;}
+  .crt-dr{width:min(640px,100%);}
+  .crt-prev{width:100%;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 14px 30px -20px rgba(42,25,72,.5);position:relative;animation:rowIn .45s both;}
+  .crt-prev .crt-host{position:absolute;top:0;left:0;width:1123px;height:794px;transform-origin:top left;background:#fff;}
+  .crt-pick{max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px;}
+  .crt-pick button{display:flex;align-items:center;gap:10px;text-align:start;border:1px solid transparent;background:#fff;border-radius:10px;padding:8px 10px;transition:.18s;} .crt-pick button:hover{background:var(--paper);}
+  .crt-pick button.on{background:var(--mist);border-color:var(--violet-600);} .crt-pick b{display:block;font-size:13px;} .crt-pick small{color:var(--muted);font-size:11.5px;}
+  @media (max-width:1000px){ .crt-head,.crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 110px 176px;} .crt-head span:nth-child(4),.crt-list .pay-mono,.crt-list .crt-ex{display:none;} }
+  @media (max-width:760px){ .crt-head{display:none;} .crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr);grid-template-areas:"c v m" "a a a";row-gap:8px;} .crt-list .crt-ic{grid-area:v;} .crt-list .ar-dt{display:none;} .crt-list .ar-act{grid-area:a;justify-content:flex-start;} .ar-cards .crt-ic{width:54px;height:54px;} }
+
 </style>
 </head>
 <body>
@@ -1891,7 +1976,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile, sendEmailVerification
+  signOut, onAuthStateChanged, sendPasswordResetEmail, updateProfile, sendEmailVerification,
+  reauthenticateWithCredential, EmailAuthProvider, updatePassword, verifyBeforeUpdateEmail
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   getFirestore, doc, setDoc, getDoc, serverTimestamp, collection,
@@ -2088,6 +2174,14 @@ function router(){
   if(navBar) navBar.style.display = isAdminUser ? 'none' : '';
   document.body.classList.toggle('admin-no-topnav', isAdminUser);
 
+  // Signed in but the profile (and therefore the role) hasn't loaded yet: don't judge the
+  // account yet. Redirecting here is what used to bounce a freshly-logged-in admin to the
+  // verify-email page. onAuthStateChanged calls router() again as soon as the profile is in.
+  if(currentUser && !currentProfile){
+    document.getElementById('app').innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ التحميل...</div></div>`;
+    return;
+  }
+
   // Admins never see the public marketplace/home/auth/checkout pages — force them straight to the admin panel.
   const adminBlockedRoutes = ['#/', '#/courses', '#/login', '#/register', '#/enroll/'];
   if(currentProfile?.role === 'admin' && adminBlockedRoutes.some(r => (r === '#/' ? path === '#/' : path.startsWith(r)))){
@@ -2099,7 +2193,7 @@ function router(){
   // browse, enroll, submit to the library, none of it — until the address on file is
   // proven real. Every route funnels through the verification page first, for every role
   // except admin (an admin account is set up directly, never through self-registration).
-  if(currentUser && currentProfile?.role !== 'admin' && !currentUser.emailVerified && path !== '#/verify-email'){
+  if(currentUser && !isAdminAccount() && !currentUser.emailVerified && path !== '#/verify-email'){
     location.hash = '#/verify-email';
     return;
   }
@@ -2116,6 +2210,7 @@ function router(){
   else if(path.startsWith('#/library')) renderLibrary(params.get('group'));
   else if(path.startsWith('#/manage/')) renderManageCourse(path.split('#/manage/')[1]);
   else if(path.startsWith('#/exam/')) renderExamTake(path.split('#/exam/')[1]);
+  else if(path.startsWith('#/verify-cert/')) renderVerifyCertificate(path.split('#/verify-cert/')[1]);
   else if(path.startsWith('#/course/')) renderCourseDetail(path.split('#/course/')[1]);
   else if(path.startsWith('#/instructor/')) renderInstructorProfile(path.split('#/instructor/')[1]);
   else if(path.startsWith('#/enroll/')) renderEnrollForm(path.split('#/enroll/')[1]);
@@ -3066,6 +3161,12 @@ function explainErr(e, fallback){
     'auth/missing-continue-uri':'رابط العودة ناقص.',
     'auth/operation-not-allowed':'الميزة دي مقفولة في إعدادات Firebase Authentication.',
     'auth/user-token-expired':'انتهت جلسة الدخول — سجّل دخول من جديد.',
+    'auth/wrong-password':'كلمة المرور الحالية غير صحيحة.',
+    'auth/invalid-credential':'كلمة المرور الحالية غير صحيحة.',
+    'auth/email-already-in-use':'البريد ده مستخدم في حساب آخر.',
+    'auth/invalid-email':'صيغة البريد غير صحيحة.',
+    'auth/weak-password':'كلمة المرور ضعيفة — استخدم 6 أحرف على الأقل.',
+    'auth/requires-recent-login':'لأسباب أمنية، سجّل خروج ودخول من جديد ثم أعد المحاولة.',
   };
   console.error('[Lavender]', code, e);
   const why = map[code];
@@ -3238,6 +3339,7 @@ function renderVerifyEmail(){
   // Nothing to verify (signed out) or nothing left to do here (already verified) — send
   // the visitor somewhere that actually makes sense for them instead of showing this page.
   if(!currentUser){ location.hash = '#/login'; return; }
+  if(isAdminAccount()){ location.hash = '#/dashboard'; return; }
   if(currentUser.emailVerified){ location.hash = '#/'; return; }
 
   const email = currentUser.email || '';
@@ -4275,7 +4377,7 @@ async function renderCourseDetail(courseId){
       `;
     } else if(enrollment.status === 'rejected' || enrollment.status === 'cancelled'){
       ctaHTML = `
-        <div class="alert alert-error" style="margin-bottom:14px;">${enrollment.status === 'cancelled' ? 'طلبك السابق تم إلغاؤه.' : 'تم رفض طلبك السابق.'}</div>
+        <div class="alert alert-error" style="margin-bottom:14px;">${enrollment.status === 'cancelled' ? 'طلبك السابق تم إلغاؤه.' : 'تم رفض طلبك السابق.'}${enrollment.rejectReason ? ' السبب: ' + String(enrollment.rejectReason).replace(/[<>&]/g,'') : ''}</div>
         <a href="#/enroll/${course.id}" class="btn btn-primary btn-full">اشترك مرة أخرى</a>
       `;
     }
@@ -7892,11 +7994,13 @@ async function loadMyCertificates(){
       <div class="table-widget-row">
         <div class="avatar-sm" style="background:var(--amber-500);">${SIDE_ICONS.certificate}</div>
         <div class="grow">
-          <div class="t1">${c.courseTitle || 'كورس'}</div>
-          <div class="t2">${c.issueDate || ''} ${c.note ? '· ' + c.note : ''}</div>
+          <div class="t1">${certEsc(c.courseTitle || 'كورس')}</div>
+          <div class="t2">${certEsc(c.issueDate || '')} ${c.note ? '· ' + certEsc(c.note) : ''} · <span dir="ltr">${certEsc(certSerial(c))}</span></div>
         </div>
+        <button type="button" class="btn btn-ghost btn-sm" data-cert="${c.id}">عرض / طباعة</button>
       </div>
     `).join('');
+    area.querySelectorAll('[data-cert]').forEach(b => b.addEventListener('click', () => openCertificate(certs.find(c => c.id === b.dataset.cert))));
   }catch(e){
     area.innerHTML = `<div class="empty-state" style="padding:20px 0;">تعذّر تحميل الشهادات.</div>`;
   }
@@ -8657,11 +8761,11 @@ async function adminRenderOverview(area){
     { l:'نسبة قبول الطلبات', n:enr.length ? Math.round(okE.length / enr.length * 100) : 0, u:'%', i:P.pct, c:'#B3413A', bg:'#FBEBEA', go:H('finance'), sp:series(enr, () => 1, 14).vals, sub:`من ${enr.length} طلب اشتراك` },
   ];
   const A = [];
-  if(pendE.length) A.push({ lvl:'hot', i:P.card, t:`${pendE.length} طلب دفع بانتظار مراجعتك`, s:'راجع الإيصالات وفعّل الاشتراكات', go:H('payments') });
+  if(pendE.length) A.push({ lvl:'hot', i:P.card, t:`${pendE.length} طلب دفع بانتظار مراجعتك`, s:'راجع الإيصالات وفعّل الاشتراكات', go:H('payments') + '&status=review' });
   if(libPend) A.push({ lvl:'hot', i:P.book, t:`${libPend} عمل في المكتبة بانتظار المراجعة`, s:'اعتمد أو ارفض الأعمال المقدّمة', go:H('library') });
   if(revCourses) A.push({ lvl:'hot', i:P.check, t:`${revCourses} كورس بانتظار موافقتك`, s:'مراجعة الكورسات المقدّمة من المدربين', go:H('review') });
   if(todayLec) A.push({ lvl:'info', i:P.vid, t:`${todayLec} محاضرة مباشرة اليوم`, s:'تأكد من الروابط والمواعيد', go:H('live-sessions') });
-  if(awaitE.length) A.push({ lvl:'mid', i:P.clock, t:`${awaitE.length} طلب بانتظار رفع إيصال الدفع`, s:'الطالب ما رفع إثبات التحويل بعد', go:H('payments') });
+  if(awaitE.length) A.push({ lvl:'mid', i:P.clock, t:`${awaitE.length} طلب بانتظار رفع إيصال الدفع`, s:'الطالب ما رفع إثبات التحويل بعد', go:H('payments') + '&status=await' });
   if(pms && !pms.length) A.push({ lvl:'warn', i:P.warn, t:'ما في وسيلة دفع مفعّلة', s:'الطلاب ما هيقدروا يكملوا الاشتراك في الكورسات المدفوعة', go:H('payment-methods') });
   if(blockedN) A.push({ lvl:'info', i:P.ban, t:`${blockedN} حساب معطّل أو موقوف أو محظور`, s:'استعرضهم وراجع الحالات', go:H('users') });
   const links = [['payments','المدفوعات',P.card,pendE.length],['users','المستخدمون',P.users,0],['courses','الكورسات',P.book,0],['notifications','إرسال إشعار',P.bell,0],['archive','غرفة الأرشيف',P.folder,0],['activity-log','سجل النشاطات',P.act,0]];
@@ -8696,7 +8800,7 @@ async function adminRenderOverview(area){
     <div class="ov-2">
       <div class="widget"><div class="widget-head"><h3>الإيرادات</h3><div class="ov-rng" id="ovRng"><button data-n="7">7 أيام</button><button data-n="30" class="on">30 يوم</button><button data-n="90">90 يوم</button></div></div><div class="ov-sum" id="ovSum"></div><div class="chart-box" style="height:250px"><canvas id="ovRev"></canvas></div></div>
       <div class="widget"><div class="widget-head"><h3>حالة طلبات الاشتراك</h3><a class="ov-more" href="${H('payments')}">المدفوعات ←</a></div>
-        <div class="ov-dist">${dist.map(([k,l,n,c],i) => `<a href="${H('payments')}" style="--c:${c};--i:${i}"><div><span>${l}</span><b>${n}</b></div><i><u style="width:${enr.length ? n/enr.length*100 : 0}%"></u></i></a>`).join('')}</div>
+        <div class="ov-dist">${dist.map(([k,l,n,c],i) => `<a href="${H('payments')}&status=${({approved:'ok',review:'review',await:'await',bad:'bad'})[k] || 'all'}" style="--c:${c};--i:${i}"><div><span>${l}</span><b>${n}</b></div><i><u style="width:${enr.length ? n/enr.length*100 : 0}%"></u></i></a>`).join('')}</div>
         <div class="ov-donut"><div class="ov-dn" style="background:conic-gradient(${conic})"><span><b>${users.length}</b><small>مستخدم</small></span></div><div class="ov-leg">${roleSeg.map(([l,n,c,r]) => `<a href="${H('users')}&role=${r}"><i style="background:${c}"></i>${l}<b>${n}</b></a>`).join('')}</div></div></div>
     </div>
     <div class="ov-2">
@@ -10201,313 +10305,786 @@ async function adminRenderCourseReview(area){
   }
 }
 
+/* ---------------- ADMIN: PAYMENTS (v2 — pro) ---------------- */
 async function adminRenderPayments(area){
-  try{
-    const snap = await getDocs(collection(db, 'enrollments'));
-    let enrollments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const reviewable = ['pending','payment_submitted','under_review'];
-    enrollments.sort((a,b) => (reviewable.includes(a.status) ? 0 : 1) - (reviewable.includes(b.status) ? 0 : 1));
+  document.getElementById('payOv')?.remove(); document.getElementById('payBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:360px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, { undo:'<path d="M3 7v6h6M3 13a9 9 0 103-7.7L3 8"/>', wallet:'<path d="M20 12V8H6a2 2 0 010-4h12v4M4 6v12a2 2 0 002 2h14v-4M18 12a2 2 0 000 4h4v-4z"/>', send:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>', bell:'<path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>', hash:'<path d="M4 9h16M4 15h16M10 3L8 21M16 3l-2 18"/>' });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const money = n => Number(n || 0).toLocaleString('ar-EG') + ' ج.س';
+  const fmtDT = s => s ? new Date(s*1000).toLocaleString('ar-EG', { dateStyle:'medium', timeStyle:'short' }) : '—';
+  const nm = n => Number(n).toLocaleString('ar-EG');
+  const dur = s => s < 3600 ? nm(Math.max(1, Math.round(s/60))) + ' دقيقة' : s < 86400 ? nm(+(s/3600).toFixed(1)) + ' ساعة' : nm(Math.round(s/86400)) + ' يوم';
+  const initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase();
+  const waLink = p => { const d = String(p || '').replace(/\D/g,''); return (/^\+|^00/.test(String(p).trim()) || (d.length >= 11 && d[0] !== '0')) ? 'https://wa.me/' + d.replace(/^00/,'') : ''; };
+  const REV = ['pending','payment_submitted','under_review'];
+  const grp = s => s === 'approved' ? 'ok' : REV.includes(s) ? 'review' : s === 'pending_payment' ? 'await' : 'bad';
+  const G = { review:{ l:'قيد المراجعة', c:'#C98826', bg:'#FFF4E0', st:'suspended' }, await:{ l:'بانتظار الدفع', c:'#3B6FBF', bg:'#EEF3FB', st:'disabled' }, ok:{ l:'مقبولة', c:'#2F7A4F', bg:'#E9F5EE', st:'active' }, bad:{ l:'مرفوضة / ملغاة', c:'#B3413A', bg:'#FBEBEA', st:'banned' } };
+  const REASONS = ['الإيصال غير واضح','المبلغ غير مطابق','لم يصل التحويل','مرجع العملية غير صحيح','طلب مكرر'];
 
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>طلبات الاشتراك والدفع</h3></div>
-        <p style="font-size:12px;color:var(--muted);margin:-10px 0 14px;">"بانتظار الدفع" تعني أن الطالب لم يضغط بعد على "تم الدفع" — في انتظاره هو، وليس الإدارة. يتم التحقق من الدفع عبر واتساب مباشرة مع الطالب، وليس برفع صورة إثبات. يصل كل طالب برقم طلب مميز يكتبه في ملاحظة التحويل — استخدمه هنا للبحث ومطابقة الإشعار.</p>
-        <div class="field" style="margin-bottom:14px;max-width:320px;">
-          <input type="text" id="paymentsSearchInput" placeholder="بحث برقم الطلب، اسم الطالب، أو الكورس..." />
-        </div>
-        <div id="paymentsList"></div>
-      </div>
-    `;
-
-    function renderList(filterText){
-      const listEl = document.getElementById('paymentsList');
-      const q = (filterText || '').trim().toLowerCase();
-      const filtered = !q ? enrollments : enrollments.filter(e => {
-        const orderNum = (e.orderNumber || e.id || '').toLowerCase();
-        return orderNum.includes(q) || (e.studentName || '').toLowerCase().includes(q) || (e.courseTitle || '').toLowerCase().includes(q);
-      });
-      if(filtered.length === 0){
-        listEl.innerHTML = `<div class="empty-state">${q ? 'لا توجد طلبات مطابقة.' : 'لا توجد طلبات تسجيل حتى الآن.'}</div>`;
-        return;
-      }
-      listEl.innerHTML = filtered.map(e => `
-        <div class="table-widget-row" style="align-items:flex-start;">
-          <div class="avatar-sm">${(e.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
-          <div class="grow">
-            <div class="t1">${e.studentName || 'طالب'} <span style="font-family:monospace;font-weight:700;color:var(--violet-700);font-size:12px;">#${e.orderNumber || e.id}</span></div>
-            <div class="t2">${e.courseTitle || 'كورس'}</div>
-            <div class="t2">${e.finalAmount !== undefined ? `المبلغ: ${e.finalAmount} ج.س · ` : ''}مرجع الدفع: ${e.paymentRef || '—'}</div>
-            <div class="t2">${e.notificationSent ? `${SIDE_ICONS.check} تم إرسال إشعار واتساب/تلغرام` : 'لم يُرسل إشعار بعد'}</div>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
-            <span class="status-badge ${STATUS_CLASS[e.status] || 'status-pending'}">${STATUS_LABEL[e.status] || 'قيد المراجعة'}</span>
-            ${(e.status === 'pending' || e.status === 'payment_submitted' || e.status === 'under_review') ? `
-              <div style="display:flex;gap:6px;">
-                <button class="icon-action success" data-action="approve" data-id="${e.id}" title="موافقة">${SIDE_ICONS.check}</button>
-                <button class="icon-action danger" data-action="reject" data-id="${e.id}" title="رفض">${SIDE_ICONS.close}</button>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-action]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.id;
-          const action = btn.dataset.action;
-          const newStatus = action === 'approve' ? 'approved' : 'rejected';
-          btn.disabled = true;
-          try{
-            const en = enrollments.find(x => x.id === id);
-            await updateDoc(doc(db, 'enrollments', id), { status: newStatus, reviewedAt: serverTimestamp() });
-            if(en && en.studentId && en.courseId){
-              if(newStatus === 'approved') await grantCourseAccess(en.studentId, en.courseId);
-              else await revokeCourseAccess(en.studentId, en.courseId);
-            }
-            if(en) en.status = newStatus;
-            renderList(document.getElementById('paymentsSearchInput')?.value);
-            if(newStatus === 'approved') showSuccessToast('تم قبول الطلب!', en ? `${en.studentName || 'الطالب'} — ${en.courseTitle || ''}` : '');
-          }catch(e){
-            alert('تعذّر تحديث حالة الطلب.');
-            btn.disabled = false;
-          }
-        });
-      });
-    }
-    renderList();
-    document.getElementById('paymentsSearchInput').addEventListener('input', (e) => renderList(e.target.value));
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل طلبات الدفع.</div>`;
+  let enr = [], users = new Map(), methods = new Map(), courses = new Map();
+  const mLabel = e => methods.get(e.paymentMethodId)?.label || (e.paymentMethodId ? 'وسيلة محذوفة' : (Number(e.finalAmount) === 0 ? 'مجاني' : '—'));
+  const waitSec = e => Math.max(0, Date.now()/1000 - (e.sub || e.t));
+  function dupes(){
+    const refs = {}, sc = {}, rk = e => (e.paymentRef || '').trim().toLowerCase();
+    enr.forEach(e => { if(rk(e)) (refs[rk(e)] = refs[rk(e)] || []).push(e); (sc[e.studentId + '|' + e.courseId] = sc[e.studentId + '|' + e.courseId] || []).push(e); });
+    enr.forEach(e => { e.dupRef = rk(e) ? refs[rk(e)].filter(x => x !== e) : []; e.dupCourse = (sc[e.studentId + '|' + e.courseId] || []).filter(x => x !== e && (x.g === 'ok' || x.g === 'review')); });
   }
+  async function load(){
+    const [eS, uS, mS, cs] = await Promise.all([getDocs(collection(db,'enrollments')), getDocs(collection(db,'users')).catch(() => ({ docs:[] })), getDocs(collection(db,'paymentMethods')).catch(() => ({ docs:[] })), fetchAllCoursesAdmin()]);
+    uS.docs.forEach(d => users.set(d.id, d.data())); mS.docs.forEach(d => methods.set(d.id, { id:d.id, ...d.data() })); cs.forEach(c => courses.set(c.id, c));
+    enr = eS.docs.map(d => { const e = { id:d.id, ...d.data() }; e.g = grp(e.status); e.t = ts(e.createdAt); e.sub = ts(e.submittedAt) || e.t; e.rev = ts(e.reviewedAt); return e; });
+    dupes();
+  }
+  try{ await load(); }catch(err){
+    console.error('[Lavender] payments load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل طلبات الدفع.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="payRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('payRetry').onclick = () => adminRenderPayments(area); return;
+  }
+
+  const qp = new URLSearchParams(location.hash.split('?')[1] || '');
+  let q = '', fst = ['review','await','ok','bad'].includes(qp.get('status')) ? qp.get('status') : 'all', fm = 'all', fc = 'all', fr = 'all', sort = 'smart', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null, auto = true;
+  const sel = new Set(), PAGE = 20;
+  const courseOpts = [...new Map(enr.filter(e => e.courseId).map(e => [e.courseId, e.courseTitle || courses.get(e.courseId)?.title || 'كورس'])).entries()];
+
+  area.innerHTML = `
+  <div class="ar pay" id="payRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.card,24)}</span><div><h2>المدفوعات والاشتراكات</h2><p>راجع الطلبات، تحقّق من التحويلات، وفعّل الكورسات — والطالب بيتبلّغ تلقائيًا بالقرار.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="csv">${svg(P.dl,15)} تصدير CSV</button></div>
+    </div>
+    <div id="paySla"></div>
+    <div class="ar-stats" id="payStats"></div>
+    <div class="widget ar-panel">
+      <div class="cat-tabs" id="payChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="payQ" placeholder="ابحث برقم الطلب أو الطالب أو الكورس أو مرجع الدفع…   ( / )" /></div>
+        <select id="payM" class="ar-sel"><option value="all">كل وسائل الدفع</option>${[...methods.values()].map(m => `<option value="${m.id}">${E(m.label || 'وسيلة')}</option>`).join('')}</select>
+        <select id="payC" class="ar-sel"><option value="all">كل الكورسات</option>${courseOpts.map(([id,t]) => `<option value="${id}">${E(t)}</option>`).join('')}</select>
+        <select id="payR" class="ar-sel"><option value="all">كل الفترات</option><option value="today">اليوم</option><option value="7">آخر 7 أيام</option><option value="30">آخر 30 يوم</option></select>
+        <select id="payS" class="ar-sel"><option value="smart">الأولوية (الأقدم انتظارًا أولًا)</option><option value="new">الأحدث</option><option value="old">الأقدم</option><option value="hi">الأعلى مبلغًا</option><option value="lo">الأقل مبلغًا</option></select>
+        <div class="ar-seg"><button data-act="view" data-v="list" title="جدول">${svg(P.list,16)}</button><button data-act="view" data-v="cards" title="بطاقات">${svg(P.grid,16)}</button></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="payCount"></div>
+      <div id="payList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('payRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'payOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="payDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'payBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+  $('#payS').value = sort;
+
+  const startOfDay = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime()/1000; };
+  const filtered = () => enr.filter(e => {
+    if(fst !== 'all' && e.g !== fst) return false; if(fm !== 'all' && e.paymentMethodId !== fm) return false; if(fc !== 'all' && e.courseId !== fc) return false;
+    if(fr === 'today' && e.t < startOfDay()) return false; if(fr === '7' && e.t < Date.now()/1000 - 7*86400) return false; if(fr === '30' && e.t < Date.now()/1000 - 30*86400) return false;
+    return !q || `${e.orderNumber || e.id} ${e.studentName || ''} ${e.courseTitle || ''} ${e.paymentRef || ''} ${users.get(e.studentId)?.email || ''}`.toLowerCase().includes(q);
+  }).sort((a,b) => sort === 'new' ? b.t - a.t : sort === 'old' ? a.t - b.t : sort === 'hi' ? Number(b.finalAmount||0) - Number(a.finalAmount||0) : sort === 'lo' ? Number(a.finalAmount||0) - Number(b.finalAmount||0)
+    : ((a.g === 'review' ? 0 : 1) - (b.g === 'review' ? 0 : 1)) || (a.g === 'review' ? a.sub - b.sub : b.t - a.t));
+
+  function paintTop(){
+    const c = g => enr.filter(e => e.g === g).length, rv = enr.filter(e => e.g === 'review'), ok = enr.filter(e => e.g === 'ok');
+    const oldest = rv.length ? Math.max(...rv.map(waitSec)) : 0, sumOk = ok.reduce((s,e) => s + Number(e.finalAmount || 0), 0);
+    const done = enr.filter(e => (e.g === 'ok' || e.g === 'bad') && e.rev && e.rev > e.sub), avg = done.length ? done.reduce((s,e) => s + (e.rev - e.sub), 0) / done.length : 0;
+    const S = [
+      { k:'review', l:'قيد المراجعة', n:rv.length, sub:rv.length ? `أقدم طلب منذ ${dur(oldest)}` : 'لا شيء معلّق', i:P.clock, c:'#C98826', bg:'#FFF4E0', on:fst === 'review', hot:oldest > 86400 },
+      { k:'await', l:'بانتظار الدفع', n:c('await'), i:P.wallet, c:'#3B6FBF', bg:'#EEF3FB', on:fst === 'await' },
+      { k:'ok', l:'مقبولة', n:c('ok'), sub:`${money(sumOk)}`, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', on:fst === 'ok' },
+      { k:'bad', l:'مرفوضة / ملغاة', n:c('bad'), i:P.ban, c:'#B3413A', bg:'#FBEBEA', on:fst === 'bad' },
+      { k:'all', l:'إجمالي الطلبات', n:enr.length, sub:`اليوم: ${nm(enr.filter(e => e.t >= startOfDay()).length)}`, i:P.card, c:'#5A3B92', bg:'#EDE7F6', on:fst === 'all' },
+      { k:'-', l:'متوسط زمن المراجعة', txt:done.length ? dur(avg) : '—', i:P.act || P.clock, c:'#6B6072', bg:'#F1EDF5', on:false },
+    ];
+    $('#payStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''} ${s.hot ? 'pay-hot' : ''}" ${s.k === '-' ? '' : `data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i || P.clock,20)}</span><span>${s.txt ? `<b style="font-size:17px">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small class="pay-sub">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#payStats b[data-n]').forEach(countUp);
+    const late = rv.filter(e => waitSec(e) > 86400).length;
+    $('#paySla').innerHTML = late ? `<div class="pay-sla"><span>${svg(P.warn,20)}</span><div><b>${nm(late)} ${late === 1 ? 'طلب مضى' : 'طلبات مضى'} عليه أكثر من 24 ساعة بدون مراجعة</b><small>الطلاب المتأخّرين ممكن يفقدوا الثقة — راجعهم الآن.</small></div><button class="btn btn-sm" data-act="stat" data-k="review">اعرضها</button></div>` : '';
+    $('#payChips').innerHTML = [['all','الكل',enr.length],['review','قيد المراجعة',c('review')],['await','بانتظار الدفع',c('await')],['ok','مقبولة',c('ok')],['bad','مرفوضة / ملغاة',c('bad')]].map(([k,l,n]) => `<button class="cat-tab ${fst === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+  const pill = e => `<span class="us-st ${G[e.g].st}">${STATUS_LABEL[e.status] || G[e.g].l}</span>`;
+  const waitChip = e => e.g === 'review' ? `<em class="pay-wait ${waitSec(e) > 86400 ? 'hot' : waitSec(e) > 21600 ? 'warm' : ''}">${svg(P.clock,11)} ${dur(waitSec(e))}</em>` : '';
+  function rowHTML(e, i){
+    const g = G[e.g], u = users.get(e.studentId), warn = e.g === 'review' && (e.dupRef.length || e.dupCourse.length), disc = Number(e.priceAtPurchase || 0) - Number(e.finalAmount || 0);
+    return `<div class="ar-item ${sel.has(e.id) ? 'sel' : ''}" data-id="${e.id}" style="--i:${Math.min(i,14)};--c:${g.c};--bg:${g.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(e.id) ? 'checked' : ''}><i></i></label>
+      <span class="us-av">${E(initial(e.studentName))}</span>
+      <div class="ar-main"><div class="ar-t">${E(e.studentName || 'طالب')}${warn ? `<em class="pay-flag" title="${e.dupRef.length ? 'مرجع دفع مكرر' : 'طلب مكرر لنفس الكورس'}">${svg(P.warn,12)}</em>` : ''}</div><div class="ar-d">${E(e.courseTitle || 'كورس')} · <span title="${fmtDT(e.t)}">${ago(e.t)}</span></div></div>
+      <span class="pay-mono">#${E(e.orderNumber || e.id.slice(0,6))}</span>
+      <div class="pay-amt"><b>${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}</b>${disc > 0 ? `<small>خصم ${money(disc)}</small>` : ''}</div>
+      <span class="pay-m">${E(mLabel(e))}</span>
+      <div class="pay-st">${pill(e)}${waitChip(e)}</div>
+      <div class="ar-act">
+        <button class="icon-action" data-act="open" title="التفاصيل">${svg(P.eye,15)}</button>
+        ${e.g === 'review' ? `<button class="icon-action success" data-act="approve" title="قبول">${svg(P.check,15)}</button><button class="icon-action danger" data-act="reject" title="رفض">${svg(P.x,15)}</button>` : (waLink(u?.phone) ? `<a class="icon-action" href="${waLink(u.phone)}" target="_blank" rel="noopener" title="واتساب">${svg(P.chat,15)}</a>` : '')}
+      </div></div>`;
+  }
+  function paintList(){
+    const L = filtered(), shown = L.slice(0, page*PAGE), tot = L.reduce((s,e) => s + Number(e.finalAmount || 0), 0);
+    document.querySelectorAll('#payRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#payCount').innerHTML = `عرض ${nm(shown.length)} من ${nm(L.length)} · مجموع المبالغ المعروضة: <b>${money(tot)}</b>`;
+    if(!L.length){ $('#payList').innerHTML = `<div class="ar-empty">${svg(P.card,44)}<h4>${enr.length ? 'ما في طلبات مطابقة' : 'لا توجد طلبات بعد'}</h4><p>${enr.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'هتظهر هنا أول ما الطلاب يبدأوا الاشتراك.'}</p>${enr.length ? '<button class="btn btn-ghost btn-sm" data-act="reset-f">مسح الفلاتر</button>' : ''}</div>`; return; }
+    $('#payList').innerHTML = `<div class="${view === 'list' ? 'ar-list pay-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head pay-head"><span></span><span></span><span>الطالب / الكورس</span><span>رقم الطلب</span><span>المبلغ</span><span>وسيلة الدفع</span><span>الحالة</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
+  }
+  function paintBulk(){
+    const n = sel.size, rv = enr.filter(e => sel.has(e.id) && e.g === 'review').length; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${nm(n)}</b><span>محدد</span>${rv ? `<button data-act="b-ok">${svg(P.check,15)} قبول (${nm(rv)})</button><button class="dz" data-act="b-no">${svg(P.x,15)} رفض</button>` : ''}<button data-act="b-csv">${svg(P.dl,15)} تصدير</button><button class="x" data-act="b-clr">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer ---- */
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  const cp = v => `<button class="ar-mini" data-act="copy" data-v="${E(v)}">نسخ</button>`;
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const e = enr.find(x => x.id === drw.id), dr = $('#payDr'); if(!e){ drw = null; ov.classList.remove('open'); return; }
+    const g = G[e.g], u = users.get(e.studentId) || {}, m = methods.get(e.paymentMethodId), c = courses.get(e.courseId), L = filtered(), ix = L.findIndex(x => x.id === e.id), wa = waLink(u.phone);
+    const orig = Number(e.priceAtPurchase || 0), fin = Number(e.finalAmount || 0), disc = Math.max(0, orig - fin);
+    const mine = enr.filter(x => x.studentId === e.studentId), paid = mine.filter(x => x.g === 'ok').reduce((s,x) => s + Number(x.finalAmount || 0), 0);
+    const W = [];
+    if(e.dupRef.length) W.push(['hot', `مرجع الدفع مستخدم في ${nm(e.dupRef.length)} طلب آخر: ${e.dupRef.map(x => '#' + E(x.orderNumber || x.id.slice(0,6)) + ' (' + E(x.studentName || '') + ')').join('، ')}`]);
+    if(e.dupCourse.length) W.push(['hot', `لدى الطالب طلب آخر لنفس الكورس (${e.dupCourse.map(x => STATUS_LABEL[x.status] || x.status).join('، ')}).`]);
+    if(e.g === 'review' && fin > 0 && !(e.paymentRef || '').trim()) W.push(['mid', 'الطالب لم يُدخل مرجع العملية — تأكد من التحويل بطريقة أخرى.']);
+    if(e.g === 'review' && waitSec(e) > 86400) W.push(['mid', `الطلب ينتظر مراجعتك منذ ${dur(waitSec(e))}.`]);
+    if(fin > 0 && e.paymentMethodId && !m) W.push(['mid', 'وسيلة الدفع المختارة اتحذفت من الإعدادات.']);
+    const tl = [ { t:e.t, l:'إنشاء الطلب', s:`${money(fin)} · ${E(mLabel(e))}`, done:true } ];
+    if(e.g !== 'await' && (e.sub !== e.t || e.notificationSent)) tl.push({ t:e.sub, l:e.notificationSent ? 'أكّد الطالب الدفع وأرسل إشعار واتساب' : 'أُرسل الطلب للمراجعة', s:e.sub > e.t ? `بعد ${dur(e.sub - e.t)} من إنشاء الطلب` : '', done:true });
+    if(e.rev) tl.push({ t:e.rev, l:e.g === 'ok' ? 'تم القبول وتفعيل الكورس' : e.status === 'cancelled' ? 'تم إلغاء الاشتراك' : 'تم الرفض', s:e.rev > e.sub ? `استغرقت المراجعة ${dur(e.rev - e.sub)}` : '', done:true, k:e.g });
+    else if(e.g === 'review') tl.push({ t:0, l:'بانتظار قرارك', s:`منذ ${dur(waitSec(e))}`, pulse:true });
+    else if(e.g === 'await') tl.push({ t:0, l:'بانتظار تأكيد الطالب للدفع', s:'ما تأكّد الدفع بعد', pulse:true });
+    dr.style.setProperty('--c', g.c); dr.style.setProperty('--bg', g.bg);
+    const rej = drw.mode === 'reject';
+    dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><label class="pay-auto" title="بعد قبول أو رفض طلب، افتح الطلب المعلّق التالي تلقائيًا"><input type="checkbox" id="payAuto" ${auto ? 'checked' : ''}> التالي تلقائيًا</label><button class="icon-action" data-act="close" title="إغلاق (Esc)">${svg(P.x,16)}</button></div>
+    <div class="us-hd pay-hd"><div><small>المبلغ النهائي</small><h3>${fin === 0 ? 'مجاني' : money(fin)}</h3><p dir="ltr">#${E(e.orderNumber || e.id)} ${cp(e.orderNumber || e.id)}</p><div class="ar-chips">${pill(e)}<span class="ar-badge">${E(mLabel(e))}</span>${disc > 0 ? `<span class="ar-st pin">خصم ${orig ? Math.round(disc/orig*100) : 0}%</span>` : ''}</div></div></div>
+    <div class="us-body pay-body">
+      ${W.length ? `<div class="pay-warns">${W.map(([l,t]) => `<div class="pay-warn ${l}">${svg(P.warn,16)}<span>${t}</span></div>`).join('')}</div>` : ''}
+      ${e.rejectReason && e.g === 'bad' ? `<div class="pay-warn hot">${svg(P.ban,16)}<span><b>سبب ${e.status === 'cancelled' ? 'الإلغاء' : 'الرفض'}:</b> ${E(e.rejectReason)}</span></div>` : ''}
+      <div class="us-sec"><h5>${svg(P.user,15)} الطالب</h5>
+        <div class="pay-who"><span class="us-av">${E(initial(e.studentName))}</span><div><b>${E(e.studentName || 'طالب')}</b><small dir="ltr">${E(u.email || '—')}</small><small dir="ltr">${E(u.phone || 'لا يوجد هاتف')}</small></div></div>
+        <div class="us-qa" style="padding:12px 0 0;border:0">${e.studentId ? `<a href="#/dashboard?tab=users&uid=${e.studentId}">${svg(P.user,15)} ملف الطالب</a>` : ''}${wa ? `<a href="${wa}?text=${encodeURIComponent(`مرحبًا ${e.studentName || ''}، بخصوص طلب اشتراكك في "${e.courseTitle || ''}" (#${e.orderNumber || ''})`)}" target="_blank" rel="noopener">${svg(P.chat,15)} واتساب</a>` : ''}${u.phone ? `<a href="tel:${E(u.phone)}">${svg(P.phone,15)} اتصال</a>` : ''}</div>
+        <div class="us-kpis" style="margin:14px 0 0">${`<div class="us-kpi"><b>${nm(mine.length)}</b><small>طلبات اشتراك</small></div><div class="us-kpi"><b>${nm(mine.filter(x => x.g === 'ok').length)}</b><small>مقبولة</small></div><div class="us-kpi"><b style="font-size:13px">${money(paid)}</b><small>إجمالي ما دفعه</small></div>`}</div></div>
+      <div class="us-sec"><h5>${svg(P.book,15)} الكورس</h5><div class="ar-kvs">
+        ${kv('العنوان', `<a class="ar-lnk" href="#/course/${e.courseId}">${E(e.courseTitle || c?.title || 'كورس')}</a>`)}
+        ${c?.instructorName ? kv('المدرب', E(c.instructorName)) : ''}${c?.price !== undefined ? kv('السعر الحالي', money(c.price)) : ''}</div></div>
+      <div class="us-sec"><h5>${svg(P.wallet,15)} تفاصيل الدفع</h5><div class="ar-kvs">
+        ${kv('السعر وقت الشراء', orig ? money(orig) : '—')}${kv('الخصم', disc > 0 ? `<span style="color:var(--success)">− ${money(disc)}</span>` : 'لا يوجد')}${kv('المبلغ النهائي', `<b>${money(fin)}</b>`)}
+        ${kv('وسيلة الدفع', E(mLabel(e)))}${m?.accountNumber ? kv('حساب الاستلام', `<span dir="ltr">${E(m.accountNumber)}</span>${m.accountName ? `<small>${E(m.accountName)}</small>` : ''}${cp(m.accountNumber)}`) : ''}
+        ${kv('مرجع العملية', e.paymentRef ? `<code dir="ltr">${E(e.paymentRef)}</code>${cp(e.paymentRef)}` : '<span class="us-miss">لم يُدخل</span>')}
+        ${kv('إشعار واتساب', e.notificationSent ? `تم ${e.notificationSentAt ? '· ' + ago(ts(e.notificationSentAt)) : ''}` : 'لم يُرسل')}</div></div>
+      <div class="us-sec"><h5>${svg(P.clock,15)} المسار الزمني</h5><div class="pay-tl">${tl.map(x => `<div class="${x.pulse ? 'pulse' : ''} ${x.k || ''}"><i></i><div><b>${x.l}</b>${x.t ? `<small>${fmtDT(x.t)}</small>` : ''}${x.s ? `<small>${x.s}</small>` : ''}</div></div>`).join('')}</div></div>
+      <div class="us-sec"><h5>${svg(P.note,15)} ملاحظة الإدارة (خاصة)</h5><textarea id="payNote" rows="2" placeholder="مثال: تم التأكد من التحويل هاتفيًا…">${E(e.adminNote || '')}</textarea><button class="btn btn-ghost btn-sm" data-act="note" style="margin-top:8px">حفظ الملاحظة</button></div>
+    </div>
+    <div class="ar-dr-f pay-f">${rej ? `<div class="pay-rej"><b>${drw.kind === 'cancelled' ? 'سبب الإلغاء' : 'سبب الرفض'} <small>(بيوصل للطالب في إشعار)</small></b><div class="pay-rs">${REASONS.map(r => `<button data-act="reason" data-r="${E(r)}">${r}</button>`).join('')}</div><textarea id="payReason" rows="2" placeholder="اكتب السبب أو اختر من الأعلى…"></textarea><div class="pay-rb"><button class="btn btn-sm ar-danger" data-act="confirm-no">${drw.kind === 'cancelled' ? 'تأكيد الإلغاء' : 'تأكيد الرفض'}</button><button class="btn btn-ghost btn-sm" data-act="rej-cancel">تراجع</button></div></div>`
+      : e.g === 'review' ? `<button class="btn btn-primary" data-act="approve">${svg(P.check,16)} قبول وتفعيل الكورس</button><button class="btn ar-danger" data-act="reject">${svg(P.x,16)} رفض</button>`
+      : e.g === 'ok' ? `<button class="btn btn-sm ar-danger" data-act="revoke">${svg(P.undo,14)} إلغاء الاشتراك وسحب الوصول</button>`
+      : e.g === 'bad' ? `<button class="btn btn-primary btn-sm" data-act="reopen">${svg(P.undo,14)} إعادة فتح للمراجعة</button>`
+      : `<button class="btn btn-primary btn-sm" data-act="remind">${svg(P.bell,14)} إرسال تذكير للطالب</button><button class="btn btn-sm ar-danger" data-act="revoke">إلغاء الطلب</button>`}
+      ${rej ? '' : `<button class="btn btn-ghost btn-sm" data-act="receipt">${svg(P.print,14)} إيصال</button>`}</div>`;
+  }
+  const open = (id, mode='view', kind='rejected') => { drw = { id, mode, kind }; paintDrawer(); };
+  const nav = d => { const L = filtered(), i = L.findIndex(x => x.id === drw?.id); if(L[i + d]) open(L[i + d].id); };
+
+  /* ---- decisions ---- */
+  const MSG = {
+    approved:(e) => ['تم قبول اشتراكك ✅', `تم تفعيل كورس "${e.courseTitle || ''}" — تقدر تبدأ التعلم من الآن.`],
+    rejected:(e, r) => ['تعذّر قبول طلب الاشتراك', `طلب اشتراكك في "${e.courseTitle || ''}" لم يُقبل${r ? ` — السبب: ${r}` : ''}. تقدر تعيد المحاولة أو تتواصل معنا.`],
+    cancelled:(e, r) => ['تم إلغاء اشتراكك', `تم إلغاء اشتراكك في "${e.courseTitle || ''}"${r ? ` — السبب: ${r}` : ''}. للاستفسار تواصل مع الإدارة.`],
+    remind:(e) => ['أكمل دفع اشتراكك', `طلبك في "${e.courseTitle || ''}" (#${e.orderNumber || ''}) بانتظار تأكيد الدفع. بعد التحويل اضغط "تم الدفع" من صفحة الاشتراك.`],
+  };
+  async function notify(e, key, reason){
+    if(!e.studentId) return false; const [title, body] = MSG[key](e, reason);
+    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:e.studentId, title, body, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }); return true; }catch(err){ console.warn('[Lavender] notify failed', err?.code); return false; }
+  }
+  const LOG = { approved:['payment_approve','قبول'], rejected:['payment_reject','رفض'], cancelled:['payment_reject','إلغاء'], under_review:['payment_reopen','إعادة فتح'] };
+  async function decide(e, kind, reason=''){
+    const p = { status:kind, reviewedAt:serverTimestamp(), reviewedBy:currentUser.uid, rejectReason:(kind === 'rejected' || kind === 'cancelled') ? reason : '' };
+    await updateDoc(doc(db,'enrollments',e.id), p);
+    if(e.studentId && e.courseId){ if(kind === 'approved') await grantCourseAccess(e.studentId, e.courseId); else if(kind !== 'under_review') await revokeCourseAccess(e.studentId, e.courseId); }
+    Object.assign(e, { status:kind, g:grp(kind), rev:Math.floor(Date.now()/1000), rejectReason:p.rejectReason }); dupes();
+    logAdminActivity(LOG[kind][0], `${e.studentName || 'طالب'} — ${e.courseTitle || ''}`, `${LOG[kind][1]}${reason ? ': ' + reason : ''} · ${money(e.finalAmount)}`);
+    return kind === 'under_review' ? false : notify(e, kind, reason);
+  }
+  function afterDecision(nextId, sent, label){
+    paintAll();
+    if(drw && auto && nextId){ open(nextId); } else if(drw && auto && !nextId && !enr.some(x => x.g === 'review')){ drw = null; paintDrawer(); toast('🎉 خلّصت كل الطلبات المعلّقة'); return; } else paintDrawer();
+    toast(`${label}${sent ? ' — وتم إشعار الطالب' : ''}`);
+  }
+  const nextReview = id => { const L = filtered().filter(x => x.g === 'review'), i = L.findIndex(x => x.id === id); return (L[i + 1] || L.find(x => x.id !== id))?.id || null; };
+  async function approve(e){
+    if(!await ask('قبول الطلب وتفعيل الكورس؟', `${E(e.studentName || 'الطالب')} — ${E(e.courseTitle || '')} — ${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}${e.dupRef.length || e.dupCourse.length ? '<br><b style="color:var(--danger)">⚠ في تنبيهات تكرار على هذا الطلب!</b>' : ''}`, 'قبول', { safe:true, icon:P.check })) return;
+    const nx = nextReview(e.id);
+    try{ const sent = await decide(e, 'approved'); afterDecision(nx, sent, 'تم قبول الطلب وتفعيل الكورس'); }catch(err){ console.error(err); toast('تعذّر تنفيذ العملية — راجع الاتصال والصلاحيات'); }
+  }
+  async function reject(e, kind, reason){
+    const nx = nextReview(e.id);
+    try{ const sent = await decide(e, kind, reason); if(drw) drw.mode = 'view'; afterDecision(nx, sent, kind === 'cancelled' ? 'تم إلغاء الاشتراك وسحب الوصول' : 'تم رفض الطلب'); }catch(err){ console.error(err); toast('تعذّر تنفيذ العملية — راجع الاتصال والصلاحيات'); }
+  }
+  async function bulkDecide(kind){
+    const L = enr.filter(e => sel.has(e.id) && e.g === 'review'); if(!L.length) return;
+    let reason = '';
+    if(kind === 'approved'){ if(!await ask(`قبول ${nm(L.length)} طلب؟`, 'هيتفعّل الكورس لكل الطلاب المحددين وهيتبلّغوا.', 'قبول الكل', { safe:true, icon:P.check })) return; }
+    else { reason = await ask(`رفض ${nm(L.length)} طلب؟`, 'هيتم إشعار الطلاب بالرفض.', 'رفض الكل', { input:'سبب الرفض (اختياري)', icon:P.ban }); if(reason === false) return; }
+    let ok = 0; for(const e of L){ try{ await decide(e, kind, reason); ok++; sel.delete(e.id); }catch(err){ console.error(err); } }
+    paintAll(); toast(`تم تنفيذ ${nm(ok)} من ${nm(L.length)}`);
+  }
+  function csv(list){
+    const rows = [['رقم الطلب','الطالب','البريد','الكورس','السعر الأصلي','الخصم','المبلغ النهائي','وسيلة الدفع','مرجع العملية','الحالة','تاريخ الإنشاء','تاريخ التأكيد','تاريخ المراجعة','سبب الرفض']].concat(list.map(e => [e.orderNumber || e.id, e.studentName || '', users.get(e.studentId)?.email || '', e.courseTitle || '', e.priceAtPurchase ?? '', Math.max(0, Number(e.priceAtPurchase || 0) - Number(e.finalAmount || 0)), e.finalAmount ?? '', mLabel(e), e.paymentRef || '', STATUS_LABEL[e.status] || e.status, e.t ? new Date(e.t*1000).toISOString().slice(0,16).replace('T',' ') : '', e.sub ? new Date(e.sub*1000).toISOString().slice(0,16).replace('T',' ') : '', e.rev ? new Date(e.rev*1000).toISOString().slice(0,16).replace('T',' ') : '', e.rejectReason || '']));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'payments-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast(`تم تصدير ${nm(list.length)} طلب`);
+  }
+  function receipt(e){
+    const win = window.open('', '_blank'); if(!win){ alert('اسمح بالنوافذ المنبثقة عشان تطبع الإيصال.'); return; }
+    const logo = document.querySelector('.brand-mark')?.src || '', it = (l, v) => `<div class="pr-item"><div class="pl">${l}</div><div class="pv">${v}</div></div>`, u = users.get(e.studentId) || {}, fin = Number(e.finalAmount || 0), orig = Number(e.priceAtPurchase || 0);
+    win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>إيصال ${E(e.orderNumber || e.id)}</title><style>${PRINT_SHEET_CSS}</style></head><body>
+      <div class="pr-header"><div class="pr-brand">${logo ? `<img src="${logo}" alt="">` : ''}<span class="name">لافندر</span></div><div class="pr-meta">تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}</div></div>
+      <div class="pr-title"><h1>إيصال اشتراك</h1><div class="sub">رقم الطلب #${E(e.orderNumber || e.id)}</div></div>
+      <div class="pr-grid">${it('الطالب', E(e.studentName || '—'))}${it('البريد', E(u.email || '—'))}${it('الكورس', E(e.courseTitle || '—'))}${it('الحالة', STATUS_LABEL[e.status] || e.status)}${it('السعر الأصلي', orig ? money(orig) : '—')}${it('الخصم', orig > fin ? money(orig - fin) : 'لا يوجد')}${it('المبلغ المدفوع', `<b>${money(fin)}</b>`)}${it('وسيلة الدفع', E(mLabel(e)))}${it('مرجع العملية', E(e.paymentRef || '—'))}${it('تاريخ الطلب', fmtDT(e.t))}${it('تاريخ المراجعة', e.rev ? fmtDT(e.rev) : '—')}</div>
+      <div class="pr-footer">هذا الإيصال صادر من منصة لافندر ولا يُعدّ فاتورة ضريبية.</div></body></html>`);
+    win.document.close(); setTimeout(() => { try{ win.focus(); win.print(); }catch(e){} }, 600);
+  }
+
+  /* ---- events ---- */
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), row = ev.target.closest('.ar-item'), id = row?.dataset.id || drw?.id, e = enr.find(x => x.id === id);
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } else if(row && !ev.target.closest('.ar-chk,a,.ar-act')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'open') open(id);
+    else if(a === 'close'){ drw = null; paintDrawer(); } else if(a === 'prev') nav(-1); else if(a === 'next') nav(1);
+    else if(a === 'approve') approve(e);
+    else if(a === 'reject'){ if(row && !ov.contains(el)){ open(id, 'reject', 'rejected'); } else { drw.mode = 'reject'; drw.kind = 'rejected'; paintDrawer(); } }
+    else if(a === 'revoke'){ drw.mode = 'reject'; drw.kind = 'cancelled'; paintDrawer(); }
+    else if(a === 'rej-cancel'){ drw.mode = 'view'; paintDrawer(); }
+    else if(a === 'reason'){ $('#payReason').value = el.dataset.r; }
+    else if(a === 'confirm-no') reject(e, drw.kind, $('#payReason').value.trim());
+    else if(a === 'reopen'){ if(!await ask('إعادة فتح الطلب للمراجعة؟', 'هيرجع الطلب لقائمة "قيد المراجعة" لتقرر فيه من جديد.', 'إعادة فتح', { safe:true, icon:P.undo })) return; try{ await decide(e, 'under_review'); toast('تمت إعادة فتح الطلب'); paintAll(); paintDrawer(); }catch(err){ toast('تعذّر تنفيذ العملية'); } }
+    else if(a === 'remind'){ const ok = await notify(e, 'remind'); toast(ok ? 'تم إرسال التذكير للطالب' : 'تعذّر إرسال التذكير'); if(ok) logAdminActivity('payment_note', `${e.studentName} — ${e.courseTitle || ''}`, 'تذكير بالدفع'); }
+    else if(a === 'note'){ const v = $('#payNote').value.trim(); try{ await updateDoc(doc(db,'enrollments',e.id), { adminNote:v }); e.adminNote = v; toast('تم حفظ الملاحظة'); }catch(err){ toast('تعذّر حفظ الملاحظة'); } }
+    else if(a === 'receipt') receipt(e);
+    else if(a === 'copy'){ try{ await navigator.clipboard.writeText(el.dataset.v); }catch(_){} el.textContent = 'تم ✓'; setTimeout(() => el.textContent = 'نسخ', 1400); }
+    else if(a === 'stat'){ fst = el.dataset.k; page = 1; paintAll(); }
+    else if(a === 'view'){ view = el.dataset.v; paintList(); } else if(a === 'more'){ page++; paintList(); }
+    else if(a === 'reset-f'){ q = ''; fst = fm = fc = fr = 'all'; ['#payQ'].forEach(s => $(s).value = ''); ['#payM','#payC','#payR'].forEach(s => $(s).value = 'all'); paintAll(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderPayments(area); }
+    else if(a === 'csv') csv(filtered());
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); } else if(a === 'b-csv') csv(enr.filter(x => sel.has(x.id)));
+    else if(a === 'b-ok') bulkDecide('approved'); else if(a === 'b-no') bulkDecide('rejected');
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  ov.addEventListener('change', ev => { if(ev.target.id === 'payAuto') auto = ev.target.checked; });
+  $('#payQ').addEventListener('input', ev => { q = ev.target.value.trim().toLowerCase(); page = 1; paintList(); });
+  [['#payM', v => fm = v], ['#payC', v => fc = v], ['#payR', v => fr = v]].forEach(([s, f]) => $(s).addEventListener('change', ev => { f(ev.target.value); page = 1; paintList(); }));
+  $('#payS').addEventListener('change', ev => { sort = ev.target.value; paintList(); });
+  const onKey = ev => {
+    if(!root.isConnected) return; const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(ev.key === 'Escape' && drw){ if(drw.mode === 'reject'){ drw.mode = 'view'; paintDrawer(); } else { drw = null; paintDrawer(); } }
+    else if(!typing && ev.key === '/'){ ev.preventDefault(); $('#payQ').focus(); }
+    else if(!typing && drw && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) nav(ev.key === 'ArrowLeft' ? 1 : -1);
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
+  if(fst !== 'all') $('#payChips').querySelector('.active')?.scrollIntoView?.({ block:'nearest' });
+  if(qp.get('oid')){ const t = enr.find(x => x.id === qp.get('oid') || x.orderNumber === qp.get('oid')); if(t) open(t.id); }
 }
 
+/* ---------------- ADMIN: FINANCE (v2 — pro) ---------------- */
 async function adminRenderFinance(area){
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-sk" style="height:110px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:130px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    up:'<path d="M23 6l-9.5 9.5-5-5L1 18M17 6h6v6"/>', down:'<path d="M23 18l-9.5-9.5-5 5L1 6M17 18h6v-6"/>', wallet:'<path d="M20 12V8H6a2 2 0 010-4h12v4M4 6v12a2 2 0 002 2h14v-4M18 12a2 2 0 000 4h4v-4z"/>',
+    pct:'<path d="M19 5L5 19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/>', tag:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L2 12V2h10l8.6 8.6a2 2 0 010 2.8zM7 7h.01"/>',
+    bulb:'<path d="M9 18h6M10 22h4M12 2a7 7 0 00-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0012 2z"/>', trend:'<path d="M3 3v18h18M7 14l4-4 3 3 5-6"/>',
+  });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const nm = n => Number(n).toLocaleString('ar-EG'), money = n => nm(Math.round(Number(n || 0))) + ' ج.س';
+  const D = 86400, sod = t => { const d = new Date(t*1000); d.setHours(0,0,0,0); return d.getTime()/1000; };
+  const REV = ['pending','payment_submitted','under_review'];
+  const grp = s => s === 'approved' ? 'ok' : REV.includes(s) ? 'review' : s === 'pending_payment' ? 'await' : 'bad';
+  const H = (t, extra='') => `#/dashboard?tab=${t}${extra}`;
+
+  let all = [], cmap = {}, methods = new Map(), fee = 0;
   try{
-    const snap = await getDocs(query(collection(db, 'enrollments'), where('status','==','approved')));
-    const allApproved = snap.docs.map(d => d.data()).filter(e => e.createdAt?.toDate);
-
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>الفترة الزمنية</h3></div>
-        <div class="cat-tabs" id="financePresetTabs">
-          <button class="cat-tab active" data-range="today">اليوم</button>
-          <button class="cat-tab" data-range="week">هذا الأسبوع</button>
-          <button class="cat-tab" data-range="month">هذا الشهر</button>
-          <button class="cat-tab" data-range="year">هذا العام</button>
-          <button class="cat-tab" data-range="all">كل الفترات</button>
-        </div>
-        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:10px;">
-          <div class="field" style="margin-bottom:0;">
-            <label>من تاريخ</label>
-            <input type="date" id="financeFrom" />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>إلى تاريخ</label>
-            <input type="date" id="financeTo" />
-          </div>
-          <button class="btn btn-ghost" id="financeCustomBtn">تطبيق فترة مخصصة</button>
-        </div>
-      </div>
-      <div id="financeContent"></div>
-    `;
-
-    function computeRange(preset){
-      const now = new Date();
-      let from = new Date(0);
-      const to = new Date();
-      if(preset === 'today'){ from = new Date(now.getFullYear(), now.getMonth(), now.getDate()); }
-      else if(preset === 'week'){ from = new Date(now); from.setDate(now.getDate() - 7); }
-      else if(preset === 'month'){ from = new Date(now.getFullYear(), now.getMonth(), 1); }
-      else if(preset === 'year'){ from = new Date(now.getFullYear(), 0, 1); }
-      else if(preset === 'all'){ from = new Date(0); }
-      return { from, to };
-    }
-
-    function renderForRange(from, to){
-      const inRange = allApproved.filter(e => {
-        const d = e.createdAt.toDate();
-        return d >= from && d <= to;
-      });
-      const totalRevenue = inRange.reduce((s,e) => s + Number(e.finalAmount || 0), 0);
-      const purchaseCount = inRange.length;
-      const avgOrder = purchaseCount ? Math.round(totalRevenue / purchaseCount) : 0;
-
-      const byCourse = {};
-      const byCategory = {};
-      inRange.forEach(e => {
-        byCourse[e.courseTitle || 'كورس'] = (byCourse[e.courseTitle || 'كورس'] || 0) + Number(e.finalAmount || 0);
-      });
-
-      const byDay = {};
-      inRange.forEach(e => {
-        const key = e.createdAt.toDate().toISOString().slice(0,10);
-        byDay[key] = (byDay[key] || 0) + Number(e.finalAmount || 0);
-      });
-      const sortedDays = Object.keys(byDay).sort();
-
-      const topCourses = Object.entries(byCourse).sort((a,b) => b[1]-a[1]).slice(0,6);
-
-      const contentEl = document.getElementById('financeContent');
-      contentEl.innerHTML = `
-        <div class="widget-grid">
-          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.card}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي المبيعات</div></div></div></div>
-          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${purchaseCount}</div><div class="lbl">عدد عمليات الشراء</div></div></div></div>
-          <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.dashboard}</div><div><div class="num">${avgOrder.toLocaleString('ar')} ج.س</div><div class="lbl">متوسط قيمة الطلب</div></div></div></div>
-        </div>
-        <div class="widget-grid">
-          <div class="widget widget-2">
-            <div class="widget-head"><h3>الإيرادات عبر الزمن</h3></div>
-            <div class="chart-box"><canvas id="financeLineChart"></canvas></div>
-          </div>
-          <div class="widget widget-2">
-            <div class="widget-head"><h3>أفضل الكورسات إيراداً</h3></div>
-            <div class="chart-box"><canvas id="financeTopCoursesChart"></canvas></div>
-          </div>
-        </div>
-      `;
-
-      if(sortedDays.length){
-        destroyChartIfExists('financeLineChart');
-        chartInstances['financeLineChart'] = new Chart(document.getElementById('financeLineChart'), {
-          type: 'line',
-          data: {
-            labels: sortedDays,
-            datasets: [{ data: sortedDays.map(d => byDay[d]), borderColor: '#6E4BAF', backgroundColor: 'rgba(110,75,175,0.12)', fill: true, tension: 0.3 }],
-          },
-          options: {
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: { x: { grid: { display:false }, ticks: { font: { family: "'IBM Plex Sans Arabic'", size: 10 } } }, y: { beginAtZero: true } },
-          },
-        });
-      } else {
-        document.getElementById('financeLineChart').parentElement.innerHTML = `<div class="empty-state" style="padding:36px 0;">لا توجد بيانات في هذه الفترة.</div>`;
-      }
-
-      renderBarChart('financeTopCoursesChart', topCourses.map(c => c[0]), topCourses.map(c => c[1]), '#E2A33B');
-    }
-
-    const { from, to } = computeRange('today');
-    renderForRange(from, to);
-
-    document.getElementById('financePresetTabs').addEventListener('click', (e) => {
-      const btn = e.target.closest('.cat-tab');
-      if(!btn) return;
-      document.querySelectorAll('#financePresetTabs .cat-tab').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const { from, to } = computeRange(btn.dataset.range);
-      renderForRange(from, to);
-    });
-
-    document.getElementById('financeCustomBtn').addEventListener('click', () => {
-      const fromVal = document.getElementById('financeFrom').value;
-      const toVal = document.getElementById('financeTo').value;
-      if(!fromVal || !toVal){ alert('اختر تاريخ البداية والنهاية.'); return; }
-      document.querySelectorAll('#financePresetTabs .cat-tab').forEach(b => b.classList.remove('active'));
-      const toDate = new Date(toVal); toDate.setHours(23,59,59,999);
-      renderForRange(new Date(fromVal), toDate);
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل التحليلات المالية.</div>`;
+    const [eS, cs, mS, fS] = await Promise.all([getDocs(collection(db,'enrollments')), fetchAllCoursesAdmin(), getDocs(collection(db,'paymentMethods')).catch(() => ({ docs:[] })), getDoc(doc(db,'settings','finance')).catch(() => null)]);
+    cs.forEach(c => cmap[c.id] = c); mS.docs.forEach(d => methods.set(d.id, d.data())); fee = Number(fS?.exists?.() ? fS.data().platformFeePercent : 0) || 0;
+    all = eS.docs.map(d => { const e = { id:d.id, ...d.data() }; e.amt = Number(e.finalAmount || 0); e.orig = Number(e.priceAtPurchase || 0); e.disc = Math.max(0, e.orig - e.amt); e.t = ts(e.createdAt); e.d = ts(e.reviewedAt) || e.t; e.g = grp(e.status);
+      const c = cmap[e.courseId]; e.title = e.courseTitle || c?.title || 'كورس'; e.cat = c?.categoryName || 'بدون قسم'; e.ins = c?.instructorName || 'غير محدد'; e.insId = c?.instructorId || ''; e.mth = methods.get(e.paymentMethodId)?.label || (e.amt === 0 ? 'مجاني' : 'غير محدد'); return e; });
+  }catch(err){
+    console.error('[Lavender] finance load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل التحليلات المالية.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="finRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('finRetry').onclick = () => adminRenderFinance(area); return;
   }
+  const ok = all.filter(e => e.g === 'ok');
+
+  let rk = 'month', cf = '', ct = '', cmp = true, cum = false, dim = 'course', lq = '', ls = 'new', lpage = 1;
+  const PRE = [['today','اليوم'],['7','آخر 7 أيام'],['month','هذا الشهر'],['lastm','الشهر الماضي'],['year','هذا العام'],['all','كل الفترات']];
+  function range(){
+    const now = Date.now()/1000, d0 = new Date(); let from, to = now + 1;
+    if(rk === 'today') from = sod(now); else if(rk === '7') from = now - 7*D; else if(rk === 'month') from = new Date(d0.getFullYear(), d0.getMonth(), 1).getTime()/1000;
+    else if(rk === 'lastm'){ from = new Date(d0.getFullYear(), d0.getMonth()-1, 1).getTime()/1000; to = new Date(d0.getFullYear(), d0.getMonth(), 1).getTime()/1000; }
+    else if(rk === 'year') from = new Date(d0.getFullYear(), 0, 1).getTime()/1000;
+    else if(rk === 'custom'){ from = new Date(cf).getTime()/1000; to = new Date(ct).getTime()/1000 + D; }
+    else { from = ok.length ? Math.min(...ok.map(e => e.d)) : now - 30*D; }
+    return { from, to, prev: rk === 'all' ? null : { from: from - (to - from), to: from } };
+  }
+  const inR = (list, a, b) => list.filter(e => e.d >= a && e.d < b);
+  function edgesOf(from, to){
+    const span = to - from, e = []; let mode = 'day';
+    if(span <= 46*D){ for(let t = sod(from); t < to; t += D) e.push(t); }
+    else if(span <= 200*D){ mode = 'week'; let t = sod(from); t -= ((new Date(t*1000).getDay() + 1) % 7) * D; for(; t < to; t += 7*D) e.push(t); }
+    else { mode = 'month'; const d = new Date(from*1000); d.setDate(1); d.setHours(0,0,0,0); while(d.getTime()/1000 < to){ e.push(d.getTime()/1000); d.setMonth(d.getMonth() + 1); } }
+    if(!e.length) e.push(from);
+    return { e, mode };
+  }
+  const bucket = (edges, t) => { for(let i = edges.length - 1; i >= 0; i--) if(t >= edges[i]) return i; return 0; };
+  const trend = (c, p) => p ? Math.round((c - p) / p * 100) : (c ? null : 0);
+  const trb = t => t === undefined ? '' : t === null ? '<span class="ov-tr up">جديد</span>' : t === 0 ? '<span class="ov-tr">—</span>' : `<span class="ov-tr ${t > 0 ? 'up' : 'dn'}">${svg(t > 0 ? P.up : P.down, 12)} ${Math.abs(t)}%</span>`;
+  const spark = (v, c, id) => { const w = 96, h = 34, m = Math.max(...v, 1), st = w / (v.length - 1 || 1), d = v.map((x,i) => (i ? 'L' : 'M') + (i*st).toFixed(1) + ' ' + (h - 3 - x/m*(h-8)).toFixed(1)).join(''); return `<svg class="ov-sp" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><defs><linearGradient id="fg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${c}" stop-opacity=".3"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></linearGradient></defs><path d="${d}L${w} ${h}L0 ${h}Z" fill="url(#fg${id})"/><path class="ov-line" pathLength="1" d="${d}" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`; };
+
+  area.innerHTML = `
+  <div class="ar fin" id="finRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.wallet,24)}</span><div><h2>التحليلات المالية</h2><p>إيرادات المنصة، الخصومات، أداء الكورسات والمدربين — كل رقم تقدر تضغط عليه وتوصل لتفاصيله.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-ghost btn-sm" data-act="print">${svg(P.print || P.note,15)}<span class="ar-hide-m">طباعة تقرير</span></button><button class="btn btn-primary btn-sm" data-act="csv">${svg(P.dl,15)} تصدير العمليات</button></div>
+    </div>
+    <div class="widget fin-bar">
+      <div class="cat-tabs" id="finPre">${PRE.map(([k,l]) => `<button class="cat-tab ${k === rk ? 'active' : ''}" data-act="pre" data-k="${k}">${l}</button>`).join('')}</div>
+      <div class="fin-cust"><label>من<input type="date" id="finFrom"></label><label>إلى<input type="date" id="finTo"></label><button class="btn btn-ghost btn-sm" data-act="custom">تطبيق</button>
+        <span class="fin-tgs"><label class="fin-tg"><input type="checkbox" id="finCmp" checked><i></i>مقارنة بالفترة السابقة</label></span></div>
+      <div class="fin-per" id="finPer"></div>
+    </div>
+    <div class="fin-ins" id="finIns"></div>
+    <div class="ar-stats" id="finKpi"></div>
+    <div class="ov-2">
+      <div class="widget"><div class="widget-head"><h3>الإيرادات عبر الزمن</h3><label class="fin-tg"><input type="checkbox" id="finCum"><i></i>تراكمي</label></div><div class="ov-sum" id="finSum"></div><div class="chart-box" style="height:270px"><canvas id="finChart"></canvas></div></div>
+      <div class="widget"><div class="widget-head"><h3>التوزيع</h3></div><div class="ov-rng fin-dims" id="finDims">${[['course','الكورس'],['category','القسم'],['instructor','المدرب'],['method','وسيلة الدفع']].map(([k,l]) => `<button class="${k === dim ? 'on' : ''}" data-act="dim" data-k="${k}">${l}</button>`).join('')}</div><div id="finBreak"></div></div>
+    </div>
+    <div class="ov-2">
+      <div class="widget"><div class="widget-head"><h3>أفضل أيام الأسبوع</h3></div><div class="fin-wd" id="finWd"></div></div>
+      <div class="widget"><div class="widget-head"><h3>حصص المدربين</h3></div><div class="fin-fee"><label>نسبة المنصة %<input type="number" id="finFee" min="0" max="100" step="0.5" value="${fee}"></label><button class="btn btn-ghost btn-sm" data-act="fee">حفظ النسبة</button></div><div id="finPay"></div></div>
+    </div>
+    <div class="widget"><div class="widget-head"><h3>سجل العمليات المقبولة</h3><a class="ov-more" href="${H('payments')}">كل الطلبات ←</a></div>
+      <div class="ar-tools"><div class="topbar-search ar-search">${svg(P.srch,15)}<input id="finQ" placeholder="ابحث برقم الطلب أو الطالب أو الكورس…"></div><select id="finS" class="ar-sel"><option value="new">الأحدث</option><option value="old">الأقدم</option><option value="hi">الأعلى مبلغًا</option></select></div>
+      <div class="ar-count" id="finCnt"></div><div id="finLedger"></div></div>
+  </div>`;
+  const root = document.getElementById('finRoot'), $ = s => root.querySelector(s);
+  let cur = {};
+
+  function calc(){
+    const r = range(), sales = inR(ok, r.from, r.to), prevS = r.prev ? inR(ok, r.prev.from, r.prev.to) : null;
+    const sum = l => l.reduce((s,e) => s + e.amt, 0), tot = sum(sales), pTot = prevS ? sum(prevS) : 0, n = sales.length, pn = prevS ? prevS.length : 0;
+    cur = { r, sales, prevS, tot, pTot, n, pn, avg: n ? tot/n : 0, pAvg: pn ? pTot/pn : 0 };
+    cur.disc = sales.reduce((s,e) => s + e.disc, 0); cur.discN = sales.filter(e => e.disc > 0).length; cur.orig = sales.reduce((s,e) => s + (e.orig || e.amt), 0);
+    const review = all.filter(e => e.g === 'review'), lost = all.filter(e => e.g === 'bad' && e.d >= r.from && e.d < r.to);
+    cur.review = review; cur.lost = lost;
+    const { e:edges, mode } = edgesOf(r.from, Math.min(r.to, Date.now()/1000 + 1)); cur.edges = edges; cur.mode = mode;
+    cur.vals = new Array(edges.length).fill(0); cur.pvals = new Array(edges.length).fill(0);
+    sales.forEach(e => cur.vals[bucket(edges, e.d)] += e.amt);
+    if(prevS){ const len = r.to - r.from; prevS.forEach(e => { const t = e.d + len; if(t >= edges[0]) cur.pvals[bucket(edges, t)] += e.amt; }); }
+  }
+  const label = (t, mode) => new Date(t*1000).toLocaleDateString('ar-EG', mode === 'month' ? { month:'short', year:'2-digit' } : { day:'numeric', month:'short' });
+
+  function paintTop(){
+    const { r, sales, tot, pTot, n, pn, avg, pAvg } = cur, hasP = !!r.prev;
+    $('#finPer').innerHTML = `${svg(P.cal,14)} ${new Date(r.from*1000).toLocaleDateString('ar-EG',{day:'numeric',month:'long',year:'numeric'})} — ${new Date(Math.min(r.to, Date.now()/1000)*1000).toLocaleDateString('ar-EG',{day:'numeric',month:'long',year:'numeric'})}${hasP && cmp ? `<span>· مقارنة بالفترة السابقة المماثلة</span>` : ''}`;
+    const K = [
+      { l:'إجمالي المبيعات', n:tot, u:'ج.س', i:P.wallet, c:'#6E4BAF', bg:'#EDE7F6', go:H('payments','&status=ok'), sp:cur.vals, tr:hasP ? trend(tot, pTot) : undefined, sub:`${nm(n)} عملية شراء` },
+      { l:'عدد العمليات', n:n, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', go:H('payments','&status=ok'), sp:cur.vals.map((_,i) => sales.filter(e => bucket(cur.edges, e.d) === i).length), tr:hasP ? trend(n, pn) : undefined, sub:`${nm(new Set(sales.map(e => e.studentId)).size)} طالب مختلف` },
+      { l:'متوسط قيمة الطلب', n:Math.round(avg), u:'ج.س', i:P.pct, c:'#3B6FBF', bg:'#EEF3FB', tr:hasP ? trend(avg, pAvg) : undefined, sub:sales.length ? `أعلى طلب ${money(Math.max(...sales.map(e => e.amt)))}` : '—' },
+      { l:'الخصومات الممنوحة', n:cur.disc, u:'ج.س', i:P.tag, c:'#C98826', bg:'#FFF4E0', sub:`${nm(cur.discN)} طلب مخفّض · ${cur.orig ? Math.round(cur.disc/cur.orig*100) : 0}% من السعر الأصلي` },
+      { l:'بانتظار المراجعة (متوقّع)', n:cur.review.reduce((s,e) => s + e.amt, 0), u:'ج.س', i:P.clock, c:'#B5651D', bg:'#FCF3E3', go:H('payments','&status=review'), sub:`${nm(cur.review.length)} طلب معلّق الآن` },
+      { l:'مرفوض / ملغي', n:cur.lost.reduce((s,e) => s + e.amt, 0), u:'ج.س', i:P.ban, c:'#B3413A', bg:'#FBEBEA', go:H('payments','&status=bad'), sub:`${nm(cur.lost.length)} طلب في هذه الفترة` },
+    ];
+    $('#finKpi').innerHTML = K.map((k,i) => `<${k.go ? `a href="${k.go}"` : 'div'} class="ov-kpi" style="--c:${k.c};--bg:${k.bg};--d:${i*.06}s"><div class="ov-kh"><span class="ar-stat-ic">${svg(k.i,20)}</span>${cmp ? trb(k.tr) : ''}</div><b><span data-n="${k.n}">0</span>${k.u ? `<i>${k.u}</i>` : ''}</b><small>${k.l}</small>${k.sp ? spark(k.sp, k.c, i) : ''}<em>${k.sub}</em></${k.go ? 'a' : 'div'}>`).join('');
+    root.querySelectorAll('.ov-kpi b span').forEach(countUp);
+    // insights
+    const top = groups('course')[0], wd = weekdays(), best = wd.reduce((a,b) => b.v > a.v ? b : a, wd[0]), I = [];
+    if(hasP && pTot) I.push([P.trend, `الإيرادات ${tot >= pTot ? 'أعلى' : 'أقل'} بنسبة <b>${Math.abs(Math.round((tot - pTot)/pTot*100))}%</b> عن الفترة السابقة`]);
+    if(top && tot) I.push([P.wallet, `أعلى كورس إيرادًا: <b>${E(top.label)}</b> (${Math.round(top.sum/tot*100)}% من المبيعات)`]);
+    if(best?.v) I.push([P.cal, `أنشط يوم للمبيعات: <b>${best.l}</b>`]);
+    if(cur.discN) I.push([P.tag, `منحت خصومات بقيمة <b>${money(cur.disc)}</b> على ${nm(cur.discN)} طلب`]);
+    if(cur.review.length) I.push([P.clock, `<b>${money(cur.review.reduce((s,e) => s + e.amt, 0))}</b> بانتظار موافقتك — <a href="${H('payments','&status=review')}">راجعها</a>`]);
+    $('#finIns').innerHTML = I.length ? I.map(([ic,t],i) => `<div style="--i:${i}"><span>${svg(ic,16)}</span><p>${t}</p></div>`).join('') : '';
+  }
+  function drawChart(){
+    const { edges, mode, vals, pvals } = cur, acc = a => { let s = 0; return a.map(x => s += x); }, v = cum ? acc(vals) : vals, pv = cum ? acc(pvals) : pvals, cv = $('#finChart');
+    $('#finSum').innerHTML = `<b>${money(cur.tot)}</b><small>${cur.n ? `متوسط ${money(cur.tot / Math.max(1, edges.length))} لكل ${mode === 'day' ? 'يوم' : mode === 'week' ? 'أسبوع' : 'شهر'}` : 'لا توجد مبيعات في هذه الفترة'}</small>`;
+    if(typeof Chart === 'undefined' || !cv) return;
+    destroyChartIfExists('finChart'); const g = cv.getContext('2d').createLinearGradient(0, 0, 0, 270); g.addColorStop(0, 'rgba(110,75,175,.38)'); g.addColorStop(1, 'rgba(110,75,175,0)');
+    const ds = [{ label:'هذه الفترة', data:v, borderColor:'#6E4BAF', backgroundColor:g, fill:true, tension:.36, borderWidth:2.5, pointRadius:edges.length > 40 ? 0 : 3, pointHoverRadius:6, pointBackgroundColor:'#fff', pointBorderColor:'#6E4BAF' }];
+    if(cmp && cur.r.prev) ds.push({ label:'الفترة السابقة', data:pv, borderColor:'#B8AAC9', borderDash:[6,5], borderWidth:2, fill:false, tension:.36, pointRadius:0, pointHoverRadius:4 });
+    chartInstances['finChart'] = new Chart(cv, { type:'line', data:{ labels:edges.map(t => label(t, mode)), datasets:ds },
+      options:{ maintainAspectRatio:false, animation:{ duration:900 }, interaction:{ intersect:false, mode:'index' }, plugins:{ legend:{ display:ds.length > 1, labels:{ font:{ family:"'IBM Plex Sans Arabic'", size:11 }, usePointStyle:true } }, tooltip:{ callbacks:{ label:c => ` ${c.dataset.label}: ${money(c.parsed.y)}` } } }, scales:{ x:{ grid:{ display:false }, ticks:{ maxTicksLimit:8, font:{ family:"'IBM Plex Sans Arabic'", size:11 } } }, y:{ beginAtZero:true, ticks:{ maxTicksLimit:5 } } } } });
+  }
+  function groups(d){
+    const key = { course:e => e.courseId || e.title, category:e => e.cat, instructor:e => e.insId || e.ins, method:e => e.mth }[d], lab = { course:e => e.title, category:e => e.cat, instructor:e => e.ins, method:e => e.mth }[d], m = {};
+    cur.sales.forEach(e => { const k = key(e), o = m[k] = m[k] || { label:lab(e), sum:0, n:0, courseId:e.courseId, insId:e.insId }; o.sum += e.amt; o.n++; });
+    return Object.values(m).sort((a,b) => b.sum - a.sum || b.n - a.n);
+  }
+  function paintBreak(){
+    const L = groups(dim), max = Math.max(...L.map(x => x.sum), 1), tot = cur.tot || 1;
+    $('#finBreak').innerHTML = L.length ? L.slice(0, 8).map((x,i) => { const href = dim === 'course' && x.courseId ? `#/course/${x.courseId}` : dim === 'instructor' && x.insId ? H('users', `&uid=${x.insId}`) : ''; return `<${href ? `a href="${href}"` : 'div'} class="ov-top" style="--i:${i}"><span class="ov-rk">${nm(i+1)}</span><div><b>${E(x.label)}</b><small>${money(x.sum)} · ${nm(x.n)} عملية · ${Math.round(x.sum/tot*100)}%</small><i><u style="width:${x.sum/max*100}%"></u></i></div></${href ? 'a' : 'div'}>`; }).join('') + (L.length > 8 ? `<small class="us-hint">+ ${nm(L.length - 8)} آخرين (تظهر كلها في تصدير العمليات).</small>` : '') : '<div class="ar-empty" style="padding:26px 0"><p>لا توجد مبيعات في هذه الفترة.</p></div>';
+  }
+  const WD = ['السبت','الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة'];
+  function weekdays(){ const v = WD.map(l => ({ l, v:0, n:0 })); cur.sales.forEach(e => { const i = (new Date(e.d*1000).getDay() + 1) % 7; v[i].v += e.amt; v[i].n++; }); return v; }
+  function paintWd(){ const w = weekdays(), mx = Math.max(...w.map(x => x.v), 1); $('#finWd').innerHTML = w.map((x,i) => `<div class="${x.v === mx && x.v ? 'top' : ''}" style="--i:${i}" title="${x.l}: ${money(x.v)} · ${nm(x.n)} عملية"><u style="height:${Math.max(4, x.v/mx*100)}%"></u><b>${x.v ? nm(Math.round(x.v/1000)) + 'K' : '—'}</b><small>${x.l}</small></div>`).join(''); }
+  function paintPay(){
+    const m = {}; cur.sales.forEach(e => { const k = e.insId || e.ins, o = m[k] = m[k] || { name:e.ins, id:e.insId, courses:new Set(), n:0, sum:0 }; o.courses.add(e.courseId); o.n++; o.sum += e.amt; });
+    const L = Object.values(m).sort((a,b) => b.sum - a.sum), f = Math.min(100, Math.max(0, Number($('#finFee')?.value ?? fee) || 0));
+    $('#finPay').innerHTML = L.length ? `<div class="fin-tbl"><div class="fin-th"><span>المدرب</span><span>المبيعات</span><span>حصة المنصة</span><span>المستحق للمدرب</span></div>${L.map((x,i) => `<${x.id ? `a href="${H('users','&uid=' + x.id)}"` : 'div'} class="fin-tr" style="--i:${i}"><span><b>${E(x.name)}</b><small>${nm(x.courses.size)} كورس · ${nm(x.n)} عملية</small></span><span>${money(x.sum)}</span><span>${money(x.sum*f/100)}</span><span class="due">${money(x.sum*(100-f)/100)}</span></${x.id ? 'a' : 'div'}>`).join('')}<div class="fin-tr tot"><span><b>الإجمالي</b></span><span>${money(cur.tot)}</span><span>${money(cur.tot*f/100)}</span><span class="due">${money(cur.tot*(100-f)/100)}</span></div></div>` : '<div class="ar-empty" style="padding:26px 0"><p>لا توجد مبيعات في هذه الفترة.</p></div>';
+  }
+  const ledgerList = () => cur.sales.filter(e => !lq || `${e.orderNumber || e.id} ${e.studentName || ''} ${e.title} ${e.mth}`.toLowerCase().includes(lq)).sort((a,b) => ls === 'old' ? a.d - b.d : ls === 'hi' ? b.amt - a.amt : b.d - a.d);
+  function paintLedger(){
+    const L = ledgerList(), shown = L.slice(0, lpage*25);
+    $('#finCnt').innerHTML = `عرض ${nm(shown.length)} من ${nm(L.length)} · المجموع: <b>${money(L.reduce((s,e) => s + e.amt, 0))}</b>`;
+    $('#finLedger').innerHTML = L.length ? `<div class="ar-list fin-list"><div class="ar-head fin-head"><span>التاريخ</span><span>الطلب</span><span>الطالب / الكورس</span><span>الوسيلة</span><span>المبلغ</span></div>${shown.map((e,i) => `<a class="ar-item fin-row" href="${H('payments','&oid=' + e.id)}" style="--i:${Math.min(i,14)};--c:#2F7A4F;--bg:#E9F5EE"><span class="ar-dt">${fmtD(e.d)}</span><span class="pay-mono">#${E(e.orderNumber || e.id.slice(0,6))}</span><div class="ar-main"><div class="ar-t">${E(e.studentName || 'طالب')}</div><div class="ar-d">${E(e.title)}</div></div><span class="pay-m">${E(e.mth)}</span><div class="pay-amt"><b>${e.amt ? money(e.amt) : 'مجاني'}</b>${e.disc ? `<small>خصم ${money(e.disc)}</small>` : ''}</div></a>`).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}` : `<div class="ar-empty"><h4>لا توجد عمليات</h4><p>جرّب فترة مختلفة.</p></div>`;
+  }
+  const paintAll = () => { calc(); paintTop(); drawChart(); paintBreak(); paintWd(); paintPay(); lpage = 1; paintLedger(); };
+
+  function csv(){
+    const rows = [['رقم الطلب','التاريخ','الطالب','الكورس','القسم','المدرب','وسيلة الدفع','السعر الأصلي','الخصم','المبلغ المدفوع']].concat(ledgerList().map(e => [e.orderNumber || e.id, new Date(e.d*1000).toISOString().slice(0,10), e.studentName || '', e.title, e.cat, e.ins, e.mth, e.orig || '', e.disc, e.amt]));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'finance-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast(`تم تصدير ${nm(rows.length - 1)} عملية`);
+  }
+  function printReport(){
+    const win = window.open('', '_blank'); if(!win){ alert('اسمح بالنوافذ المنبثقة عشان تطبع التقرير.'); return; }
+    const logo = document.querySelector('.brand-mark')?.src || '', it = (l, v) => `<div class="pr-item"><div class="pl">${l}</div><div class="pv">${v}</div></div>`, f = Math.min(100, Math.max(0, Number($('#finFee').value) || 0));
+    const rows = l => l.map(x => `<tr><td>${E(x.label)}</td><td>${nm(x.n)}</td><td>${money(x.sum)}</td></tr>`).join('') || '<tr><td colspan="3" style="text-align:center;color:#888">لا توجد بيانات</td></tr>';
+    win.document.write(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>تقرير مالي</title><style>${PRINT_SHEET_CSS}</style></head><body>
+      <div class="pr-header"><div class="pr-brand">${logo ? `<img src="${logo}" alt="">` : ''}<span class="name">لافندر</span></div><div class="pr-meta">تاريخ الطباعة: ${new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'})}</div></div>
+      <div class="pr-title"><h1>التقرير المالي</h1><div class="sub">${new Date(cur.r.from*1000).toLocaleDateString('ar-EG')} — ${new Date(Math.min(cur.r.to, Date.now()/1000)*1000).toLocaleDateString('ar-EG')}</div></div>
+      <div class="pr-grid">${it('إجمالي المبيعات', money(cur.tot))}${it('عدد العمليات', nm(cur.n))}${it('متوسط قيمة الطلب', money(cur.avg))}${it('الخصومات الممنوحة', money(cur.disc))}${it('حصة المنصة (' + nm(f) + '%)', money(cur.tot*f/100))}${it('المستحق للمدربين', money(cur.tot*(100-f)/100))}</div>
+      <h2 class="pr-sec">حسب الكورس</h2><table><thead><tr><th>الكورس</th><th>العمليات</th><th>المبيعات</th></tr></thead><tbody>${rows(groups('course'))}</tbody></table>
+      <h2 class="pr-sec">حسب المدرب</h2><table><thead><tr><th>المدرب</th><th>العمليات</th><th>المبيعات</th></tr></thead><tbody>${rows(groups('instructor'))}</tbody></table>
+      <h2 class="pr-sec">حسب وسيلة الدفع</h2><table><thead><tr><th>الوسيلة</th><th>العمليات</th><th>المبيعات</th></tr></thead><tbody>${rows(groups('method'))}</tbody></table>
+      <div class="pr-footer">صادر من لوحة إدارة لافندر</div></body></html>`);
+    win.document.close(); setTimeout(() => { try{ win.focus(); win.print(); }catch(e){} }, 600);
+  }
+
+  root.addEventListener('click', async ev => {
+    const el = ev.target.closest('[data-act]'); if(!el) return; const a = el.dataset.act;
+    if(a === 'pre'){ rk = el.dataset.k; root.querySelectorAll('#finPre .cat-tab').forEach(b => b.classList.toggle('active', b === el)); paintAll(); }
+    else if(a === 'custom'){ cf = $('#finFrom').value; ct = $('#finTo').value; if(!cf || !ct) return toast('اختر تاريخ البداية والنهاية.'); if(cf > ct) return toast('تاريخ البداية بعد النهاية.'); rk = 'custom'; root.querySelectorAll('#finPre .cat-tab').forEach(b => b.classList.remove('active')); paintAll(); }
+    else if(a === 'dim'){ dim = el.dataset.k; root.querySelectorAll('#finDims button').forEach(b => b.classList.toggle('on', b === el)); paintBreak(); }
+    else if(a === 'more'){ lpage++; paintLedger(); }
+    else if(a === 'csv') csv(); else if(a === 'print') printReport();
+    else if(a === 'refresh'){ el.classList.add('spin'); allCoursesAdminCache = null; adminRenderFinance(area); }
+    else if(a === 'fee'){ const f = Math.min(100, Math.max(0, Number($('#finFee').value) || 0)); try{ await setDoc(doc(db,'settings','finance'), { platformFeePercent:f, updatedAt:serverTimestamp() }, { merge:true }); fee = f; logAdminActivity('finance_fee', `نسبة المنصة ${f}%`); toast('تم حفظ نسبة المنصة'); }catch(err){ console.error(err); toast('تعذّر الحفظ — راجع الصلاحيات'); } }
+  });
+  $('#finCmp').addEventListener('change', e => { cmp = e.target.checked; paintTop(); drawChart(); });
+  $('#finCum').addEventListener('change', e => { cum = e.target.checked; drawChart(); });
+  $('#finFee').addEventListener('input', paintPay);
+  $('#finQ').addEventListener('input', e => { lq = e.target.value.trim().toLowerCase(); lpage = 1; paintLedger(); });
+  $('#finS').addEventListener('change', e => { ls = e.target.value; lpage = 1; paintLedger(); });
+  paintAll();
 }
 
+/* ---------------- CERTIFICATES: shared design, print, verification ---------------- */
+const certEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const certDateOf = c => c.issueDate ? new Date(c.issueDate + 'T12:00:00') : (c.createdAt?.toDate ? c.createdAt.toDate() : new Date());
+const certDateLabel = c => certDateOf(c).toLocaleDateString('ar-EG', { year:'numeric', month:'long', day:'numeric' });
+const certSerial = c => c.serial || `LAV-${certDateOf(c).getFullYear()}-${String(c.id || '000000').slice(0, 6).toUpperCase()}`;
+const certVerifyUrl = id => `${location.origin}${location.pathname}#/verify-cert/${id}`;
+
+/* A4-landscape certificate as a standalone document — used for the on-screen preview (iframe),
+   for printing / "Save as PDF", and for the student's own copy. */
+function certificateParts(c){
+  const logo = document.querySelector('.brand-mark')?.src || '', url = c.id ? certVerifyUrl(c.id) : '';
+  const css = `
+    :host{display:block}
+    @page{size:A4 landscape;margin:0} *{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    html,body{margin:0;background:#fff} body{width:1123px;height:794px}
+    .c{position:relative;width:1123px;height:794px;padding:34px;background:radial-gradient(circle at 50% 0,#F6F0FD,#fff 62%);font-family:'Cairo','Tahoma',sans-serif;color:#2A1948;direction:rtl}
+    .f1{position:absolute;inset:26px;border:6px solid #5B2A86;border-radius:6px} .f2{position:absolute;inset:44px;border:2px solid #E2A33B;border-radius:2px}
+    .o{position:absolute;width:120px;height:120px;border:2px solid #E2A33B;opacity:.55;border-radius:50%} .o.a{top:36px;left:36px;border-color:#5B2A86} .o.b{bottom:36px;right:36px;border-color:#5B2A86} .o.d{top:70px;left:70px;width:60px;height:60px} .o.e{bottom:70px;right:70px;width:60px;height:60px}
+    .in{position:relative;z-index:2;height:100%;display:flex;flex-direction:column;align-items:center;text-align:center;padding:52px 90px 40px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:26px;color:#5B2A86} .brand img{width:54px;height:54px;border-radius:14px;object-fit:cover}
+    h1{font-family:'Amiri','Cairo',serif;font-size:60px;margin:14px 0 2px;color:#5B2A86;letter-spacing:1px} .tag{width:190px;height:4px;background:linear-gradient(90deg,transparent,#E2A33B,transparent);margin:2px 0 14px}
+    .l{font-size:19px;color:#6B6072;margin:6px 0} .n{font-family:'Amiri','Cairo',serif;font-size:56px;font-weight:700;margin:8px 0 6px;color:#2A1948;border-bottom:2px solid #E2A33B;padding:0 40px 6px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .k{font-size:34px;font-weight:800;margin:6px 0;color:#5B2A86;max-width:100%;line-height:1.5} .note{font-size:18px;color:#8A6410;font-weight:700;margin:4px 0 0;min-height:24px}
+    .ft{margin-top:auto;width:100%;display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#6B6072} .ft b{display:block;font-size:17px;color:#2A1948;margin-top:3px} .ft > div{min-width:200px}
+    .seal{width:112px;height:112px;border-radius:50%;background:radial-gradient(circle,#F3C36A,#C98826);display:flex;align-items:center;justify-content:center;color:#fff;font-size:52px;box-shadow:0 0 0 6px #fff,0 0 0 9px #E2A33B;min-width:0 !important}
+    .sig{border-top:1.5px solid #2A1948;padding-top:6px;text-align:center}
+    .ver{position:absolute;bottom:52px;left:0;right:0;text-align:center;font-size:11px;color:#9A8FA8;direction:ltr}`;
+  const body = `<div class="c"><div class="f1"></div><div class="f2"></div><i class="o a"></i><i class="o b"></i><i class="o d"></i><i class="o e"></i>
+  <div class="in"><div class="brand">${logo ? `<img src="${logo}" alt="">` : ''}<span>لافندر</span></div>
+    <h1>شهادة إتمام</h1><div class="tag"></div>
+    <p class="l">تشهد منصة لافندر التعليمية بأن</p><div class="n">${certEsc(c.studentName || 'الطالب')}</div>
+    <p class="l">قد أتمّ بنجاح كورس</p><div class="k">${certEsc(c.courseTitle || 'الكورس')}</div>
+    <p class="note">${certEsc(c.note || '')}</p>
+    <div class="ft"><div class="sig">التاريخ<b>${certDateLabel(c)}</b></div><div class="seal">★</div><div class="sig">رقم الشهادة<b dir="ltr">${certEsc(certSerial(c))}</b></div></div>
+  </div>${url ? `<div class="ver">${certEsc(url)}</div>` : ''}</div>`;
+  return { css, body };
+}
+/* A4-landscape certificate as a standalone printable document. */
+function certificateDocHTML(c){
+  const { css, body } = certificateParts(c);
+  return `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><title>شهادة — ${certEsc(c.studentName)}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&family=Amiri:wght@400;700&display=swap" rel="stylesheet"><style>${css}</style></head><body>${body}</body></html>`;
+}
+/* On-screen preview: rendered inside a Shadow DOM (isolated styles, no iframe needed). */
+function renderCertificatePreview(host, c){
+  const root = host.shadowRoot || host.attachShadow({ mode:'open' }), { css, body } = certificateParts(c);
+  root.innerHTML = `<style>${css}</style>${body}`;
+}
+function openCertificate(c){
+  const win = window.open('', '_blank'); if(!win){ alert('اسمح بالنوافذ المنبثقة عشان تشوف الشهادة وتطبعها.'); return; }
+  win.document.write(certificateDocHTML(c)); win.document.close();
+  setTimeout(() => { try{ win.focus(); win.print(); }catch(e){} }, 900);   // print is triggered from here, not from a script inside the page
+}
+
+/* Public page: anyone with a certificate link can confirm it's genuine. Needs a Security Rule
+   that lets unauthenticated clients `get` (not list) a single certificates document. */
+async function renderVerifyCertificate(id){
+  const app = document.getElementById('app');
+  app.innerHTML = `<div class="dash-wrap"><div class="empty-state">جارٍ التحقق من الشهادة...</div></div>`;
+  let c = null, failed = false;
+  try{ const snap = await getDoc(doc(db, 'certificates', id)); if(snap.exists()) c = { id:snap.id, ...snap.data() }; }catch(e){ failed = true; console.warn('[Lavender] verify cert', e?.code); }
+  app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="max-width:560px;margin:0 auto;text-align:center;">
+    ${c ? `<div style="width:64px;height:64px;border-radius:50%;background:#E9F5EE;color:var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;">✓</div>
+      <h2 style="margin:0 0 6px;color:var(--success);">شهادة صحيحة وموثّقة</h2><p style="color:var(--muted);margin:0 0 20px;">صادرة عن منصة لافندر</p>
+      <div style="text-align:start;border:1px solid var(--line);border-radius:14px;overflow:hidden;">
+        ${[['اسم الطالب', c.studentName], ['الكورس', c.courseTitle], ['تاريخ الإصدار', certDateLabel(c)], ['رقم الشهادة', certSerial(c)], ['ملاحظة', c.note]].filter(r => r[1]).map(([k,v]) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);"><span style="color:var(--muted);">${k}</span><b>${certEsc(v)}</b></div>`).join('')}
+      </div>`
+    : `<div style="width:64px;height:64px;border-radius:50%;background:#FBEBEA;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;">✕</div>
+      <h2 style="margin:0 0 6px;color:var(--danger);">${failed ? 'تعذّر التحقق الآن' : 'لم نجد هذه الشهادة'}</h2><p style="color:var(--muted);">${failed ? 'حاول مرة أخرى بعد قليل.' : 'تأكد من الرابط، أو تواصل مع الإدارة.'}</p>`}
+    <a href="#/" class="btn btn-ghost" style="margin-top:20px;">الصفحة الرئيسية</a></div></div>`;
+}
+
+/* ---------------- ADMIN: CERTIFICATES (v2 — pro) ---------------- */
 async function adminRenderCertificates(area){
-  try{
-    const [certSnap, approvedEnrollSnap] = await Promise.all([
-      getDocs(collection(db, 'certificates')),
-      getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))),
-    ]);
-    let certs = certSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const approvedEnrollments = approvedEnrollSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>إصدار شهادة جديدة</h3></div>
-        <form id="issueCertForm" style="display:flex;flex-direction:column;gap:14px;">
-          <div class="field" style="margin-bottom:0;">
-            <label>الطالب والكورس (من ضمن الكورسات المفعّلة)</label>
-            <select id="certEnrollment" required>
-              <option value="">— اختر —</option>
-              ${approvedEnrollments.map(en => `<option value="${en.id}">${en.studentName || 'طالب'} — ${en.courseTitle || 'كورس'}</option>`).join('')}
-            </select>
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>ملاحظة (اختياري)</label>
-            <input type="text" id="certNote" placeholder="مثال: بتقدير امتياز" />
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
-            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.certificate}</span> إصدار الشهادة
-          </button>
-        </form>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>الشهادات الصادرة</h3></div>
-        <div id="certList"></div>
-      </div>
-    `;
-
-    function renderCertList(){
-      const listEl = document.getElementById('certList');
-      if(certs.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد شهادات صادرة بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = certs.map(c => `
-        <div class="table-widget-row">
-          <div class="avatar-sm" style="background:var(--amber-500);">${SIDE_ICONS.certificate}</div>
-          <div class="grow">
-            <div class="t1">${c.studentName || 'طالب'} — ${c.courseTitle || 'كورس'}</div>
-            <div class="t2">${c.issueDate || ''} ${c.note ? '· ' + c.note : ''}</div>
-          </div>
-          <button class="icon-action danger" data-id="${c.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('حذف هذه الشهادة؟')) return;
-          try{
-            await deleteDoc(doc(db, 'certificates', btn.dataset.id));
-            certs = certs.filter(c => c.id !== btn.dataset.id);
-            renderCertList();
-          }catch(e){
-            alert('تعذّر حذف الشهادة.');
-          }
-        });
-      });
-    }
-    renderCertList();
-
-    document.getElementById('issueCertForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const enrollId = document.getElementById('certEnrollment').value;
-      const note = document.getElementById('certNote').value.trim();
-      if(!enrollId) return;
-      const enrollment = approvedEnrollments.find(en => en.id === enrollId);
-      if(!enrollment) return;
-
-      try{
-        const issueDate = new Date().toISOString().slice(0,10);
-        const ref = await addDoc(collection(db, 'certificates'), {
-          studentId: enrollment.studentId,
-          studentName: enrollment.studentName || 'طالب',
-          courseId: enrollment.courseId,
-          courseTitle: enrollment.courseTitle || 'كورس',
-          note: note || null,
-          issueDate,
-          createdAt: serverTimestamp(),
-        });
-        certs.push({ id: ref.id, studentId: enrollment.studentId, studentName: enrollment.studentName, courseId: enrollment.courseId, courseTitle: enrollment.courseTitle, note, issueDate });
-        renderCertList();
-        document.getElementById('issueCertForm').reset();
-        showSuccessToast('تم إصدار الشهادة بنجاح!', enrollment.studentName || '');
-      }catch(e){
-        alert('تعذّر إصدار الشهادة.');
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الشهادات.</div>`;
+  document.getElementById('crtOv')?.remove(); document.getElementById('crtBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, { medal:'<circle cx="12" cy="8" r="6"/><path d="M15.5 13.5L17 22l-5-3-5 3 1.5-8.5"/>', plus:'<path d="M12 5v14M5 12h14"/>', link:'<path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/>', edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>', bell:'<path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>' });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const nm = n => Number(n).toLocaleString('ar-EG'), key = (s, c) => s + '|' + c, initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase();
+  let certs = [], enrs = [], users = new Map(), results = {};
+  const decorate = c => { c.t = ts(c.createdAt) || Math.floor(certDateOf(c).getTime()/1000); c.serialL = certSerial(c); return c; };
+  async function load(){
+    const [cS, eS, rS, uS] = await Promise.all([getDocs(collection(db,'certificates')), getDocs(query(collection(db,'enrollments'), where('status','==','approved'))), getDocs(collection(db,'examResults')).catch(() => ({ docs:[] })), getDocs(collection(db,'users')).catch(() => ({ docs:[] }))]);
+    certs = cS.docs.map(d => decorate({ id:d.id, ...d.data() })); enrs = eS.docs.map(d => ({ id:d.id, ...d.data(), t:ts(d.data().createdAt) }));
+    uS.docs.forEach(d => users.set(d.id, d.data()));
+    rS.docs.forEach(d => { const r = d.data(), k = key(r.studentId, r.courseId), o = results[k] = results[k] || { n:0, passed:0, best:0 }; o.n++; if(r.passed) o.passed++; if(r.total) o.best = Math.max(o.best, Math.round(r.score / r.total * 100)); });
   }
+  try{ await load(); }catch(err){
+    console.error('[Lavender] certificates load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الشهادات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="crtRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('crtRetry').onclick = () => adminRenderCertificates(area); return;
+  }
+  const certified = () => new Set(certs.map(c => key(c.studentId, c.courseId)));
+  const eligible = () => { const s = certified(); return enrs.filter(e => !s.has(key(e.studentId, e.courseId))); };
+  const examTxt = e => { const r = results[key(e.studentId, e.courseId)]; return r ? `اجتاز ${nm(r.passed)}/${nm(r.n)} · أفضل ${nm(r.best)}%` : 'بدون امتحانات'; };
+
+  let main = 'issued', q = '', fc = 'all', sort = 'new', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null, iss = null, fmonth = false;
+  const sel = new Set(), PAGE = 20;
+  area.innerHTML = `
+  <div class="ar crt" id="crtRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.medal,24)}</span><div><h2>الشهادات</h2><p>أصدر شهادات رسمية بتصميم جاهز للطباعة، برقم تسلسلي ورابط تحقق — والطالب بيتبلّغ ويقدر يطبعها بنفسه.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-ghost btn-sm" data-act="csv">${svg(P.dl,15)}<span class="ar-hide-m">تصدير</span></button><button class="btn btn-primary btn-sm" data-act="new">${svg(P.plus,15)} إصدار شهادة</button></div>
+    </div>
+    <div class="ar-stats" id="crtStats"></div>
+    <div class="widget ar-panel">
+      <div class="ov-rng crt-main" id="crtMain"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="crtQ" placeholder="ابحث بالطالب أو الكورس أو رقم الشهادة…   ( / )" /></div>
+        <select id="crtC" class="ar-sel"><option value="all">كل الكورسات</option></select>
+        <select id="crtS" class="ar-sel"><option value="new">الأحدث</option><option value="old">الأقدم</option><option value="az">الطالب أبجديًا</option></select>
+        <div class="ar-seg"><button data-act="view" data-v="list">${svg(P.list,16)}</button><button data-act="view" data-v="cards">${svg(P.grid,16)}</button></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="crtCount"></div><div id="crtList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('crtRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'crtOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr crt-dr" id="crtDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'crtBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const monthStart = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1).getTime()/1000; };
+  const list = () => {
+    const lo = main === 'issued' ? certs : eligible(), match = x => !q || `${x.studentName || ''} ${x.courseTitle || ''} ${x.serialL || ''}`.toLowerCase().includes(q);
+    return lo.filter(x => (fc === 'all' || x.courseId === fc) && match(x) && (!fmonth || main !== 'issued' || x.t >= monthStart()))
+      .sort((a,b) => sort === 'az' ? (a.studentName || '').localeCompare(b.studentName || '', 'ar') : sort === 'old' ? a.t - b.t : b.t - a.t);
+  };
+  function paintTop(){
+    const el = eligible(), mo = certs.filter(c => c.t >= monthStart()).length, stud = new Set(certs.map(c => c.studentId)).size, crs = new Set(certs.map(c => c.courseId)).size, rate = enrs.length ? Math.round(certs.length / enrs.length * 100) : 0;
+    const S = [
+      { k:'issued', l:'شهادات صادرة', n:certs.length, i:P.medal, c:'#C98826', bg:'#FFF4E0', on:main === 'issued' && !fmonth },
+      { k:'eligible', l:'مؤهلون بدون شهادة', n:el.length, i:P.bell, c:'#B3413A', bg:'#FBEBEA', on:main === 'eligible', hot:el.length > 0 },
+      { k:'month', l:'أُصدرت هذا الشهر', n:mo, i:P.cal, c:'#3B6FBF', bg:'#EEF3FB', on:fmonth },
+      { k:'-', l:'طلاب حاصلون على شهادة', n:stud, i:P.users, c:'#5A3B92', bg:'#EDE7F6' },
+      { k:'-', l:'كورسات صدرت لها شهادات', n:crs, i:P.book, c:'#2F7A4F', bg:'#E9F5EE' },
+      { k:'-', l:'نسبة الإصدار من المشتركين', n:rate, u:'%', i:P.check, c:'#6B6072', bg:'#F1EDF5' },
+    ];
+    $('#crtStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''} ${s.hot ? 'pay-hot' : ''}" ${s.k === '-' ? '' : `data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span><b><span data-n="${s.n}">0</span>${s.u || ''}</b><small>${s.l}</small></span></button>`).join('');
+    document.querySelectorAll('#crtStats b > span').forEach(countUp);
+    $('#crtMain').innerHTML = `<button class="${main === 'issued' ? 'on' : ''}" data-act="main" data-k="issued">الشهادات الصادرة (${nm(certs.length)})</button><button class="${main === 'eligible' ? 'on' : ''}" data-act="main" data-k="eligible">مؤهلون بدون شهادة (${nm(el.length)})</button>`;
+    const opts = [...new Map((main === 'issued' ? certs : el).map(x => [x.courseId, x.courseTitle || 'كورس'])).entries()];
+    $('#crtC').innerHTML = `<option value="all">كل الكورسات</option>${opts.map(([id,t]) => `<option value="${id}" ${fc === id ? 'selected' : ''}>${E(t)}</option>`).join('')}`;
+  }
+  function rowHTML(x, i){
+    const isC = main === 'issued', u = users.get(x.studentId);
+    return `<div class="ar-item ${sel.has(x.id) ? 'sel' : ''}" data-id="${x.id}" style="--i:${Math.min(i,14)};--c:${isC ? '#C98826' : '#B3413A'};--bg:${isC ? '#FFF4E0' : '#FBEBEA'}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(x.id) ? 'checked' : ''}><i></i></label>
+      <span class="crt-ic">${svg(P.medal,20)}</span>
+      <div class="ar-main"><div class="ar-t">${E(x.studentName || 'طالب')}</div><div class="ar-d">${E(x.courseTitle || 'كورس')}${x.note ? ' · ' + E(x.note) : ''}</div></div>
+      ${isC ? `<span class="pay-mono">${E(x.serialL)}</span>` : `<span class="crt-ex ${results[key(x.studentId, x.courseId)]?.passed ? 'ok' : ''}">${examTxt(x)}</span>`}
+      <div class="ar-dt" title="${ago(x.t)}">${fmtD(x.t)}</div>
+      <div class="ar-act">${isC ? `<button class="icon-action" data-act="open" title="عرض">${svg(P.eye,15)}</button><button class="icon-action" data-act="print" title="طباعة / PDF">${svg(P.print,15)}</button><button class="icon-action" data-act="copylink" title="نسخ رابط التحقق">${svg(P.link,15)}</button><button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button>` : `<button class="btn btn-primary btn-sm" data-act="issue-one">${svg(P.medal,14)} إصدار</button>`}</div></div>`;
+  }
+  function paintList(){
+    const L = list(), shown = L.slice(0, page*PAGE);
+    document.querySelectorAll('#crtRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#crtCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
+    if(!L.length){ $('#crtList').innerHTML = `<div class="ar-empty">${svg(P.medal,44)}<h4>${main === 'issued' ? (certs.length ? 'ما في نتائج مطابقة' : 'لا توجد شهادات صادرة بعد') : 'كل المشتركين حصلوا على شهاداتهم 🎉'}</h4><p>${main === 'issued' && !certs.length ? 'ابدأ بإصدار أول شهادة.' : 'جرّب تغيّر البحث أو الفلاتر.'}</p>${main === 'issued' && !certs.length ? '<button class="btn btn-primary btn-sm" data-act="new">إصدار شهادة</button>' : ''}</div>`; return; }
+    $('#crtList').innerHTML = `<div class="${view === 'list' ? 'ar-list crt-list' : 'ar-cards'}">${view === 'list' ? `<div class="ar-head crt-head"><span></span><span></span><span>الطالب / الكورس</span><span>${main === 'issued' ? 'رقم الشهادة' : 'الامتحانات'}</span><span>${main === 'issued' ? 'الإصدار' : 'الاشتراك'}</span><span>تحكّم</span></div>` : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${nm(n)}</b><span>محدد</span>${main === 'eligible' ? `<button data-act="b-issue">${svg(P.medal,15)} إصدار الشهادات</button>` : `<button data-act="b-notify">${svg(P.bell,15)} إشعار الطلاب</button><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button>`}<button class="x" data-act="b-clr">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer ---- */
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  const prevFrame = c => `<div class="crt-prev" id="crtPrev"><div id="crtFrame" class="crt-host" role="img" aria-label="معاينة الشهادة"></div></div>`;
+  function fitPreview(c){
+    const box = $('#crtPrev'), fr = $('#crtFrame'); if(!box || !fr) return;
+    const s = box.clientWidth / 1123; fr.style.transform = `scale(${s})`; box.style.height = (794 * s) + 'px'; renderCertificatePreview(fr, c);
+  }
+  const issueDraft = () => {
+    const en = enrs.find(e => e.id === iss.pick);
+    return { id:iss.editId || '', studentName:en?.studentName || iss.name || 'اسم الطالب', courseTitle:en?.courseTitle || iss.course || 'اسم الكورس', note:iss.note, issueDate:iss.date, serial:iss.serial };
+  };
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const dr = $('#crtDr');
+    if(drw.mode === 'view'){
+      const c = certs.find(x => x.id === drw.id); if(!c){ drw = null; ov.classList.remove('open'); return; }
+      const L = list(), ix = L.findIndex(x => x.id === c.id), u = users.get(c.studentId) || {}, url = certVerifyUrl(c.id);
+      dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+      <div class="us-body">${prevFrame(c)}
+        <h3 class="ar-dr-t" style="margin-top:16px">${E(c.studentName || 'طالب')}</h3><div class="ar-chips"><span class="ar-badge" style="--c:#C98826;--bg:#FFF4E0">${E(c.serialL)}</span><span class="ar-st on">${fmtD(c.t)}</span></div>
+        <div class="ar-kvs" style="margin-top:14px">${kv('الكورس', `<a class="ar-lnk" href="#/course/${c.courseId}">${E(c.courseTitle || 'كورس')}</a>`)}${kv('الطالب', `<a class="ar-lnk" href="#/dashboard?tab=users&uid=${c.studentId}">${E(u.email || 'ملف الطالب')}</a>`)}${kv('تاريخ الإصدار', certDateLabel(c))}${c.note ? kv('الملاحظة', E(c.note)) : ''}${kv('رابط التحقق', `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(url.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copylink">نسخ</button>`)}</div></div>
+      <div class="ar-dr-f"><button class="btn btn-primary btn-sm" data-act="print">${svg(P.print,14)} طباعة / حفظ PDF</button><button class="btn btn-ghost btn-sm" data-act="notify">${svg(P.bell,14)} إشعار الطالب</button><button class="btn btn-ghost btn-sm" data-act="edit">${svg(P.edit,14)} تعديل</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف</button></div>`;
+      requestAnimationFrame(() => fitPreview(c));
+      return;
+    }
+    const editing = drw.mode === 'edit', pool = editing ? [] : (iss.showAll ? enrs : eligible()).filter(e => !iss.pq || `${e.studentName || ''} ${e.courseTitle || ''}`.toLowerCase().includes(iss.pq)).slice(0, 40);
+    const dupe = !editing && iss.pick && certified().has(key(enrs.find(e => e.id === iss.pick)?.studentId, enrs.find(e => e.id === iss.pick)?.courseId));
+    dr.innerHTML = `<div class="ar-dr-h"><h3>${editing ? 'تعديل الشهادة' : 'إصدار شهادة جديدة'}</h3><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <form id="crtForm" class="ar-form">
+      ${editing ? '' : `<div class="field"><label>الطالب والكورس *</label><div class="topbar-search" style="max-width:none;margin-bottom:8px">${svg(P.srch,15)}<input id="crtPq" placeholder="ابحث…" value="${E(iss.pq || '')}"></div>
+        <div class="crt-pick">${pool.length ? pool.map(e => `<button type="button" class="${iss.pick === e.id ? 'on' : ''}" data-act="pick" data-id="${e.id}"><span class="us-av" style="width:34px;height:34px;font-size:14px">${E(initial(e.studentName))}</span><div><b>${E(e.studentName || 'طالب')}</b><small>${E(e.courseTitle || 'كورس')} · ${examTxt(e)}</small></div></button>`).join('') : '<div class="us-hint" style="padding:14px">لا توجد نتائج.</div>'}</div>
+        <label class="fin-tg" style="margin-top:8px"><input type="checkbox" id="crtAll" ${iss.showAll ? 'checked' : ''}><i></i>إظهار كل المشتركين (حتى اللي معاهم شهادة)</label>
+        ${dupe ? '<div class="pay-warn hot" style="margin-top:10px">' + svg(P.warn,16) + '<span>هذا الطالب معه شهادة لنفس الكورس بالفعل — الإصدار هيكرّرها.</span></div>' : ''}</div>`}
+      <div class="field"><label>ملاحظة / تقدير (اختياري)</label><input id="crtNote" value="${E(iss.note)}" placeholder="مثال: بتقدير امتياز"></div>
+      <div class="field"><label>تاريخ الإصدار</label><input type="date" id="crtDate" value="${E(iss.date)}"></div>
+      ${editing ? '' : `<label class="fin-tg"><input type="checkbox" id="crtNotify" ${iss.notify ? 'checked' : ''}><i></i>إشعار الطالب بإصدار الشهادة</label>`}
+      <div class="ar-msg err" id="crtErr"></div>
+      <div class="field" style="margin-top:14px"><label>معاينة الشهادة</label>${prevFrame()}</div>
+      <div class="ar-form-b"><button class="btn btn-primary" type="submit">${editing ? 'حفظ التعديلات' : 'إصدار الشهادة'}</button><button class="btn btn-ghost" type="button" data-act="cancel">إلغاء</button></div></form>`;
+    requestAnimationFrame(() => fitPreview(issueDraft()));
+  }
+  const open = (id) => { drw = { mode:'view', id }; paintDrawer(); };
+  const startIssue = (pick='') => { iss = { pick, note:'', date:new Date().toISOString().slice(0,10), notify:true, showAll:false, pq:'' }; drw = { mode:'issue' }; paintDrawer(); };
+  const nav = d => { const L = list(), i = L.findIndex(x => x.id === drw?.id); if(L[i + d]) open(L[i + d].id); };
+
+  /* ---- actions ---- */
+  async function notify(c){
+    if(!c.studentId) return false;
+    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:c.studentId, title:'🎓 تم إصدار شهادتك', body:`تم إصدار شهادة إتمام كورس "${c.courseTitle || ''}" (${c.serialL || certSerial(c)}). تقدر تشوفها وتطبعها من صفحة "شهاداتي".`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }); return true; }
+    catch(e){ console.warn('[Lavender] cert notify', e?.code); return false; }
+  }
+  async function issueFor(en, note, date, doNotify){
+    const yr = new Date(date + 'T12:00:00').getFullYear();
+    // next number = highest existing number for that year + 1 (safe after deletions, unlike a plain count)
+    const top = certs.reduce((m, c) => { const x = /^LAV-(\d{4})-(\d+)$/.exec(c.serial || ''); return x && +x[1] === yr ? Math.max(m, +x[2]) : m; }, 0), serial = `LAV-${yr}-${String(top + 1).padStart(4,'0')}`;
+    const data = { studentId:en.studentId, studentName:en.studentName || 'طالب', courseId:en.courseId, courseTitle:en.courseTitle || 'كورس', note:note || null, issueDate:date, serial, issuedBy:currentUser.uid, createdAt:serverTimestamp() };
+    const ref = await addDoc(collection(db,'certificates'), data);
+    const c = decorate({ id:ref.id, ...data, createdAt:{ seconds:Math.floor(Date.now()/1000) } }); certs.unshift(c);
+    logAdminActivity('cert_issue', `${c.studentName} — ${c.courseTitle}`, serial);
+    return doNotify ? notify(c) : false;
+  }
+  async function submitForm(){
+    const note = $('#crtNote').value.trim(), date = $('#crtDate').value || new Date().toISOString().slice(0,10), err = $('#crtErr'); err.textContent = '';
+    const btn = $('#crtForm button[type=submit]'); btn.disabled = true;
+    try{
+      if(drw.mode === 'edit'){
+        const c = certs.find(x => x.id === iss.editId); await updateDoc(doc(db,'certificates',c.id), { note:note || null, issueDate:date }); Object.assign(c, { note:note || null, issueDate:date }); decorate(c);
+        logAdminActivity('cert_edit', `${c.studentName} — ${c.courseTitle}`); toast('تم حفظ التعديلات'); drw = { mode:'view', id:c.id };
+      } else {
+        const en = enrs.find(e => e.id === iss.pick); if(!en){ err.textContent = 'اختر الطالب والكورس أولًا.'; btn.disabled = false; return; }
+        const sent = await issueFor(en, note, date, $('#crtNotify').checked); toast(`تم إصدار الشهادة${sent ? ' — وتم إشعار الطالب' : ''}`); drw = { mode:'view', id:certs[0].id };
+      }
+    }catch(e){ console.error(e); err.textContent = 'تعذّر الحفظ — راجع الاتصال والصلاحيات.'; btn.disabled = false; return; }
+    paintAll(); paintDrawer();
+  }
+  async function bulkIssue(){
+    const L = eligible().filter(e => sel.has(e.id)); if(!L.length) return;
+    if(!await ask(`إصدار ${nm(L.length)} شهادة؟`, 'هتتصدر شهادة لكل طالب محدد وهيتبلّغوا بإشعار.', 'إصدار', { safe:true, icon:P.medal })) return;
+    const date = new Date().toISOString().slice(0,10); let ok = 0;
+    for(let i = 0; i < L.length; i++){ try{ await issueFor(L[i], '', date, true); ok++; sel.delete(L[i].id); }catch(e){ console.error(e); } }
+    paintAll(); toast(`تم إصدار ${nm(ok)} من ${nm(L.length)} شهادة`);
+  }
+  async function remove(ids){
+    const L = ids.map(id => certs.find(c => c.id === id)).filter(Boolean); if(!L.length) return;
+    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} شهادة؟` : 'حذف هذه الشهادة؟', L.length > 1 ? 'الشهادات المحددة هتتلغي، وروابط التحقق بتاعتها هتوقف.' : `شهادة "${E(L[0].studentName)}" هتتلغي ورابط التحقق بتاعها هيوقف.`, 'حذف')) return;
+    try{ await Promise.all(L.map(c => deleteDoc(doc(db,'certificates',c.id)))); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
+    certs = certs.filter(c => !ids.includes(c.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw.id)) drw = null;
+    logAdminActivity('cert_delete', L[0].studentName, L.length > 1 ? `${L.length} شهادات` : L[0].serialL); paintAll(); paintDrawer();
+    toast(`تم حذف ${L.length > 1 ? nm(L.length) + ' شهادات' : 'الشهادة'}`, 'تراجع', async () => { try{ await Promise.all(L.map(({ id, t, serialL, ...d }) => setDoc(doc(db,'certificates',id), d))); certs.push(...L); paintAll(); toast('تمت الاستعادة'); }catch(e){ toast('تعذّرت الاستعادة'); } });
+  }
+  function csv(){
+    const rows = [['رقم الشهادة','الطالب','الكورس','تاريخ الإصدار','الملاحظة','رابط التحقق']].concat(certs.map(c => [c.serialL, c.studentName || '', c.courseTitle || '', c.issueDate || '', c.note || '', certVerifyUrl(c.id)]));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(x => `"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'certificates-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast(`تم تصدير ${nm(certs.length)} شهادة`);
+  }
+
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), row = ev.target.closest('.ar-item'), id = row?.dataset.id || drw?.id, c = certs.find(x => x.id === id);
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } else if(row && main === 'issued' && !ev.target.closest('.ar-chk,.ar-act')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'new') startIssue(); else if(a === 'issue-one') startIssue(id);
+    else if(a === 'open') open(id); else if(a === 'close'){ drw = null; paintDrawer(); } else if(a === 'prev') nav(-1); else if(a === 'next') nav(1);
+    else if(a === 'cancel'){ drw = drw.mode === 'edit' ? { mode:'view', id:iss.editId } : null; paintDrawer(); }
+    else if(a === 'print') openCertificate(c);
+    else if(a === 'copylink'){ try{ await navigator.clipboard.writeText(certVerifyUrl(id)); toast('تم نسخ رابط التحقق'); }catch(_){ toast(certVerifyUrl(id)); } }
+    else if(a === 'notify'){ const ok = await notify(c); toast(ok ? 'تم إشعار الطالب' : 'تعذّر إرسال الإشعار'); }
+    else if(a === 'edit'){ iss = { editId:c.id, name:c.studentName, course:c.courseTitle, note:c.note || '', date:c.issueDate || new Date().toISOString().slice(0,10), serial:c.serial }; drw = { mode:'edit' }; paintDrawer(); }
+    else if(a === 'del') remove([id]);
+    else if(a === 'pick'){ iss.pick = el.dataset.id; iss.note = $('#crtNote')?.value ?? iss.note; paintDrawer(); }
+    else if(a === 'main'){ main = el.dataset.k; fmonth = false; fc = 'all'; page = 1; sel.clear(); paintAll(); }
+    else if(a === 'stat'){ const k = el.dataset.k; main = k === 'eligible' ? 'eligible' : 'issued'; fmonth = k === 'month'; fc = 'all'; page = 1; sel.clear(); paintAll(); }
+    else if(a === 'view'){ view = el.dataset.v; paintList(); } else if(a === 'more'){ page++; paintList(); }
+    else if(a === 'selall'){ const L = list(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderCertificates(area); } else if(a === 'csv') csv();
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); } else if(a === 'b-issue') bulkIssue(); else if(a === 'b-del') remove([...sel]);
+    else if(a === 'b-notify'){ let n = 0; for(const x of certs.filter(x => sel.has(x.id))) if(await notify(x)) n++; toast(`تم إشعار ${nm(n)} طالب`); }
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  ov.addEventListener('submit', ev => { ev.preventDefault(); submitForm(); });
+  ov.addEventListener('input', ev => {
+    if(ev.target.id === 'crtPq'){ iss.pq = ev.target.value.trim().toLowerCase(); const pos = ev.target.selectionStart, n = $('#crtNote').value; iss.note = n; paintDrawer(); const i = $('#crtPq'); i.focus(); i.setSelectionRange(pos, pos); }
+    else if(ev.target.id === 'crtNote' || ev.target.id === 'crtDate'){ iss.note = $('#crtNote').value; iss.date = $('#crtDate').value; const fr = $('#crtFrame'); if(fr) renderCertificatePreview(fr, issueDraft()); }
+  });
+  ov.addEventListener('change', ev => { if(ev.target.id === 'crtAll'){ iss.showAll = ev.target.checked; iss.note = $('#crtNote').value; paintDrawer(); } else if(ev.target.id === 'crtNotify') iss.notify = ev.target.checked; });
+  $('#crtQ').addEventListener('input', ev => { q = ev.target.value.trim().toLowerCase(); page = 1; paintList(); });
+  $('#crtC').addEventListener('change', ev => { fc = ev.target.value; page = 1; paintList(); });
+  $('#crtS').addEventListener('change', ev => { sort = ev.target.value; paintList(); });
+  const onKey = ev => {
+    if(!root.isConnected) return; const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(ev.key === 'Escape' && drw){ drw = null; paintDrawer(); } else if(!typing && ev.key === '/'){ ev.preventDefault(); $('#crtQ').focus(); }
+    else if(!typing && drw?.mode === 'view' && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) nav(ev.key === 'ArrowLeft' ? 1 : -1);
+  };
+  document.addEventListener('keydown', onKey);
+  const onResize = () => { if(drw) { const c = drw.mode === 'view' ? certs.find(x => x.id === drw.id) : issueDraft(); if(c) fitPreview(c); } };
+  window.addEventListener('resize', onResize);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); window.removeEventListener('resize', onResize); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
 async function adminRenderPaymentMethods(area){
@@ -11030,6 +11607,16 @@ const ACTIVITY_ACTION_META = {
   user_role_change: { label:'تغيير صلاحية مستخدم', icon: SIDE_ICONS.users, color:'#3B6FBF', bg:'#EEF3FB' },
   user_status_toggle: { label:'تفعيل/تعطيل حساب', icon: SIDE_ICONS.lock, color:'var(--amber-600)', bg:'#FCF3E3' },
   user_delete: { label:'حذف مستخدم', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  admin_email_change: { label:'تغيير بريد حساب الإدارة', icon: SIDE_ICONS.lock, color:'#3B6FBF', bg:'#EEF3FB' },
+  admin_password_change: { label:'تغيير كلمة مرور حساب الإدارة', icon: SIDE_ICONS.lock, color:'#3B6FBF', bg:'#EEF3FB' },
+  cert_issue: { label:'إصدار شهادة', icon: SIDE_ICONS.certificate, color:'#C98826', bg:'#FFF4E0' },
+  cert_edit: { label:'تعديل شهادة', icon: SIDE_ICONS.certificate, color:'#3B6FBF', bg:'#EEF3FB' },
+  cert_delete: { label:'حذف شهادة', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  finance_fee: { label:'تعديل نسبة المنصة', icon: SIDE_ICONS.card, color:'#C98826', bg:'#FFF4E0' },
+  payment_approve: { label:'قبول طلب اشتراك', icon: SIDE_ICONS.check, color:'var(--success)', bg:'#E9F5EE' },
+  payment_reject: { label:'رفض / إلغاء طلب اشتراك', icon: SIDE_ICONS.close, color:'var(--danger)', bg:'#FBEBEA' },
+  payment_reopen: { label:'إعادة فتح طلب اشتراك', icon: SIDE_ICONS.check, color:'#3B6FBF', bg:'#EEF3FB' },
+  payment_note: { label:'إجراء على طلب اشتراك', icon: SIDE_ICONS.card, color:'#3B6FBF', bg:'#EEF3FB' },
   user_ban: { label:'حظر مستخدم', icon: SIDE_ICONS.lock, color:'var(--danger)', bg:'#FBEBEA' },
   user_suspend: { label:'إيقاف مستخدم مؤقتًا', icon: SIDE_ICONS.clock, color:'var(--amber-600)', bg:'#FCF3E3' },
   user_reset_pw: { label:'إرسال رابط إعادة تعيين كلمة المرور', icon: SIDE_ICONS.lock, color:'#3B6FBF', bg:'#EEF3FB' },
@@ -11099,6 +11686,91 @@ async function adminRenderActivityLog(area){
   }
 }
 
+/* ---------------- ADMIN: my account (change email / password) ---------------- */
+/* The admin account is often created with a placeholder address (e.g. admin@…), which can't
+   receive verification or password-reset emails. This lets the admin switch to a real address
+   and set a password from inside the panel — no email round-trip needed to get in. */
+async function adminChangeEmail(newEmail, password){
+  const user = auth.currentUser;
+  if(!user) throw { code:'auth/user-token-expired' };
+  await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, password));
+  // Firebase emails a confirmation link to the NEW address; the switch applies once it's clicked
+  // (which also proves the address is real and leaves it verified).
+  try{ await verifyBeforeUpdateEmail(user, newEmail, VERIFY_EMAIL_ACTION_SETTINGS); }
+  catch(e){
+    if(['auth/unauthorized-continue-uri','auth/invalid-continue-uri','auth/missing-continue-uri'].includes(e?.code)) await verifyBeforeUpdateEmail(user, newEmail);
+    else throw e;
+  }
+  try{ logAdminActivity('admin_email_change', newEmail, 'بانتظار تأكيد البريد الجديد'); }catch(e){}
+  return 'verify';
+}
+async function adminChangePassword(oldPassword, newPassword){
+  const user = auth.currentUser;
+  if(!user) throw { code:'auth/user-token-expired' };
+  await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, oldPassword));
+  await updatePassword(user, newPassword);
+  try{ logAdminActivity('admin_password_change', user.email); }catch(e){}
+}
+function adminAccountCardHTML(){
+  const u = currentUser, ok = !!u?.emailVerified;
+  return `
+      <div class="widget widget-4" id="adminAccountCard">
+        <div class="widget-head"><h3>حساب الإدارة والأمان</h3></div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:-4px 0 18px;">
+          <div><div style="font-size:12px;color:var(--muted);">البريد الحالي لتسجيل الدخول</div><div dir="ltr" style="font-weight:800;font-size:15px;text-align:start;" id="acctCurEmail">${(u?.email || '—').replace(/[<>&"]/g, '')}</div></div>
+          <span class="status-badge ${ok ? 'status-approved' : 'status-pending'}" id="acctVerBadge">${ok ? 'موثّق' : 'غير موثّق'}</span>
+          ${ok ? '' : `<button type="button" class="btn btn-ghost btn-sm" id="acctSendVerify">إرسال رابط التوثيق</button>`}
+        </div>
+        <div style="display:flex;gap:28px;flex-wrap:wrap;">
+          <form id="acctEmailForm" style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:260px;max-width:420px;">
+            <h4 style="margin:0;font-size:14px;">تغيير البريد الإلكتروني</h4>
+            <div class="field" style="margin-bottom:0;"><label>البريد الجديد (حقيقي)</label><input type="email" id="acctNewEmail" dir="ltr" required autocomplete="off" placeholder="you@gmail.com" /></div>
+            <div class="field" style="margin-bottom:0;"><label>كلمة المرور الحالية</label><input type="password" id="acctEmailPw" required autocomplete="current-password" /></div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">تغيير البريد</button>
+            <div id="acctEmailAlert"></div>
+            <div class="field-hint">هيوصلك رابط تأكيد على البريد الجديد، والتغيير بيتم بعد ما تضغط عليه — وبعدها سجّل دخول بالبريد الجديد. الأدمن معفى من إلزام التوثيق فتقدر تشتغل عادي في الأثناء.</div>
+          </form>
+          <form id="acctPwForm" style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:260px;max-width:420px;">
+            <h4 style="margin:0;font-size:14px;">تغيير كلمة المرور</h4>
+            <div class="field" style="margin-bottom:0;"><label>كلمة المرور الحالية</label><input type="password" id="acctOldPw" required autocomplete="current-password" /></div>
+            <div class="field" style="margin-bottom:0;"><label>كلمة المرور الجديدة (6 أحرف على الأقل)</label><input type="password" id="acctNewPw" required minlength="6" autocomplete="new-password" /></div>
+            <button type="submit" class="btn btn-primary" style="align-self:flex-start;">تغيير كلمة المرور</button>
+            <div id="acctPwAlert"></div>
+          </form>
+        </div>
+      </div>`;
+}
+function wireAdminAccountCard(){
+  const $ = id => document.getElementById(id), busy = (f, on) => f.querySelectorAll('button[type=submit]').forEach(b => b.disabled = on);
+  $('acctSendVerify')?.addEventListener('click', async (ev) => {
+    ev.target.disabled = true;
+    try{ await sendVerifyEmailSafe(auth.currentUser); ev.target.textContent = 'تم الإرسال ✓'; }
+    catch(e){ ev.target.disabled = false; alert('تعذّر الإرسال: ' + (e.code || 'خطأ')); }
+  });
+  $('acctEmailForm')?.addEventListener('submit', async (ev) => {
+    ev.preventDefault(); const f = ev.currentTarget, box = $('acctEmailAlert'), email = $('acctNewEmail').value.trim().toLowerCase();
+    if(email === (auth.currentUser?.email || '').toLowerCase()){ box.innerHTML = `<div class="alert alert-error">ده نفس البريد الحالي.</div>`; return; }
+    busy(f, true); box.innerHTML = '';
+    try{
+      const mode = await adminChangeEmail(email, $('acctEmailPw').value);
+      f.reset();
+      if(mode === 'direct'){
+        $('acctCurEmail').textContent = email;
+        box.innerHTML = `<div class="alert alert-success">تم تغيير البريد إلى ${email.replace(/[<>&"]/g, '')}. أرسلنا لك رابط توثيق عليه — مش شرط للدخول لكن يفضّل تضغطه.</div>`;
+      } else {
+        box.innerHTML = `<div class="alert alert-success">أرسلنا رابط تأكيد إلى ${email.replace(/[<>&"]/g, '')}. اضغط عليه وبعدها سجّل دخول بالبريد الجديد.</div>`;
+      }
+    }catch(e){ box.innerHTML = `<div class="alert alert-error">${explainErr(e, 'تعذّر تغيير البريد.')}</div>`; }
+    busy(f, false);
+  });
+  $('acctPwForm')?.addEventListener('submit', async (ev) => {
+    ev.preventDefault(); const f = ev.currentTarget, box = $('acctPwAlert'); busy(f, true); box.innerHTML = '';
+    try{ await adminChangePassword($('acctOldPw').value, $('acctNewPw').value); f.reset(); box.innerHTML = `<div class="alert alert-success">تم تغيير كلمة المرور.</div>`; }
+    catch(e){ box.innerHTML = `<div class="alert alert-error">${explainErr(e, 'تعذّر تغيير كلمة المرور.')}</div>`; }
+    busy(f, false);
+  });
+}
+
 async function adminRenderSettings(area){
   try{
     const [commSnap, generalSnap] = await Promise.all([
@@ -11109,6 +11781,7 @@ async function adminRenderSettings(area){
     const general = generalSnap.exists() ? generalSnap.data() : {};
 
     area.innerHTML = `
+      ${adminAccountCardHTML()}
       <div class="widget widget-4">
         <div class="widget-head"><h3>معلومات المنصة العامة</h3></div>
         <form id="generalSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
@@ -11164,6 +11837,8 @@ async function adminRenderSettings(area){
         </form>
       </div>
     `;
+
+    wireAdminAccountCard();
 
     document.getElementById('generalSettingsForm').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -11246,6 +11921,15 @@ async function loadMyEnrollments(){
 
 /* Why an account may not sign in (empty string = allowed). Shared by every status the admin
    users tab can set: disabled, temporarily suspended (auto-expires), and permanently banned. */
+/* Accounts that are never held back by the email-verification gate: anyone whose profile role is
+   admin, plus this fallback list of admin login emails (covers a slow/failed profile read on a
+   fresh login). Edit the list if the admin address changes. This only controls the UI gate —
+   real access is still enforced by Firestore Security Rules. */
+const ADMIN_VERIFY_BYPASS = ['admin@lavender.com'];
+function isAdminAccount(){
+  return currentProfile?.role === 'admin' || ADMIN_VERIFY_BYPASS.includes(String(currentUser?.email || '').toLowerCase());
+}
+
 function accountBlockMessage(p){
   if(!p) return '';
   if(p.status === 'banned') return 'تم حظر هذا الحساب من قبل الإدارة.' + (p.banReason ? `\nالسبب: ${p.banReason}` : '') + '\nتواصل معنا لو تعتقد إن ده خطأ.';
@@ -11258,9 +11942,17 @@ function accountBlockMessage(p){
 onAuthStateChanged(auth, async (user) => {
   currentUser = user;
   if(user){
+    currentProfile = null;   // until we know this user's role, the router must wait
     try{
-      const snap = await getDoc(doc(db, 'users', user.uid));
+      let snap;
+      try{ snap = await getDoc(doc(db, 'users', user.uid)); }
+      catch(e1){ await new Promise(r => setTimeout(r, 600)); snap = await getDoc(doc(db, 'users', user.uid)); }   // one retry for a flaky first read
       currentProfile = snap.exists() ? snap.data() : { name: user.displayName || user.email, email: user.email, role: 'student' };
+      // Keep the profile's email in step with the sign-in email (e.g. after the admin changed it).
+      if(snap.exists() && user.email && String(currentProfile.email || '').toLowerCase() !== user.email.toLowerCase()){
+        currentProfile.email = user.email;
+        updateDoc(doc(db, 'users', user.uid), { email: user.email }).catch(() => {});
+      }
     }catch(e){
       currentProfile = { name: user.displayName || user.email, email: user.email, role: 'student' };
     }
