@@ -462,6 +462,19 @@
     display:inline-flex;align-items:center;justify-content:center;
     margin-inline-start:auto;flex-shrink:0;
   }
+  /* Small quick-action icon buttons used inline in table/list rows (users tab etc.)
+     so common actions don't require expanding a row first. */
+  .row-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+  .row-icon-btn{
+    width:30px;height:30px;border-radius:8px;background:var(--paper);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;flex-shrink:0;
+    transition:background .15s,color .15s,transform .15s,border-color .15s;
+  }
+  .row-icon-btn:hover{transform:translateY(-1px);}
+  .row-icon-btn.danger:hover{background:#FBEBEA;color:var(--danger);border-color:#F0C5C1;}
+  .row-icon-btn.warn:hover{background:#FCF3E3;color:var(--amber-600);border-color:#EFD6A2;}
+  .row-icon-btn.active-state{background:#FBEBEA;color:var(--danger);border-color:#F0C5C1;}
+  .row-icon-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
   .admin-alert-toast{
     pointer-events:auto;cursor:pointer;
     display:flex;align-items:center;gap:14px;
@@ -1276,6 +1289,9 @@
   .btn-sm{padding:7px 14px;font-size:13px;border-radius:8px;}
   .btn-danger{background:#FBEBEA;color:var(--danger);}
   .btn-danger:hover{background:#F5D9D6;}
+  .btn-danger-outline{background:transparent;color:var(--danger);border:1.5px solid #F0C5C1;display:inline-flex;align-items:center;gap:6px;}
+  .btn-danger-outline:hover{background:#FBEBEA;border-color:var(--danger);}
+  .btn-danger-outline:disabled{opacity:.6;cursor:not-allowed;}
   .field select{
     width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);
     font-size:14.5px;font-family:inherit;background:#fff;
@@ -1389,6 +1405,9 @@
     .stat-card-v3 .lbl{font-size:11px;line-height:1.4;}
   }
   @media (max-width:520px){
+    #usersList .table-widget-row > div[style*="display:flex"]{flex-wrap:wrap;}
+    #usersList .role-select{order:2;margin-inline-start:44px;}
+    #usersList .row-actions{order:3;}
     .steps{grid-template-columns:1fr;}
     .footer-grid{grid-template-columns:1fr;}
     .course-grid{grid-template-columns:1fr 1fr;gap:12px;}
@@ -1475,6 +1494,56 @@
     #successToastLayer{top:14px;}
     .success-toast{max-width:none;width:100%;}
   }
+
+  /* ---------------- Email verification gate ---------------- */
+  .verify-wrap{min-height:calc(100vh - 72px);display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(180deg,var(--mist) 0%, var(--paper) 60%);}
+  .verify-card{
+    background:#fff;border-radius:24px;padding:44px 34px;max-width:440px;width:100%;text-align:center;
+    box-shadow:0 30px 80px -30px rgba(34,21,48,0.25);animation:widgetIn .5s cubic-bezier(.25,.8,.4,1) both;
+  }
+  .verify-icon-wrap{position:relative;width:92px;height:92px;margin:0 auto 24px;display:flex;align-items:center;justify-content:center;}
+  .verify-icon{
+    width:88px;height:88px;border-radius:50%;background:linear-gradient(135deg,var(--violet-600),var(--violet-800));
+    display:flex;align-items:center;justify-content:center;color:#fff;position:relative;z-index:2;
+    animation:verifyFloat 2.6s ease-in-out infinite;box-shadow:0 14px 34px -10px rgba(94,58,146,0.5);
+  }
+  .verify-icon svg{width:38px;height:38px;}
+  @keyframes verifyFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+  .verify-pulse-ring{position:absolute;inset:0;border-radius:50%;border:2px solid var(--violet-600);animation:verifyPulse 2.2s ease-out infinite;}
+  .verify-pulse-ring.r2{animation-delay:.6s;}
+  @keyframes verifyPulse{0%{transform:scale(0.9);opacity:0.7;}100%{transform:scale(1.7);opacity:0;}}
+  .verify-card h2{font-size:21px;font-weight:800;color:var(--violet-900);margin:0 0 10px;}
+  .verify-card .sub{font-size:13.5px;color:var(--muted);line-height:1.8;margin:0 0 22px;}
+  .verify-card .sub strong{color:var(--ink);}
+  .verify-hint{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.7;}
+
+  /* Full celebration moment once "تحققت من بريدي" confirms the account really is verified —
+     same checkmark/ring/confetti language as the toast, scaled up for a page-level moment. */
+  .verify-celebrate-overlay{
+    position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;
+    background:rgba(20,12,32,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    opacity:0;animation:cmFade .3s ease forwards;
+  }
+  .verify-celebrate-card{
+    background:#fff;border-radius:28px;padding:50px 40px;text-align:center;max-width:360px;width:calc(100% - 40px);
+    transform:translateY(20px) scale(0.88);opacity:0;
+    animation:cmPanelIn .5s cubic-bezier(.34,1.56,.64,1) .08s forwards;
+    position:relative;overflow:visible;
+  }
+  .verify-big-check-wrap{
+    width:100px;height:100px;border-radius:50%;flex-shrink:0;position:relative;margin:0 auto 22px;
+    background:linear-gradient(135deg,#3FBE7B,#1F9159);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 16px 34px -10px rgba(31,145,89,0.55);
+    animation:stPop .55s cubic-bezier(.34,1.56,.64,1) .1s both;
+  }
+  .verify-big-check-wrap svg{width:46px;height:46px;overflow:visible;}
+  .verify-big-check-wrap .st-check-path{stroke-dasharray:26;stroke-dashoffset:26;animation:stDraw .4s ease .4s forwards;}
+  .verify-big-check-wrap .st-ring{position:absolute;inset:-8px;border-radius:50%;border:3px solid #3FBE7B;opacity:0;animation:stRing .8s ease .18s forwards;}
+  .verify-celebrate-card h3{font-size:19px;font-weight:800;color:var(--violet-900);margin:0 0 8px;}
+  .verify-celebrate-card p{font-size:13px;color:var(--muted);margin:0;}
+  .verify-celebrate-confetti{position:absolute;inset:0;pointer-events:none;overflow:visible;}
+  .verify-celebrate-confetti span{position:absolute;top:60px;right:50%;width:7px;height:7px;border-radius:2px;opacity:0;animation:confettiPop .85s ease forwards;}
 </style>
 </head>
 <body>
@@ -1754,8 +1823,18 @@ function router(){
     return;
   }
 
+  // A signed-in account with an unconfirmed email can't do anything on the platform —
+  // browse, enroll, submit to the library, none of it — until the address on file is
+  // proven real. Every route funnels through the verification page first, for every role
+  // except admin (an admin account is set up directly, never through self-registration).
+  if(currentUser && currentProfile?.role !== 'admin' && !currentUser.emailVerified && path !== '#/verify-email'){
+    location.hash = '#/verify-email';
+    return;
+  }
+
   if(path.startsWith('#/login')) renderLogin();
   else if(path.startsWith('#/register')) renderRegister();
+  else if(path.startsWith('#/verify-email')) renderVerifyEmail();
   else if(path.startsWith('#/dashboard')) renderDashboard(params.get('tab'));
   else if(path.startsWith('#/learn/')) renderLearnRoom(path.split('#/learn/')[1]);
   else if(path.startsWith('#/lesson/')) renderLessonDetail(path.split('#/lesson/')[1]);
@@ -2498,13 +2577,145 @@ function renderRegister(){
         createdAt: serverTimestamp(),
       });
 
-      location.hash = '#/dashboard';
+      try{ await sendEmailVerification(cred.user, VERIFY_EMAIL_ACTION_SETTINGS); }catch(e){ /* account still gets created — the verify-email page itself offers a resend */ }
+
+      location.hash = '#/verify-email';
     }catch(err){
       alertBox.innerHTML = `<div class="alert alert-error">${authErrorAr(err.code)}</div>`;
       btn.disabled = false;
       btn.textContent = 'إنشاء الحساب';
     }
   });
+}
+
+/* ---------------- VERIFY EMAIL GATE ---------------- */
+const ENVELOPE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="M3 6.5l9 6.5 9-6.5"/></svg>`;
+/* Firebase's default verification-link landing page is a generic, unbranded confirmation
+   screen; passing a continue URL gives it a "back to لافندر" link that lands the person
+   right back on the verify-email page, where the poll/button picks up the new state. */
+const VERIFY_EMAIL_ACTION_SETTINGS = { url: `${window.location.origin}${window.location.pathname}#/verify-email` };
+let verifyResendCooldownUntil = Number(sessionStorage.getItem('verifyResendCooldownUntil') || 0);
+
+function renderVerifyEmail(){
+  const app = document.getElementById('app');
+
+  // Nothing to verify (signed out) or nothing left to do here (already verified) — send
+  // the visitor somewhere that actually makes sense for them instead of showing this page.
+  if(!currentUser){ location.hash = '#/login'; return; }
+  if(currentUser.emailVerified){ location.hash = '#/dashboard'; return; }
+
+  const email = currentUser.email || '';
+  app.innerHTML = `
+    <div class="verify-wrap">
+      <div class="verify-card">
+        <div class="verify-icon-wrap">
+          <span class="verify-pulse-ring"></span>
+          <span class="verify-pulse-ring r2"></span>
+          <div class="verify-icon">${ENVELOPE_SVG}</div>
+        </div>
+        <h2>تحقّق من بريدك الإلكتروني</h2>
+        <p class="sub">أرسلنا رابط تأكيد إلى <strong>${email}</strong>. افتح بريدك واضغط الرابط، وبعدين ارجع هنا واضغط الزر تحت — ما بتقدر تشترك في أي كورس أو تستخدم المنصة قبل التأكيد.</p>
+        <div id="verifyAlert"></div>
+        <button type="button" class="btn btn-primary btn-full" id="checkVerifiedBtn">${SIDE_ICONS.check} تحققت من بريدي</button>
+        <button type="button" class="btn btn-ghost btn-full" id="resendVerifyBtn" style="margin-top:10px;">إعادة إرسال الرابط</button>
+        <div class="verify-hint">وصل بريد غلط؟ <a href="#" id="verifyLogoutLink" style="color:var(--violet-700);font-weight:700;">سجّل خروج</a> وأنشئ حساب ببريد صحيح.</div>
+      </div>
+    </div>
+  `;
+
+  const alertBox = document.getElementById('verifyAlert');
+  const resendBtn = document.getElementById('resendVerifyBtn');
+
+  function updateResendButton(){
+    const remaining = Math.ceil((verifyResendCooldownUntil - Date.now()) / 1000);
+    if(remaining > 0){
+      resendBtn.disabled = true;
+      resendBtn.textContent = `أعد الإرسال بعد ${remaining} ثانية`;
+      setTimeout(updateResendButton, 1000);
+    }else{
+      resendBtn.disabled = false;
+      resendBtn.textContent = 'إعادة إرسال الرابط';
+    }
+  }
+  updateResendButton();
+
+  resendBtn.addEventListener('click', async () => {
+    if(resendBtn.disabled) return;
+    resendBtn.disabled = true;
+    const original = resendBtn.textContent;
+    resendBtn.textContent = 'جارٍ الإرسال...';
+    try{
+      await sendEmailVerification(currentUser, VERIFY_EMAIL_ACTION_SETTINGS);
+      verifyResendCooldownUntil = Date.now() + 60000;
+      sessionStorage.setItem('verifyResendCooldownUntil', String(verifyResendCooldownUntil));
+      alertBox.innerHTML = `<div class="alert alert-success">تم إرسال الرابط! تحقق من صندوق الوارد (وصندوق الرسائل غير المرغوبة لو ما لقيته).</div>`;
+      updateResendButton();
+    }catch(err){
+      alertBox.innerHTML = `<div class="alert alert-error">${authErrorAr(err.code) || 'تعذّر إرسال الرابط، حاول بعد شوية.'}</div>`;
+      updateResendButton();
+    }
+  });
+
+  document.getElementById('checkVerifiedBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('checkVerifiedBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> جارٍ التحقق...`;
+    try{
+      await currentUser.reload();
+      if(currentUser.emailVerified){
+        playVerifyCelebration(() => { location.hash = '#/dashboard'; });
+      }else{
+        alertBox.innerHTML = `<div class="alert alert-error">لسه ما ضغطت رابط التأكيد اللي في بريدك. افتح الإيميل الأول.</div>`;
+        btn.disabled = false;
+        btn.innerHTML = `${SIDE_ICONS.check} تحققت من بريدي`;
+      }
+    }catch(err){
+      alertBox.innerHTML = `<div class="alert alert-error">تعذّر التحقق الآن، حاول مرة أخرى.</div>`;
+      btn.disabled = false;
+      btn.innerHTML = `${SIDE_ICONS.check} تحققت من بريدي`;
+    }
+  });
+
+  document.getElementById('verifyLogoutLink').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await signOut(auth);
+    location.hash = '#/register';
+  });
+
+  // Quietly re-checks every few seconds so someone who verifies in another tab lands on
+  // their dashboard without having to remember to come back and click the button.
+  const pollId = setInterval(async () => {
+    if(!document.getElementById('checkVerifiedBtn')){ clearInterval(pollId); return; }
+    try{
+      await currentUser.reload();
+      if(currentUser.emailVerified){
+        clearInterval(pollId);
+        playVerifyCelebration(() => { location.hash = '#/dashboard'; });
+      }
+    }catch(e){ /* keep quietly polling */ }
+  }, 5000);
+}
+
+/* Full-page celebration — same checkmark/ring/confetti language as showSuccessToast,
+   scaled up for the one-time "you're verified" moment, then hands off to onDone. */
+function playVerifyCelebration(onDone){
+  const overlay = document.createElement('div');
+  overlay.className = 'verify-celebrate-overlay';
+  overlay.innerHTML = `
+    <div class="verify-celebrate-card">
+      <div class="verify-celebrate-confetti">${toastConfettiHTML()}</div>
+      <div class="verify-big-check-wrap">
+        <span class="st-ring"></span>
+        <svg viewBox="0 0 24 24" fill="none">
+          <path class="st-check-path" d="M5 13l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h3>تم التحقق من بريدك! 🎉</h3>
+      <p>حسابك موثّق بالكامل دلوقتي — جاهز تبدأ.</p>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  setTimeout(() => { onDone(); setTimeout(() => overlay.remove(), 400); }, 1900);
 }
 
 /* ---------------- COURSES LIST ---------------- */
@@ -4520,6 +4731,7 @@ const ADMIN_TABS = [
   { key:'community', label:'المجتمع', icon: SIDE_ICONS.chatBubble },
   { key:'reviews', label:'التقييمات', icon: SIDE_ICONS.starFilled },
   { key:'notifications', label:'الإشعارات', icon: SIDE_ICONS.bell },
+  { key:'activity-log', label:'سجل النشاطات', icon: SIDE_ICONS.clock },
   { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.gear },
 ];
 
@@ -4851,6 +5063,20 @@ function showAdminAlertToast(title, subtitle, goToTab){
     clearTimeout(timer); remove();
     if(goToTab) location.hash = `#/dashboard?tab=${goToTab}`;
   });
+}
+
+/* Writes one row to the admin activity log (collection 'adminActivityLog'). Best-effort:
+   a logging failure never blocks the underlying admin action, so every call site simply
+   fires it and moves on without awaiting/catching in the caller. */
+async function logAdminActivity(action, targetLabel, extra){
+  try{
+    await addDoc(collection(db, 'adminActivityLog'), {
+      action, targetLabel: targetLabel || '', extra: extra || '',
+      adminId: currentUser?.uid || null,
+      adminName: currentProfile?.name || currentUser?.email || 'إدارة',
+      createdAt: serverTimestamp(),
+    });
+  }catch(e){ /* logging is a nicety — never let it break the actual action */ }
 }
 
 function applyAdminAlertBadges(counts){
@@ -7067,7 +7293,7 @@ async function renderMyProfile(){
     btn.disabled = true;
     const alertBox = document.getElementById('verifyEmailAlert');
     try{
-      await sendEmailVerification(currentUser);
+      await sendEmailVerification(currentUser, VERIFY_EMAIL_ACTION_SETTINGS);
       alertBox.innerHTML = `<div class="alert alert-success">تم إرسال رابط التوثيق لبريدك، افتحه وأكّد ثم ارجع هنا.</div>`;
     }catch(e2){
       alertBox.innerHTML = `<div class="alert alert-error">تعذّر إرسال رابط التوثيق، حاول بعد قليل.</div>`;
@@ -7543,6 +7769,7 @@ async function loadAdminTab(tab){
   if(tab === 'community') return adminRenderCommunityModeration(area);
   if(tab === 'reviews') return adminRenderReviewsModeration(area);
   if(tab === 'notifications') return adminRenderNotifications(area);
+  if(tab === 'activity-log') return adminRenderActivityLog(area);
   if(tab === 'settings') return adminRenderSettings(area);
 }
 
@@ -7566,12 +7793,12 @@ async function adminRenderOverview(area){
 
     area.innerHTML = `
       <div class="widget-grid">
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.users}</div><div><div class="num">${studentCount}</div><div class="lbl">طالب</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.graduationCap}</div><div><div class="num">${instructorCount}</div><div class="lbl">مدرب</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${courseCount}</div><div class="lbl">كورس</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.card}</div><div><div class="num">${pendingCount}</div><div class="lbl">طلب دفع معلّق</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#FCF3E3;color:var(--amber-600);">${SIDE_ICONS.exam}</div><div><div class="num">${reviewCount}</div><div class="lbl">كورس يحتاج مراجعة</div></div></div></div>
-        <div class="widget widget-span-3"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.wallet}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div></div></div>
+        ${statCardV3HTML({ icon: SIDE_ICONS.users, num: studentCount, label:'طالب', iconBg:'var(--mist)', iconColor:'var(--violet-700)', href:'#/dashboard?tab=users&role=student' })}
+        ${statCardV3HTML({ icon: SIDE_ICONS.graduationCap, num: instructorCount, label:'مدرب', iconBg:'#EEF3FB', iconColor:'#3B6FBF', href:'#/dashboard?tab=users&role=instructor' })}
+        ${statCardV3HTML({ icon: SIDE_ICONS.book, num: courseCount, label:'كورس', iconBg:'#E9F5EE', iconColor:'var(--success)', href:'#/dashboard?tab=courses' })}
+        ${statCardV3HTML({ icon: SIDE_ICONS.card, num: pendingCount, label:'طلب دفع معلّق', iconBg:'#FCF3E3', iconColor:'var(--amber-600)', href:'#/dashboard?tab=payments' })}
+        ${statCardV3HTML({ icon: SIDE_ICONS.exam, num: reviewCount, label:'كورس يحتاج مراجعة', iconBg:'#FCF3E3', iconColor:'var(--amber-600)', href:'#/dashboard?tab=review' })}
+        <a href="#/dashboard?tab=finance" class="widget widget-span-3 stat-link"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.wallet}</div><div><div class="num">${totalRevenue.toLocaleString('ar')} ج.س</div><div class="lbl">إجمالي الإيرادات (اشتراكات مقبولة)</div></div><span class="arrow-hint">${SIDE_ICONS.chevronLeft}</span></div></a>
       </div>
       <div class="widget-grid">
         <div class="widget widget-2">
@@ -7867,7 +8094,8 @@ async function adminRenderUsers(area){
     }));
     const PAGE_SIZE = 10;
     let currentPage = 1;
-    let currentRoleFilter = 'all';
+    const initialRoleParam = new URLSearchParams((location.hash.split('?')[1]||'')).get('role');
+    let currentRoleFilter = ['student','instructor','admin'].includes(initialRoleParam) ? initialRoleParam : 'all';
     let currentSearch = '';
     let currentView = 'list'; // 'list' (expandable cards, full detail) or 'table' (dense columns)
 
@@ -7885,10 +8113,10 @@ async function adminRenderUsers(area){
           </div>
         </div>
         <div class="cat-tabs" id="roleFilterTabs">
-          <button class="cat-tab active" data-role="all">الكل (${users.length})</button>
-          <button class="cat-tab" data-role="student">طلاب (${users.filter(u=>u.role==='student').length})</button>
-          <button class="cat-tab" data-role="instructor">مدربون (${users.filter(u=>u.role==='instructor').length})</button>
-          <button class="cat-tab" data-role="admin">إداريون (${users.filter(u=>u.role==='admin').length})</button>
+          <button class="cat-tab ${currentRoleFilter==='all'?'active':''}" data-role="all">الكل (${users.length})</button>
+          <button class="cat-tab ${currentRoleFilter==='student'?'active':''}" data-role="student">طلاب (${users.filter(u=>u.role==='student').length})</button>
+          <button class="cat-tab ${currentRoleFilter==='instructor'?'active':''}" data-role="instructor">مدربون (${users.filter(u=>u.role==='instructor').length})</button>
+          <button class="cat-tab ${currentRoleFilter==='admin'?'active':''}" data-role="admin">إداريون (${users.filter(u=>u.role==='admin').length})</button>
         </div>
         <div id="usersList"></div>
         <div id="usersPagination" style="display:flex;justify-content:center;align-items:center;gap:14px;margin-top:16px;font-size:13px;color:var(--muted);"></div>
@@ -7910,6 +8138,62 @@ async function adminRenderUsers(area){
         const roleOk = currentRoleFilter === 'all' || u.role === currentRoleFilter;
         const searchOk = !currentSearch || (u.name||'').toLowerCase().includes(currentSearch) || (u.email||'').toLowerCase().includes(currentSearch);
         return roleOk && searchOk;
+      });
+    }
+
+    /* Quick actions rendered inline in every row (both list and table views) so an admin
+       never has to expand a row just to ban or delete someone. Mirrors the buttons inside
+       the full detail panel, and both paths keep `users` / the on-screen list in sync. */
+    function rowActionsHTML(u){
+      return `
+        <div class="row-actions">
+          <button type="button" class="row-icon-btn warn" data-quick-toggle="${u.id}" title="${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}">${SIDE_ICONS.lock}</button>
+          <button type="button" class="row-icon-btn danger" data-quick-delete="${u.id}" title="حذف المستخدم">${SIDE_ICONS.trash}</button>
+        </div>
+      `;
+    }
+
+    function wireRowActions(container){
+      container.querySelectorAll('[data-quick-toggle]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const u = users.find(x => x.id === btn.dataset.quickToggle);
+          if(!u) return;
+          const newStatus = u.status === 'disabled' ? 'active' : 'disabled';
+          if(!confirm(newStatus === 'disabled' ? 'تعطيل هذا الحساب؟ لن يقدر صاحبه يسجّل الدخول.' : 'إعادة تفعيل هذا الحساب؟')) return;
+          btn.disabled = true;
+          try{
+            await updateDoc(doc(db, 'users', u.id), { status: newStatus });
+            u.status = newStatus;
+            logAdminActivity('user_status_toggle', u.name || u.email, newStatus === 'disabled' ? 'تعطيل' : 'تفعيل');
+            renderUsersList();
+          }catch(e2){
+            alert('تعذّر تحديث حالة الحساب.');
+            btn.disabled = false;
+          }
+        });
+      });
+      container.querySelectorAll('[data-quick-delete]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          const u = users.find(x => x.id === btn.dataset.quickDelete);
+          if(!u) return;
+          if(u.id === currentUser.uid){ alert('لا يمكنك حذف حسابك الحالي.'); return; }
+          const name = u.name || u.email || 'هذا المستخدم';
+          if(!confirm(`حذف "${name}" نهائياً من قاعدة البيانات؟ هذا الإجراء لا يمكن التراجع عنه.`)) return;
+          btn.disabled = true;
+          try{
+            await deleteDoc(doc(db, 'users', u.id));
+            const idx = users.findIndex(x => x.id === u.id);
+            if(idx > -1) users.splice(idx, 1);
+            logAdminActivity('user_delete', name);
+            showSuccessToast('تم حذف المستخدم', name);
+            renderUsersList();
+          }catch(e2){
+            alert('تعذّر حذف المستخدم، حاول مرة أخرى.');
+            btn.disabled = false;
+          }
+        });
       });
     }
 
@@ -7935,8 +8219,8 @@ async function adminRenderUsers(area){
             <table class="admin-data-table">
               <thead><tr>
                 ${isInstructorView
-                  ? `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>التخصص</th><th>الكورسات التي يدرّسها</th><th>تاريخ الانضمام</th><th>الحالة</th>`
-                  : `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الدور</th><th>الحالة</th>`
+                  ? `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>التخصص</th><th>الكورسات التي يدرّسها</th><th>تاريخ الانضمام</th><th>الحالة</th><th>إجراءات</th>`
+                  : `<th>الاسم</th><th>البريد</th><th>الهاتف</th><th>الجنس</th><th>العمر</th><th>التخصص</th><th>الكورسات المفعّلة</th><th>الدور</th><th>الحالة</th><th>إجراءات</th>`
                 }
               </tr></thead>
               <tbody>
@@ -7955,6 +8239,7 @@ async function adminRenderUsers(area){
                         <td style="white-space:normal;max-width:320px;">${coursesLabel} ${u.coursesTaught.length ? `<span class="tab-count-badge" style="margin-inline-start:6px;">${u.coursesTaught.length}</span>` : ''}</td>
                         <td>${joinedDateOf(u)}</td>
                         <td>${statusCell}</td>
+                        <td>${rowActionsHTML(u)}</td>
                       </tr>
                     `;
                   }
@@ -7971,6 +8256,7 @@ async function adminRenderUsers(area){
                       <td>${u.courseCount || 0}</td>
                       <td>${ROLE_LABEL[u.role] || u.role}</td>
                       <td>${statusCell}</td>
+                      <td>${rowActionsHTML(u)}</td>
                     </tr>
                   `;
                 }).join('')}
@@ -7979,11 +8265,13 @@ async function adminRenderUsers(area){
           </div>
         `;
         listEl.querySelectorAll('tr[data-open-profile]').forEach(row => {
-          row.addEventListener('click', () => {
+          row.addEventListener('click', (e) => {
+            if(e.target.closest('.row-actions')) return;
             const u = users.find(x => x.id === row.dataset.openProfile);
             if(u) openStudentProfileModal(u.id, u.name || u.email, { courseIds: null, scopeLabel: 'الملف الكامل' });
           });
         });
+        wireRowActions(listEl);
       } else {
       listEl.innerHTML = pageItems.map(u => {
         const isInstructor = u.role === 'instructor';
@@ -8007,11 +8295,13 @@ async function adminRenderUsers(area){
               <option value="instructor" ${u.role==='instructor'?'selected':''}>مدرب</option>
               <option value="admin" ${u.role==='admin'?'selected':''}>إدارة</option>
             </select>
+            ${rowActionsHTML(u)}
           </div>
           <div id="userPanel-${u.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
         </div>
       `;
       }).join('');
+      wireRowActions(listEl);
       }
 
       pagEl.innerHTML = totalPages > 1 ? `
@@ -8031,9 +8321,11 @@ async function adminRenderUsers(area){
           const newRole = sel.value;
           sel.disabled = true;
           try{
-            await updateDoc(doc(db, 'users', uid), { role: newRole });
             const u = users.find(x => x.id === uid);
+            const oldRoleLabel = u ? (ROLE_LABEL[u.role] || u.role) : '';
+            await updateDoc(doc(db, 'users', uid), { role: newRole });
             if(u) u.role = newRole;
+            logAdminActivity('user_role_change', u?.name || u?.email, `من ${oldRoleLabel} إلى ${ROLE_LABEL[newRole] || newRole}`);
           }catch(e){
             alert('تعذّر تحديث الدور، حاول مرة أخرى.');
           }
@@ -8098,9 +8390,10 @@ async function adminRenderUsers(area){
             ${courses.length === 0 ? `<div class="empty-state" style="padding:10px 0;">لا توجد كورسات.</div>` : courses.map(c => `
               <div class="table-widget-row"><div class="grow"><div class="t1">${c.title}</div></div><span class="status-badge ${COURSE_STATUS_CLASS[c.status||'approved']}">${COURSE_STATUS_LABEL[c.status||'approved']}</span></div>
             `).join('')}
-            <div style="display:flex;gap:8px;margin-top:14px;">
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
               <a href="#/instructor/${u.id}" target="_blank" class="btn btn-ghost btn-sm">عرض الملف العام</a>
               <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
+              <button class="btn btn-sm btn-danger-outline" data-delete-user="${u.id}">${SIDE_ICONS.trash || ''} حذف المستخدم</button>
             </div>
           `;
           panel.querySelector('[data-print-instructor]')?.addEventListener('click', () => {
@@ -8150,8 +8443,9 @@ async function adminRenderUsers(area){
             `).join('')}
             <div style="font-size:13px;font-weight:700;color:var(--violet-900);margin:16px 0 8px;">سجل الحضور (${attendance.total} محاضرة)</div>
             ${attendanceBlockHTML(attendance)}
-            <div style="margin-top:14px;">
+            <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;">
               <button class="btn btn-sm ${u.status==='disabled' ? 'btn-primary' : 'btn-danger'}" data-toggle-status="${u.id}">${u.status==='disabled' ? 'تفعيل الحساب' : 'تعطيل الحساب'}</button>
+              <button class="btn btn-sm btn-danger-outline" data-delete-user="${u.id}">${SIDE_ICONS.trash || ''} حذف المستخدم</button>
             </div>
           `;
 
@@ -8161,7 +8455,8 @@ async function adminRenderUsers(area){
 
         } else {
           panel.innerHTML = `
-            <div style="font-size:13px;color:var(--muted);">تاريخ الإنشاء: ${u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar') : '—'}</div>
+            <div style="font-size:13px;color:var(--muted);margin-bottom:14px;">تاريخ الإنشاء: ${u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString('ar') : '—'}</div>
+            ${u.id === currentUser.uid ? '' : `<button class="btn btn-sm btn-danger-outline" data-delete-user="${u.id}">${SIDE_ICONS.trash || ''} حذف المستخدم</button>`}
           `;
         }
 
@@ -8173,9 +8468,32 @@ async function adminRenderUsers(area){
             try{
               await updateDoc(doc(db, 'users', u.id), { status: newStatus });
               u.status = newStatus;
+              logAdminActivity('user_status_toggle', u.name || u.email, newStatus === 'disabled' ? 'تعطيل' : 'تفعيل');
               renderUsersList();
             }catch(e){
               alert('تعذّر تحديث حالة الحساب.');
+            }
+          });
+        }
+
+        const deleteBtn = panel.querySelector('[data-delete-user]');
+        if(deleteBtn){
+          deleteBtn.addEventListener('click', async () => {
+            const name = u.name || u.email || 'هذا المستخدم';
+            if(!confirm(`حذف "${name}" نهائياً من قاعدة البيانات؟ هذا الإجراء لا يمكن التراجع عنه (بيانات دخوله بالبريد والباسورد تبقى موجودة ولازم تتقفل يدوياً من لوحة Firebase Authentication).`)) return;
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = 'جارٍ الحذف...';
+            try{
+              await deleteDoc(doc(db, 'users', u.id));
+              const idx = users.findIndex(x => x.id === u.id);
+              if(idx > -1) users.splice(idx, 1);
+              logAdminActivity('user_delete', name);
+              showSuccessToast('تم حذف المستخدم', name);
+              renderUsersList();
+            }catch(e){
+              alert('تعذّر حذف المستخدم، حاول مرة أخرى.');
+              deleteBtn.disabled = false;
+              deleteBtn.textContent = `${SIDE_ICONS.trash || ''} حذف المستخدم`;
             }
           });
         }
@@ -8207,9 +8525,20 @@ async function adminRenderUsers(area){
 
 async function adminRenderCategories(area){
   try{
-    const snap = await getDocs(collection(db, 'categories'));
+    const [snap, courses] = await Promise.all([
+      getDocs(collection(db, 'categories')),
+      fetchAllCoursesAdmin(),
+    ]);
     const cats = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const courseCountByCatId = {};
+    courses.forEach(c => { if(c.categoryId) courseCountByCatId[c.categoryId] = (courseCountByCatId[c.categoryId] || 0) + 1; });
+
     area.innerHTML = `
+      <div class="widget-grid">
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.tag}</div><div><div class="num">${rootCategories(cats).length}</div><div class="lbl">قسم رئيسي</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.folder}</div><div><div class="num">${cats.length - rootCategories(cats).length}</div><div class="lbl">مجال فرعي</div></div></div></div>
+        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${courses.length}</div><div class="lbl">كورس موزّع على الأقسام</div></div></div></div>
+      </div>
       <div class="widget widget-4">
         <div class="widget-head"><h3>إضافة قسم رئيسي جديد</h3></div>
         <form id="addCategoryForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
@@ -8240,6 +8569,10 @@ async function adminRenderCategories(area){
       </div>
     `;
 
+    function courseCountOfRoot(root, subs){
+      return (courseCountByCatId[root.id] || 0) + subs.reduce((s, sub) => s + (courseCountByCatId[sub.id] || 0), 0);
+    }
+
     function renderList(){
       const listEl = document.getElementById('categoriesList');
       const roots = rootCategories(cats);
@@ -8249,17 +8582,26 @@ async function adminRenderCategories(area){
       }
       listEl.innerHTML = roots.map(root => {
         const subs = subCategoriesOf(cats, root.id);
+        const rootCourseCount = courseCountOfRoot(root, subs);
         return `
           <div class="cat-tree-root" data-root-id="${root.id}" style="border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px;">
             <div class="table-widget-row">
               <div class="avatar-sm" ${root.imageUrl ? `style="padding:0;overflow:hidden;"` : ''}>${root.imageUrl ? `<img src="${root.imageUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />` : SIDE_ICONS.tag}</div>
               <div class="grow">
                 <div class="t1">${root.name || ''}</div>
-                <div class="t2">${root.description || ''}${subs.length ? ` · ${subs.length} مجال فرعي` : ''}</div>
+                <div class="t2">${root.description || ''}${subs.length ? ` · ${subs.length} مجال فرعي` : ''} · <span class="tab-count-badge" style="margin-inline-start:0;">${rootCourseCount}</span> كورس</div>
               </div>
+              <button type="button" class="icon-action" data-edit-cat="${root.id}" title="تعديل القسم">${SIDE_ICONS.gear}</button>
               <button type="button" class="icon-action" data-add-sub="${root.id}" title="إضافة مجال فرعي">${SIDE_ICONS.plus}</button>
-              <button type="button" class="icon-action danger" data-id="${root.id}" title="حذف القسم">${SIDE_ICONS.trash}</button>
+              <button type="button" class="icon-action danger" data-id="${root.id}" data-count="${rootCourseCount}" title="حذف القسم">${SIDE_ICONS.trash}</button>
             </div>
+            <form class="hidden edit-cat-form" id="editCatForm-${root.id}" data-id="${root.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:10px 0 4px 38px;">
+              <div class="field" style="margin-bottom:0;flex:1;min-width:140px;"><label>الاسم</label><input type="text" class="edit-cat-name" required value="${root.name || ''}" /></div>
+              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>الوصف</label><input type="text" class="edit-cat-desc" value="${root.description || ''}" /></div>
+              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>رابط الصورة</label><input type="url" class="edit-cat-image" value="${root.imageUrl || ''}" /></div>
+              <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
+              <button type="button" class="btn btn-ghost btn-sm cancel-edit-cat" data-id="${root.id}">إلغاء</button>
+            </form>
             ${subs.length ? `
               <div class="cat-tree-subs" style="padding-right:38px;border-right:2px solid var(--line);margin-right:20px;">
                 ${subs.map(s => `
@@ -8267,11 +8609,18 @@ async function adminRenderCategories(area){
                     <div class="avatar-sm" style="width:28px;height:28px;">${SIDE_ICONS.folder}</div>
                     <div class="grow">
                       <div class="t1">${s.name || ''}</div>
-                      <div class="t2">${s.description || ''}</div>
+                      <div class="t2">${s.description || ''}${s.description ? ' · ' : ''}<span class="tab-count-badge" style="margin-inline-start:0;">${courseCountByCatId[s.id] || 0}</span> كورس</div>
                     </div>
+                    <button type="button" class="icon-action" data-edit-cat="${s.id}" title="تعديل المجال">${SIDE_ICONS.gear}</button>
                     <button type="button" class="icon-action" data-make-root="${s.id}" title="فصله كمجال رئيسي مستقل">${SIDE_ICONS.layers}</button>
-                    <button type="button" class="icon-action danger" data-id="${s.id}" title="حذف المجال الفرعي">${SIDE_ICONS.trash}</button>
+                    <button type="button" class="icon-action danger" data-id="${s.id}" data-count="${courseCountByCatId[s.id] || 0}" title="حذف المجال الفرعي">${SIDE_ICONS.trash}</button>
                   </div>
+                  <form class="hidden edit-cat-form" id="editCatForm-${s.id}" data-id="${s.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:10px 0 4px 38px;">
+                    <div class="field" style="margin-bottom:0;flex:1;min-width:140px;"><label>الاسم</label><input type="text" class="edit-cat-name" required value="${s.name || ''}" /></div>
+                    <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>الوصف</label><input type="text" class="edit-cat-desc" value="${s.description || ''}" /></div>
+                    <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
+                    <button type="button" class="btn btn-ghost btn-sm cancel-edit-cat" data-id="${s.id}">إلغاء</button>
+                  </form>
                 `).join('')}
               </div>
             ` : ''}
@@ -8293,8 +8642,15 @@ async function adminRenderCategories(area){
       }).join('');
 
       // Delete works the same for a root category or a sub-category — same collection, one doc.
+      // A category with courses assigned to it is blocked from deletion (directly, or via any
+      // of its sub-categories for a root) so no course is ever left pointing at nothing.
       listEl.querySelectorAll('button[data-id]').forEach(btn => {
         btn.addEventListener('click', async () => {
+          const count = Number(btn.dataset.count || 0);
+          if(count > 0){
+            alert(`فيه ${count} كورس مربوط بهذا القسم حالياً. لازم تنقلهم لقسم تاني أو تحذفهم الأول قبل ما تقدر تحذف القسم.`);
+            return;
+          }
           if(!confirm('هل أنت متأكد من حذف هذا القسم؟')) return;
           try{
             await deleteDoc(doc(db, 'categories', btn.dataset.id));
@@ -8302,6 +8658,8 @@ async function adminRenderCategories(area){
             const idx = cats.findIndex(x => x.id === btn.dataset.id);
             if(idx > -1) cats.splice(idx,1);
             renderList();
+            logAdminActivity('category_delete', 'قسم محذوف');
+            showSuccessToast('تم حذف القسم');
           }catch(e){
             alert('تعذّر حذف القسم.');
           }
@@ -8311,6 +8669,45 @@ async function adminRenderCategories(area){
       listEl.querySelectorAll('button[data-add-sub]').forEach(btn => {
         btn.addEventListener('click', () => {
           document.getElementById(`addSubForm-${btn.dataset.addSub}`)?.classList.toggle('hidden');
+        });
+      });
+
+      listEl.querySelectorAll('button[data-edit-cat]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById(`editCatForm-${btn.dataset.editCat}`)?.classList.toggle('hidden');
+        });
+      });
+
+      listEl.querySelectorAll('.cancel-edit-cat').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById(`editCatForm-${btn.dataset.id}`)?.classList.add('hidden');
+        });
+      });
+
+      listEl.querySelectorAll('.edit-cat-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const id = form.dataset.id;
+          const name = form.querySelector('.edit-cat-name').value.trim();
+          const description = form.querySelector('.edit-cat-desc').value.trim();
+          const imageInput = form.querySelector('.edit-cat-image');
+          if(!name) return;
+          const payload = { name, description };
+          if(imageInput) payload.imageUrl = imageInput.value.trim() || null;
+          const saveBtn = form.querySelector('button[type="submit"]');
+          saveBtn.disabled = true;
+          try{
+            await updateDoc(doc(db, 'categories', id), payload);
+            const c = cats.find(x => x.id === id);
+            if(c) Object.assign(c, payload);
+            categoriesCache = null;
+            renderList();
+            logAdminActivity('category_edit', name);
+            showSuccessToast('تم حفظ التعديلات!', name);
+          }catch(e){
+            alert('تعذّر حفظ التعديلات.');
+            saveBtn.disabled = false;
+          }
         });
       });
 
@@ -8327,6 +8724,7 @@ async function adminRenderCategories(area){
             if(c) c.parentId = null;
             categoriesCache = null;
             renderList();
+            logAdminActivity('category_make_root', c?.name || '');
             showSuccessToast('تم فصله كقسم رئيسي!', c?.name || '');
           }catch(e){
             alert('تعذّر تحويل المجال.');
@@ -8346,6 +8744,7 @@ async function adminRenderCategories(area){
             cats.push({ id: ref.id, name, description, parentId });
             categoriesCache = null;
             renderList();
+            logAdminActivity('category_create', name, 'مجال فرعي');
             showSuccessToast('تمت إضافة المجال الفرعي!', name);
           }catch(e){
             alert('تعذّر إضافة المجال الفرعي.');
@@ -8367,6 +8766,7 @@ async function adminRenderCategories(area){
         categoriesCache = null;
         renderList();
         document.getElementById('addCategoryForm').reset();
+        logAdminActivity('category_create', name, 'قسم رئيسي');
         showSuccessToast('تمت إضافة القسم بنجاح!', name);
       }catch(e){
         alert('تعذّر إضافة القسم.');
@@ -9696,6 +10096,74 @@ async function adminRenderNotifications(area){
     });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل الإشعارات.</div>`;
+  }
+}
+
+/* Human-readable label + icon per logged action key — extend this map whenever a new
+   call site starts logging a new 'action' string via logAdminActivity(). */
+const ACTIVITY_ACTION_META = {
+  user_role_change: { label:'تغيير صلاحية مستخدم', icon: SIDE_ICONS.users, color:'#3B6FBF', bg:'#EEF3FB' },
+  user_status_toggle: { label:'تفعيل/تعطيل حساب', icon: SIDE_ICONS.lock, color:'var(--amber-600)', bg:'#FCF3E3' },
+  user_delete: { label:'حذف مستخدم', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  category_create: { label:'إضافة قسم', icon: SIDE_ICONS.plus, color:'var(--success)', bg:'#E9F5EE' },
+  category_edit: { label:'تعديل قسم', icon: SIDE_ICONS.gear, color:'#3B6FBF', bg:'#EEF3FB' },
+  category_delete: { label:'حذف قسم', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  category_make_root: { label:'فصل مجال كقسم رئيسي', icon: SIDE_ICONS.layers, color:'var(--violet-700)', bg:'var(--mist)' },
+};
+
+async function adminRenderActivityLog(area){
+  try{
+    const snap = await getDocs(collection(db, 'adminActivityLog'));
+    let logs = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
+    let currentSearch = '';
+
+    area.innerHTML = `
+      <div class="widget widget-4">
+        <div class="widget-head">
+          <h3>سجل نشاطات الإدارة</h3>
+          <div class="topbar-search" style="max-width:280px;">
+            <span class="side-ic" style="width:14px;height:14px;">${SIDE_ICONS.search}</span>
+            <input type="text" id="activityLogSearch" placeholder="ابحث بالإداري أو الإجراء..." />
+          </div>
+        </div>
+        <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;">سجل تلقائي لكل إجراء حساس بيتاخد من لوحة الإدارة (تغيير صلاحية، تفعيل/تعطيل، حذف مستخدم). بيتسجّل من لحظة تفعيل هذه الميزة فصاعداً.</div>
+        <div id="activityLogList"></div>
+      </div>
+    `;
+
+    function renderList(){
+      const listEl = document.getElementById('activityLogList');
+      const filtered = !currentSearch ? logs : logs.filter(l =>
+        (l.adminName||'').toLowerCase().includes(currentSearch) ||
+        (l.targetLabel||'').toLowerCase().includes(currentSearch) ||
+        (ACTIVITY_ACTION_META[l.action]?.label||l.action||'').toLowerCase().includes(currentSearch)
+      );
+      if(filtered.length === 0){
+        listEl.innerHTML = `<div class="empty-state">لا توجد نشاطات مسجّلة بعد.</div>`;
+        return;
+      }
+      listEl.innerHTML = filtered.slice(0,150).map(l => {
+        const meta = ACTIVITY_ACTION_META[l.action] || { label: l.action, icon: SIDE_ICONS.clock, color:'var(--muted)', bg:'var(--paper)' };
+        const when = l.createdAt?.toDate ? l.createdAt.toDate().toLocaleString('ar-EG', { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—';
+        return `
+          <div class="table-widget-row">
+            <div class="avatar-sm" style="background:${meta.bg};color:${meta.color};">${meta.icon}</div>
+            <div class="grow">
+              <div class="t1">${meta.label}${l.targetLabel ? ` — ${l.targetLabel}` : ''}</div>
+              <div class="t2">${l.adminName || 'إدارة'} · ${when}${l.extra ? ` · ${l.extra}` : ''}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    renderList();
+
+    document.getElementById('activityLogSearch').addEventListener('input', (e) => {
+      currentSearch = e.target.value.trim().toLowerCase();
+      renderList();
+    });
+  }catch(e){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل سجل النشاطات.</div>`;
   }
 }
 
