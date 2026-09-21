@@ -1901,6 +1901,66 @@
   @media (max-width:1000px){ .crt-head,.crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 110px 176px;} .crt-head span:nth-child(4),.crt-list .pay-mono,.crt-list .crt-ex{display:none;} }
   @media (max-width:760px){ .crt-head{display:none;} .crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr);grid-template-areas:"c v m" "a a a";row-gap:8px;} .crt-list .crt-ic{grid-area:v;} .crt-list .ar-dt{display:none;} .crt-list .ar-act{grid-area:a;justify-content:flex-start;} .ar-cards .crt-ic{width:54px;height:54px;} }
 
+
+  /* ================= ADMIN: PAYMENT METHODS ================= */
+  .pm-stats{grid-template-columns:repeat(4,1fr);}
+  .pm-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;} .pm-tip{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;}
+  .pm-note{display:flex;align-items:center;gap:10px;padding:11px 16px;border-radius:14px;background:#FFF9EC;border:1px solid #F3DDB0;color:#7A5410;font-size:13px;animation:rowIn .45s both;}
+  .pm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:16px;}
+  .pm-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:12px;overflow:hidden;animation:widgetIn .5s cubic-bezier(.25,.8,.4,1) both;animation-delay:calc(var(--i)*.06s);transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s,border-color .28s,opacity .2s;}
+  .pm-card::before{content:'';position:absolute;inset-inline:0;top:0;height:4px;background:var(--c);}
+  .pm-card:hover{transform:translateY(-4px);box-shadow:0 20px 34px -22px var(--c);border-color:var(--c);}
+  .pm-card.off{background:#FBF9FD;} .pm-card.off .pm-ic,.pm-card.off .pm-acc,.pm-card.off .pm-ins{opacity:.55;filter:grayscale(.6);}
+  .pm-card.dragging{opacity:.4;transform:scale(.97);} .pm-card.over{border-color:var(--amber-500);box-shadow:0 0 0 4px rgba(226,163,59,.25);}
+  .pm-top{display:flex;align-items:center;gap:10px;} .pm-grip{color:#B8AAC9;cursor:grab;display:flex;flex-shrink:0;} .pm-card:active .pm-grip{cursor:grabbing;}
+  .pm-ic{width:44px;height:44px;border-radius:14px;background:var(--bg);color:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1);} .pm-card:hover .pm-ic{transform:scale(1.1) rotate(-6deg);}
+  .pm-tt{flex:1;min-width:0;} .pm-tt b{display:block;font-size:15px;color:var(--violet-900);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .pm-tt small{color:var(--muted);font-size:11.5px;}
+  .pm-acc{background:var(--paper);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;font-size:13px;} .pm-acc > div{display:flex;align-items:center;gap:8px;} .pm-acc span{color:var(--muted);font-size:11.5px;min-width:70px;} .pm-acc b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;} .pm-miss{color:#B5651D;font-size:12px;}
+  .pm-ins{margin:0;font-size:12.5px;color:var(--muted);line-height:1.8;white-space:pre-line;border-inline-start:3px solid var(--c);padding-inline-start:10px;}
+  .pm-use{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center;} .pm-use > div{background:var(--bg);border-radius:10px;padding:8px 4px;} .pm-use b{display:block;font-family:'Cairo',sans-serif;font-size:13px;color:var(--violet-900);} .pm-use small{font-size:10.5px;color:var(--muted);}
+  .pm-bar{height:6px;border-radius:9px;background:var(--mist);overflow:hidden;} .pm-bar u{display:block;height:100%;border-radius:9px;background:var(--c);transform-origin:right;animation:arGrow .9s cubic-bezier(.22,1,.36,1);}
+  .pm-foot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:auto;} .pm-foot small{color:var(--muted);font-size:11.5px;} .pm-foot .ar-act .icon-action{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;justify-content:center;} .pm-foot .icon-action:disabled{opacity:.35;pointer-events:none;}
+  .pm-prev{border:1px dashed var(--line);border-radius:14px;padding:14px;background:#fff;} .pm-prev > small{display:block;color:var(--muted);font-size:11.5px;margin:0 0 6px;} .pm-prev > small:not(:first-child){margin-top:12px;} .pm-prev .payment-method-option{margin-bottom:0;}
+  @media (max-width:1180px){ .pm-stats{grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:760px){ .pm-grid{grid-template-columns:1fr;} .pm-tip{display:none;} }
+  @media (prefers-reduced-motion:reduce){ .pm-card,.pm-bar u{animation:none !important;transition:none !important;} }
+
+
+  /* ================= ADMIN: LIVE SESSIONS ================= */
+  .ls-live-bar{background:linear-gradient(120deg,#FBEBEA,#fff);border-color:#F0C9C6;animation:rowIn .5s both,payGlow 2s infinite;}
+  .ls-head,.ls-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 190px 148px;}
+  .ls-ic{width:40px;height:40px;border-radius:12px;background:var(--bg);color:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1);} .ar-item:hover .ls-ic{transform:scale(1.1) rotate(-6deg);}
+  .ls-when{text-align:end;} .ls-when b{display:block;font-size:12.5px;color:var(--ink);white-space:nowrap;} .ls-when small{color:var(--muted);font-size:11px;}
+  .ls-badge-row{display:flex;gap:8px;margin-bottom:10px;} .ls-badge-row .ar-tag{font-style:normal;font-size:11px;font-weight:700;background:#FBEBEA;border-radius:99px;padding:3px 10px;}
+  .ar-cards .ls-when{text-align:start;margin-top:8px;}
+  @media (max-width:1050px){ .ls-head,.ls-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 148px;} .ls-head span:nth-child(5),.ls-list .ar-act{display:none;} .ls-list .ar-item{cursor:pointer;} }
+  @media (max-width:760px){ .ls-head{display:none;} .ls-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr);grid-template-areas:"c v m";} .ls-list .ls-ic{grid-area:v;} .ar-cards .ls-when{text-align:end;margin-top:0;} }
+
+
+  /* ================= ADMIN: ATTENDANCE ================= */
+  .att-pick{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap;padding:16px 18px;}
+  .att-stats{grid-template-columns:repeat(4,1fr);margin-bottom:16px;} .att .ov-2 + .att-stats,.att-stats + .widget{margin-top:0;}
+  .att-date{color:var(--muted);font-weight:400;font-size:12px;margin-inline-start:6px;}
+  .att-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .att-roster{display:flex;flex-direction:column;} .att-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);animation:rowIn .4s both;animation-delay:calc(var(--i)*.04s);} .att-row:last-child{border:0;}
+  .att-row .us-av{width:38px;height:38px;font-size:14px;background:linear-gradient(135deg,var(--c,var(--violet-600)),var(--violet-800));}
+  .att-toggle{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex-shrink:0;}
+  .att-toggle button{width:38px;height:34px;border:0;background:#fff;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:.2s;border-inline-start:1px solid var(--line);} .att-toggle button:first-child{border-inline-start:0;}
+  .att-toggle button.good.on{background:#E9F5EE;color:var(--success);} .att-toggle button.bad.on{background:#FBEBEA;color:var(--danger);} .att-toggle button:hover:not(.on){background:var(--paper);}
+  .att-grid-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;}
+  .att-grid{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap;}
+  .att-grid th,.att-grid td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--line);}
+  .att-grid thead th{background:var(--paper);color:var(--muted);font-weight:700;font-size:11.5px;position:sticky;top:0;z-index:1;}
+  .att-grid td.stick,.att-grid th.stick{position:sticky;inset-inline-start:0;background:#fff;text-align:start;display:flex;align-items:center;gap:8px;font-weight:700;z-index:2;box-shadow:2px 0 6px -4px rgba(0,0,0,.15);}
+  .att-grid thead th.stick{background:var(--paper);z-index:3;}
+  .att-grid tbody tr{animation:rowIn .4s both;animation-delay:calc(var(--i)*.04s);} .att-grid tbody tr:hover td{background:var(--paper);}
+  .att-grid tbody tr:hover td.stick{background:var(--paper);}
+  .att-cell{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#fff;color:#B8AAC9;display:inline-flex;align-items:center;justify-content:center;transition:.18s;}
+  .att-cell.yes{background:#E9F5EE;color:var(--success);border-color:#CFE8D9;} .att-cell.no{background:#FBEBEA;color:var(--danger);border-color:#F0C9C6;} .att-cell:hover{filter:brightness(.96);transform:scale(1.08);}
+  .att-grid th.rate,.att-grid td.rate{position:sticky;inset-inline-end:0;background:#fff;} .att-grid thead th.rate{background:var(--paper);}
+  .us-av.sm{width:26px;height:26px;font-size:11px;}
+  @media (max-width:760px){ .att-pick{flex-direction:column;align-items:stretch;} .att-stats{grid-template-columns:repeat(2,1fr);} .att-tools{width:100%;} }
+
 </style>
 </head>
 <body>
@@ -5226,8 +5286,8 @@ async function renderCheckoutStep1(course){
                   <label class="payment-method-option ${i===0?'selected':''}" data-id="${m.id}">
                     <input type="radio" name="paymentMethodChoice" value="${m.id}" ${i===0?'checked':''} />
                     <div>
-                      <div style="font-weight:700;color:var(--ink);">${m.label}</div>
-                      ${m.accountName ? `<div style="font-size:12px;color:var(--muted);">${m.accountName}</div>` : ''}
+                      <div style="font-weight:700;color:var(--ink);">${certEsc(m.label)}</div>
+                      ${m.accountName ? `<div style="font-size:12px;color:var(--muted);">${certEsc(m.accountName)}</div>` : ''}
                     </div>
                   </label>
                 `).join('')}
@@ -5321,10 +5381,10 @@ async function renderCheckoutStep2(course, enrollment){
 
         ${method ? `
           <div class="payment-account-box">
-            <strong>${method.label}</strong><br/>
-            ${method.accountName ? `اسم الحساب: ${method.accountName}<br/>` : ''}
-            ${method.accountNumber ? `الرقم: ${method.accountNumber}<br/>` : ''}
-            ${method.instructions ? `<div style="margin-top:6px;">${method.instructions}</div>` : ''}
+            <strong>${certEsc(method.label)}</strong><br/>
+            ${method.accountName ? `اسم الحساب: ${certEsc(method.accountName)}<br/>` : ''}
+            ${method.accountNumber ? `الرقم: <b dir="ltr">${certEsc(method.accountNumber)}</b> <button type="button" class="ar-mini" data-copy-acc="${certEsc(method.accountNumber)}">نسخ</button><br/>` : ''}
+            ${method.instructions ? `<div style="margin-top:6px;white-space:pre-line;">${certEsc(method.instructions)}</div>` : ''}
           </div>
         ` : `
           <div class="alert" style="background:var(--mist);color:var(--violet-800);border:1px solid var(--line);">تواصل مع الإدارة لمعرفة بيانات الدفع.</div>
@@ -5342,6 +5402,10 @@ async function renderCheckoutStep2(course, enrollment){
       </div>
     </div>
   `;
+
+  document.querySelectorAll('[data-copy-acc]').forEach(b => b.addEventListener('click', () => {
+    navigator.clipboard?.writeText(b.dataset.copyAcc).then(() => { b.textContent = 'تم ✓'; setTimeout(() => { b.textContent = 'نسخ'; }, 1600); }).catch(() => {});
+  }));
 
   document.getElementById('copyOrderNumberBtn').addEventListener('click', () => {
     const val = document.getElementById('orderNumberVal').textContent.trim();
@@ -9368,258 +9432,198 @@ async function adminRenderUsers(area){
   if(new URLSearchParams((location.hash.split('?')[1] || '')).get('uid')) open(new URLSearchParams(location.hash.split('?')[1]).get('uid'));
 }
 
+/* ---------------- ADMIN: CATEGORIES (v2 — pro) ---------------- */
 async function adminRenderCategories(area){
+  document.getElementById('catOv')?.remove(); document.getElementById('catBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>', tag:'<path d="M20.6 12.6L12 21.2 2.8 12a2 2 0 010-2.8L11.2 0h9.4v9.4z" transform="translate(1.5 1.5) scale(0.9)"/><circle cx="7.5" cy="7.5" r="1.5"/>',
+    folder:'<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>', split:'<path d="M6 3v12a3 3 0 003 3h9M18 6l3 3-3 3M6 9l3-3-3-3"/>',
+  });
+  let cats = [], courses = [];
   try{
-    const [snap, courses] = await Promise.all([
-      getDocs(collection(db, 'categories')),
-      fetchAllCoursesAdmin(),
-    ]);
-    const cats = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const courseCountByCatId = {};
-    courses.forEach(c => { if(c.categoryId) courseCountByCatId[c.categoryId] = (courseCountByCatId[c.categoryId] || 0) + 1; });
-
-    area.innerHTML = `
-      <div class="widget-grid">
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:var(--mist);color:var(--violet-700);">${SIDE_ICONS.tag}</div><div><div class="num">${rootCategories(cats).length}</div><div class="lbl">قسم رئيسي</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#EEF3FB;color:#3B6FBF;">${SIDE_ICONS.folder}</div><div><div class="num">${cats.length - rootCategories(cats).length}</div><div class="lbl">مجال فرعي</div></div></div></div>
-        <div class="widget"><div class="stat-card-v3"><div class="ic" style="background:#E9F5EE;color:var(--success);">${SIDE_ICONS.book}</div><div><div class="num">${courses.length}</div><div class="lbl">كورس موزّع على الأقسام</div></div></div></div>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>إضافة قسم رئيسي جديد</h3></div>
-        <form id="addCategoryForm" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
-          <div class="field" style="margin-bottom:0;flex:1;min-width:160px;">
-            <label>اسم القسم الرئيسي</label>
-            <input type="text" id="catName" required placeholder="مثال: اللغات" />
-          </div>
-          <div class="field" style="margin-bottom:0;flex:2;min-width:200px;">
-            <label>وصف مختصر</label>
-            <input type="text" id="catDesc" placeholder="وصف القسم" />
-          </div>
-          <div class="field" style="margin-bottom:0;flex:2;min-width:220px;">
-            <label>رابط صورة القسم (اختياري)</label>
-            <input type="url" id="catImage" placeholder="https://..." />
-          </div>
-          <button type="submit" class="btn btn-primary" style="height:44px;">
-            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة قسم
-          </button>
-        </form>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>الأقسام والمجالات الفرعية</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">
-          كل مجال مستقل (مثل "المجال الطبي" أو "التعليق الصوتي") يجب إضافته من نموذج "إضافة قسم رئيسي جديد" فوق —
-          وليس من زر "+" هنا. زر "+" بجانب أي قسم يضيف <strong>مجالاً فرعياً تابعاً له</strong> فقط (يظهر تحته، وليس كقسم مستقل بذاته).
-        </p>
-        <div id="categoriesList"></div>
-      </div>
-    `;
-
-    function courseCountOfRoot(root, subs){
-      return (courseCountByCatId[root.id] || 0) + subs.reduce((s, sub) => s + (courseCountByCatId[sub.id] || 0), 0);
-    }
-
-    function renderList(){
-      const listEl = document.getElementById('categoriesList');
-      const roots = rootCategories(cats);
-      if(roots.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد أقسام بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = roots.map(root => {
-        const subs = subCategoriesOf(cats, root.id);
-        const rootCourseCount = courseCountOfRoot(root, subs);
-        return `
-          <div class="cat-tree-root" data-root-id="${root.id}" style="border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:10px;">
-            <div class="table-widget-row">
-              <div class="avatar-sm" ${root.imageUrl ? `style="padding:0;overflow:hidden;"` : ''}>${root.imageUrl ? `<img src="${root.imageUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;" />` : SIDE_ICONS.tag}</div>
-              <div class="grow">
-                <div class="t1">${root.name || ''}</div>
-                <div class="t2">${root.description || ''}${subs.length ? ` · ${subs.length} مجال فرعي` : ''} · <span class="tab-count-badge" style="margin-inline-start:0;">${rootCourseCount}</span> كورس</div>
-              </div>
-              <button type="button" class="icon-action" data-edit-cat="${root.id}" title="تعديل القسم">${SIDE_ICONS.gear}</button>
-              <button type="button" class="icon-action" data-add-sub="${root.id}" title="إضافة مجال فرعي">${SIDE_ICONS.plus}</button>
-              <button type="button" class="icon-action danger" data-id="${root.id}" data-count="${rootCourseCount}" title="حذف القسم">${SIDE_ICONS.trash}</button>
-            </div>
-            <form class="hidden edit-cat-form" id="editCatForm-${root.id}" data-id="${root.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:10px 0 4px 38px;">
-              <div class="field" style="margin-bottom:0;flex:1;min-width:140px;"><label>الاسم</label><input type="text" class="edit-cat-name" required value="${root.name || ''}" /></div>
-              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>الوصف</label><input type="text" class="edit-cat-desc" value="${root.description || ''}" /></div>
-              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>رابط الصورة</label><input type="url" class="edit-cat-image" value="${root.imageUrl || ''}" /></div>
-              <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
-              <button type="button" class="btn btn-ghost btn-sm cancel-edit-cat" data-id="${root.id}">إلغاء</button>
-            </form>
-            ${subs.length ? `
-              <div class="cat-tree-subs" style="padding-right:38px;border-right:2px solid var(--line);margin-right:20px;">
-                ${subs.map(s => `
-                  <div class="table-widget-row">
-                    <div class="avatar-sm" style="width:28px;height:28px;">${SIDE_ICONS.folder}</div>
-                    <div class="grow">
-                      <div class="t1">${s.name || ''}</div>
-                      <div class="t2">${s.description || ''}${s.description ? ' · ' : ''}<span class="tab-count-badge" style="margin-inline-start:0;">${courseCountByCatId[s.id] || 0}</span> كورس</div>
-                    </div>
-                    <button type="button" class="icon-action" data-edit-cat="${s.id}" title="تعديل المجال">${SIDE_ICONS.gear}</button>
-                    <button type="button" class="icon-action" data-make-root="${s.id}" title="فصله كمجال رئيسي مستقل">${SIDE_ICONS.layers}</button>
-                    <button type="button" class="icon-action danger" data-id="${s.id}" data-count="${courseCountByCatId[s.id] || 0}" title="حذف المجال الفرعي">${SIDE_ICONS.trash}</button>
-                  </div>
-                  <form class="hidden edit-cat-form" id="editCatForm-${s.id}" data-id="${s.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:10px 0 4px 38px;">
-                    <div class="field" style="margin-bottom:0;flex:1;min-width:140px;"><label>الاسم</label><input type="text" class="edit-cat-name" required value="${s.name || ''}" /></div>
-                    <div class="field" style="margin-bottom:0;flex:2;min-width:180px;"><label>الوصف</label><input type="text" class="edit-cat-desc" value="${s.description || ''}" /></div>
-                    <button type="submit" class="btn btn-primary btn-sm">حفظ</button>
-                    <button type="button" class="btn btn-ghost btn-sm cancel-edit-cat" data-id="${s.id}">إلغاء</button>
-                  </form>
-                `).join('')}
-              </div>
-            ` : ''}
-            <form class="hidden add-sub-form" id="addSubForm-${root.id}" data-parent="${root.id}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;padding:12px 0 4px 38px;">
-              <div class="field" style="margin-bottom:0;flex:1;min-width:140px;">
-                <label>اسم المجال الفرعي</label>
-                <input type="text" class="sub-cat-name" required placeholder="مثال: لغة إنجليزية" />
-              </div>
-              <div class="field" style="margin-bottom:0;flex:2;min-width:180px;">
-                <label>وصف مختصر</label>
-                <input type="text" class="sub-cat-desc" placeholder="وصف اختياري" />
-              </div>
-              <button type="submit" class="btn btn-ghost btn-sm">
-                <span class="side-ic" style="width:13px;height:13px;">${SIDE_ICONS.plus}</span> إضافة إلى "${root.name || 'القسم'}"
-              </button>
-            </form>
-          </div>
-        `;
-      }).join('');
-
-      // Delete works the same for a root category or a sub-category — same collection, one doc.
-      // A category with courses assigned to it is blocked from deletion (directly, or via any
-      // of its sub-categories for a root) so no course is ever left pointing at nothing.
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const count = Number(btn.dataset.count || 0);
-          if(count > 0){
-            alert(`فيه ${count} كورس مربوط بهذا القسم حالياً. لازم تنقلهم لقسم تاني أو تحذفهم الأول قبل ما تقدر تحذف القسم.`);
-            return;
-          }
-          if(!confirm('هل أنت متأكد من حذف هذا القسم؟')) return;
-          try{
-            await deleteDoc(doc(db, 'categories', btn.dataset.id));
-            categoriesCache = null;
-            const idx = cats.findIndex(x => x.id === btn.dataset.id);
-            if(idx > -1) cats.splice(idx,1);
-            renderList();
-            logAdminActivity('category_delete', 'قسم محذوف');
-            showSuccessToast('تم حذف القسم');
-          }catch(e){
-            alert('تعذّر حذف القسم.');
-          }
-        });
-      });
-
-      listEl.querySelectorAll('button[data-add-sub]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.getElementById(`addSubForm-${btn.dataset.addSub}`)?.classList.toggle('hidden');
-        });
-      });
-
-      listEl.querySelectorAll('button[data-edit-cat]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.getElementById(`editCatForm-${btn.dataset.editCat}`)?.classList.toggle('hidden');
-        });
-      });
-
-      listEl.querySelectorAll('.cancel-edit-cat').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.getElementById(`editCatForm-${btn.dataset.id}`)?.classList.add('hidden');
-        });
-      });
-
-      listEl.querySelectorAll('.edit-cat-form').forEach(form => {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const id = form.dataset.id;
-          const name = form.querySelector('.edit-cat-name').value.trim();
-          const description = form.querySelector('.edit-cat-desc').value.trim();
-          const imageInput = form.querySelector('.edit-cat-image');
-          if(!name) return;
-          const payload = { name, description };
-          if(imageInput) payload.imageUrl = imageInput.value.trim() || null;
-          const saveBtn = form.querySelector('button[type="submit"]');
-          saveBtn.disabled = true;
-          try{
-            await updateDoc(doc(db, 'categories', id), payload);
-            const c = cats.find(x => x.id === id);
-            if(c) Object.assign(c, payload);
-            categoriesCache = null;
-            renderList();
-            logAdminActivity('category_edit', name);
-            showSuccessToast('تم حفظ التعديلات!', name);
-          }catch(e){
-            alert('تعذّر حفظ التعديلات.');
-            saveBtn.disabled = false;
-          }
-        });
-      });
-
-      // Fixes the exact mix-up this button exists for: a category that should have been its
-      // own independent domain but got added as a sub-category under another one instead
-      // (easy to do by mistake — clicking "+" next to a root, instead of the main "add root
-      // category" form above). Clearing parentId is all that separates the two.
-      listEl.querySelectorAll('button[data-make-root]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('فصل هذا المجال كقسم رئيسي مستقل؟ سيظهر بعد ذلك كمجال منفصل في الصفحة الرئيسية.')) return;
-          try{
-            await updateDoc(doc(db, 'categories', btn.dataset.makeRoot), { parentId: null });
-            const c = cats.find(x => x.id === btn.dataset.makeRoot);
-            if(c) c.parentId = null;
-            categoriesCache = null;
-            renderList();
-            logAdminActivity('category_make_root', c?.name || '');
-            showSuccessToast('تم فصله كقسم رئيسي!', c?.name || '');
-          }catch(e){
-            alert('تعذّر تحويل المجال.');
-          }
-        });
-      });
-
-      listEl.querySelectorAll('.add-sub-form').forEach(form => {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const parentId = form.dataset.parent;
-          const name = form.querySelector('.sub-cat-name').value.trim();
-          const description = form.querySelector('.sub-cat-desc').value.trim();
-          if(!name) return;
-          try{
-            const ref = await addDoc(collection(db, 'categories'), { name, description, parentId, createdAt: serverTimestamp() });
-            cats.push({ id: ref.id, name, description, parentId });
-            categoriesCache = null;
-            renderList();
-            logAdminActivity('category_create', name, 'مجال فرعي');
-            showSuccessToast('تمت إضافة المجال الفرعي!', name);
-          }catch(e){
-            alert('تعذّر إضافة المجال الفرعي.');
-          }
-        });
-      });
-    }
-    renderList();
-
-    document.getElementById('addCategoryForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('catName').value.trim();
-      const description = document.getElementById('catDesc').value.trim();
-      const imageUrl = document.getElementById('catImage').value.trim();
-      if(!name) return;
-      try{
-        const ref = await addDoc(collection(db, 'categories'), { name, description, imageUrl: imageUrl || null, parentId: null, createdAt: serverTimestamp() });
-        cats.push({ id: ref.id, name, description, imageUrl: imageUrl || null, parentId: null });
-        categoriesCache = null;
-        renderList();
-        document.getElementById('addCategoryForm').reset();
-        logAdminActivity('category_create', name, 'قسم رئيسي');
-        showSuccessToast('تمت إضافة القسم بنجاح!', name);
-      }catch(e){
-        alert('تعذّر إضافة القسم.');
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الأقسام.</div>`;
+    const [snap, cs] = await Promise.all([getDocs(collection(db, 'categories')), fetchAllCoursesAdmin()]);
+    cats = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    courses = cs;
+  }catch(err){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الأقسام.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="catRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('catRetry').onclick = () => adminRenderCategories(area); return;
   }
+  const cc = {}; courses.forEach(c => { if(c.categoryId) cc[c.categoryId] = (cc[c.categoryId]||0) + 1; });
+  const countOf = id => cc[id] || 0;
+  const rootCount = root => countOf(root.id) + subCategoriesOf(cats, root.id).reduce((s,sub) => s + countOf(sub.id), 0);
+
+  let q = '', fst = 'all', drw = null;
+  const sel = new Set();
+
+  area.innerHTML = `
+  <div class="ar" id="catRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.tag,24)}</span><div><h2>الأقسام</h2><p>الأقسام الرئيسية ومجالاتها الفرعية اللي بيتصفّح بيها الطالب الكورسات.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="new-root">${svg(P.plus,15)} إضافة قسم رئيسي</button></div>
+    </div>
+    <div class="ar-stats" id="catStats"></div>
+    <div class="widget ar-panel" style="margin-top:14px;">
+      <div class="cat-tabs" id="catChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="catQ" placeholder="ابحث باسم القسم أو المجال الفرعي…   ( / )" /></div>
+      </div>
+      <div class="ar-count" id="catCount"></div>
+      <div id="catTree"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('catRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'catOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr" id="catDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'catBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const matchesQ = c => !q || (c.name||'').toLowerCase().includes(q) || (c.description||'').toLowerCase().includes(q);
+  const filteredRoots = () => rootCategories(cats).filter(r => {
+    const subs = subCategoriesOf(cats, r.id);
+    if(fst === 'empty' && rootCount(r) > 0) return false;
+    if(fst === 'noDesc' && r.description) return false;
+    if(q && !(matchesQ(r) || subs.some(matchesQ))) return false;
+    return true;
+  });
+
+  function paintTop(){
+    const roots = rootCategories(cats), subs = cats.length - roots.length;
+    const empty = roots.filter(r => rootCount(r) === 0).length;
+    const noDesc = cats.filter(c => !c.description).length;
+    const top = roots.map(r => ({ r, n:rootCount(r) })).sort((a,b) => b.n - a.n)[0];
+    const S = [
+      { k:'all', l:'قسم رئيسي', n:roots.length, i:P.tag, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
+      { k:'-1', l:'مجال فرعي', n:subs, i:P.folder, c:'#3B6FBF', bg:'#EEF3FB' },
+      { k:'-2', l:'كورس موزّع على الأقسام', n:courses.length, i:P.book, c:'#2F7A4F', bg:'#E9F5EE' },
+      { k:'empty', l:'أقسام بدون أي كورس', n:empty, i:P.warn, c:'#C98826', bg:'#FFF4E0', on:fst==='empty' },
+      { k:'noDesc', l:'بدون وصف', n:noDesc, i:P.edit, c:'#6B6072', bg:'#F1EDF5', on:fst==='noDesc' },
+      { k:'-3', l:'الأكثر كورسات', txt: top && top.n ? E(top.r.name) : '—', sub: top && top.n ? `${top.n} كورس` : '', i:P.check, c:'#2F7A4F', bg:'#E9F5EE' },
+    ];
+    $('#catStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on?'on':''}" ${s.k.startsWith('-')?'':`data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt ? `<b style="font-size:15px;">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small style="color:var(--muted);">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#catStats b[data-n]').forEach(countUp);
+    $('#catChips').innerHTML = [['all','الكل',roots.length],['empty','بدون كورسات',empty],['noDesc','بدون وصف',noDesc]].map(([k,l,n]) => `<button class="cat-tab ${fst===k?'active':''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+
+  function itemRow(c, isSub, i){
+    const n = isSub ? countOf(c.id) : rootCount(c);
+    return `<div class="ar-item ${sel.has(c.id)?'sel':''}" data-id="${c.id}" style="--i:${Math.min(i,14)};--c:${isSub?'#3B6FBF':'#5A3B92'};--bg:${isSub?'#EEF3FB':'#EDE7F6'};${isSub ? 'margin-inline-start:34px;opacity:.96;' : ''}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(c.id)?'checked':''}><i></i></label>
+      <div class="ar-th" ${c.imageUrl ? `style="padding:0;overflow:hidden;"` : ''}>${c.imageUrl ? `<img src="${E(c.imageUrl)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove()">` : svg(isSub ? P.folder : P.tag, isSub?16:20)}</div>
+      <div class="ar-main"><div class="ar-t">${E(c.name || '')}</div><div class="ar-d">${E(c.description || 'بدون وصف')}</div></div>
+      <span class="ar-badge">${isSub ? 'مجال فرعي' : 'قسم رئيسي'}</span>
+      <div class="ar-up"><b>${n}</b></div>
+      <div class="ar-dt">${n === 1 ? 'كورس' : 'كورس'}</div>
+      <div class="ar-act">
+        ${!isSub ? `<button class="icon-action" data-act="add-sub" title="إضافة مجال فرعي">${svg(P.plus,15)}</button>` : `<button class="icon-action" data-act="make-root" title="فصله كقسم رئيسي مستقل">${svg(P.split,15)}</button>`}
+        <button class="icon-action" data-act="edit" title="تعديل">${svg(P.edit,15)}</button>
+        <button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button>
+      </div></div>`;
+  }
+  function paintList(){
+    const roots = filteredRoots();
+    $('#catCount').textContent = cats.length ? `عرض ${roots.length} من ${rootCategories(cats).length} قسم رئيسي` : '';
+    if(!roots.length){
+      $('#catTree').innerHTML = `<div class="ar-empty">${svg(cats.length ? P.srch : P.tag, 44)}<h4>${cats.length ? 'ما في نتائج مطابقة' : 'لا توجد أقسام بعد'}</h4><p>${cats.length ? 'جرّب تغيّر البحث أو الفلتر.' : 'الطلاب مش هيقدروا يتصفّحوا الكورسات بدون أقسام.'}</p>${cats.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new-root">إضافة قسم رئيسي</button>'}</div>`; return;
+    }
+    let i = 0;
+    $('#catTree').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>القسم</span><span>النوع</span><span>الكورسات</span><span></span><span>تحكّم</span></div>${roots.map(r => {
+      const subs = subCategoriesOf(cats, r.id).filter(s => !q || matchesQ(r) || matchesQ(s));
+      return itemRow(r, false, i++) + subs.map(s => itemRow(s, true, i++)).join('');
+    }).join('')}</div>`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${n}</b><span>محدد</span><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr" title="إلغاء التحديد">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer (add / edit) ---- */
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const dr = $('#catDr');
+    if(drw.mode === 'new-sub' || drw.mode === 'new-root' || drw.mode === 'edit'){
+      const isSub = drw.mode === 'new-sub' || (drw.mode === 'edit' && cats.find(x => x.id === drw.id)?.parentId);
+      const c = drw.mode === 'edit' ? cats.find(x => x.id === drw.id) : { name:'', description:'', imageUrl:'' };
+      const title = drw.mode === 'new-root' ? 'إضافة قسم رئيسي جديد' : drw.mode === 'new-sub' ? `إضافة مجال فرعي ضمن "${E(cats.find(x=>x.id===drw.parentId)?.name||'')}"` : `تعديل ${isSub ? 'المجال الفرعي' : 'القسم'}`;
+      dr.innerHTML = `<div class="ar-dr-h"><h3>${title}</h3><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+      <form id="catForm" class="ar-form"><div class="field"><label>الاسم *</label><input id="catfN" required value="${E(c.name)}" placeholder="مثال: اللغات"></div>
+      <div class="field"><label>وصف مختصر</label><input id="catfD" value="${E(c.description||'')}" placeholder="وصف القسم"></div>
+      ${!isSub ? `<div class="field"><label>رابط صورة القسم (اختياري)</label><input id="catfI" dir="ltr" value="${E(c.imageUrl||'')}" placeholder="https://..."></div>` : ''}
+      <div class="ar-msg err" id="catErr"></div>
+      <div class="ar-form-b"><button class="btn btn-primary" type="submit">حفظ</button><button class="btn btn-ghost" type="button" data-act="cancel">إلغاء</button></div></form>`;
+      $('#catfN').focus(); return;
+    }
+  }
+  const open = (mode, extra={}) => { drw = { mode, ...extra }; paintDrawer(); };
+
+  /* ---- data actions ---- */
+  async function remove(ids){
+    const list = ids.map(id => cats.find(x => x.id === id)).filter(Boolean); if(!list.length) return;
+    const blocked = list.filter(c => countOf(c.id) > 0);
+    if(blocked.length){ toast(`فيه ${blocked.reduce((s,c)=>s+countOf(c.id),0)} كورس مربوط بـ"${E(blocked[0].name)}"${blocked.length>1?' وأقسام أخرى محددة':''} — انقلهم لقسم تاني الأول.`); return; }
+    if(!await ask(list.length > 1 ? `حذف ${list.length} أقسام؟` : 'حذف هذا القسم؟', 'هيتشال نهائيًا.')) return;
+    try{ await Promise.all(list.map(c => deleteDoc(doc(db,'categories',c.id)))); }catch(e){ return toast('تعذّر الحذف'); }
+    cats = cats.filter(x => !ids.includes(x.id)); ids.forEach(id => sel.delete(id)); categoriesCache = null;
+    logAdminActivity('category_delete', list[0].name, list.length > 1 ? `${list.length} عناصر` : '');
+    paintAll(); paintDrawer(); toast('تم الحذف');
+  }
+  async function save(){
+    const name = $('#catfN').value.trim(), description = $('#catfD').value.trim(), imageInput = $('#catfI');
+    const err = $('#catErr'); if(!name){ err.textContent = 'اكتب اسم القسم.'; return; }
+    const btn = $('#catForm button[type=submit]'); btn.disabled = true;
+    try{
+      if(drw.mode === 'edit'){
+        const payload = { name, description }; if(imageInput) payload.imageUrl = imageInput.value.trim() || null;
+        await updateDoc(doc(db,'categories',drw.id), payload); Object.assign(cats.find(x => x.id === drw.id), payload);
+        logAdminActivity('category_edit', name); showSuccessToast('تم حفظ التعديلات!', name);
+      }else{
+        const parentId = drw.mode === 'new-sub' ? drw.parentId : null;
+        const payload = { name, description, parentId }; if(drw.mode === 'new-root') payload.imageUrl = $('#catfI').value.trim() || null;
+        const ref = await addDoc(collection(db,'categories'), { ...payload, createdAt: serverTimestamp() });
+        cats.push({ id: ref.id, ...payload });
+        logAdminActivity('category_create', name, drw.mode === 'new-sub' ? 'مجال فرعي' : 'قسم رئيسي');
+        showSuccessToast(drw.mode === 'new-sub' ? 'تمت إضافة المجال الفرعي!' : 'تمت إضافة القسم!', name);
+      }
+      categoriesCache = null; drw = null;
+    }catch(e){ err.textContent = 'تعذّر الحفظ — راجع الاتصال والصلاحيات.'; btn.disabled = false; return; }
+    paintAll(); paintDrawer();
+  }
+
+  /* ---- events ---- */
+  async function onClick(e){
+    const el = e.target.closest('[data-act]'), row = e.target.closest('.ar-item'); const id = row?.dataset.id;
+    if(!el) return;
+    const c = cats.find(x => x.id === id), a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'new-root') open('new-root');
+    else if(a === 'add-sub') open('new-sub', { parentId:id });
+    else if(a === 'edit') open('edit', { id });
+    else if(a === 'close' || a === 'cancel'){ drw = null; paintDrawer(); }
+    else if(a === 'del') remove([id]);
+    else if(a === 'make-root'){
+      if(!await ask('فصل هذا المجال كقسم رئيسي مستقل؟', 'سيظهر بعد ذلك كقسم منفصل في الصفحة الرئيسية.', 'فصل', { safe:true })) return;
+      try{ await updateDoc(doc(db,'categories',id), { parentId:null }); c.parentId = null; categoriesCache = null; logAdminActivity('category_make_root', c.name); paintAll(); showSuccessToast('تم فصله كقسم رئيسي!', c.name); }
+      catch(err){ toast('تعذّر التحويل'); }
+    }
+    else if(a === 'stat'){ fst = el.dataset.k; paintAll(); }
+    else if(a === 'reset'){ q = ''; fst = 'all'; $('#catQ').value = ''; paintAll(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderCategories(area); }
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); }
+    else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  ov.addEventListener('click', e => { if(e.target === ov){ drw = null; paintDrawer(); } });
+  ov.addEventListener('submit', e => { e.preventDefault(); save(); });
+  $('#catQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); paintList(); });
+  const onKey = e => {
+    if(!root.isConnected) return;
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(e.key === 'Escape' && drw){ drw = null; paintDrawer(); }
+    else if(!typing && e.key === '/'){ e.preventDefault(); $('#catQ').focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
 /* ---------------- ADMIN: ARCHIVE ROOM (v2 — pro) ---------------- */
@@ -9966,221 +9970,278 @@ async function adminRenderLibraryReview(area){
 }
 const LIBRARY_STATUS_LABEL = { pending:'قيد المراجعة', approved:'مقبول', rejected:'مرفوض' };
 
+/* ---------------- ADMIN: COURSES (v2 — pro) ---------------- */
 async function adminRenderCourses(area){
+  document.getElementById('crsOv')?.remove(); document.getElementById('crsBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:360px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>', folder:'<path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>',
+  });
+  const SM = {
+    draft:{ l:'مسودة', c:'#6B6072', bg:'#F1EDF5' }, pending_review:{ l:'قيد المراجعة', c:'#C98826', bg:'#FFF4E0' },
+    needs_changes:{ l:'يحتاج تعديلات', c:'#C98826', bg:'#FFF4E0' }, approved:{ l:'منشور', c:'#2F7A4F', bg:'#E9F5EE' }, rejected:{ l:'مرفوض', c:'#B3413A', bg:'#FBEBEA' },
+  };
+  const sm = s => SM[s] || SM.approved;
+  const money = n => Number(n||0).toLocaleString('ar-EG') + ' ج.س';
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+
+  let courses = [], cats = [], instructors = [], usage = new Map();
   try{
-    const [catsSnap, instrSnap, coursesSnap] = await Promise.all([
+    const [catsSnap, instrSnap, coursesSnap, eS] = await Promise.all([
       getDocs(collection(db, 'categories')),
       getDocs(query(collection(db, 'users'), where('role','==','instructor'))),
       getDocs(collection(db, 'courses')),
+      getDocs(query(collection(db, 'enrollments'), where('status','==','approved'))),
     ]);
-    const cats = catsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const instructors = instrSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const courses = coursesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-    // Courses created before the status/review workflow existed have no `status` field at
-    // all. The security rules treat those as public (so they never actually vanished from
-    // Firestore's point of view), but the app's own course-listing query filters explicitly
-    // on status == 'approved' — a field that plainly doesn't match "field is missing" — so
-    // these never show up anywhere on the site until they're explicitly tagged 'approved'.
-    const legacyCourses = courses.filter(c => !c.status);
-
-    area.innerHTML = `
-      ${legacyCourses.length ? `
-        <div class="widget widget-4" style="border-color:var(--amber-500);background:#FDF8EF;">
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-            <div style="width:40px;height:40px;border-radius:10px;background:var(--amber-500);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">!</div>
-            <div style="flex:1;min-width:220px;">
-              <div style="font-weight:800;color:var(--violet-900);margin-bottom:2px;">يوجد ${legacyCourses.length} كورس قديم غير ظاهر للطلاب</div>
-              <div style="font-size:12.5px;color:var(--muted);">تم إنشاء هذه الكورسات قبل إضافة نظام "حالة الكورس" (معتمد / قيد المراجعة)، ولذلك لا توجد لها حالة محددة، فهي لا تظهر في الموقع رغم وجودها فعلياً: ${legacyCourses.map(c => c.title).join('، ')}</div>
-            </div>
-            <button type="button" class="btn btn-primary btn-sm" id="fixLegacyCoursesBtn">تفعيلها كلها الآن</button>
-          </div>
-        </div>
-      ` : ''}
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>إضافة كورس جديد</h3></div>
-        <form id="addCourseForm" style="display:flex;flex-direction:column;gap:14px;">
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div class="field" style="flex:2;min-width:200px;margin-bottom:0;">
-              <label>عنوان الكورس</label>
-              <input type="text" id="courseTitle" required />
-            </div>
-            <div class="field" style="flex:1;min-width:120px;margin-bottom:0;">
-              <label>السعر (جنيه)</label>
-              <input type="number" id="coursePrice" min="0" placeholder="0 = مجاني" />
-            </div>
-            <div class="field" style="flex:1;min-width:120px;margin-bottom:0;">
-              <label>السعر بعد الخصم (اختياري)</label>
-              <input type="number" id="courseDiscountPrice" min="0" placeholder="بدون خصم" />
-            </div>
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>الوصف</label>
-            <input type="text" id="courseDesc" />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>ماذا سيتعلم الطالب؟ (سطر لكل نقطة)</label>
-            <textarea id="courseWhatToLearn" rows="4" style="width:100%;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-family:inherit;font-size:14.5px;resize:vertical;" placeholder="ستتعلم أساسيات...&#10;ستكون قادراً على...&#10;ستكتسب مهارة..."></textarea>
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>القسم الرئيسي</label>
-              <select id="courseCategoryParent"><option value="">— اختر القسم الرئيسي —</option></select>
-            </div>
-            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>المجال الفرعي</label>
-              <select id="courseCategory" disabled><option value="">— اختر القسم الرئيسي أولاً —</option></select>
-            </div>
-            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>المدرب</label>
-              <select id="courseInstructor">
-                <option value="">— بدون مدرب —</option>
-                ${instructors.map(i => `<option value="${i.id}">${i.name || i.email}</option>`).join('')}
-              </select>
-            </div>
-            <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
-              <label>المستوى</label>
-              <select id="courseLevel">
-                <option value="">—</option>
-                <option value="Beginner">مبتدئ</option>
-                <option value="Intermediate">متوسط</option>
-                <option value="Advanced">متقدم</option>
-              </select>
-            </div>
-            <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
-              <label>مدة الكورس (اختياري)</label>
-              <input type="text" id="courseDuration" placeholder="مثال: 6 ساعات" />
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
-            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة كورس
-          </button>
-        </form>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>الكورسات الحالية</h3></div>
-        <div id="coursesListAdmin"></div>
-      </div>
-    `;
-
-    function renderList(){
-      const listEl = document.getElementById('coursesListAdmin');
-      if(courses.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد كورسات بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = courses.map(c => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
-          <div class="grow">
-            <div class="t1">${c.title} <span class="status-badge ${COURSE_STATUS_CLASS[c.status || 'approved']}" style="margin-right:6px;">${COURSE_STATUS_LABEL[c.status || 'approved']}</span></div>
-            <div class="t2">${c.categoryName || 'بدون قسم'} ${c.instructorName ? '· ' + c.instructorName : ''}</div>
-          </div>
-          <a href="#/manage/${c.id}" class="icon-action" title="إدارة المحتوى">${SIDE_ICONS.folder}</a>
-          <button class="icon-action danger" data-id="${c.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('هل أنت متأكد من حذف هذا الكورس؟')) return;
-          try{
-            await deleteDoc(doc(db, 'courses', btn.dataset.id));
-            coursesCache = null;
-            const idx = courses.findIndex(x => x.id === btn.dataset.id);
-            if(idx > -1) courses.splice(idx,1);
-            renderList();
-          }catch(e){
-            alert('تعذّر حذف الكورس.');
-          }
-        });
-      });
-    }
-    renderList();
-
-    document.getElementById('fixLegacyCoursesBtn')?.addEventListener('click', async (e) => {
-      const btn = e.currentTarget;
-      if(!confirm(`تفعيل ${legacyCourses.length} كورس قديم كـ"معتمد" عشان يظهر للطلاب؟`)) return;
-      btn.disabled = true;
-      btn.textContent = 'جارٍ التفعيل...';
-      try{
-        for(const c of legacyCourses){
-          await updateDoc(doc(db, 'courses', c.id), { status: 'approved' });
-        }
-        coursesCache = null; // the public course list is cached — drop it so the fix shows up immediately
-        showSuccessToast('تم تفعيل الكورسات!', `${legacyCourses.length} كورس بقى ظاهر للطلاب دلوقتي`);
-        adminRenderCourses(area);
-      }catch(e2){
-        alert('تعذّر تفعيل بعض الكورسات، حاول مرة أخرى.');
-        btn.disabled = false;
-        btn.textContent = 'تفعيلها كلها الآن';
-      }
+    cats = catsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    instructors = instrSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    courses = coursesSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    eS.docs.forEach(d => {
+      const e = d.data(); if(!e.courseId) return;
+      const u = usage.get(e.courseId) || { count:0, amount:0 };
+      u.count++; u.amount += Number(e.finalAmount||0); usage.set(e.courseId, u);
     });
-
-    wireCategoryCascadeSelects(
-      document.getElementById('courseCategoryParent'),
-      document.getElementById('courseCategory'),
-      cats
-    );
-
-    document.getElementById('addCourseForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const title = document.getElementById('courseTitle').value.trim();
-      const priceVal = document.getElementById('coursePrice').value;
-      const discountVal = document.getElementById('courseDiscountPrice').value;
-      const description = document.getElementById('courseDesc').value.trim();
-      const whatToLearnRaw = document.getElementById('courseWhatToLearn').value.trim();
-      const whatToLearn = whatToLearnRaw ? whatToLearnRaw.split('\n').map(s => s.trim()).filter(Boolean) : [];
-      const durationText = document.getElementById('courseDuration').value.trim();
-      const parentSel = document.getElementById('courseCategoryParent');
-      const subSel = document.getElementById('courseCategory');
-      const parentCategoryId = parentSel.value || null;
-      const instructorId = document.getElementById('courseInstructor').value;
-      const level = document.getElementById('courseLevel').value;
-      if(!title) return;
-
-      const parentCategory = cats.find(c => c.id === parentCategoryId);
-      // Falls back to the root category itself if it has no sub-categories yet.
-      const categoryId = subSel.value || parentCategoryId;
-      const category = cats.find(c => c.id === categoryId);
-      const instructor = instructors.find(i => i.id === instructorId);
-      const price = priceVal ? Number(priceVal) : 0;
-      const discountPrice = discountVal ? Number(discountVal) : null;
-
-      try{
-        const ref = await addDoc(collection(db, 'courses'), {
-          title, description, price, discountPrice, whatToLearn, durationText: durationText || null,
-          categoryId: categoryId || null,
-          categoryName: category ? category.name : null,
-          parentCategoryId: parentCategoryId || null,
-          parentCategoryName: parentCategory ? parentCategory.name : null,
-          instructorId: instructorId || null,
-          instructorName: instructor ? (instructor.name || instructor.email) : null,
-          level: level || null,
-          status: 'approved',
-          createdAt: serverTimestamp(),
-        });
-        courses.push({
-          id: ref.id, title, description, price, discountPrice, whatToLearn, durationText,
-          categoryId: categoryId || null, categoryName: category ? category.name : null,
-          parentCategoryId: parentCategoryId || null, parentCategoryName: parentCategory ? parentCategory.name : null,
-          instructorId: instructorId || null, instructorName: instructor ? (instructor.name || instructor.email) : null,
-          level: level || null, status: 'approved',
-        });
-        coursesCache = null;
-        renderList();
-        document.getElementById('addCourseForm').reset();
-        wireCategoryCascadeSelects(
-          document.getElementById('courseCategoryParent'),
-          document.getElementById('courseCategory'),
-          cats
-        );
-        showSuccessToast('تمت إضافة الكورس بنجاح!', title);
-      }catch(e){
-        alert('تعذّر إضافة الكورس.');
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات.</div>`;
+  }catch(err){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="crsRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('crsRetry').onclick = () => adminRenderCourses(area); return;
   }
+  const use = c => usage.get(c.id) || { count:0, amount:0 };
+  // Courses created before the status/review workflow existed have no `status` field at all.
+  // The security rules treat those as public, but the public course-listing query filters
+  // explicitly on status == 'approved' — a field that plainly doesn't match "field is missing"
+  // — so these never show up anywhere on the site until they're explicitly tagged 'approved'.
+  const legacyCourses = courses.filter(c => !c.status);
+  const catOptions = rootCategories(cats).flatMap(r => [[r.id, r.name]].concat(subCategoriesOf(cats, r.id).map(s => [s.id, '— ' + s.name])));
+
+  let q = '', fst = 'all', fcat = 'all', finstr = 'all', sort = 'new', drw = null;
+  const sel = new Set();
+
+  area.innerHTML = `
+  <div class="ar" id="crsRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.book,24)}</span><div><h2>الكورسات</h2><p>كل كورسات المنصة — الحالة، القسم، المدرب، وعدد الطلاب المسجّلين والإيرادات.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="new">${svg(P.plus,15)} كورس جديد</button></div>
+    </div>
+    ${legacyCourses.length ? `<div class="pay-sla" id="crsLegacy"><span>${svg(P.warn,20)}</span><div><b>${legacyCourses.length} كورس قديم غير ظاهر للطلاب</b><small>اتعمل قبل نظام حالة الكورس، فمفيش له حالة محددة، فمش بيظهر في المتجر: ${legacyCourses.map(c=>E(c.title)).join('، ')}</small></div><button class="btn btn-sm" data-act="fix-legacy">تفعيلها كلها الآن</button></div>` : ''}
+    <div class="ar-stats" id="crsStats"></div>
+    <div class="widget ar-panel" style="margin-top:14px;">
+      <div class="cat-tabs" id="crsChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="crsQ" placeholder="ابحث بعنوان الكورس…   ( / )" /></div>
+        <select id="crsCat" class="ar-sel"><option value="all">كل الأقسام</option>${catOptions.map(([id,l]) => `<option value="${id}">${E(l)}</option>`).join('')}</select>
+        <select id="crsInstr" class="ar-sel"><option value="all">كل المدربين</option><option value="none">بدون مدرب</option>${instructors.map(i => `<option value="${i.id}">${E(i.name||i.email)}</option>`).join('')}</select>
+        <select id="crsSort" class="ar-sel"><option value="new">الأحدث أولًا</option><option value="students">الأكثر طلابًا</option><option value="revenue">الأعلى إيرادًا</option><option value="priceHigh">الأعلى سعرًا</option></select>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="crsCount"></div>
+      <div id="crsList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('crsRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'crsOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr" id="crsDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'crsBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => courses.filter(c => {
+    if(fst !== 'all'){
+      if(fst === 'unpublished' && (c.status === 'approved' || !c.status)) return false;
+      else if(fst !== 'unpublished' && (c.status || 'approved') !== fst) return false;
+    }
+    if(fcat !== 'all' && c.categoryId !== fcat) return false;
+    if(finstr === 'none' && c.instructorId) return false;
+    else if(finstr !== 'all' && finstr !== 'none' && c.instructorId !== finstr) return false;
+    if(q && !(c.title||'').toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => sort === 'students' ? use(b).count - use(a).count : sort === 'revenue' ? use(b).amount - use(a).amount : sort === 'priceHigh' ? Number(b.price||0) - Number(a.price||0) : ts(b.createdAt) - ts(a.createdAt));
+
+  function paintTop(){
+    const published = courses.filter(c => (c.status||'approved') === 'approved').length;
+    const unpub = courses.length - published;
+    const noInstr = courses.filter(c => !c.instructorId).length;
+    const totalStudents = [...usage.values()].reduce((s,u) => s + u.count, 0);
+    const top = courses.map(c => ({ c, u:use(c) })).sort((a,b) => b.u.amount - a.u.amount)[0];
+    const S = [
+      { k:'all', l:'إجمالي الكورسات', n:courses.length, i:P.book, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
+      { k:'approved', l:'منشورة', n:published, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', on:fst==='approved' },
+      { k:'unpublished', l:'غير منشورة (مسودة/قيد المراجعة)', n:unpub, i:P.clock, c:'#C98826', bg:'#FFF4E0', on:fst==='unpublished' },
+      { k:'noInstr', l:'بدون مدرب', n:noInstr, i:P.warn, c:'#B3413A', bg:'#FBEBEA', on:fst==='noInstr' },
+      { k:'-1', l:'إجمالي الطلاب المسجّلين', n:totalStudents, i:P.users, c:'#3B6FBF', bg:'#EEF3FB' },
+      { k:'-2', l:'الأعلى إيرادًا', txt: top && top.u.amount ? E(top.c.title) : '—', sub: top && top.u.amount ? money(top.u.amount) : '', i:P.card, c:'#6B6072', bg:'#F1EDF5' },
+    ];
+    $('#crsStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on?'on':''}" ${s.k.startsWith('-')?'':`data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt ? `<b style="font-size:15px;">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small style="color:var(--muted);">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#crsStats b[data-n]').forEach(countUp);
+    $('#crsChips').innerHTML = [['all','الكل',courses.length],['approved','منشورة',published],['pending_review','قيد المراجعة',courses.filter(c=>c.status==='pending_review').length],['needs_changes','يحتاج تعديلات',courses.filter(c=>c.status==='needs_changes').length],['draft','مسودة',courses.filter(c=>c.status==='draft').length],['rejected','مرفوضة',courses.filter(c=>c.status==='rejected').length]].map(([k,l,n]) => `<button class="cat-tab ${fst===k?'active':''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+
+  function rowHTML(c, i){
+    const s = sm(c.status), u = use(c);
+    return `<div class="ar-item ${sel.has(c.id)?'sel':''}" data-id="${c.id}" style="--i:${Math.min(i,14)};--c:${s.c};--bg:${s.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(c.id)?'checked':''}><i></i></label>
+      <div class="ar-th">${(c.title||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+      <div class="ar-main"><div class="ar-t">${E(c.title || 'بدون عنوان')}</div><div class="ar-d">${E(c.categoryName || 'بدون قسم')}${c.instructorName ? ' · ' + E(c.instructorName) : ' · بدون مدرب'}</div></div>
+      <span class="ar-badge">${s.l}</span>
+      <div class="ar-up">${u.count ? `<b>${u.count} طالب</b>` : '<span style="color:var(--muted);">—</span>'}${u.amount ? `<small>${money(u.amount)}</small>` : ''}</div>
+      <div class="ar-dt">${Number(c.price)===0||!c.price ? 'مجاني' : money(c.price)}</div>
+      <div class="ar-act">
+        <a class="icon-action" href="#/manage/${c.id}" title="إدارة المحتوى">${svg(P.folder,15)}</a>
+        <button class="icon-action" data-act="edit" title="تعديل">${svg(P.edit,15)}</button>
+        <button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button>
+      </div></div>`;
+  }
+  function paintList(){
+    const L = filtered();
+    $('#crsCount').textContent = courses.length ? `عرض ${L.length} من ${courses.length}` : '';
+    if(!L.length){
+      $('#crsList').innerHTML = `<div class="ar-empty">${svg(courses.length ? P.srch : P.book, 44)}<h4>${courses.length ? 'ما في نتائج مطابقة' : 'لا توجد كورسات بعد'}</h4><p>${courses.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ابدأ بإضافة أول كورس.'}</p>${courses.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new">كورس جديد</button>'}</div>`; return;
+    }
+    $('#crsList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الكورس</span><span>الحالة</span><span>الطلاب</span><span>السعر</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${n}</b><span>محدد</span><button data-act="b-approve">${svg(P.check,15)} نشر</button><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr" title="إلغاء التحديد">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer (add / edit) ---- */
+  function catCascadeOptionsHTML(selectedParent, selectedSub){
+    const parents = rootCategories(cats);
+    return `
+      <select id="crsfParentCat">
+        <option value="">— اختر القسم الرئيسي —</option>
+        ${parents.map(p => `<option value="${p.id}" ${p.id===selectedParent?'selected':''}>${E(p.name)}</option>`).join('')}
+      </select>`;
+  }
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const c = drw.mode === 'edit' ? courses.find(x => x.id === drw.id) : null;
+    if(drw.mode === 'edit' && !c){ drw = null; ov.classList.remove('open'); return; }
+    const dr = $('#crsDr');
+    const f = c || { title:'', description:'', price:0, discountPrice:'', whatToLearn:[], durationText:'', parentCategoryId:'', categoryId:'', instructorId:'', level:'', status:'approved' };
+    dr.innerHTML = `<div class="ar-dr-h"><h3>${drw.mode==='new' ? 'كورس جديد' : 'تعديل الكورس'}</h3><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <form id="crsForm" class="ar-form">
+      <div class="field"><label>عنوان الكورس *</label><input id="crsfT" required value="${E(f.title)}"></div>
+      <div class="field"><label>الوصف</label><input id="crsfDesc" value="${E(f.description||'')}"></div>
+      <div class="field"><label>ماذا سيتعلم الطالب؟ (سطر لكل نقطة)</label><textarea id="crsfWtl" rows="3">${E((f.whatToLearn||[]).join('\n'))}</textarea></div>
+      <div style="display:flex;gap:10px;">
+        <div class="field" style="flex:1;"><label>السعر (جنيه)</label><input id="crsfPrice" type="number" min="0" value="${E(f.price||0)}" placeholder="0 = مجاني"></div>
+        <div class="field" style="flex:1;"><label>سعر بعد الخصم (اختياري)</label><input id="crsfDisc" type="number" min="0" value="${E(f.discountPrice||'')}" placeholder="بدون خصم"></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div class="field" style="flex:1;"><label>القسم الرئيسي</label>${catCascadeOptionsHTML(f.parentCategoryId)}</div>
+        <div class="field" style="flex:1;"><label>المجال الفرعي</label><select id="crsfSubCat" disabled><option value="">— اختر القسم الرئيسي أولًا —</option></select></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div class="field" style="flex:1;"><label>المدرب</label><select id="crsfInstr"><option value="">— بدون مدرب —</option>${instructors.map(i => `<option value="${i.id}" ${f.instructorId===i.id?'selected':''}>${E(i.name||i.email)}</option>`).join('')}</select></div>
+        <div class="field" style="flex:1;"><label>المستوى</label><select id="crsfLevel"><option value="">—</option><option value="Beginner" ${f.level==='Beginner'?'selected':''}>مبتدئ</option><option value="Intermediate" ${f.level==='Intermediate'?'selected':''}>متوسط</option><option value="Advanced" ${f.level==='Advanced'?'selected':''}>متقدم</option></select></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div class="field" style="flex:1;"><label>مدة الكورس (اختياري)</label><input id="crsfDur" value="${E(f.durationText||'')}" placeholder="مثال: 6 ساعات"></div>
+        <div class="field" style="flex:1;"><label>حالة الكورس</label><select id="crsfStatus">${Object.keys(SM).map(k => `<option value="${k}" ${(f.status||'approved')===k?'selected':''}>${SM[k].l}</option>`).join('')}</select></div>
+      </div>
+      <div class="ar-msg err" id="crsErr"></div>
+      <div class="ar-form-b"><button class="btn btn-primary" type="submit">${drw.mode==='new' ? 'حفظ وإضافة' : 'حفظ التعديلات'}</button><button class="btn btn-ghost" type="button" data-act="cancel">إلغاء</button></div>
+    </form>`;
+    wireCategoryCascadeSelects($('#crsfParentCat'), $('#crsfSubCat'), cats);
+    if(f.categoryId && f.categoryId !== f.parentCategoryId){ $('#crsfParentCat').dispatchEvent(new Event('change')); setTimeout(() => { if($('#crsfSubCat')) $('#crsfSubCat').value = f.categoryId; }, 0); }
+    $('#crsfT').focus();
+  }
+  const open = (mode, id) => { drw = { mode, id }; paintDrawer(); };
+
+  /* ---- data actions ---- */
+  async function remove(ids){
+    const list = ids.map(id => courses.find(x => x.id === id)).filter(Boolean); if(!list.length) return;
+    const withStudents = list.filter(c => use(c).count > 0);
+    const msg = withStudents.length
+      ? `${withStudents.length > 1 ? 'بعض الكورسات المحددة' : `"${E(withStudents[0].title)}"`} مسجّل بيه طلاب فعلًا (${withStudents.reduce((s,c)=>s+use(c).count,0)} طالب) — هيفقدوا الوصول للمحتوى فورًا. متأكد؟`
+      : (list.length > 1 ? 'هتتشال كل الكورسات المحددة نهائيًا.' : `"${E(list[0].title)}" هتتشال نهائيًا.`);
+    if(!await ask(list.length > 1 ? `حذف ${list.length} كورسات؟` : 'حذف هذا الكورس؟', msg)) return;
+    try{ await Promise.all(list.map(c => deleteDoc(doc(db,'courses',c.id)))); }catch(e){ return toast('تعذّر الحذف'); }
+    courses = courses.filter(x => !ids.includes(x.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw.id)) drw = null; coursesCache = null;
+    logAdminActivity('course_delete', list[0].title, list.length > 1 ? `${list.length} كورسات` : '');
+    paintAll(); paintDrawer(); toast(`تم حذف ${list.length > 1 ? list.length + ' كورسات' : 'الكورس'}`);
+  }
+  async function bulkApprove(ids){
+    try{ await Promise.all(ids.map(id => updateDoc(doc(db,'courses',id), { status:'approved' }))); ids.forEach(id => { const c = courses.find(x=>x.id===id); if(c) c.status = 'approved'; }); coursesCache = null; logAdminActivity('course_status_change', `${ids.length} كورسات`, 'نشر جماعي'); showSuccessToast('تم نشر الكورسات المحددة!'); }
+    catch(e){ toast('تعذّر النشر'); }
+    paintAll();
+  }
+  async function fixLegacy(){
+    if(!await ask('تفعيل الكورسات القديمة؟', `${legacyCourses.length} كورس هيتحول لحالة "منشور" عشان يظهر للطلاب.`, 'تفعيل', { safe:true })) return;
+    try{
+      await Promise.all(legacyCourses.map(c => updateDoc(doc(db,'courses',c.id), { status:'approved' })));
+      legacyCourses.forEach(c => c.status = 'approved'); coursesCache = null;
+      logAdminActivity('course_status_change', `${legacyCourses.length} كورسات قديمة`, 'تفعيل جماعي');
+      showSuccessToast('تم تفعيل الكورسات القديمة!');
+      adminRenderCourses(area);
+    }catch(e){ toast('تعذّر التفعيل — حاول مرة أخرى'); }
+  }
+  async function save(){
+    const parentSel = $('#crsfParentCat'), subSel = $('#crsfSubCat');
+    const parentCategoryId = parentSel.value || null, parentCategory = cats.find(x => x.id === parentCategoryId);
+    const categoryId = subSel.value || parentCategoryId, category = cats.find(x => x.id === categoryId);
+    const instructorId = $('#crsfInstr').value, instructor = instructors.find(i => i.id === instructorId);
+    const wtlRaw = $('#crsfWtl').value.trim();
+    const p = {
+      title: $('#crsfT').value.trim(), description: $('#crsfDesc').value.trim(),
+      whatToLearn: wtlRaw ? wtlRaw.split('\n').map(s=>s.trim()).filter(Boolean) : [],
+      price: Number($('#crsfPrice').value)||0, discountPrice: $('#crsfDisc').value ? Number($('#crsfDisc').value) : null,
+      durationText: $('#crsfDur').value.trim() || null, level: $('#crsfLevel').value || null, status: $('#crsfStatus').value,
+      categoryId: categoryId || null, categoryName: category ? category.name : null,
+      parentCategoryId: parentCategoryId || null, parentCategoryName: parentCategory ? parentCategory.name : null,
+      instructorId: instructorId || null, instructorName: instructor ? (instructor.name||instructor.email) : null,
+    }, err = $('#crsErr');
+    if(!p.title){ err.textContent = 'اكتب عنوان الكورس.'; return; }
+    const btn = $('#crsForm button[type=submit]'); btn.disabled = true;
+    try{
+      if(drw.mode === 'new'){
+        const ref = await addDoc(collection(db,'courses'), { ...p, createdAt: serverTimestamp() });
+        courses.unshift({ id: ref.id, ...p });
+        logAdminActivity('course_create', p.title); showSuccessToast('تمت إضافة الكورس بنجاح!', p.title);
+        drw = { id: ref.id, mode:'edit' };
+      }else{
+        await updateDoc(doc(db,'courses',drw.id), p); Object.assign(courses.find(x => x.id === drw.id), p);
+        logAdminActivity('course_edit', p.title); showSuccessToast('تم حفظ التعديلات!', p.title);
+      }
+      coursesCache = null; drw = null;
+    }catch(e){ err.textContent = 'تعذّر الحفظ — راجع الاتصال والصلاحيات.'; btn.disabled = false; return; }
+    paintAll(); paintDrawer();
+  }
+
+  /* ---- events ---- */
+  async function onClick(e){
+    const el = e.target.closest('[data-act]'), row = e.target.closest('.ar-item'); const id = row?.dataset.id;
+    if(!el) return;
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'new') open('new');
+    else if(a === 'edit') open('edit', id);
+    else if(a === 'close' || a === 'cancel'){ drw = null; paintDrawer(); }
+    else if(a === 'del') remove([id]);
+    else if(a === 'fix-legacy') fixLegacy();
+    else if(a === 'stat'){ fst = el.dataset.k === 'noInstr' ? 'noInstr' : el.dataset.k; paintAll(); }
+    else if(a === 'reset'){ q = ''; fst = 'all'; fcat = 'all'; finstr = 'all'; $('#crsQ').value=''; $('#crsCat').value='all'; $('#crsInstr').value='all'; paintAll(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderCourses(area); }
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); }
+    else if(a === 'b-approve') bulkApprove([...sel]);
+    else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  ov.addEventListener('click', e => { if(e.target === ov){ drw = null; paintDrawer(); } });
+  ov.addEventListener('submit', e => { e.preventDefault(); save(); });
+  $('#crsQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); paintList(); });
+  $('#crsCat').addEventListener('change', e => { fcat = e.target.value; paintList(); });
+  $('#crsInstr').addEventListener('change', e => { finstr = e.target.value; paintList(); });
+  $('#crsSort').addEventListener('change', e => { sort = e.target.value; paintList(); });
+  const onKey = e => {
+    if(!root.isConnected) return;
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(e.key === 'Escape' && drw){ drw = null; paintDrawer(); }
+    else if(!typing && e.key === '/'){ e.preventDefault(); $('#crsQ').focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
 async function adminRenderCourseReview(area){
@@ -10345,6 +10406,7 @@ async function adminRenderPayments(area){
 
   const qp = new URLSearchParams(location.hash.split('?')[1] || '');
   let q = '', fst = ['review','await','ok','bad'].includes(qp.get('status')) ? qp.get('status') : 'all', fm = 'all', fc = 'all', fr = 'all', sort = 'smart', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null, auto = true;
+  if(qp.get('method') && methods.has(qp.get('method'))) fm = qp.get('method');
   const sel = new Set(), PAGE = 20;
   const courseOpts = [...new Map(enr.filter(e => e.courseId).map(e => [e.courseId, e.courseTitle || courses.get(e.courseId)?.title || 'كورس'])).entries()];
 
@@ -10374,7 +10436,7 @@ async function adminRenderPayments(area){
   const root = document.getElementById('payRoot'), $ = s => document.querySelector(s);
   const ov = document.createElement('div'); ov.id = 'payOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="payDr"></div>'; document.body.appendChild(ov);
   const bulk = document.createElement('div'); bulk.id = 'payBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
-  $('#payS').value = sort;
+  $('#payS').value = sort; $('#payM').value = fm;
 
   const startOfDay = () => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime()/1000; };
   const filtered = () => enr.filter(e => {
@@ -11087,304 +11149,771 @@ async function adminRenderCertificates(area){
   paintAll();
 }
 
+/* ---------------- ADMIN: PAYMENT METHODS (v2 — pro) ---------------- */
 async function adminRenderPaymentMethods(area){
-  try{
-    const snap = await getDocs(collection(db, 'paymentMethods'));
-    let methods = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.order||0) - (b.order||0));
+  document.getElementById('pmOv')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats pm-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(4)}</div><div class="ar-sk" style="height:320px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    wallet:'<path d="M20 12V8H6a2 2 0 010-4h12v4M4 6v12a2 2 0 002 2h14v-4M18 12a2 2 0 000 4h4v-4z"/>', cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
+    tag:'<path d="M20.6 13.4l-7.2 7.2a2 2 0 01-2.8 0L2 12V2h10l8.6 8.6a2 2 0 010 2.8zM7 7h.01"/>', plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+    up:'<path d="M18 15l-6-6-6 6"/>', down:'<path d="M6 9l6 6 6-6"/>', grip:'<circle cx="9" cy="6" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="18" r="1"/>',
+  });
+  const nm = n => Number(n).toLocaleString('ar-EG'), money = n => nm(Math.round(Number(n || 0))) + ' ج.س';
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const TYPES = { bank:{ l:'حساب بنكي', c:'#3B6FBF', bg:'#EEF3FB', i:P.card }, wallet:{ l:'محفظة إلكترونية', c:'#6E4BAF', bg:'#EDE7F6', i:P.wallet }, cash:{ l:'نقدًا / استلام مباشر', c:'#2F7A4F', bg:'#E9F5EE', i:P.cash }, other:{ l:'أخرى', c:'#6B6072', bg:'#F1EDF5', i:P.tag } };
+  const PRESETS = [['بنكك','bank'],['فوري','wallet'],['أوكاش','wallet'],['تحويل بنكي','bank'],['نقدًا','cash']];
+  const tp = m => TYPES[m.type] || TYPES.bank;
 
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>إضافة وسيلة دفع</h3></div>
-        <form id="addPaymentMethodForm" style="display:flex;flex-direction:column;gap:14px;">
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>اسم الوسيلة</label>
-              <input type="text" id="pmLabel" required placeholder="مثال: بنكك" />
-            </div>
-            <div class="field" style="flex:1;min-width:160px;margin-bottom:0;">
-              <label>اسم صاحب الحساب</label>
-              <input type="text" id="pmAccountName" placeholder="مثال: أحمد محمد" />
-            </div>
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>رقم الحساب / الهاتف</label>
-            <input type="text" id="pmAccountNumber" placeholder="رقم الحساب أو الهاتف" />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>تعليمات إضافية (اختياري)</label>
-            <input type="text" id="pmInstructions" placeholder="مثال: أرسل صورة الإيصال بعد التحويل" />
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
-            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.plus}</span> إضافة وسيلة
-          </button>
-        </form>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>وسائل الدفع الحالية</h3></div>
-        <div id="paymentMethodsAdminList"></div>
-      </div>
-    `;
-
-    function renderList(){
-      const listEl = document.getElementById('paymentMethodsAdminList');
-      if(methods.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد وسائل دفع بعد — الطلاب لن يقدروا يشتروا كورسات مدفوعة لحد ما تضيف واحدة.</div>`;
-        return;
-      }
-      listEl.innerHTML = methods.map(m => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${SIDE_ICONS.card}</div>
-          <div class="grow">
-            <div class="t1">${m.label} ${m.active === false ? '<span class="pill" style="color:var(--danger);background:#FBEBEA;">معطّلة</span>' : ''}</div>
-            <div class="t2">${m.accountName || ''} ${m.accountNumber ? '· ' + m.accountNumber : ''}</div>
-          </div>
-          <button class="icon-action" data-toggle="${m.id}" title="${m.active === false ? 'تفعيل' : 'تعطيل'}">${m.active === false ? SIDE_ICONS.check : SIDE_ICONS.close}</button>
-          <button class="icon-action danger" data-id="${m.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('حذف وسيلة الدفع هذه؟')) return;
-          try{
-            await deleteDoc(doc(db, 'paymentMethods', btn.dataset.id));
-            methods = methods.filter(m => m.id !== btn.dataset.id);
-            renderList();
-          }catch(e){
-            alert('تعذّر حذف وسيلة الدفع.');
-          }
-        });
-      });
-      listEl.querySelectorAll('button[data-toggle]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const m = methods.find(x => x.id === btn.dataset.toggle);
-          if(!m) return;
-          const newActive = !(m.active !== false);
-          try{
-            await updateDoc(doc(db, 'paymentMethods', m.id), { active: newActive });
-            m.active = newActive;
-            renderList();
-          }catch(e){
-            alert('تعذّر تحديث الحالة.');
-          }
-        });
-      });
-    }
-    renderList();
-
-    document.getElementById('addPaymentMethodForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const label = document.getElementById('pmLabel').value.trim();
-      const accountName = document.getElementById('pmAccountName').value.trim();
-      const accountNumber = document.getElementById('pmAccountNumber').value.trim();
-      const instructions = document.getElementById('pmInstructions').value.trim();
-      if(!label) return;
-      try{
-        const ref = await addDoc(collection(db, 'paymentMethods'), {
-          label, accountName: accountName || null, accountNumber: accountNumber || null,
-          instructions: instructions || null, active: true, order: methods.length,
-          createdAt: serverTimestamp(),
-        });
-        methods.push({ id: ref.id, label, accountName, accountNumber, instructions, active: true, order: methods.length });
-        renderList();
-        document.getElementById('addPaymentMethodForm').reset();
-        showSuccessToast('تمت إضافة وسيلة الدفع!', label);
-      }catch(e){
-        alert('تعذّر إضافة وسيلة الدفع.');
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل وسائل الدفع.</div>`;
+  let methods = [], usage = {}, orphan = 0;
+  async function load(){
+    const [mS, eS] = await Promise.all([getDocs(collection(db,'paymentMethods')), getDocs(collection(db,'enrollments')).catch(() => ({ docs:[] }))]);
+    methods = mS.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (a.order || 0) - (b.order || 0));
+    usage = {}; orphan = 0; const ids = new Set(methods.map(m => m.id));
+    eS.docs.forEach(d => { const e = d.data(); if(!e.paymentMethodId) return; if(!ids.has(e.paymentMethodId)){ orphan++; return; }
+      const u = usage[e.paymentMethodId] = usage[e.paymentMethodId] || { n:0, ok:0, rev:0, last:0 }; u.n++; u.last = Math.max(u.last, ts(e.createdAt)); if(e.status === 'approved'){ u.ok++; u.rev += Number(e.finalAmount || 0); } });
   }
+  try{ await load(); }catch(err){
+    console.error('[Lavender] payment methods load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل وسائل الدفع.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="pmRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('pmRetry').onclick = () => adminRenderPaymentMethods(area); return;
+  }
+  const isOn = m => m.active !== false, use = m => usage[m.id] || { n:0, ok:0, rev:0, last:0 };
+  let flt = 'all', drw = null, drag = null;
+
+  area.innerHTML = `
+  <div class="ar pm" id="pmRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.wallet,24)}</span><div><h2>وسائل الدفع</h2><p>البيانات اللي الطلاب بيحوّلوا عليها — رتّبها بالسحب، وشوف أداء كل وسيلة، وعدّل من غير ما تخرج من الصفحة.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="new">${svg(P.plus,15)} إضافة وسيلة</button></div>
+    </div>
+    <div id="pmWarn"></div>
+    <div class="ar-stats pm-stats" id="pmStats"></div>
+    <div class="widget ar-panel">
+      <div class="pm-head"><div class="cat-tabs" id="pmChips"></div><small class="pm-tip">${svg(P.grip,14)} اسحب الكروت لإعادة الترتيب — ده نفس الترتيب اللي بيظهر للطلاب.</small></div>
+      <div id="pmGrid"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('pmRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'pmOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="pmDr"></div>'; document.body.appendChild(ov);
+
+  function paintTop(){
+    const on = methods.filter(isOn), tot = methods.reduce((s,m) => s + use(m).rev, 0), totN = methods.reduce((s,m) => s + use(m).ok, 0), top = [...methods].sort((a,b) => use(b).n - use(a).n)[0];
+    $('#pmWarn').innerHTML = !on.length ? `<div class="pay-sla"><span>${svg(P.warn,20)}</span><div><b>ما في أي وسيلة دفع مفعّلة!</b><small>الطلاب ما هيقدروا يكملوا الاشتراك في الكورسات المدفوعة لحد ما تفعّل أو تضيف وسيلة.</small></div><button class="btn btn-sm" data-act="new">إضافة وسيلة</button></div>`
+      : on.length === 1 ? `<div class="pm-note">${svg(P.warn,16)} في وسيلة واحدة بس مفعّلة (${E(on[0].label)}). يفضّل تضيف بديل لو الأولى وقفت.</div>` : '';
+    const S = [
+      { k:'all', l:'إجمالي الوسائل', n:methods.length, i:P.wallet, c:'#5A3B92', bg:'#EDE7F6', on:flt === 'all' },
+      { k:'on', l:'مفعّلة للطلاب', n:on.length, sub:`${nm(methods.length - on.length)} معطّلة`, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', on:flt === 'on' },
+      { k:'-', l:'الأكثر استخدامًا', txt:top && use(top).n ? E(top.label) : '—', sub:top && use(top).n ? `${nm(use(top).n)} طلب` : '', i:P.up, c:'#C98826', bg:'#FFF4E0' },
+      { k:'-', l:'تحويلات مقبولة', n:tot, u:'ج.س', sub:`${nm(totN)} عملية`, i:P.cash, c:'#3B6FBF', bg:'#EEF3FB' },
+    ];
+    $('#pmStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''}" ${s.k === '-' ? '' : `data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt !== undefined ? `<b style="font-size:16px">${s.txt}</b>` : `<b><span data-n="${s.n}">0</span>${s.u ? `<i style="font-style:normal;font-size:11px;color:var(--muted);margin-inline-start:4px">${s.u}</i>` : ''}</b>`}<small>${s.l}</small>${s.sub ? `<small class="pay-sub">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#pmStats b > span').forEach(countUp);
+    $('#pmChips').innerHTML = [['all','الكل',methods.length],['on','مفعّلة',on.length],['off','معطّلة',methods.length - on.length]].map(([k,l,n]) => `<button class="cat-tab ${flt === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${nm(n)})</button>`).join('');
+  }
+  function cardHTML(m, i){
+    const t = tp(m), u = use(m), tot = methods.reduce((s,x) => s + use(x).n, 0) || 1, pct = Math.round(u.n / tot * 100), idx = methods.indexOf(m);
+    return `<div class="pm-card ${isOn(m) ? '' : 'off'}" draggable="true" data-id="${m.id}" style="--i:${Math.min(i,10)};--c:${t.c};--bg:${t.bg}">
+      <div class="pm-top"><span class="pm-grip" title="اسحب لإعادة الترتيب">${svg(P.grip,16)}</span><span class="pm-ic">${svg(t.i,20)}</span><div class="pm-tt"><b>${E(m.label)}</b><small>${t.l} · ترتيب ${nm(idx + 1)}</small></div>
+        <label class="fin-tg" title="${isOn(m) ? 'تعطيل' : 'تفعيل'}"><input type="checkbox" data-act="toggle" ${isOn(m) ? 'checked' : ''}><i></i></label></div>
+      <div class="pm-acc">${m.accountName ? `<div><span>اسم الحساب</span><b>${E(m.accountName)}</b></div>` : ''}${m.accountNumber ? `<div><span>الرقم</span><b dir="ltr">${E(m.accountNumber)}</b><button class="ar-mini" data-act="copy" data-v="${E(m.accountNumber)}">نسخ</button></div>` : '<div class="pm-miss">لم يُدخل رقم حساب</div>'}</div>
+      ${m.instructions ? `<p class="pm-ins">${E(m.instructions)}</p>` : ''}
+      <div class="pm-use"><div><b>${nm(u.n)}</b><small>طلب</small></div><div><b>${nm(u.ok)}</b><small>مقبول</small></div><div><b>${money(u.rev)}</b><small>إيرادات</small></div></div>
+      <div class="pm-bar" title="${pct}% من الطلبات"><u style="width:${pct}%"></u></div>
+      <div class="pm-foot"><small>${u.last ? 'آخر استخدام ' + ago(u.last) : 'لم تُستخدم بعد'}</small>
+        <div class="ar-act"><button class="icon-action" data-act="up" title="أعلى" ${idx === 0 ? 'disabled' : ''}>${svg(P.up,15)}</button><button class="icon-action" data-act="down" title="أسفل" ${idx === methods.length - 1 ? 'disabled' : ''}>${svg(P.down,15)}</button>
+          ${u.n ? `<a class="icon-action" href="#/dashboard?tab=payments&method=${m.id}" title="عرض طلباتها">${svg(P.eye,15)}</a>` : ''}<button class="icon-action" data-act="edit" title="تعديل">${svg(P.edit,15)}</button><button class="icon-action" data-act="dup" title="تكرار">${svg(P.copy,15)}</button><button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button></div></div></div>`;
+  }
+  function paintGrid(){
+    const L = methods.filter(m => flt === 'all' || (flt === 'on' ? isOn(m) : !isOn(m)));
+    $('#pmGrid').innerHTML = L.length ? `<div class="pm-grid">${L.map(cardHTML).join('')}</div>${orphan ? `<small class="us-hint">⚠ ${nm(orphan)} طلب قديم مرتبط بوسائل دفع اتحذفت.</small>` : ''}`
+      : `<div class="ar-empty">${svg(P.wallet,44)}<h4>${methods.length ? 'ما في وسائل في التصنيف ده' : 'لا توجد وسائل دفع بعد'}</h4><p>${methods.length ? 'غيّر التصنيف من الأعلى.' : 'أضف أول وسيلة عشان الطلاب يقدروا يشتركوا.'}</p>${methods.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">إضافة وسيلة</button>'}</div>`;
+  }
+  const paintAll = () => { paintTop(); paintGrid(); };
+
+  /* ---- drawer: add / edit with a live "what the student sees" preview ---- */
+  const draft = () => ({ label:$('#pmLabel')?.value.trim() || 'اسم الوسيلة', type:$('#pmType')?.value || 'bank', accountName:$('#pmAcctName')?.value.trim(), accountNumber:$('#pmAcctNum')?.value.trim(), instructions:$('#pmIns')?.value.trim() });
+  function paintPreview(){
+    const d = draft(), t = TYPES[d.type] || TYPES.bank, box = $('#pmPrev'); if(!box) return;
+    box.innerHTML = `<small>١) اختيار الوسيلة</small><div class="payment-method-option selected" style="cursor:default"><input type="radio" checked disabled><div><div style="font-weight:700;color:var(--ink)">${E(d.label)}</div>${d.accountName ? `<div style="font-size:12px;color:var(--muted)">${E(d.accountName)}</div>` : ''}</div></div>
+      <small>٢) بيانات التحويل</small><div class="payment-account-box" style="margin-bottom:0"><strong>${E(d.label)}</strong><br>${d.accountName ? `اسم الحساب: ${E(d.accountName)}<br>` : ''}${d.accountNumber ? `الرقم: <b dir="ltr">${E(d.accountNumber)}</b><br>` : ''}${d.instructions ? `<div style="margin-top:6px;white-space:pre-line">${E(d.instructions)}</div>` : ''}</div>`;
+  }
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const m = drw.data || {}, dr = $('#pmDr'), editing = drw.mode === 'edit';
+    dr.innerHTML = `<div class="ar-dr-h"><h3>${editing ? 'تعديل وسيلة الدفع' : 'إضافة وسيلة دفع'}</h3><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <form id="pmForm" class="ar-form">
+      ${editing ? '' : `<div class="field"><label>قوالب سريعة</label><div class="pay-rs">${PRESETS.map(([l,t]) => `<button type="button" data-act="preset" data-l="${l}" data-t="${t}">${l}</button>`).join('')}</div></div>`}
+      <div style="display:flex;gap:12px;flex-wrap:wrap"><div class="field" style="flex:2;min-width:160px"><label>اسم الوسيلة *</label><input id="pmLabel" required value="${E(m.label || '')}" placeholder="مثال: بنكك"></div>
+        <div class="field" style="flex:1;min-width:140px"><label>النوع</label><select id="pmType">${Object.entries(TYPES).map(([k,v]) => `<option value="${k}" ${(m.type || 'bank') === k ? 'selected' : ''}>${v.l}</option>`).join('')}</select></div></div>
+      <div class="field"><label>اسم صاحب الحساب</label><input id="pmAcctName" value="${E(m.accountName || '')}" placeholder="مثال: أحمد محمد"></div>
+      <div class="field"><label>رقم الحساب / الهاتف</label><input id="pmAcctNum" dir="ltr" value="${E(m.accountNumber || '')}" placeholder="رقم الحساب أو الهاتف"></div>
+      <div class="field"><label>تعليمات للطالب (اختياري)</label><textarea id="pmIns" rows="3" placeholder="مثال: اكتب رقم طلبك في ملاحظة التحويل وأرسل صورة الإيصال">${E(m.instructions || '')}</textarea></div>
+      <div class="field"><label>ملاحظة خاصة بالإدارة (ما بتظهر للطلاب)</label><input id="pmNote" value="${E(m.adminNote || '')}" placeholder="مثال: الحساب باسم فلان — تحقق من الإشعار"></div>
+      <label class="fin-tg"><input type="checkbox" id="pmActive" ${m.active === false ? '' : 'checked'}><i></i>مفعّلة (تظهر للطلاب)</label>
+      <div class="ar-msg err" id="pmErr"></div>
+      <div class="field" style="margin-top:14px"><label>كده هتظهر للطالب</label><div class="pm-prev" id="pmPrev"></div></div>
+      <div class="ar-form-b"><button class="btn btn-primary" type="submit">${editing ? 'حفظ التعديلات' : 'إضافة الوسيلة'}</button><button class="btn btn-ghost" type="button" data-act="close">إلغاء</button></div></form>`;
+    paintPreview(); $('#pmLabel').focus();
+  }
+  async function saveForm(){
+    const p = { label:$('#pmLabel').value.trim(), type:$('#pmType').value, accountName:$('#pmAcctName').value.trim() || null, accountNumber:$('#pmAcctNum').value.trim() || null, instructions:$('#pmIns').value.trim() || null, adminNote:$('#pmNote').value.trim() || null, active:$('#pmActive').checked }, err = $('#pmErr');
+    if(!p.label){ err.textContent = 'اكتب اسم الوسيلة.'; return; }
+    const dup = methods.find(m => m.label === p.label && m.id !== drw.id); if(dup && !await ask('الاسم مكرر', `في وسيلة بنفس الاسم "${E(p.label)}" بالفعل. تكمّل؟`, 'متابعة', { safe:true, icon:P.warn })) return;
+    const btn = $('#pmForm button[type=submit]'); btn.disabled = true;
+    try{
+      if(drw.mode === 'edit'){ await updateDoc(doc(db,'paymentMethods',drw.id), { ...p, updatedAt:serverTimestamp() }); Object.assign(methods.find(m => m.id === drw.id), p); logAdminActivity('pm_edit', p.label); toast('تم حفظ التعديلات'); }
+      else { const ref = await addDoc(collection(db,'paymentMethods'), { ...p, order:methods.length, createdAt:serverTimestamp() }); methods.push({ id:ref.id, ...p, order:methods.length }); logAdminActivity('pm_add', p.label); toast('تمت إضافة وسيلة الدفع'); }
+    }catch(e){ console.error(e); err.textContent = 'تعذّر الحفظ — راجع الاتصال والصلاحيات.'; btn.disabled = false; return; }
+    drw = null; paintDrawer(); paintAll();
+  }
+
+  /* ---- actions ---- */
+  async function persistOrder(){
+    const changed = methods.filter((m,i) => m.order !== i); if(!changed.length) return;
+    try{ await Promise.all(changed.map((m) => updateDoc(doc(db,'paymentMethods',m.id), { order:methods.indexOf(m) }))); changed.forEach(m => m.order = methods.indexOf(m)); logAdminActivity('pm_reorder', methods.map(m => m.label).join(' ← ')); toast('تم حفظ الترتيب'); }
+    catch(e){ console.error(e); toast('تعذّر حفظ الترتيب — راجع الصلاحيات'); await load(); paintAll(); }
+  }
+  async function move(id, d){ const i = methods.findIndex(m => m.id === id), j = i + d; if(j < 0 || j >= methods.length) return; [methods[i], methods[j]] = [methods[j], methods[i]]; paintGrid(); await persistOrder(); }
+  async function toggle(m, el){
+    const on = el.checked;
+    if(!on && methods.filter(isOn).length === 1 && !await ask('تعطيل آخر وسيلة مفعّلة؟', 'الطلاب ما هيقدروا يكملوا الدفع في الكورسات المدفوعة لحد ما تفعّل وسيلة تانية.', 'تعطيل', { icon:P.warn })){ el.checked = true; return; }
+    try{ await updateDoc(doc(db,'paymentMethods',m.id), { active:on }); m.active = on; logAdminActivity('pm_toggle', m.label, on ? 'تفعيل' : 'تعطيل'); paintAll(); toast(on ? 'تم التفعيل — الوسيلة ظاهرة للطلاب' : 'تم التعطيل — مخفية عن الطلاب'); }
+    catch(e){ console.error(e); el.checked = !on; toast('تعذّر تحديث الحالة — راجع الصلاحيات'); }
+  }
+  async function remove(m){
+    const u = use(m);
+    if(!await ask('حذف وسيلة الدفع؟', `"${E(m.label)}" هتتشال نهائيًا.${u.n ? `<br><b style="color:var(--danger)">مرتبطة بـ ${nm(u.n)} طلب — هيظهروا بـ"وسيلة محذوفة". لو بس عايز توقفها، عطّلها بدل الحذف.</b>` : ''}`, 'حذف', { icon:P.trash })) return;
+    const { id, ...raw } = m;
+    try{ await deleteDoc(doc(db,'paymentMethods',id)); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
+    methods = methods.filter(x => x.id !== id); logAdminActivity('pm_delete', m.label); await persistOrder(); if(u.n) orphan += u.n; paintAll();
+    toast('تم حذف الوسيلة', 'تراجع', async () => { try{ await setDoc(doc(db,'paymentMethods',id), raw); methods.push(m); methods.sort((a,b) => (a.order || 0) - (b.order || 0)); if(u.n) orphan -= u.n; paintAll(); toast('تمت الاستعادة'); }catch(e){ toast('تعذّرت الاستعادة'); } });
+  }
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), card = ev.target.closest('.pm-card'), id = card?.dataset.id, m = methods.find(x => x.id === id);
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } return; }
+    const a = el.dataset.act;
+    if(a === 'new'){ drw = { mode:'new', data:{ active:true } }; paintDrawer(); }
+    else if(a === 'edit'){ drw = { mode:'edit', id, data:m }; paintDrawer(); }
+    else if(a === 'dup'){ drw = { mode:'new', data:{ ...m, label:m.label + ' (نسخة)' } }; paintDrawer(); }
+    else if(a === 'close'){ drw = null; paintDrawer(); }
+    else if(a === 'preset'){ const f = $('#pmLabel'); f.value = el.dataset.l; $('#pmType').value = el.dataset.t; if(!$('#pmIns').value) $('#pmIns').value = 'اكتب رقم طلبك في ملاحظة التحويل، وبعد التحويل اضغط "تم الدفع" وأرسل صورة الإيصال.'; paintPreview(); }
+    else if(a === 'up') move(id, -1); else if(a === 'down') move(id, 1);
+    else if(a === 'del') remove(m);
+    else if(a === 'copy'){ try{ await navigator.clipboard.writeText(el.dataset.v); }catch(_){} el.textContent = 'تم ✓'; setTimeout(() => el.textContent = 'نسخ', 1400); }
+    else if(a === 'stat'){ flt = el.dataset.k; paintAll(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderPaymentMethods(area); }
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick);
+  root.addEventListener('change', ev => { const el = ev.target.closest('[data-act=toggle]'); if(el) toggle(methods.find(x => x.id === el.closest('.pm-card').dataset.id), el); });
+  ov.addEventListener('input', paintPreview); ov.addEventListener('change', paintPreview);
+  ov.addEventListener('submit', ev => { ev.preventDefault(); saveForm(); });
+
+  /* drag & drop reorder (desktop); the ↑ ↓ buttons cover touch screens */
+  root.addEventListener('dragstart', ev => { const c = ev.target.closest('.pm-card'); if(!c) return; drag = c.dataset.id; c.classList.add('dragging'); ev.dataTransfer.effectAllowed = 'move'; try{ ev.dataTransfer.setData('text/plain', drag); }catch(_){} });
+  root.addEventListener('dragover', ev => { const c = ev.target.closest('.pm-card'); if(!c || !drag) return; ev.preventDefault(); root.querySelectorAll('.pm-card.over').forEach(x => x.classList.remove('over')); if(c.dataset.id !== drag) c.classList.add('over'); });
+  root.addEventListener('dragend', () => { drag = null; root.querySelectorAll('.pm-card').forEach(x => x.classList.remove('dragging', 'over')); });
+  root.addEventListener('drop', async ev => {
+    const c = ev.target.closest('.pm-card'); if(!c || !drag) return; ev.preventDefault();
+    const from = methods.findIndex(m => m.id === drag), to = methods.findIndex(m => m.id === c.dataset.id); drag = null; if(from < 0 || to < 0 || from === to) return paintGrid();
+    methods.splice(to, 0, methods.splice(from, 1)[0]); paintGrid(); await persistOrder();
+  });
+  const onKey = ev => { if(!root.isConnected) return; if(ev.key === 'Escape' && drw){ drw = null; paintDrawer(); } };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); } }, 800);
+  paintAll();
 }
 
+/* ---------------- ADMIN: LIVE SESSIONS (v2 — pro) ---------------- */
 async function adminRenderLiveSessions(area){
-  try{
-    const [lecSnap, courses] = await Promise.all([
-      getDocs(collection(db, 'lectures')),
-      fetchAllCoursesAdmin(),
-    ]);
-    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
-    let lectures = await Promise.all(lecSnap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
-    const todayStr = new Date().toISOString().slice(0,10);
-    const upcoming = lectures.filter(l => (l.date||'') >= todayStr).sort((a,b) => (a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
-    const past = lectures.filter(l => (l.date||'') < todayStr).sort((a,b) => (b.date+(b.time||'')).localeCompare(a.date+(a.time||'')));
+  document.getElementById('lsOv')?.remove(); document.getElementById('lsBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    vid:'<polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/>', plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+    link:'<path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/>', bell:'<path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>',
+    live:'<circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 000 20M12 2a10 10 0 010 20"/>', copy:'<rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>',
+    play:'<polygon points="6 3 20 12 6 21 6 3" fill="currentColor"/>',
+  });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const nm = n => Number(n).toLocaleString('ar-EG');
+  const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+  const when = l => { const t = new Date(`${l.date}T${l.time || '00:00'}`); return isNaN(t) ? 0 : t.getTime(); };
+  const endOf = l => when(l) + 90*60*1000;   // no stored duration — 90 min is used only to flag "live now" vs "ended"
+  const state = l => { const now = Date.now(), t = when(l); if(!t) return 'unknown'; if(now >= t && now < endOf(l)) return 'live'; return t > now ? 'upcoming' : 'past'; };
+  const fmtDT = l => { const t = when(l); return t ? new Date(t).toLocaleDateString('ar-EG', { weekday:'long', day:'numeric', month:'long' }) + ' · ' + (l.time || '') : 'بدون موعد'; };
+  const dur = ms => { const s = Math.abs(ms)/1000; return s < 3600 ? nm(Math.max(1, Math.round(s/60))) + ' دقيقة' : s < 86400 ? nm(+(s/3600).toFixed(1)) + ' ساعة' : nm(Math.round(s/86400)) + ' يوم'; };
 
-    function rowHTML(l){
-      const c = courseMap[l.courseId];
-      return `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${SIDE_ICONS.video}</div>
-          <div class="grow">
-            <div class="t1">${l.title}</div>
-            <div class="t2">${c ? c.title : 'كورس محذوف'} ${c?.instructorName ? '· ' + c.instructorName : ''} · ${l.date} ${l.time || ''}</div>
-          </div>
-          <a href="${l.link}" target="_blank" rel="noopener" class="icon-action" title="فتح الرابط">${SIDE_ICONS.playCircle}</a>
-        </div>
-      `;
-    }
-
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>المحاضرات القادمة (${upcoming.length})</h3></div>
-        ${upcoming.length === 0 ? `<div class="empty-state">لا توجد محاضرات مجدولة قادمة.</div>` : upcoming.map(rowHTML).join('')}
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>محاضرات سابقة (${past.length})</h3></div>
-        ${past.length === 0 ? `<div class="empty-state">لا توجد محاضرات سابقة.</div>` : past.slice(0,20).map(rowHTML).join('')}
-      </div>
-    `;
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل المحاضرات.</div>`;
+  let lectures = [], courses = [], cmap = {}, enrCount = {};
+  async function load(){
+    const [lecSnap, cs, eS] = await Promise.all([getDocs(collection(db,'lectures')), fetchAllCoursesAdmin(), getDocs(query(collection(db,'enrollments'), where('status','==','approved'))).catch(() => ({ docs:[] }))]);
+    courses = cs; cmap = Object.fromEntries(cs.map(c => [c.id, c]));
+    eS.docs.forEach(d => { const cId = d.data().courseId; enrCount[cId] = (enrCount[cId] || 0) + 1; });
+    lectures = await Promise.all(lecSnap.docs.map(d => fetchLectureWithLink(d.id, d.data())));
+    lectures.forEach(l => { l.t = ts(l.createdAt); l.st = state(l); l.course = cmap[l.courseId]; });
   }
-}
-
-async function adminRenderAttendance(area){
-  try{
-    const courses = await fetchAllCoursesAdmin();
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>تسجيل الحضور</h3></div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
-          <div class="field" style="flex:1;min-width:200px;margin-bottom:0;">
-            <label>الكورس</label>
-            <select id="attCourseSelect">
-              <option value="">— اختر الكورس —</option>
-              ${courses.map(c => `<option value="${c.id}">${c.title}</option>`).join('')}
-            </select>
-          </div>
-          <div class="field" style="flex:1;min-width:200px;margin-bottom:0;">
-            <label>المحاضرة</label>
-            <select id="attLectureSelect" disabled><option value="">— اختر الكورس أولاً —</option></select>
-          </div>
-        </div>
-        <div id="attendanceListArea"></div>
-      </div>
-    `;
-
-    document.getElementById('attCourseSelect').addEventListener('change', async (e) => {
-      const courseId = e.target.value;
-      const lecSel = document.getElementById('attLectureSelect');
-      document.getElementById('attendanceListArea').innerHTML = '';
-      if(!courseId){ lecSel.disabled = true; lecSel.innerHTML = `<option value="">— اختر الكورس أولاً —</option>`; return; }
-      const lecSnap = await getDocs(query(collection(db, 'lectures'), where('courseId','==', courseId)));
-      const lectures = lecSnap.docs.map(d => ({ id: d.id, ...d.data() }));
-      if(lectures.length === 0){
-        lecSel.disabled = true;
-        lecSel.innerHTML = `<option value="">لا توجد محاضرات لهذا الكورس</option>`;
-        return;
-      }
-      lecSel.disabled = false;
-      lecSel.innerHTML = `<option value="">— اختر المحاضرة —</option>` + lectures.map(l => `<option value="${l.id}" data-course="${courseId}">${l.title} (${l.date})</option>`).join('');
-    });
-
-    document.getElementById('attLectureSelect').addEventListener('change', async (e) => {
-      const lectureId = e.target.value;
-      const listEl = document.getElementById('attendanceListArea');
-      const courseId = document.getElementById('attCourseSelect').value;
-      if(!lectureId){ listEl.innerHTML = ''; return; }
-      listEl.innerHTML = `<div class="empty-state">جارٍ تحميل الطلاب...</div>`;
-      try{
-        const [enrollSnap, attSnap] = await Promise.all([
-          getDocs(query(collection(db, 'enrollments'), where('courseId','==', courseId), where('status','==','approved'))),
-          getDocs(query(collection(db, 'attendance'), where('lectureId','==', lectureId))),
-        ]);
-        const students = enrollSnap.docs.map(d => d.data());
-        const attMap = Object.fromEntries(attSnap.docs.map(d => [d.data().studentId, d.data().present]));
-        if(students.length === 0){
-          listEl.innerHTML = `<div class="empty-state">لا يوجد طلاب مفعّلين في هذا الكورس.</div>`;
-          return;
-        }
-        listEl.innerHTML = students.map(s => `
-          <div class="table-widget-row">
-            <div class="avatar-sm">${(s.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
-            <div class="grow"><div class="t1">${s.studentName || 'طالب'}</div></div>
-            <button class="icon-action ${attMap[s.studentId] ? 'success' : ''}" data-mark="${s.studentId}" data-lecture="${lectureId}" data-course="${courseId}" data-present="${attMap[s.studentId] ? 'true' : 'false'}">
-              ${attMap[s.studentId] ? SIDE_ICONS.check : SIDE_ICONS.close}
-            </button>
-          </div>
-        `).join('');
-
-        listEl.querySelectorAll('[data-mark]').forEach(btn => {
-          btn.addEventListener('click', async () => {
-            const newPresent = btn.dataset.present !== 'true';
-            try{
-              await setDoc(doc(db, 'attendance', `${btn.dataset.lecture}_${btn.dataset.mark}`), {
-                lectureId: btn.dataset.lecture, courseId: btn.dataset.course, studentId: btn.dataset.mark,
-                present: newPresent, markedAt: serverTimestamp(),
-              });
-              btn.dataset.present = newPresent ? 'true' : 'false';
-              btn.classList.toggle('success', newPresent);
-              btn.innerHTML = newPresent ? SIDE_ICONS.check : SIDE_ICONS.close;
-            }catch(e){
-              alert('تعذّر تسجيل الحضور.');
-            }
-          });
-        });
-      }catch(e){
-        listEl.innerHTML = `<div class="empty-state">تعذّر تحميل قائمة الطلاب.</div>`;
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل قسم الحضور.</div>`;
+  try{ await load(); }catch(err){
+    console.error('[Lavender] live sessions load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل المحاضرات المباشرة.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="lsRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('lsRetry').onclick = () => adminRenderLiveSessions(area); return;
   }
-}
 
-async function adminRenderExamsOverview(area){
-  try{
-    const [examSnap, courses] = await Promise.all([
-      getDocs(collection(db, 'exams')),
-      fetchAllCoursesAdmin(),
-    ]);
-    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
-    const exams = examSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  let q = '', fc = 'all', fst = 'upcoming', sort = 'soon', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null;
+  const sel = new Set(), PAGE = 20;
+  const courseOpts = [...new Map(lectures.map(l => [l.courseId, l.course?.title || 'كورس محذوف'])).entries()];
 
-    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>كل الامتحانات (${exams.length})</h3></div><div id="examsOverviewList"></div></div>`;
-    const listEl = document.getElementById('examsOverviewList');
-    if(exams.length === 0){
-      listEl.innerHTML = `<div class="empty-state">لا توجد امتحانات على المنصة بعد. أضف امتحاناً من صفحة "إدارة المحتوى" لأي كورس.</div>`;
+  area.innerHTML = `
+  <div class="ar ls" id="lsRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.vid,24)}</span><div><h2>المحاضرات المباشرة</h2><p>جدول كل البثوث القادمة والسابقة، تابع الروابط الناقصة، وذكّر الطلاب المشتركين بضغطة واحدة.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="new">${svg(P.plus,15)} جدولة محاضرة</button></div>
+    </div>
+    <div id="lsWarn"></div>
+    <div class="ar-stats" id="lsStats"></div>
+    <div class="widget ar-panel">
+      <div class="cat-tabs" id="lsChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="lsQ" placeholder="ابحث بعنوان المحاضرة أو الكورس…   ( / )" /></div>
+        <select id="lsC" class="ar-sel"><option value="all">كل الكورسات</option>${courseOpts.map(([id,t]) => `<option value="${id}">${E(t)}</option>`).join('')}</select>
+        <select id="lsSort" class="ar-sel"><option value="soon">الأقرب موعدًا</option><option value="new">الأحدث إضافة</option><option value="course">حسب الكورس</option></select>
+        <div class="ar-seg"><button data-act="view" data-v="list">${svg(P.list,16)}</button><button data-act="view" data-v="cards">${svg(P.grid,16)}</button></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="lsCount"></div><div id="lsList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('lsRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'lsOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="lsDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'lsBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => lectures.filter(l => {
+    if(fst === 'missing'){ if(l.link) return false; } else if(fst === 'today'){ if(l.date !== todayKey()) return false; } else if(fst !== 'all' && l.st !== fst) return false;
+    if(fc !== 'all' && l.courseId !== fc) return false;
+    return !q || `${l.title || ''} ${l.course?.title || ''}`.toLowerCase().includes(q);
+  }).sort((a,b) => sort === 'new' ? b.t - a.t : sort === 'course' ? (a.course?.title || '').localeCompare(b.course?.title || '', 'ar') || when(a) - when(b) : (fst === 'past' ? when(b) - when(a) : when(a) - when(b)));
+
+  function paintTop(){
+    const live = lectures.filter(l => l.st === 'live'), up = lectures.filter(l => l.st === 'upcoming'), past = lectures.filter(l => l.st === 'past'), today = lectures.filter(l => l.date === todayKey());
+    const missing = lectures.filter(l => !l.link);
+    const nextOne = up.length ? up.reduce((a,b) => when(b) < when(a) ? b : a) : null;
+    const S = [
+      { k:'live', l:'مباشرة الآن', n:live.length, i:P.live, c:'#B3413A', bg:'#FBEBEA', on:fst === 'live', hot:live.length > 0 },
+      { k:'upcoming', l:'قادمة', n:up.length, sub:nextOne ? `القادمة: ${nm(Math.round((when(nextOne) - Date.now())/36e5))} ساعة` : '', i:P.cal, c:'#3B6FBF', bg:'#EEF3FB', on:fst === 'upcoming' },
+      { k:'today', l:'اليوم', n:today.length, i:P.clock, c:'#C98826', bg:'#FFF4E0', on:fst === 'today' },
+      { k:'past', l:'سابقة', n:past.length, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', on:fst === 'past' },
+      { k:'all', l:'إجمالي المحاضرات', n:lectures.length, i:P.vid, c:'#5A3B92', bg:'#EDE7F6', on:fst === 'all' },
+      { k:'missing', l:'بدون رابط', n:missing.length, i:P.warn, c:'#B3413A', bg:'#FBEBEA', on:fst === 'missing', hot:missing.length > 0 },
+    ];
+    $('#lsStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''} ${s.hot ? 'pay-hot' : ''}" data-act="stat" data-k="${s.k}" style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span><b data-n="${s.n}">0</b><small>${s.l}</small>${s.sub ? `<small class="pay-sub">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#lsStats b').forEach(countUp);
+    $('#lsWarn').innerHTML = live.length ? `<div class="pay-sla ls-live-bar"><span>${svg(P.live,20)}</span><div><b>${nm(live.length)} محاضرة مباشرة الآن</b><small>${live.map(l => E(l.title)).join(' · ')}</small></div><button class="btn btn-sm" data-act="stat" data-k="live">اعرضها</button></div>`
+      : missing.length ? `<div class="pay-sla"><span>${svg(P.warn,20)}</span><div><b>${nm(missing.length)} محاضرة بدون رابط بث</b><small>الطلاب ما هيقدروا يدخلوا لحد ما تضيف الرابط.</small></div><button class="btn btn-sm" data-act="stat" data-k="missing">اعرضها</button></div>` : '';
+    $('#lsChips').innerHTML = [['all','الكل',lectures.length],['upcoming','قادمة',up.length],['today','اليوم',today.length],['past','سابقة',past.length]].map(([k,l,n]) => `<button class="cat-tab ${fst === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${nm(n)})</button>`).join('');
+  }
+  const stBadge = l => l.st === 'live' ? '<span class="us-st active">مباشرة الآن</span>' : l.st === 'upcoming' ? '<span class="us-st suspended">قادمة</span>' : '<span class="us-st disabled">انتهت</span>';
+  function rowHTML(l, i){
+    const c = l.course, n = enrCount[l.courseId] || 0;
+    return `<div class="ar-item" data-id="${l.id}" style="--i:${Math.min(i,14)};--c:${l.st === 'live' ? '#B3413A' : l.st === 'upcoming' ? '#3B6FBF' : '#9A8FA8'};--bg:${l.st === 'live' ? '#FBEBEA' : l.st === 'upcoming' ? '#EEF3FB' : '#F1EDF5'}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(l.id) ? 'checked' : ''}><i></i></label>
+      <span class="ls-ic">${svg(P.vid,18)}</span>
+      <div class="ar-main"><div class="ar-t">${E(l.title || 'محاضرة')}${!l.link ? `<em class="pay-flag" title="بدون رابط">${svg(P.warn,12)}</em>` : ''}</div><div class="ar-d">${c ? E(c.title) : 'كورس محذوف'}${c?.instructorName ? ' · ' + E(c.instructorName) : ''} · ${nm(n)} طالب</div></div>
+      <div class="ls-when"><b>${fmtDT(l)}</b><small>${l.st === 'upcoming' ? 'بعد ' + dur(when(l) - Date.now()) : l.st === 'past' ? 'منذ ' + dur(Date.now() - when(l)) : ''}</small></div>
+      <div class="ar-act">${l.link ? `<a class="icon-action" href="${E(l.link)}" target="_blank" rel="noopener" title="فتح الرابط">${svg(P.play,15)}</a>` : ''}<button class="icon-action" data-act="edit" title="تعديل">${svg(P.edit,15)}</button><button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button></div></div>`;
+  }
+  function paintList(){
+    const L = filtered(), shown = L.slice(0, page*PAGE);
+    document.querySelectorAll('#lsRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#lsCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
+    if(!L.length){ $('#lsList').innerHTML = `<div class="ar-empty">${svg(P.vid,44)}<h4>${lectures.length ? 'ما في محاضرات مطابقة' : 'لا توجد محاضرات مجدولة'}</h4><p>${lectures.length ? 'جرّب تغيّر الفلاتر.' : 'المدربون يجدولون المحاضرات من صفحة إدارة الكورس، أو جدولها أنت من هنا.'}</p>${lectures.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">جدولة محاضرة</button>'}</div>`; return; }
+    $('#lsList').innerHTML = `<div class="${view === 'list' ? 'ar-list ls-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head ls-head"><span></span><span></span><span>المحاضرة</span><span>الموعد</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${nm(n)}</b><span>محدد</span><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer ---- */
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const dr = $('#lsDr');
+    if(drw.mode === 'view'){
+      const l = lectures.find(x => x.id === drw.id); if(!l){ drw = null; ov.classList.remove('open'); return; }
+      const c = l.course, L = filtered(), ix = L.findIndex(x => x.id === l.id), n = enrCount[l.courseId] || 0;
+      dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+      <div class="us-body">
+        <div class="ls-badge-row">${stBadge(l)}${!l.link ? '<span class="ar-tag" style="color:var(--danger)">بدون رابط</span>' : ''}</div>
+        <h3 class="ar-dr-t">${E(l.title || 'محاضرة')}</h3>
+        <div class="ar-kvs">${kv('الكورس', c ? `<a class="ar-lnk" href="#/course/${l.courseId}">${E(c.title)}</a>` : 'كورس محذوف')}${c?.instructorName ? kv('المدرب', E(c.instructorName)) : ''}${kv('الموعد', fmtDT(l))}${kv('عدد المشتركين', nm(n))}
+          ${kv('رابط البث', l.link ? `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(l.link.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copy" data-v="${E(l.link)}">نسخ</button>` : '<span class="us-miss">لم يُضَف بعد</span>')}</div>
+      </div>
+      <div class="ar-dr-f">${l.link ? `<a class="btn btn-primary btn-sm" href="${E(l.link)}" target="_blank" rel="noopener">${svg(P.play,14)} فتح البث</a>` : ''}<button class="btn btn-ghost btn-sm" data-act="notify" ${n ? '' : 'disabled'}>${svg(P.bell,14)} إشعار ${nm(n)} طالب</button><button class="btn btn-ghost btn-sm" data-act="edit">${svg(P.edit,14)} تعديل</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف</button></div>`;
       return;
     }
-
-    listEl.innerHTML = exams.map(ex => `
-      <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
-        <div style="display:flex;align-items:center;gap:12px;width:100%;">
-          <div class="avatar-sm">${SIDE_ICONS.exam}</div>
-          <div class="grow">
-            <div class="t1">${ex.title}</div>
-            <div class="t2">${courseMap[ex.courseId]?.title || 'كورس محذوف'} · ${ex.questions?.length || 0} سؤال</div>
-          </div>
-          <button class="btn btn-ghost btn-sm" data-toggle-results="${ex.id}">عرض النتائج</button>
-        </div>
-        <div id="examResultsPanel-${ex.id}" class="hidden" style="width:100%;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);"></div>
-      </div>
-    `).join('');
-
-    listEl.querySelectorAll('[data-toggle-results]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const panel = document.getElementById(`examResultsPanel-${btn.dataset.toggleResults}`);
-        const wasHidden = panel.classList.contains('hidden');
-        panel.classList.toggle('hidden');
-        if(wasHidden && !panel.dataset.loaded){
-          panel.innerHTML = `<div class="empty-state" style="padding:10px 0;">جارٍ التحميل...</div>`;
-          const resSnap = await getDocs(query(collection(db, 'examResults'), where('examId','==', btn.dataset.toggleResults)));
-          const results = resSnap.docs.map(d => d.data());
-          panel.innerHTML = results.length === 0
-            ? `<div class="empty-state" style="padding:10px 0;">لا توجد نتائج بعد.</div>`
-            : results.map(r => `
-              <div class="table-widget-row">
-                <div class="grow"><div class="t1">${r.studentName || 'طالب'}</div></div>
-                <span class="status-badge ${r.passed ? 'status-approved' : 'status-rejected'}">${r.score}/${r.total}</span>
-              </div>
-            `).join('');
-          panel.dataset.loaded = '1';
-        }
-      });
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الامتحانات.</div>`;
+    const editing = drw.mode === 'edit', d = drw.data || {};
+    dr.innerHTML = `<div class="ar-dr-h"><h3>${editing ? 'تعديل المحاضرة' : 'جدولة محاضرة جديدة'}</h3><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <form id="lsForm" class="ar-form">
+      <div class="field"><label>الكورس *</label><select id="lsfCourse" required ${editing ? 'disabled' : ''}><option value="">اختر الكورس…</option>${courses.map(c => `<option value="${c.id}" ${d.courseId === c.id ? 'selected' : ''}>${E(c.title)}</option>`).join('')}</select></div>
+      <div class="field"><label>عنوان المحاضرة *</label><input id="lsfTitle" required value="${E(d.title || '')}" placeholder="مثال: مراجعة الفصل الثالث"></div>
+      <div style="display:flex;gap:12px"><div class="field" style="flex:1"><label>التاريخ *</label><input type="date" id="lsfDate" required value="${E(d.date || '')}"></div><div class="field" style="flex:1"><label>الوقت *</label><input type="time" id="lsfTime" required value="${E(d.time || '')}"></div></div>
+      <div class="field"><label>رابط البث *</label><input id="lsfLink" dir="ltr" required value="${E(d.link || '')}" placeholder="https://meet.google.com/… أو زووم"></div>
+      ${editing ? '' : '<label class="fin-tg"><input type="checkbox" id="lsfNotify" checked><i></i>إشعار الطلاب المشتركين بالموعد</label>'}
+      <div class="ar-msg err" id="lsErr"></div>
+      <div class="ar-form-b"><button class="btn btn-primary" type="submit">${editing ? 'حفظ التعديلات' : 'جدولة المحاضرة'}</button><button class="btn btn-ghost" type="button" data-act="cancel">إلغاء</button></div></form>`;
+    $('#lsfCourse').focus();
   }
+  const open = (id) => { drw = { mode:'view', id }; paintDrawer(); };
+  const startNew = () => { drw = { mode:'new', data:{ date:todayKey() } }; paintDrawer(); };
+  const nav = d => { const L = filtered(), i = L.findIndex(x => x.id === drw?.id); if(L[i + d]) open(L[i + d].id); };
+
+  /* ---- actions ---- */
+  async function notify(l){
+    try{
+      const eS = await getDocs(query(collection(db,'enrollments'), where('courseId','==', l.courseId), where('status','==','approved')));
+      const ids = [...new Set(eS.docs.map(d => d.data().studentId).filter(Boolean))]; if(!ids.length) return 0;
+      await Promise.all(ids.map(sid => addDoc(collection(db,'notifications'), { targetType:'user', targetId:sid, title:'📹 تذكير بمحاضرة مباشرة', body:`محاضرة "${l.title}" في كورس "${l.course?.title || ''}" يوم ${fmtDT(l)}${l.link ? '. الرابط هيكون متاح في صفحة الكورس.' : ''}`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() })));
+      return ids.length;
+    }catch(e){ console.warn('[Lavender] notify lecture', e?.code); return -1; }
+  }
+  async function submitForm(){
+    const p = { courseId:$('#lsfCourse').value, title:$('#lsfTitle').value.trim(), date:$('#lsfDate').value, time:$('#lsfTime').value }, link = $('#lsfLink').value.trim(), err = $('#lsErr'); err.textContent = '';
+    if(!p.courseId || !p.title || !p.date || !p.time){ err.textContent = 'اكمل كل الحقول المطلوبة.'; return; }
+    if(!/^https?:\/\/\S+\.\S+/i.test(link)){ err.textContent = 'رابط البث لازم يبدأ بـ https://'; return; }
+    const btn = $('#lsForm button[type=submit]'); btn.disabled = true;
+    try{
+      if(drw.mode === 'edit'){
+        const l = lectures.find(x => x.id === drw.id); await updateDoc(doc(db,'lectures',l.id), { title:p.title, date:p.date, time:p.time }); await setDoc(doc(db,'lectures',l.id,'private','link'), { link });
+        Object.assign(l, { title:p.title, date:p.date, time:p.time, link }); l.st = state(l); logAdminActivity('lecture_edit', p.title, l.course?.title || '');
+        toast('تم حفظ التعديلات'); drw = { mode:'view', id:l.id };
+      } else {
+        const ref = await addDoc(collection(db,'lectures'), { ...p, createdAt:serverTimestamp() }); await setDoc(doc(db,'lectures',ref.id,'private','link'), { link });
+        const l = { id:ref.id, ...p, link, t:Math.floor(Date.now()/1000), course:cmap[p.courseId] }; l.st = state(l); lectures.push(l);
+        logAdminActivity('lecture_create', p.title, l.course?.title || ''); let sentTo = 0; if($('#lsfNotify').checked) sentTo = await notify(l);
+        toast(`تم جدولة المحاضرة${sentTo > 0 ? ` — وتم إشعار ${nm(sentTo)} طالب` : ''}`); drw = { mode:'view', id:ref.id };
+      }
+    }catch(e){ console.error(e); err.textContent = 'تعذّر الحفظ — راجع الاتصال والصلاحيات.'; btn.disabled = false; return; }
+    paintAll(); paintDrawer();
+  }
+  async function remove(ids){
+    const L = ids.map(id => lectures.find(l => l.id === id)).filter(Boolean); if(!L.length) return;
+    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} محاضرة؟` : 'حذف هذه المحاضرة؟', L.length > 1 ? 'المحاضرات المحددة هتتشال من الجدول.' : `"${E(L[0].title)}" هتتشال من الجدول.`, 'حذف')) return;
+    try{ await Promise.all(L.map(l => Promise.all([deleteDoc(doc(db,'lectures',l.id)), deleteDoc(doc(db,'lectures',l.id,'private','link')).catch(() => {})]))); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
+    lectures = lectures.filter(l => !ids.includes(l.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw.id)) drw = null;
+    logAdminActivity('lecture_delete', L[0].title, L.length > 1 ? `${L.length} محاضرات` : ''); paintAll(); paintDrawer();
+    toast(`تم حذف ${L.length > 1 ? nm(L.length) + ' محاضرات' : 'المحاضرة'}`, 'تراجع', async () => { try{ await Promise.all(L.map(async l => { const { id, t, st, course, ...raw } = l; await setDoc(doc(db,'lectures',id), raw); if(l.link) await setDoc(doc(db,'lectures',id,'private','link'), { link:l.link }); })); lectures.push(...L); paintAll(); toast('تمت الاستعادة'); }catch(e){ toast('تعذّرت الاستعادة'); } });
+  }
+
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), row = ev.target.closest('.ar-item'), id = row?.dataset.id || drw?.id, l = lectures.find(x => x.id === id);
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } else if(row && !ev.target.closest('.ar-chk,a,.ar-act')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'new') startNew(); else if(a === 'edit'){ drw = { mode:'edit', id, data:l }; paintDrawer(); }
+    else if(a === 'close'){ drw = null; paintDrawer(); } else if(a === 'cancel'){ drw = drw.mode === 'edit' ? { mode:'view', id } : null; paintDrawer(); }
+    else if(a === 'prev') nav(-1); else if(a === 'next') nav(1);
+    else if(a === 'del') remove([id]);
+    else if(a === 'copy'){ try{ await navigator.clipboard.writeText(el.dataset.v); }catch(_){} el.textContent = 'تم ✓'; setTimeout(() => el.textContent = 'نسخ', 1400); }
+    else if(a === 'notify'){ el.disabled = true; const n = await notify(l); el.disabled = false; toast(n > 0 ? `تم إشعار ${nm(n)} طالب` : n === 0 ? 'لا يوجد طلاب مشتركون في هذا الكورس' : 'تعذّر إرسال الإشعارات'); }
+    else if(a === 'stat'){ fst = el.dataset.k; page = 1; paintAll(); }
+    else if(a === 'view'){ view = el.dataset.v; paintList(); } else if(a === 'more'){ page++; paintList(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderLiveSessions(area); }
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); } else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  ov.addEventListener('submit', ev => { ev.preventDefault(); submitForm(); });
+  $('#lsQ').addEventListener('input', ev => { q = ev.target.value.trim().toLowerCase(); page = 1; paintList(); });
+  $('#lsC').addEventListener('change', ev => { fc = ev.target.value; page = 1; paintList(); });
+  $('#lsSort').addEventListener('change', ev => { sort = ev.target.value; paintList(); });
+  const onKey = ev => {
+    if(!root.isConnected) return; const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(ev.key === 'Escape' && drw){ drw = null; paintDrawer(); } else if(!typing && ev.key === '/'){ ev.preventDefault(); $('#lsQ').focus(); }
+    else if(!typing && drw?.mode === 'view' && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) nav(ev.key === 'ArrowLeft' ? 1 : -1);
+  };
+  document.addEventListener('keydown', onKey);
+  const ticker = setInterval(() => { lectures.forEach(l => l.st = state(l)); paintAll(); if(drw?.mode === 'view') paintDrawer(); }, 60000);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); clearInterval(ticker); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
+
+/* ---------------- ADMIN: ATTENDANCE (v2 — pro) ---------------- */
+async function adminRenderAttendance(area){
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-sk" style="height:70px"></div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, ago } = AdmUI;
+  Object.assign(P, {
+    grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>',
+    list:'<path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/>', bell:'<path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>',
+    dash:'<path d="M5 12h14"/>', minus:'<path d="M5 12h14"/>',
+  });
+  const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; };
+  const nm = n => Number(n).toLocaleString('ar-EG');
+  const initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase();
+  const rateColor = p => p === null ? '#9A8FA8' : p >= 80 ? '#2F7A4F' : p >= 50 ? '#C98826' : '#B3413A';
+  const fmtShort = k => new Date(k + 'T12:00:00').toLocaleDateString('ar-EG', { day:'numeric', month:'short' });
+
+  let courses = [];
+  try{ courses = await fetchAllCoursesAdmin(); }catch(err){
+    console.error('[Lavender] attendance load courses', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="attRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('attRetry').onclick = () => adminRenderAttendance(area); return;
+  }
+
+  let mode = 'roll', courseId = '', lecId = '', students = [], lectures = [], attMap = {}, q = '', gsort = 'rate', loading = false;
+  area.innerHTML = `
+  <div class="ar att" id="attRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.cal,24)}</span><div><h2>الحضور</h2><p>سجّل حضور المحاضرات المباشرة أول بأول، وشوف نسبة كل طالب عبر الكورس كله في نظرة واحدة.</p></div></div>
+      <div class="ar-hero-act"><div class="ar-seg" id="attMode"><button data-m="roll" class="on">${svg(P.check,15)} تسجيل الحضور</button><button data-m="grid">${svg(P.grid,15)} نظرة عامة</button></div></div>
+    </div>
+    <div class="widget att-pick">
+      <div class="field" style="flex:1.4;min-width:220px;margin-bottom:0"><label>الكورس</label><select id="attCourse"><option value="">— اختر الكورس —</option>${courses.map(c => `<option value="${c.id}">${E(c.title)}</option>`).join('')}</select></div>
+      <div class="field" id="attLecWrap" style="flex:1;min-width:200px;margin-bottom:0;display:none"><label>المحاضرة</label><select id="attLec"></select></div>
+      <button class="btn btn-ghost btn-sm" id="attCsv" style="display:none;align-self:flex-end">${svg(P.dl,15)} تصدير CSV</button>
+    </div>
+    <div id="attBody"></div>
+  </div>`;
+  const root = document.getElementById('attRoot'), $ = s => document.querySelector(s);
+
+  async function loadCourse(){
+    const body = $('#attBody'); loading = true; students = []; lectures = []; attMap = {};
+    body.innerHTML = `<div class="ar"><div class="ar-sk" style="height:70px"></div><div class="ar-sk" style="height:260px"></div></div>`;
+    try{
+      const [eS, lS, aS] = await Promise.all([
+        getDocs(query(collection(db,'enrollments'), where('courseId','==', courseId), where('status','==','approved'))),
+        getDocs(query(collection(db,'lectures'), where('courseId','==', courseId))),
+        getDocs(query(collection(db,'attendance'), where('courseId','==', courseId))),
+      ]);
+      students = [...new Map(eS.docs.map(d => d.data()).map(s => [s.studentId, s])).values()];
+      lectures = lS.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (a.date + (a.time || '')).localeCompare(b.date + (b.time || '')));
+      aS.docs.forEach(d => { const r = d.data(); (attMap[r.lectureId] = attMap[r.lectureId] || {})[r.studentId] = !!r.present; });
+    }catch(err){ console.error('[Lavender] attendance load course', err); body.innerHTML = `<div class="empty-state">تعذّر تحميل بيانات الكورس.</div>`; loading = false; return; }
+    loading = false; paintBody();
+  }
+  const pastLectures = () => lectures.filter(l => l.date <= todayKey());
+  function studentRate(sid){ const P = pastLectures(); if(!P.length) return null; let n = 0; P.forEach(l => { if(attMap[l.id]?.[sid]) n++; }); return { n, total:P.length, pct:Math.round(n / P.length * 100) }; }
+
+  /* ---- roll call ---- */
+  function paintLecSelect(){
+    const sel = $('#attLec'), wrap = $('#attLecWrap'); wrap.style.display = mode === 'roll' ? '' : 'none';
+    if(mode !== 'roll') return;
+    if(!lectures.length){ sel.innerHTML = '<option value="">لا توجد محاضرات لهذا الكورس</option>'; sel.disabled = true; lecId = ''; return; }
+    sel.disabled = false;
+    if(!lecId || !lectures.some(l => l.id === lecId)) lecId = [...pastLectures()].reverse()[0]?.id || lectures[0].id;
+    sel.innerHTML = lectures.map(l => `<option value="${l.id}" ${l.id === lecId ? 'selected' : ''}>${E(l.title)} — ${E(l.date)}${l.date === todayKey() ? ' (اليوم)' : l.date > todayKey() ? ' (قادمة)' : ''}</option>`).join('');
+  }
+  function paintRoll(){
+    const body = $('#attBody'); if(!courseId){ body.innerHTML = `<div class="ar-empty">${svg(P.users,44)}<h4>اختر كورسًا للبدء</h4><p>هتقدر تسجّل حضور أي محاضرة مباشرة منه.</p></div>`; return; }
+    if(!students.length){ body.innerHTML = `<div class="ar-empty">${svg(P.users,44)}<h4>لا يوجد طلاب مفعّلين في هذا الكورس</h4></div>`; return; }
+    if(!lectures.length){ body.innerHTML = `<div class="ar-empty">${svg(P.vid || P.cal,44)}<h4>لا توجد محاضرات لهذا الكورس بعد</h4><p>جدولها من تاب "المحاضرات المباشرة" أولًا.</p></div>`; return; }
+    const l = lectures.find(x => x.id === lecId), present = students.filter(s => attMap[lecId]?.[s.studentId]).length, unmarked = students.filter(s => attMap[lecId]?.[s.studentId] === undefined).length;
+    const L = students.filter(s => !q || (s.studentName || '').toLowerCase().includes(q)).sort((a,b) => (a.studentName || '').localeCompare(b.studentName || '', 'ar'));
+    body.innerHTML = `
+      <div class="ar-stats att-stats">
+        <div class="ar-stat" style="--c:#2F7A4F;--bg:#E9F5EE"><span class="ar-stat-ic">${svg(P.check,20)}</span><span><b data-n="${present}">0</b><small>حاضر</small></span></div>
+        <div class="ar-stat" style="--c:#B3413A;--bg:#FBEBEA"><span class="ar-stat-ic">${svg(P.x,20)}</span><span><b data-n="${students.length - present - unmarked}">0</b><small>غائب</small></span></div>
+        <div class="ar-stat" style="--c:#6B6072;--bg:#F1EDF5"><span class="ar-stat-ic">${svg(P.clock,20)}</span><span><b data-n="${unmarked}">0</b><small>لم يُسجَّل بعد</small></span></div>
+        <div class="ar-stat" style="--c:#3B6FBF;--bg:#EEF3FB"><span class="ar-stat-ic">${svg(P.pct || P.check,20)}</span><span><b data-n="${students.length ? Math.round(present/students.length*100) : 0}">0</b><small>نسبة الحضور</small></span></div>
+      </div>
+      <div class="widget">
+        <div class="widget-head"><h3>${l ? E(l.title) : ''} <small class="att-date">${l ? E(l.date) : ''}</small></h3>
+          <div class="att-tools"><div class="topbar-search ar-search" style="max-width:220px">${svg(P.srch,15)}<input id="attQ" placeholder="ابحث…" value="${E(q)}"></div>
+            <button class="btn btn-ghost btn-sm" data-act="all-p">${svg(P.check,14)} تحديد الكل حاضر</button><button class="btn btn-ghost btn-sm" data-act="all-a">${svg(P.x,14)} تحديد الكل غائب</button>
+            <button class="btn btn-ghost btn-sm" data-act="notify" ${(students.length - present - unmarked) ? '' : 'disabled'}>${svg(P.bell,14)} إشعار الغائبين</button></div></div>
+        <div class="att-roster">${L.length ? L.map((s,i) => { const st = attMap[lecId]?.[s.studentId], r = studentRate(s.studentId); return `
+          <div class="att-row" style="--i:${Math.min(i,16)}"><span class="us-av" style="--c:${rateColor(r?.pct ?? null)}">${E(initial(s.studentName))}</span>
+            <div class="ar-main"><div class="ar-t">${E(s.studentName || 'طالب')}</div><div class="ar-d">${r ? `${nm(r.n)}/${nm(r.total)} محاضرة · ${nm(r.pct)}%` : 'لا توجد محاضرات سابقة بعد'}</div></div>
+            <div class="att-toggle"><button class="${st === false ? 'on bad' : ''}" data-mark="${s.studentId}" data-v="false" title="غائب">${svg(P.x,16)}</button><button class="${st === true ? 'on good' : ''}" data-mark="${s.studentId}" data-v="true" title="حاضر">${svg(P.check,16)}</button></div></div>`; }).join('') : '<div class="ar-empty" style="padding:26px 0"><p>ما في نتائج مطابقة.</p></div>'}</div>
+      </div>`;
+    root.querySelectorAll('#attBody .ar-stat b').forEach(countUp);
+  }
+  async function mark(sid, present){
+    const prev = attMap[lecId]?.[sid]; (attMap[lecId] = attMap[lecId] || {})[sid] = present; paintRoll();
+    try{ await setDoc(doc(db,'attendance', `${lecId}_${sid}`), { lectureId:lecId, courseId, studentId:sid, present, markedAt:serverTimestamp() }); }
+    catch(e){ console.error(e); attMap[lecId][sid] = prev; paintRoll(); toast('تعذّر حفظ الحضور — راجع الصلاحيات'); return; }
+    logAdminActivity('attendance_mark', students.find(s => s.studentId === sid)?.studentName || '', present ? 'حاضر' : 'غائب');
+  }
+  async function markAll(present){
+    const targets = students.filter(s => attMap[lecId]?.[s.studentId] !== present);
+    if(!targets.length) return; if(!await ask(present ? 'تحديد كل الطلاب حاضرين؟' : 'تحديد كل الطلاب غائبين؟', `هيتغيّر حال ${nm(targets.length)} طالب.`, 'تأكيد', { safe:present, icon:present ? P.check : P.x })) return;
+    for(const s of targets){ attMap[lecId] = attMap[lecId] || {}; attMap[lecId][s.studentId] = present; }
+    paintRoll();
+    try{ await Promise.all(targets.map(s => setDoc(doc(db,'attendance', `${lecId}_${s.studentId}`), { lectureId:lecId, courseId, studentId:s.studentId, present, markedAt:serverTimestamp() }))); logAdminActivity('attendance_mark', `${nm(targets.length)} طالب`, present ? 'الكل حاضر' : 'الكل غائب'); toast('تم الحفظ'); }
+    catch(e){ console.error(e); toast('تعذّر حفظ بعض السجلات — راجع الصلاحيات'); }
+  }
+  async function notifyAbsent(){
+    const l = lectures.find(x => x.id === lecId), absent = students.filter(s => attMap[lecId]?.[s.studentId] === false);
+    if(!absent.length) return toast('لا يوجد طلاب مسجَّلين كغائبين.');
+    try{ await Promise.all(absent.map(s => addDoc(collection(db,'notifications'), { targetType:'user', targetId:s.studentId, title:'تنبيه غياب', body:`تم تسجيلك غائبًا في محاضرة "${l?.title || ''}" بتاريخ ${l?.date || ''}. راجع تسجيلها لو فاتتك.`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }))); toast(`تم إشعار ${nm(absent.length)} طالب غائب`); }
+    catch(e){ console.error(e); toast('تعذّر إرسال الإشعارات'); }
+  }
+
+  /* ---- overview grid ---- */
+  function paintGrid(){
+    const body = $('#attBody'); if(!courseId){ body.innerHTML = `<div class="ar-empty">${svg(P.grid,44)}<h4>اختر كورسًا للبدء</h4><p>هتشوف نسبة حضور كل طالب عبر كل المحاضرات.</p></div>`; return; }
+    if(!students.length){ body.innerHTML = `<div class="ar-empty">${svg(P.users,44)}<h4>لا يوجد طلاب مفعّلين في هذا الكورس</h4></div>`; return; }
+    const P2 = pastLectures(); if(!P2.length){ body.innerHTML = `<div class="ar-empty">${svg(P.cal,44)}<h4>لا توجد محاضرات سابقة بعد</h4><p>النسب هتظهر بعد أول محاضرة تفوت موعدها.</p></div>`; return; }
+    let rows = students.map(s => ({ s, r:studentRate(s.studentId) })).filter(x => !q || (x.s.studentName || '').toLowerCase().includes(q));
+    rows.sort((a,b) => gsort === 'name' ? (a.s.studentName || '').localeCompare(b.s.studentName || '', 'ar') : (b.r?.pct ?? -1) - (a.r?.pct ?? -1));
+    const avg = Math.round(rows.reduce((s,x) => s + (x.r?.pct || 0), 0) / (rows.length || 1)), low = rows.filter(x => (x.r?.pct ?? 100) < 50).length;
+    const shown = P2.slice(-10);
+    body.innerHTML = `
+      <div class="ar-stats att-stats">
+        <div class="ar-stat" style="--c:#3B6FBF;--bg:#EEF3FB"><span class="ar-stat-ic">${svg(P.cal,20)}</span><span><b data-n="${P2.length}">0</b><small>محاضرة سابقة</small></span></div>
+        <div class="ar-stat" style="--c:#2F7A4F;--bg:#E9F5EE"><span class="ar-stat-ic">${svg(P.check,20)}</span><span><b data-n="${avg}">0</b><small>متوسط الحضور العام</small></span></div>
+        <div class="ar-stat" style="--c:#B3413A;--bg:#FBEBEA"><span class="ar-stat-ic">${svg(P.warn,20)}</span><span><b data-n="${low}">0</b><small>حضورهم أقل من 50%</small></span></div>
+      </div>
+      <div class="widget">
+        <div class="widget-head"><h3>مصفوفة الحضور</h3><div class="att-tools"><div class="topbar-search ar-search" style="max-width:200px">${svg(P.srch,15)}<input id="attGQ" placeholder="ابحث…" value="${E(q)}"></div><select id="attGSort" class="ar-sel"><option value="rate" ${gsort==='rate'?'selected':''}>الأعلى حضورًا</option><option value="name" ${gsort==='name'?'selected':''}>أبجديًا</option></select></div></div>
+        <div class="att-grid-wrap"><table class="att-grid"><thead><tr><th class="stick">الطالب</th>${shown.map(l => `<th title="${E(l.title)}">${fmtShort(l.date)}</th>`).join('')}<th class="rate">النسبة</th></tr></thead>
+        <tbody>${rows.map(({ s, r }, i) => `<tr style="--i:${Math.min(i,16)}"><td class="stick"><span class="us-av sm">${E(initial(s.studentName))}</span>${E(s.studentName || 'طالب')}</td>
+          ${shown.map(l => { const v = attMap[l.id]?.[s.studentId]; return `<td><button class="att-cell ${v === true ? 'yes' : v === false ? 'no' : ''}" data-mark="${s.studentId}" data-lec="${l.id}" data-v="${v === true ? 'false' : 'true'}" title="${E(l.title)} — ${E(l.date)}">${v === true ? svg(P.check,14) : v === false ? svg(P.x,14) : '—'}</button></td>`; }).join('')}
+          <td class="rate"><b style="color:${rateColor(r?.pct ?? null)}">${r ? nm(r.pct) + '%' : '—'}</b></td></tr>`).join('')}</tbody></table></div>
+        ${P2.length > shown.length ? `<small class="us-hint">تعرض آخر ${nm(shown.length)} محاضرة من ${nm(P2.length)} — النسبة والتصدير يشملان كل المحاضرات.</small>` : ''}
+      </div>`;
+    root.querySelectorAll('#attBody .ar-stat b').forEach(countUp);
+  }
+  async function markCell(sid, lid, v){
+    const prev = attMap[lid]?.[sid]; (attMap[lid] = attMap[lid] || {})[sid] = v; paintGrid();
+    try{ await setDoc(doc(db,'attendance', `${lid}_${sid}`), { lectureId:lid, courseId, studentId:sid, present:v, markedAt:serverTimestamp() }); }
+    catch(e){ console.error(e); attMap[lid][sid] = prev; paintGrid(); toast('تعذّر الحفظ — راجع الصلاحيات'); }
+  }
+  function csv(){
+    const P2 = pastLectures(), rows = [['الطالب', ...P2.map(l => l.date), 'الحضور', 'الإجمالي', 'النسبة']];
+    students.forEach(s => { const r = studentRate(s.studentId); rows.push([s.studentName || '', ...P2.map(l => attMap[l.id]?.[s.studentId] === true ? '1' : attMap[l.id]?.[s.studentId] === false ? '0' : ''), r?.n ?? '', r?.total ?? '', r ? r.pct + '%' : '']); });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'attendance-' + (courses.find(c => c.id === courseId)?.title || 'course') + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast('تم تصدير سجل الحضور');
+  }
+  function paintBody(){ paintLecSelect(); $('#attCsv').style.display = courseId && students.length ? '' : 'none'; mode === 'roll' ? paintRoll() : paintGrid(); }
+
+  $('#attCourse').addEventListener('change', e => { courseId = e.target.value; lecId = ''; q = ''; if(courseId) loadCourse(); else { students = []; lectures = []; paintBody(); } });
+  $('#attMode').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; mode = b.dataset.m; root.querySelectorAll('#attMode button').forEach(x => x.classList.toggle('on', x === b)); paintBody(); });
+  $('#attCsv').addEventListener('click', csv);
+  root.addEventListener('change', e => { if(e.target.id === 'attLec'){ lecId = e.target.value; paintRoll(); } else if(e.target.id === 'attGSort'){ gsort = e.target.value; paintGrid(); } });
+  root.addEventListener('input', e => { if(e.target.id === 'attQ' || e.target.id === 'attGQ'){ q = e.target.value.trim().toLowerCase(); mode === 'roll' ? paintRoll() : paintGrid(); } });
+  root.addEventListener('click', e => {
+    const m = e.target.closest('[data-mark]'); if(m){ if(m.dataset.lec) markCell(m.dataset.mark, m.dataset.lec, m.dataset.v === 'true'); else mark(m.dataset.mark, m.dataset.v === 'true'); return; }
+    const el = e.target.closest('[data-act]'); if(!el) return;
+    if(el.dataset.act === 'all-p') markAll(true); else if(el.dataset.act === 'all-a') markAll(false); else if(el.dataset.act === 'notify') notifyAbsent();
+  });
+  paintBody();
+}
+
+/* ---------------- ADMIN: EXAMS (v2 — pro) ---------------- */
+async function adminRenderExamsOverview(area){
+  document.getElementById('exmOv')?.remove(); document.getElementById('exmBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    exam:'<path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>',
+    edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+    redo:'<path d="M3 12a9 9 0 0115.4-6.4M21 12a9 9 0 01-15.4 6.4M21 3v6h-6M3 21v-6h6"/>',
+  });
+  let exams = [], results = [], courses = [];
+  try{
+    const [examSnap, resSnap, cs] = await Promise.all([
+      getDocs(collection(db, 'exams')),
+      getDocs(collection(db, 'examResults')).catch(() => ({ docs:[] })),
+      fetchAllCoursesAdmin(),
+    ]);
+    exams = examSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    results = resSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    courses = cs;
+  }catch(err){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الامتحانات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="exmRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('exmRetry').onclick = () => adminRenderExamsOverview(area); return;
+  }
+  const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const pct = (s,t) => t ? Math.round(s/t*100) : 0;
+  const resOf = examId => results.filter(r => r.examId === examId);
+  const statsOf = examId => {
+    const rs = resOf(examId); if(!rs.length) return { n:0, avg:0, passN:0, passRate:0 };
+    const avg = Math.round(rs.reduce((s,r) => s + pct(r.score,r.total), 0) / rs.length);
+    const passN = rs.filter(r => r.passed).length;
+    return { n: rs.length, avg, passN, passRate: Math.round(passN/rs.length*100) };
+  };
+
+  let q = '', fst = 'all', fcourse = 'all', sort = 'new', drw = null;
+  const sel = new Set();
+
+  area.innerHTML = `
+  <div class="ar" id="exmRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.exam,24)}</span><div><h2>الامتحانات</h2><p>كل امتحانات الكورسات ونتائج الطلاب — راجع نسب النجاح واكتشف الامتحانات اللي محتاجة مراجعة.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="csv">${svg(P.dl,15)} تصدير كل النتائج</button></div>
+    </div>
+    <div class="ar-stats" id="exmStats"></div>
+    <div class="widget ar-panel" style="margin-top:14px;">
+      <div class="cat-tabs" id="exmChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="exmQ" placeholder="ابحث بعنوان الامتحان…   ( / )" /></div>
+        <select id="exmCourse" class="ar-sel"><option value="all">كل الكورسات</option>${courses.map(c => `<option value="${c.id}">${E(c.title)}</option>`).join('')}</select>
+        <select id="exmSort" class="ar-sel"><option value="new">الأحدث أولًا</option><option value="attempts">الأكثر محاولات</option><option value="passLow">الأقل نجاحًا</option><option value="passHigh">الأعلى نجاحًا</option></select>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="exmCount"></div>
+      <div id="exmList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('exmRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'exmOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr" id="exmDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'exmBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => exams.filter(ex => {
+    const s = statsOf(ex.id);
+    if(fst === 'noAttempts' && s.n > 0) return false;
+    if(fst === 'lowPass' && !(s.n > 0 && s.passRate < 50)) return false;
+    if(fcourse !== 'all' && ex.courseId !== fcourse) return false;
+    if(q && !(ex.title||'').toLowerCase().includes(q)) return false;
+    return true;
+  }).sort((a,b) => {
+    if(sort === 'attempts') return statsOf(b.id).n - statsOf(a.id).n;
+    if(sort === 'passLow') return statsOf(a.id).passRate - statsOf(b.id).passRate;
+    if(sort === 'passHigh') return statsOf(b.id).passRate - statsOf(a.id).passRate;
+    return ts(b.createdAt) - ts(a.createdAt);
+  });
+
+  function paintTop(){
+    const totalAttempts = results.length, totalPassed = results.filter(r => r.passed).length;
+    const overallPass = totalAttempts ? Math.round(totalPassed/totalAttempts*100) : 0;
+    const avgAll = totalAttempts ? Math.round(results.reduce((s,r) => s + pct(r.score,r.total), 0) / totalAttempts) : 0;
+    const noAtt = exams.filter(ex => statsOf(ex.id).n === 0).length;
+    const lowPass = exams.filter(ex => { const s = statsOf(ex.id); return s.n > 0 && s.passRate < 50; }).length;
+    const S = [
+      { k:'all', l:'إجمالي الامتحانات', n:exams.length, i:P.exam, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
+      { k:'-1', l:'إجمالي المحاولات', n:totalAttempts, i:P.list, c:'#3B6FBF', bg:'#EEF3FB' },
+      { k:'-2', l:'نسبة النجاح العامة', txt:totalAttempts ? overallPass+'%' : '—', i:P.check, c:'#2F7A4F', bg:'#E9F5EE' },
+      { k:'-3', l:'متوسط الدرجات', txt:totalAttempts ? avgAll+'%' : '—', i:P.cert, c:'#C98826', bg:'#FFF4E0' },
+      { k:'noAttempts', l:'بدون أي محاولة', n:noAtt, i:P.warn, c:'#6B6072', bg:'#F1EDF5', on:fst==='noAttempts' },
+      { k:'lowPass', l:'نسبة نجاح ضعيفة (أقل من 50%)', n:lowPass, i:P.ban, c:'#B3413A', bg:'#FBEBEA', on:fst==='lowPass' },
+    ];
+    $('#exmStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on?'on':''}" ${s.k.startsWith('-')?'':`data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt ? `<b style="font-size:17px;">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small></span></button>`).join('');
+    document.querySelectorAll('#exmStats b[data-n]').forEach(countUp);
+    $('#exmChips').innerHTML = [['all','الكل',exams.length],['noAttempts','بدون محاولة',noAtt],['lowPass','نجاح ضعيف',lowPass]].map(([k,l,n]) => `<button class="cat-tab ${fst===k?'active':''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+
+  function rowHTML(ex, i){
+    const s = statsOf(ex.id), c = s.n === 0 ? { c:'#6B6072', bg:'#F1EDF5' } : s.passRate < 50 ? { c:'#B3413A', bg:'#FBEBEA' } : { c:'#2F7A4F', bg:'#E9F5EE' };
+    return `<div class="ar-item ${sel.has(ex.id)?'sel':''}" data-id="${ex.id}" style="--i:${Math.min(i,14)};--c:${c.c};--bg:${c.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(ex.id)?'checked':''}><i></i></label>
+      <div class="ar-th" style="background:${c.bg};color:${c.c};">${svg(P.exam,20)}</div>
+      <div class="ar-main"><div class="ar-t">${E(ex.title || 'امتحان')}</div><div class="ar-d">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')} · ${ex.questions?.length||0} سؤال${ex.durationMinutes ? ` · ${ex.durationMinutes} دقيقة` : ''}</div></div>
+      <span class="ar-badge">${s.n} محاولة</span>
+      <div class="ar-up">${s.n ? `<b style="color:${c.c};">${s.passRate}%</b>` : '<span style="color:var(--muted);">—</span>'}</div>
+      <div class="ar-dt">${s.n ? `متوسط ${s.avg}%` : 'لا يوجد'}</div>
+      <div class="ar-act">
+        <button class="icon-action" data-act="open" title="عرض النتائج">${svg(P.eye,15)}</button>
+        <button class="icon-action danger" data-act="del" title="حذف الامتحان">${svg(P.trash,15)}</button>
+      </div></div>`;
+  }
+  function paintList(){
+    const L = filtered();
+    $('#exmCount').textContent = exams.length ? `عرض ${L.length} من ${exams.length}` : '';
+    if(!L.length){
+      $('#exmList').innerHTML = `<div class="ar-empty">${svg(exams.length ? P.srch : P.exam, 44)}<h4>${exams.length ? 'ما في نتائج مطابقة' : 'لا توجد امتحانات على المنصة بعد'}</h4><p>${exams.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'أضف امتحانًا من صفحة إدارة محتوى أي كورس.'}</p>${exams.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+    }
+    $('#exmList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الامتحان</span><span>المحاولات</span><span>نسبة النجاح</span><span>المتوسط</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${n}</b><span>محدد</span><button data-act="b-csv">${svg(P.dl,15)} تصدير</button><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr" title="إلغاء التحديد">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer: exam results ---- */
+  let drQ = '';
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const ex = exams.find(x => x.id === drw); const dr = $('#exmDr'); if(!ex){ drw = null; ov.classList.remove('open'); return; }
+    const rs = resOf(ex.id).filter(r => !drQ || (r.studentName||'').toLowerCase().includes(drQ)).sort((a,b) => ts(b.submittedAt) - ts(a.submittedAt));
+    const s = statsOf(ex.id);
+    dr.innerHTML = `<div class="ar-dr-h"><h3>نتائج: ${E(ex.title)}</h3><button class="icon-action" data-act="close" title="إغلاق (Esc)">${svg(P.x,16)}</button></div>
+    <div class="ar-dr-b">
+      <div class="ar-chips"><span class="ar-badge">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')}</span><span class="ar-st on">${s.n} محاولة</span>${s.n ? `<span class="ar-st ${s.passRate<50?'off':'on'}">نجاح ${s.passRate}%</span>` : ''}</div>
+      <div class="topbar-search ar-search" style="margin:14px 0;"><input id="exmDrQ" placeholder="ابحث باسم الطالب..." value="${E(drQ)}"></div>
+      <div id="exmDrList">${rs.length ? rs.map(r => `
+        <div class="ar-kv" style="align-items:center;">
+          <span>${E(r.studentName || 'طالب')}<br><small style="color:var(--muted);font-weight:400;">${fmtD(ts(r.submittedAt))}</small></span>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="ar-st ${r.passed?'on':'off'}">${r.score}/${r.total} (${pct(r.score,r.total)}%)</span>
+            <button class="icon-action" data-act="reset-res" data-id="${r.id}" data-n="${E(r.studentName||'الطالب')}" title="حذف المحاولة (تسمح له بإعادة المحاولة)">${svg(P.redo,14)}</button>
+          </div>
+        </div>`).join('') : `<div class="empty-state" style="padding:20px 0;">${drQ ? 'لا يوجد طالب بهذا الاسم.' : 'لا توجد محاولات على هذا الامتحان بعد.'}</div>`}</div>
+    </div>
+    <div class="ar-dr-f"><button class="btn btn-ghost btn-sm" data-act="csv-one">${svg(P.dl,14)} تصدير نتائج هذا الامتحان</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف الامتحان</button></div>`;
+    $('#exmDrQ').addEventListener('input', e => { drQ = e.target.value.trim().toLowerCase(); paintDrawer(); });
+    $('#exmDrQ').focus(); $('#exmDrQ').selectionStart = $('#exmDrQ').selectionEnd = $('#exmDrQ').value.length;
+  }
+  const open = id => { drw = id; drQ = ''; paintDrawer(); };
+
+  /* ---- data actions ---- */
+  async function remove(ids){
+    const list = ids.map(id => exams.find(x => x.id === id)).filter(Boolean); if(!list.length) return;
+    const withAttempts = list.filter(ex => statsOf(ex.id).n > 0);
+    const msg = withAttempts.length
+      ? `${list.length > 1 ? 'بعض الامتحانات المحددة' : 'هذا الامتحان'} ليه محاولات طلاب مسجّلة (${withAttempts.reduce((s,ex) => s + statsOf(ex.id).n, 0)} محاولة) — هتفضل موجودة بشكل منفصل بعد حذف الامتحان. متأكد؟`
+      : (list.length > 1 ? 'هتتشال كل الامتحانات المحددة نهائيًا.' : `"${E(list[0].title)}" هتتشال نهائيًا.`);
+    if(!await ask(list.length > 1 ? `حذف ${list.length} امتحانات؟` : 'حذف هذا الامتحان؟', msg)) return;
+    try{ await Promise.all(list.map(ex => deleteDoc(doc(db,'exams',ex.id)))); }catch(e){ return toast('تعذّر الحذف'); }
+    exams = exams.filter(x => !ids.includes(x.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw)) drw = null;
+    logAdminActivity('exam_delete', list[0].title, list.length > 1 ? `${list.length} امتحانات` : '');
+    paintAll(); paintDrawer();
+    toast(`تم حذف ${list.length > 1 ? list.length + ' امتحانات' : 'الامتحان'}`);
+  }
+  async function resetResult(resId, name){
+    if(!await ask('حذف محاولة هذا الطالب؟', `هتتشال نتيجة "${E(name)}" نهائيًا وهيقدر يعيد الامتحان من جديد.`, 'حذف المحاولة')) return;
+    try{ await deleteDoc(doc(db,'examResults',resId)); }catch(e){ return toast('تعذّر الحذف'); }
+    results = results.filter(r => r.id !== resId);
+    logAdminActivity('exam_result_reset', name);
+    paintAll(); paintDrawer(); toast('تم حذف المحاولة — يقدر يعيدها الآن');
+  }
+  function csvRows(list){
+    const rows = [['الامتحان','الكورس','الطالب','الدرجة','من','النسبة','النتيجة','تاريخ التسليم']];
+    list.forEach(ex => resOf(ex.id).forEach(r => rows.push([ex.title, courseMap[ex.courseId]?.title||'', r.studentName||'', r.score, r.total, pct(r.score,r.total)+'%', r.passed?'ناجح':'راسب', fmtD(ts(r.submittedAt))])));
+    return rows;
+  }
+  function csv(list, name){
+    const rows = csvRows(list);
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = name + '-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast('تم تصدير النتائج');
+  }
+
+  /* ---- events ---- */
+  async function onClick(e){
+    const el = e.target.closest('[data-act]'), row = e.target.closest('.ar-item'); const id = row?.dataset.id;
+    if(!el){ if(e.target === ov) drw = null, paintDrawer(); else if(row && !e.target.closest('.ar-chk')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'open') open(id);
+    else if(a === 'close') { drw = null; paintDrawer(); }
+    else if(a === 'del') remove([id || drw]);
+    else if(a === 'reset-res') resetResult(el.dataset.id, el.dataset.n);
+    else if(a === 'stat'){ fst = el.dataset.k; paintAll(); }
+    else if(a === 'reset'){ q = ''; fst = 'all'; fcourse = 'all'; $('#exmQ').value = ''; $('#exmCourse').value = 'all'; paintAll(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderExamsOverview(area); }
+    else if(a === 'csv') csv(filtered(), 'exam-results');
+    else if(a === 'csv-one') csv([exams.find(x => x.id === drw)], 'exam-result');
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); }
+    else if(a === 'b-csv') csv(exams.filter(x => sel.has(x.id)), 'exam-results');
+    else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  $('#exmQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); paintList(); });
+  $('#exmCourse').addEventListener('change', e => { fcourse = e.target.value; paintList(); });
+  $('#exmSort').addEventListener('change', e => { sort = e.target.value; paintList(); });
+  const onKey = e => {
+    if(!root.isConnected) return;
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(e.key === 'Escape' && drw){ drw = null; paintDrawer(); }
+    else if(!typing && e.key === '/'){ e.preventDefault(); $('#exmQ').focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
+}
+
 
 async function adminRenderCommunityModeration(area){
   try{
@@ -11612,6 +12141,21 @@ const ACTIVITY_ACTION_META = {
   cert_issue: { label:'إصدار شهادة', icon: SIDE_ICONS.certificate, color:'#C98826', bg:'#FFF4E0' },
   cert_edit: { label:'تعديل شهادة', icon: SIDE_ICONS.certificate, color:'#3B6FBF', bg:'#EEF3FB' },
   cert_delete: { label:'حذف شهادة', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  attendance_mark: { label:'تسجيل حضور', icon: SIDE_ICONS.check, color:'#2F7A4F', bg:'#E9F5EE' },
+  lecture_create: { label:'جدولة محاضرة مباشرة', icon: SIDE_ICONS.video, color:'#2F7A4F', bg:'#E9F5EE' },
+  lecture_edit: { label:'تعديل محاضرة مباشرة', icon: SIDE_ICONS.video, color:'#3B6FBF', bg:'#EEF3FB' },
+  lecture_delete: { label:'حذف محاضرة مباشرة', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  exam_delete: { label:'حذف امتحان', icon: SIDE_ICONS.exam, color:'var(--danger)', bg:'#FBEBEA' },
+  exam_result_reset: { label:'حذف محاولة امتحان طالب', icon: SIDE_ICONS.exam, color:'#3B6FBF', bg:'#EEF3FB' },
+  course_create: { label:'إضافة كورس', icon: SIDE_ICONS.book, color:'var(--success)', bg:'#E9F5EE' },
+  course_edit: { label:'تعديل كورس', icon: SIDE_ICONS.book, color:'#3B6FBF', bg:'#EEF3FB' },
+  course_delete: { label:'حذف كورس', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  course_status_change: { label:'تغيير حالة نشر كورس', icon: SIDE_ICONS.book, color:'var(--amber-600)', bg:'#FCF3E3' },
+  pm_add: { label:'إضافة وسيلة دفع', icon: SIDE_ICONS.card, color:'#2F7A4F', bg:'#E9F5EE' },
+  pm_edit: { label:'تعديل وسيلة دفع', icon: SIDE_ICONS.card, color:'#3B6FBF', bg:'#EEF3FB' },
+  pm_toggle: { label:'تفعيل/تعطيل وسيلة دفع', icon: SIDE_ICONS.card, color:'var(--amber-600)', bg:'#FCF3E3' },
+  pm_reorder: { label:'إعادة ترتيب وسائل الدفع', icon: SIDE_ICONS.card, color:'#5A3B92', bg:'#EDE7F6' },
+  pm_delete: { label:'حذف وسيلة دفع', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
   finance_fee: { label:'تعديل نسبة المنصة', icon: SIDE_ICONS.card, color:'#C98826', bg:'#FFF4E0' },
   payment_approve: { label:'قبول طلب اشتراك', icon: SIDE_ICONS.check, color:'var(--success)', bg:'#E9F5EE' },
   payment_reject: { label:'رفض / إلغاء طلب اشتراك', icon: SIDE_ICONS.close, color:'var(--danger)', bg:'#FBEBEA' },
