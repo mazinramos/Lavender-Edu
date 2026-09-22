@@ -442,25 +442,47 @@
   .device-phone .content{position:absolute;inset:22px 12px 12px;background:var(--mist);border-radius:10px;}
 
   /* ================= APP SHELL (dashboard system) ================= */
-  .app-shell{display:flex;min-height:calc(100vh - 72px);background:var(--paper);}
+  .app-shell{display:flex;min-height:calc(100vh - 72px);background:var(--paper);position:relative;}
   .app-sidebar{
-    width:240px;flex-shrink:0;background:#fff;border-left:1px solid var(--line);
-    display:flex;flex-direction:column;padding:22px 16px;position:sticky;top:72px;
-    height:calc(100vh - 72px);overflow-y:auto;
+    width:var(--side-w,240px);flex-shrink:0;background:#fff;border-left:1px solid var(--line);
+    display:flex;flex-direction:column;padding:14px 16px 22px;position:sticky;top:72px;
+    height:calc(100vh - 72px);overflow-y:auto;overflow-x:hidden;transition:width .26s cubic-bezier(.22,1,.36,1);
   }
-  .side-nav{display:flex;flex-direction:column;gap:3px;margin-top:6px;}
-  .side-label{font-size:11.5px;color:var(--muted);font-weight:700;margin:16px 8px 6px;text-transform:uppercase;letter-spacing:.03em;}
+  .side-head{display:flex;align-items:center;gap:8px;padding:6px 2px 14px;margin-bottom:6px;border-bottom:1px solid var(--line);}
+  .side-brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0;color:var(--violet-800);font-weight:800;font-size:13.5px;}
+  .side-brand .side-ic{width:30px;height:30px;border-radius:9px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .side-brand .lbl-text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .side-collapse-btn, .side-close-btn{width:30px;height:30px;border-radius:9px;flex-shrink:0;}
+  .side-close-btn{display:none;}
+  .side-resize-handle{position:absolute;top:0;bottom:0;inset-inline-end:-3px;width:6px;cursor:col-resize;z-index:2;background:transparent;}
+  .side-resize-handle:hover, body.side-resizing .side-resize-handle{background:var(--violet-600);opacity:.35;}
+  body.side-resizing{cursor:col-resize;user-select:none;}
+  .side-nav{display:flex;flex-direction:column;gap:3px;margin-top:2px;}
+  .side-label{font-size:11px;color:var(--muted);font-weight:700;margin:16px 8px 6px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;overflow:hidden;}
+  .side-label:first-child{margin-top:2px;}
   .side-link{
     display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;
-    font-size:14px;font-weight:600;color:var(--ink);opacity:0.75;transition:.15s;
+    font-size:14px;font-weight:600;color:var(--ink);opacity:0.75;transition:.15s;white-space:nowrap;
   }
   .side-link:hover{opacity:1;background:var(--paper);}
   .side-link.active{opacity:1;background:var(--mist);color:var(--violet-800);}
   .side-link .side-ic{width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .side-link .lbl-text{overflow:hidden;text-overflow:ellipsis;}
   .side-bottom{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);}
-  .side-user{display:flex;align-items:center;gap:10px;padding:8px 10px;}
-  .side-user .name{font-size:13px;font-weight:700;color:var(--ink);}
-  .side-user .role{font-size:11.5px;color:var(--muted);}
+  .side-user{display:flex;align-items:center;gap:10px;padding:8px 10px;overflow:hidden;}
+  .side-user .name{font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .side-user .role{font-size:11.5px;color:var(--muted);white-space:nowrap;}
+  /* Collapsed (desktop, manual toggle): icon-only rail, same look as the tablet auto-collapse below */
+  .app-shell.side-collapsed .app-sidebar{width:76px;padding-inline:8px;}
+  .app-shell.side-collapsed .side-brand .lbl-text, .app-shell.side-collapsed .side-label,
+  .app-shell.side-collapsed .side-link .lbl-text, .app-shell.side-collapsed .side-user .name,
+  .app-shell.side-collapsed .side-user .role, .app-shell.side-collapsed .tab-count-badge{display:none;}
+  .app-shell.side-collapsed .side-link{justify-content:center;}
+  .app-shell.side-collapsed .side-head{justify-content:center;}
+  .app-shell.side-collapsed .side-brand{display:none;}
+  .app-shell.side-collapsed .side-resize-handle{display:none;}
+  .side-collapse-btn svg{transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
+  .app-shell.side-collapsed .side-collapse-btn svg{transform:rotate(180deg);}
 
   .app-main{flex:1;min-width:0;}
   .app-topbar{
@@ -480,6 +502,14 @@
   }
   .topbar-search input{border:none;background:transparent;outline:none;font-family:inherit;font-size:13.5px;width:100%;color:var(--ink);}
   .topbar-actions{display:flex;align-items:center;gap:14px;}
+  .hamburger-btn{display:none;}
+  /* Unified icon-accent colour: stat/KPI icon badges across every admin tab share one
+     brand tone instead of a different colour per card, so the dashboard reads as one
+     consistent system rather than a clash of random hues. Status/role colour-coding
+     elsewhere (list rows, badges) is untouched — only the decorative stat icons. */
+  .ar-stat, .ov-kpi{--c:var(--violet-700) !important;--bg:var(--mist) !important;}
+  .app-topbar.search-open .topbar-search{display:flex !important;flex:1;max-width:none !important;}
+  .app-topbar.search-open .app-topbar-title, .app-topbar.search-open .hamburger-btn{display:none !important;}
   .icon-btn{
     width:38px;height:38px;border-radius:10px;background:var(--paper);border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);position:relative;cursor:pointer;flex-shrink:0;
@@ -1420,6 +1450,8 @@
     .app-sidebar{width:76px;padding:16px 8px;}
     .app-sidebar .side-link span.lbl-text{display:none;}
     .app-sidebar .side-user .name, .app-sidebar .side-user .role{display:none;}
+    .app-sidebar .side-brand .lbl-text{display:none;}
+    .app-sidebar .side-resize-handle{display:none;}
     .side-label{text-align:center;}
     .app-content{padding:18px;}
     .widget-grid{grid-template-columns:1fr 1fr;}
@@ -1427,7 +1459,21 @@
     .topbar-search{max-width:160px;}
   }
   @media (max-width:640px){
-    .app-sidebar{display:none;}
+    /* Sidebar becomes an off-canvas drawer instead of vanishing — opened via the topbar
+       hamburger or the bottom bar's "القائمة" button, closed via the × button, the backdrop,
+       Escape, or picking a tab. */
+    .app-sidebar{
+      display:flex;position:fixed;inset-inline-start:0;top:0;width:290px !important;max-width:84vw;
+      height:100vh;z-index:95;padding:14px 14px 18px;box-shadow:0 20px 60px -20px rgba(34,21,48,.5);
+      transform:translateX(105%);
+    }
+    [dir="ltr"] .app-sidebar{transform:translateX(-105%);}
+    body.side-open .app-sidebar{transform:translateX(0);}
+    .app-sidebar .lbl-text, .app-sidebar .side-label, .app-sidebar .side-user .name, .app-sidebar .side-user .role{display:inline;}
+    .app-sidebar .side-link .lbl-text{display:inline-block;}
+    .side-collapse-btn{display:none;}
+    .side-close-btn{display:flex;}
+    .hamburger-btn{display:flex;}
     .bottom-nav{display:flex;}
     .app-content{padding:16px 16px 92px;}
     .app-topbar-title{display:block;}
@@ -2188,6 +2234,7 @@ const SIDE_ICONS = {
 // the literal text "undefined". Merging them in here fixes every one of those call sites at
 // once instead of editing each individually.
 Object.assign(SIDE_ICONS, {
+  menu: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>',
   lock: MICRO_ICONS.lock,
   playCircle: MICRO_ICONS.playCircle,
   starFilled: MICRO_ICONS.starFilled,
@@ -5543,18 +5590,32 @@ const ADMIN_TABS = [
   { key:'settings', label:'الإعدادات', icon: SIDE_ICONS.gear },
 ];
 
+// Groups the 19 admin tabs into labeled sections instead of one long flat list, so the
+// sidebar (and the mobile drawer, which renders the exact same markup) reads as an
+// organized menu rather than a wall of links.
+const ADMIN_TAB_GROUPS = [
+  { label:'نظرة عامة', keys:['overview'] },
+  { label:'المستخدمون', keys:['users'] },
+  { label:'المحتوى التعليمي', keys:['categories','archive','library','courses','review','certificates'] },
+  { label:'الجلسات والتقييم', keys:['live-sessions','attendance','exams','reviews'] },
+  { label:'المالية', keys:['payments','finance','payment-methods'] },
+  { label:'المجتمع والإشعارات', keys:['community','notifications'] },
+  { label:'النظام', keys:['activity-log','settings'] },
+];
+
 function shellSideLinks(activeKey){
   const role = currentProfile?.role || 'student';
 
   if(role === 'admin'){
-    return `
-      <div class="side-label">لوحة الإدارة</div>
-      ${ADMIN_TABS.map(t => `
+    const tabLink = t => `
         <a href="#/dashboard?tab=${t.key}" class="side-link admin-side-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
           <span class="side-ic">${t.icon}</span><span class="lbl-text">${t.label}</span>
         </a>
-      `).join('')}
-    `;
+      `;
+    return ADMIN_TAB_GROUPS.map(g => `
+      <div class="side-label">${g.label}</div>
+      ${g.keys.map(k => ADMIN_TABS.find(t => t.key === k)).filter(Boolean).map(tabLink).join('')}
+    `).join('');
   }
 
   return `
@@ -5580,17 +5641,24 @@ function shellSideLinks(activeKey){
 /* ---------------- Mobile bottom tab bar (Telegram-style) ---------------- */
 function bottomNavHTML(activeKey, currentPath){
   if(currentProfile?.role === 'admin'){
-    const primary = ADMIN_BOTTOM_PRIMARY_KEYS.map(k => ADMIN_TABS.find(t => t.key === k)).filter(Boolean);
+    // Generic student links (courses/library/profile...) are meaningless in the admin
+    // dashboard, so admins get a purpose-built bar instead: a menu button that opens the
+    // full grouped tab drawer, a shortcut to the overview, quick search, and notifications
+    // (with their own unread badge) — four things actually useful while managing the platform.
     return `
       <div class="bottom-nav-indicator" id="bottomNavIndicator"></div>
-      ${primary.map(t => `
-        <a href="#/dashboard?tab=${t.key}" class="bottom-nav-item admin-bottom-link ${activeKey === t.key ? 'active' : ''}" data-tab="${t.key}">
-          <span class="side-ic">${t.icon}</span><span>${t.label}</span>
-        </a>
-      `).join('')}
-      <button type="button" class="bottom-nav-item" id="bottomNavMoreBtn">
-        <span class="side-ic">${SIDE_ICONS.moreDots}</span><span>المزيد</span>
+      <button type="button" class="bottom-nav-item" id="bottomNavMenuBtn">
+        <span class="side-ic">${SIDE_ICONS.menu}</span><span>القائمة</span>
       </button>
+      <a href="#/dashboard?tab=overview" class="bottom-nav-item admin-bottom-link ${activeKey === 'overview' ? 'active' : ''}" data-tab="overview">
+        <span class="side-ic">${SIDE_ICONS.dashboard}</span><span>نظرة عامة</span>
+      </a>
+      <button type="button" class="bottom-nav-item" id="bottomNavSearchBtn">
+        <span class="side-ic">${SIDE_ICONS.search}</span><span>بحث</span>
+      </button>
+      <a href="#/dashboard?tab=notifications" class="bottom-nav-item admin-bottom-link ${activeKey === 'notifications' ? 'active' : ''}" data-tab="notifications">
+        <span class="side-ic">${SIDE_ICONS.bell}</span><span>الإشعارات</span>
+      </a>
     `;
   }
 
@@ -5784,9 +5852,13 @@ function wireBottomNav(activeKey){
   if(accountBtn){
     accountBtn.addEventListener('click', openAccountSheet);
   }
-  const moreBtn = document.getElementById('bottomNavMoreBtn');
-  if(moreBtn){
-    moreBtn.addEventListener('click', () => openAdminMoreSheet(activeKey));
+  const menuBtn = document.getElementById('bottomNavMenuBtn');
+  if(menuBtn){
+    menuBtn.addEventListener('click', () => toggleSideDrawer());
+  }
+  const searchBtn = document.getElementById('bottomNavSearchBtn');
+  if(searchBtn){
+    searchBtn.addEventListener('click', () => toggleTopbarSearch());
   }
   refreshNotificationBadges();
 }
@@ -6003,6 +6075,106 @@ function startAdminAlertsPoller(){
   setInterval(pollAdminAlerts, 25000);
 }
 
+/* ---------------- Admin sidebar: mobile drawer + desktop collapse/resize ---------------- */
+const SIDE_W_MIN = 200, SIDE_W_MAX = 340, SIDE_W_DEFAULT = 240;
+
+// Opens/closes the off-canvas sidebar drawer on mobile (≤640px). force=true/false pins the
+// state explicitly; omitted, it just flips whatever the current state is.
+function toggleSideDrawer(force){
+  const open = typeof force === 'boolean' ? force : !document.body.classList.contains('side-open');
+  document.body.classList.toggle('side-open', open);
+  let ov = document.getElementById('sideNavOv');
+  if(open){
+    if(!ov){
+      ov = document.createElement('div');
+      ov.id = 'sideNavOv';
+      ov.className = 'ar-ov';
+      document.body.appendChild(ov);
+      ov.addEventListener('click', () => toggleSideDrawer(false));
+    }
+    requestAnimationFrame(() => ov.classList.add('open'));
+  } else if(ov){
+    ov.classList.remove('open');
+  }
+}
+
+// Reveals the topbar search bar on mobile (where it's hidden by default to save space),
+// in place of the tab title, and focuses it. Toggling again (or Escape) closes it.
+function toggleTopbarSearch(force){
+  const bar = document.querySelector('.app-topbar');
+  if(!bar) return;
+  const open = typeof force === 'boolean' ? force : !bar.classList.contains('search-open');
+  bar.classList.toggle('search-open', open);
+  if(open){
+    const input = document.getElementById('shellSearchInput');
+    if(input) setTimeout(() => input.focus(), 50);
+  }
+}
+
+document.addEventListener('keydown', (e) => {
+  if(e.key !== 'Escape') return;
+  if(document.body.classList.contains('side-open')) toggleSideDrawer(false);
+  toggleTopbarSearch(false);
+});
+
+// Wires the admin sidebar's collapse toggle (desktop, remembered) and drag-to-resize
+// handle (desktop, width clamped and remembered), plus the mobile hamburger/close buttons
+// that open and close the same sidebar as an off-canvas drawer. Called once per shell render.
+function initSidebarControls(){
+  const shell = document.querySelector('.app-shell');
+  const aside = document.querySelector('.app-sidebar');
+  if(!shell || !aside) return;
+  const lsGet = k => { try{ return localStorage.getItem(k); }catch(e){ return null; } };
+  const lsSet = (k, v) => { try{ localStorage.setItem(k, v); }catch(e){} };
+
+  const savedW = parseInt(lsGet('lv_side_w'), 10);
+  aside.style.setProperty('--side-w', (Number.isFinite(savedW) ? Math.min(SIDE_W_MAX, Math.max(SIDE_W_MIN, savedW)) : SIDE_W_DEFAULT) + 'px');
+  shell.classList.toggle('side-collapsed', lsGet('lv_side_collapsed') === '1');
+
+  document.getElementById('sideCollapseBtn')?.addEventListener('click', () => {
+    const collapsed = shell.classList.toggle('side-collapsed');
+    lsSet('lv_side_collapsed', collapsed ? '1' : '0');
+  });
+
+  document.getElementById('shellHamburgerBtn')?.addEventListener('click', () => toggleSideDrawer());
+  document.getElementById('sideCloseBtn')?.addEventListener('click', () => toggleSideDrawer(false));
+
+  const handle = document.getElementById('sideResizeHandle');
+  if(handle){
+    let dragging = false, startX = 0, startW = 0;
+    const dir = () => document.documentElement.getAttribute('dir') === 'ltr' ? 1 : -1;
+    const onMove = (e) => {
+      if(!dragging) return;
+      const x = e.touches ? e.touches[0].clientX : e.clientX;
+      const w = Math.min(SIDE_W_MAX, Math.max(SIDE_W_MIN, startW + (x - startX) * dir()));
+      aside.style.setProperty('--side-w', w + 'px');
+    };
+    const onUp = () => {
+      if(!dragging) return;
+      dragging = false;
+      document.body.classList.remove('side-resizing');
+      lsSet('lv_side_w', parseInt(aside.style.getPropertyValue('--side-w'), 10));
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      window.removeEventListener('touchmove', onMove);
+      window.removeEventListener('touchend', onUp);
+    };
+    const onDown = (e) => {
+      if(shell.classList.contains('side-collapsed')) return;
+      dragging = true;
+      startX = e.touches ? e.touches[0].clientX : e.clientX;
+      startW = aside.getBoundingClientRect().width;
+      document.body.classList.add('side-resizing');
+      window.addEventListener('mousemove', onMove);
+      window.addEventListener('mouseup', onUp);
+      window.addEventListener('touchmove', onMove, { passive:true });
+      window.addEventListener('touchend', onUp);
+    };
+    handle.addEventListener('mousedown', onDown);
+    handle.addEventListener('touchstart', onDown, { passive:true });
+  }
+}
+
 function renderShell(activeKey){
   const app = document.getElementById('app');
   const name = currentProfile?.name || currentUser?.email || 'مستخدم';
@@ -6013,6 +6185,12 @@ function renderShell(activeKey){
   app.innerHTML = `
     <div class="app-shell">
       <aside class="app-sidebar">
+        ${isAdminRole ? `
+        <div class="side-head">
+          <div class="side-brand"><span class="side-ic">${SIDE_ICONS.dashboard}</span><span class="lbl-text">لوحة الإدارة</span></div>
+          <button type="button" class="icon-btn side-collapse-btn" id="sideCollapseBtn" title="طي/توسيع القائمة">${SIDE_ICONS.chevronLeft}</button>
+          <button type="button" class="icon-btn side-close-btn" id="sideCloseBtn" title="إغلاق القائمة">${SIDE_ICONS.close}</button>
+        </div>` : ''}
         <div class="side-nav">${shellSideLinks(activeKey)}</div>
         <div class="side-bottom">
           <div class="side-user">
@@ -6029,9 +6207,11 @@ function renderShell(activeKey){
             <span class="side-ic">${SIDE_ICONS.logout}</span><span class="lbl-text">تسجيل الخروج</span>
           </a>
         </div>
+        ${isAdminRole ? '<div class="side-resize-handle" id="sideResizeHandle"></div>' : ''}
       </aside>
       <div class="app-main">
         <div class="app-topbar">
+          ${isAdminRole ? `<button type="button" class="icon-btn hamburger-btn" id="shellHamburgerBtn" title="القائمة">${SIDE_ICONS.menu}</button>` : ''}
           <div class="app-topbar-title">${shellTopbarTitle(activeKey)}</div>
           <div class="topbar-search">
             <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.search}</span>
@@ -6045,6 +6225,8 @@ function renderShell(activeKey){
       </div>
     </div>
   `;
+
+  if(isAdminRole) initSidebarControls();
 
   document.getElementById('shellLogoutBtn').addEventListener('click', async (e) => {
     e.preventDefault();
@@ -6071,6 +6253,7 @@ function renderShell(activeKey){
       if(titleEl) titleEl.textContent = shellTopbarTitle(link.dataset.tab);
       document.querySelectorAll('.bottom-nav-item[data-tab]').forEach(b => b.classList.toggle('active', b.dataset.tab === link.dataset.tab));
       positionBottomNavIndicator(false);
+      toggleSideDrawer(false);
     });
   });
 
