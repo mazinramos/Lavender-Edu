@@ -908,7 +908,7 @@
      off the edge of the screen by the input field — collapse it to a plain
      round icon button so it always stays fully visible and tappable. */
   @media (max-width:400px){
-    .sm-close{width:38px;height:38px;padding:0;border-radius:50%;gap:0;}
+    .sm-close{width:38px;height:38px;padding:0;border-radius:50%;gap:0;justify-content:center;}
     .sm-close span{display:none;}
   }
 
@@ -1523,6 +1523,12 @@
   .sub-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
 
   @media (max-width: 860px){
+    /* Once .nav-links disappears below, .nav-inner's justify-content:space-between would
+       leave exactly two visible children (.brand and .nav-cta) with the search trigger
+       stranded as a lone middle item with big empty gaps on both sides. Anchor .brand to
+       the far side instead and let the trigger sit snugly next to the account button. */
+    .nav-inner{justify-content:flex-start;gap:10px;}
+    .brand{margin-inline-end:auto;}
     .hero-grid{grid-template-columns:1fr;}
     .hero-visual{display:none;}
     .hero-visual-v2{display:none;}
@@ -1724,155 +1730,58 @@
   /* ================= ENROLLMENT ACCEPTED — full-screen celebration ================= */
   .ec-overlay{
     position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;
-    padding:20px;overflow:hidden;opacity:0;animation:ecFadeIn .45s ease forwards;
-    background:radial-gradient(circle at 50% 42%, #3E2566 0%, #2A1948 46%, #17102A 100%);
+    padding:20px;background:rgba(23,16,42,0.55);
+    opacity:0;animation:ecFadeIn .3s ease forwards;
   }
-  .ec-overlay.leaving{animation:ecFadeOut .35s ease forwards;}
+  .ec-overlay.leaving{animation:ecFadeOut .22s ease forwards;}
   @keyframes ecFadeIn{to{opacity:1;}}
   @keyframes ecFadeOut{to{opacity:0;}}
-  .ec-glow{
-    position:absolute;top:50%;left:50%;width:120vmax;height:120vmax;border-radius:50%;
-    background:radial-gradient(circle, rgba(226,163,59,0.22) 0%, rgba(110,75,175,0.14) 32%, transparent 62%);
-    transform:translate(-50%,-50%) scale(0.3);opacity:0;
-    animation:ecGlowBloom 1.4s cubic-bezier(.16,1,.3,1) .05s forwards;
-  }
-  @keyframes ecGlowBloom{0%{transform:translate(-50%,-50%) scale(0.2);opacity:0;}35%{opacity:1;}100%{transform:translate(-50%,-50%) scale(1);opacity:0.9;}}
-  .ec-rays{
-    position:absolute;top:50%;left:50%;width:900px;height:900px;margin:-450px 0 0 -450px;
-    background:conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.09) 8deg, transparent 16deg, transparent 40deg, rgba(226,163,59,0.12) 48deg, transparent 56deg, transparent 96deg, rgba(255,255,255,0.07) 104deg, transparent 112deg, transparent 152deg, rgba(226,163,59,0.1) 160deg, transparent 168deg, transparent 208deg, rgba(255,255,255,0.08) 216deg, transparent 224deg, transparent 264deg, rgba(226,163,59,0.11) 272deg, transparent 280deg, transparent 320deg, rgba(255,255,255,0.07) 328deg, transparent 336deg);
-    border-radius:50%;opacity:0;animation:ecRaysIn 1.8s ease .1s forwards, ecRaysSpin 28s linear 1.2s infinite;
-    pointer-events:none;
-  }
-  @keyframes ecRaysIn{to{opacity:1;}}
-  @keyframes ecRaysSpin{to{transform:rotate(360deg);}}
-
-  .ec-rain{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-  .ec-rain span{
-    position:absolute;top:-40px;left:var(--x);width:var(--w);height:calc(var(--w) * 2.6);
-    background:var(--c);opacity:0;border-radius:2px;
-    animation:ecRainFall var(--dur) cubic-bezier(.45,0,.55,1) var(--delay) forwards;
-  }
-  @keyframes ecRainFall{
-    0%{opacity:0;transform:translateY(0) rotate(0deg);}
-    6%{opacity:1;}
-    92%{opacity:1;}
-    100%{opacity:0;transform:translateY(112vh) rotate(var(--rot));}
-  }
-  .ec-burst{position:absolute;top:50%;left:50%;width:0;height:0;pointer-events:none;}
-  .ec-burst span{
-    position:absolute;top:0;left:0;width:var(--w);height:calc(var(--w) * 2.4);background:var(--c);
-    border-radius:2px;opacity:0;
-    animation:ecBurstPop 1.15s cubic-bezier(.19,1,.22,1) var(--delay) forwards;
-  }
-  @keyframes ecBurstPop{
-    0%{opacity:0;transform:translate(0,0) rotate(0deg) scale(0.3);}
-    10%{opacity:1;}
-    100%{opacity:0;transform:translate(var(--tx), var(--ty)) rotate(var(--tr)) scale(1);}
-  }
-  .ec-sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-  .ec-sparkles span{
-    position:absolute;bottom:-20px;left:var(--x);font-size:var(--sz);opacity:0;color:var(--sc);
-    animation:ecSparkleUp var(--sdur) ease-in var(--sdelay) infinite;
-    filter:drop-shadow(0 0 4px currentColor);
-  }
-  @keyframes ecSparkleUp{
-    0%{opacity:0;transform:translateY(0) rotate(0deg) scale(0.5);}
-    15%{opacity:1;}
-    50%{opacity:0.85;transform:translateY(-46vh) rotate(180deg) scale(1.1);}
-    85%{opacity:0.3;}
-    100%{opacity:0;transform:translateY(-96vh) rotate(340deg) scale(0.6);}
-  }
 
   .ec-card{
-    position:relative;z-index:2;background:#fff;border-radius:32px;padding:52px 38px 40px;
+    position:relative;z-index:2;background:#fff;border-radius:20px;padding:44px 36px 34px;
     text-align:center;max-width:400px;width:100%;
-    box-shadow:0 40px 100px -30px rgba(0,0,0,0.55);
-    transform:translateY(40px) scale(0.82) rotate(-2deg);opacity:0;
-    animation:ecCardIn .7s cubic-bezier(.2,1.4,.4,1) .25s forwards;
+    box-shadow:0 30px 70px -24px rgba(23,16,42,0.45);border:1px solid var(--line);
+    transform:translateY(14px) scale(0.97);opacity:0;
+    animation:ecCardIn .35s cubic-bezier(.2,.8,.3,1) .05s forwards;
   }
-  @keyframes ecCardIn{
-    0%{transform:translateY(40px) scale(0.8) rotate(-3deg);opacity:0;}
-    55%{transform:translateY(-6px) scale(1.035) rotate(1deg);opacity:1;}
-    75%{transform:translateY(2px) scale(0.99) rotate(-0.4deg);}
-    100%{transform:translateY(0) scale(1) rotate(0deg);opacity:1;}
-  }
+  @keyframes ecCardIn{to{transform:translateY(0) scale(1);opacity:1;}}
   .ec-close{
-    position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;
+    position:absolute;top:16px;left:16px;width:32px;height:32px;border-radius:50%;
     background:var(--paper);border:1px solid var(--line);color:var(--muted);
     display:flex;align-items:center;justify-content:center;cursor:pointer;
-    transition:background .15s,color .15s,transform .15s;
+    transition:background .15s,color .15s;
   }
-  .ec-close:hover{background:var(--mist);color:var(--violet-800);transform:scale(1.08);}
+  .ec-close:hover{background:var(--mist);color:var(--violet-800);}
 
-  .ec-badge-wrap{position:relative;width:132px;height:132px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;}
-  .ec-badge-ring{position:absolute;inset:0;border-radius:50%;border:3px solid #3FBE7B;opacity:0;animation:ecRing 1.6s ease-out .55s infinite;}
-  .ec-badge-ring.r2{animation-delay:.95s;}
-  .ec-badge-ring.r3{animation-delay:1.35s;}
-  @keyframes ecRing{0%{transform:scale(0.75);opacity:0.85;}100%{transform:scale(1.9);opacity:0;}}
+  .ec-badge-wrap{position:relative;width:72px;height:72px;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;}
   .ec-badge{
-    width:112px;height:112px;border-radius:50%;position:relative;z-index:2;
-    background:linear-gradient(135deg,#4ED494,#1F9159 65%);
+    width:72px;height:72px;border-radius:50%;position:relative;z-index:2;
+    background:var(--violet-700);
     display:flex;align-items:center;justify-content:center;color:#fff;
-    box-shadow:0 20px 44px -12px rgba(31,145,89,0.65), inset 0 -6px 14px rgba(0,0,0,0.12);
-    animation:ecBadgePop .6s cubic-bezier(.34,1.56,.64,1) .3s both, ecBadgeFloat 2.8s ease-in-out 1.1s infinite;
   }
-  @keyframes ecBadgePop{0%{transform:scale(0);}65%{transform:scale(1.18);}100%{transform:scale(1);}}
-  @keyframes ecBadgeFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
-  .ec-badge svg{width:52px;height:52px;overflow:visible;}
-  .ec-badge .ec-check-path{stroke-dasharray:30;stroke-dashoffset:30;animation:ecDraw .5s ease .62s forwards;}
+  .ec-badge svg{width:30px;height:30px;overflow:visible;}
+  .ec-badge .ec-check-path{stroke-dasharray:30;stroke-dashoffset:30;animation:ecDraw .4s ease .25s forwards;}
   @keyframes ecDraw{to{stroke-dashoffset:0;}}
-  .ec-badge-shine{
-    position:absolute;inset:-3px;border-radius:50%;
-    background:conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.9) 4%, transparent 10%);
-    opacity:0;animation:ecShineIn .01s .78s forwards, ecShineSpin 3.2s linear .8s infinite;
-    z-index:3;mix-blend-mode:overlay;
-  }
-  @keyframes ecShineIn{to{opacity:1;}}
-  @keyframes ecShineSpin{to{transform:rotate(360deg);}}
 
   .ec-eyebrow{
-    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--amber-600);
-    background:#FCF3E3;padding:5px 14px;border-radius:999px;margin-bottom:14px;
-    opacity:0;animation:ecFadeUp .5s ease .75s forwards;
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--violet-700);
+    background:var(--mist);padding:5px 14px;border-radius:999px;margin-bottom:14px;
   }
-  .ec-card h3{
-    font-size:23px;font-weight:800;color:var(--violet-900);margin:0 0 10px;line-height:1.35;
-    opacity:0;animation:ecFadeUp .5s ease .82s forwards;
-  }
-  .ec-card .ec-course{color:var(--violet-600);}
-  .ec-card p{
-    font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 26px;
-    opacity:0;animation:ecFadeUp .5s ease .9s forwards;
-  }
-  @keyframes ecFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .ec-card h3{font-size:20px;font-weight:800;color:var(--violet-900);margin:0 0 10px;line-height:1.4;}
+  .ec-card .ec-course{color:var(--violet-700);}
+  .ec-card p{font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 26px;}
   .ec-cta{
-    position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    width:100%;padding:15px 20px;border-radius:14px;font-weight:800;font-size:15.5px;color:var(--violet-900);
-    background:linear-gradient(135deg,#F0B24C,var(--amber-500));border:none;cursor:pointer;
-    box-shadow:0 16px 32px -12px rgba(226,163,59,0.6);
-    opacity:0;animation:ecFadeUp .5s ease .98s forwards, ecCtaPulse 2.4s ease 2s infinite;
-    transition:transform .15s;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:14px 20px;border-radius:12px;font-weight:700;font-size:15px;color:#fff;
+    background:var(--violet-700);border:none;cursor:pointer;transition:background .15s;
   }
-  .ec-cta:hover{transform:translateY(-2px);}
-  .ec-cta:active{transform:scale(0.97);}
-  @keyframes ecCtaPulse{0%,100%{box-shadow:0 16px 32px -12px rgba(226,163,59,0.6);}50%{box-shadow:0 16px 40px -8px rgba(226,163,59,0.85);}}
-  .ec-cta::after{
-    content:'';position:absolute;top:0;bottom:0;width:60px;left:-80px;
-    background:linear-gradient(115deg,transparent,rgba(255,255,255,0.55),transparent);
-    animation:ecShimmer 2.6s ease-in-out 1.6s infinite;
-  }
-  @keyframes ecShimmer{0%{left:-80px;}35%,100%{left:120%;}}
+  .ec-cta:hover{background:var(--violet-800);}
   .ec-secondary{
-    display:block;margin-top:14px;font-size:12.5px;color:var(--muted);font-weight:600;cursor:pointer;
-    opacity:0;animation:ecFadeUp .5s ease 1.05s forwards;
+    display:block;margin-top:14px;font-size:13px;color:var(--muted);font-weight:600;cursor:pointer;
   }
   .ec-secondary:hover{color:var(--violet-700);}
   @media (max-width:420px){
-    .ec-card{padding:44px 24px 32px;border-radius:26px;}
-    .ec-badge-wrap{width:112px;height:112px;}
-    .ec-badge{width:96px;height:96px;}
-    .ec-badge svg{width:44px;height:44px;}
-    .ec-card h3{font-size:20px;}
+    .ec-card{padding:36px 24px 28px;border-radius:18px;}
   }
 
   /* ================= ADMIN: active-tab indicator (global) ================= */
@@ -2809,10 +2718,12 @@ async function renderHome(){
    sections, so a student can still find something new without leaving their own front door. */
 function timeGreeting(){
   const h = new Date().getHours();
-  if(h < 5) return 'مساء الخير 🌙';
-  if(h < 12) return 'صباح الخير ☀️';
-  if(h < 17) return 'نهارك سعيد 🌤️';
-  return 'مساء الخير 🌇';
+  const sunIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></svg>';
+  const moonIcon = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>';
+  if(h < 5) return `${moonIcon} مساء الخير`;
+  if(h < 12) return `${sunIcon} صباح الخير`;
+  if(h < 17) return `${sunIcon} نهارك سعيد`;
+  return `${moonIcon} مساء الخير`;
 }
 
 /* Shared by every signed-in role's home page (student, instructor, and any future role) —
@@ -2975,7 +2886,7 @@ async function loadStudentHomeData(){
     if(myCoursesArea){
       myCoursesArea.innerHTML = myCourses.length
         ? `<div class="course-row-viewport"><div class="course-row-track">${myCourses.map(courseCardHTML).join('')}</div></div>`
-        : `<div class="empty-state">لسه ما اشتركت في أي كورس — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات المتاحة</a>.</div>`;
+        : `<div class="empty-state">لم تشترك بعد في أي كورس — <a href="#/courses" style="color:var(--violet-700);font-weight:700;">تصفّح الكورسات المتاحة</a>.</div>`;
     }
 
     let totalCompleted = 0, continueCourse = null, continuePct = 0, continueDone = 0, continueTotal = 0;
@@ -3651,15 +3562,15 @@ function authErrorAr(code){
 function explainErr(e, fallback){
   const code = e?.code || '';
   const map = {
-    'permission-denied':'الصلاحيات (Firestore Rules) ما بتسمح بالعملية دي لحسابك.',
+    'permission-denied':'لا تسمح الصلاحيات (Firestore Rules) بهذه العملية لحسابك.',
     'unauthenticated':'انتهت جلسة الدخول — سجّل خروج ودخول من جديد.',
     'unavailable':'مشكلة اتصال بالسيرفر، تأكد من النت وحاول تاني.',
     'auth/network-request-failed':'مشكلة اتصال بالنت، حاول تاني.',
-    'auth/too-many-requests':'محاولات كتيرة — استنى شوية (10–30 دقيقة) وجرّب تاني.',
-    'auth/unauthorized-continue-uri':'دومين الموقع مش مضاف في Firebase (Authentication ← Settings ← Authorized domains).',
-    'auth/invalid-continue-uri':'رابط الموقع غير صالح لـ Firebase (لازم يتفتح من رابط https حقيقي مش من ملف على الجهاز).',
+    'auth/too-many-requests':'محاولات كثيرة — يرجى الانتظار قليلًا (10–30 دقيقة) ثم إعادة المحاولة.',
+    'auth/unauthorized-continue-uri':'نطاق الموقع غير مُضاف في Firebase (Authentication ← Settings ← Authorized domains).',
+    'auth/invalid-continue-uri':'رابط الموقع غير صالح لـ Firebase (يجب أن يُفتح من رابط https حقيقي وليس من ملف على الجهاز).',
     'auth/missing-continue-uri':'رابط العودة ناقص.',
-    'auth/operation-not-allowed':'الميزة دي مقفولة في إعدادات Firebase Authentication.',
+    'auth/operation-not-allowed':'هذه الميزة معطّلة في إعدادات Firebase Authentication.',
     'auth/user-token-expired':'انتهت جلسة الدخول — سجّل دخول من جديد.',
     'auth/wrong-password':'كلمة المرور الحالية غير صحيحة.',
     'auth/invalid-credential':'كلمة المرور الحالية غير صحيحة.',
@@ -3903,7 +3814,7 @@ function renderVerifyEmail(){
       if(currentUser.emailVerified){
         playVerifyCelebration(() => { location.hash = '#/'; });
       }else{
-        alertBox.innerHTML = `<div class="alert alert-error">لسه ما ضغطت رابط التأكيد اللي في بريدك. افتح الإيميل الأول.</div>`;
+        alertBox.innerHTML = `<div class="alert alert-error">لم تضغط بعد رابط التأكيد الموجود في بريدك الإلكتروني. يرجى فتح البريد الإلكتروني أولًا.</div>`;
         btn.disabled = false;
         btn.innerHTML = `${SIDE_ICONS.check} تحققت من بريدي`;
       }
@@ -3941,73 +3852,23 @@ function playVerifyCelebration(onDone){
   overlay.className = 'verify-celebrate-overlay';
   overlay.innerHTML = `
     <div class="verify-celebrate-card">
-      <div class="verify-celebrate-confetti">${toastConfettiHTML()}</div>
       <div class="verify-big-check-wrap">
         <span class="st-ring"></span>
         <svg viewBox="0 0 24 24" fill="none">
           <path class="st-check-path" d="M5 13l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
-      <h3>تم التحقق من بريدك! 🎉</h3>
-      <p>حسابك موثّق بالكامل دلوقتي — جاهز تبدأ.</p>
+      <h3>تم التحقق من بريدك الإلكتروني</h3>
+      <p>حسابك موثّق بالكامل الآن، ويمكنك البدء في استخدام المنصة.</p>
     </div>
   `;
   document.body.appendChild(overlay);
   setTimeout(() => { onDone(); setTimeout(() => overlay.remove(), 400); }, 1900);
 }
 
-/* ================= ENROLLMENT ACCEPTED — full-screen celebration ================= */
-const EC_COLORS = ['#E2A33B','#6E4BAF','#3FBE7B','#3B6FBF','#F0B24C','#C98826','#8A63C9'];
-
-/* A steady rain of confetti falling from the top across the whole screen, running the
-   full length of the celebration (each piece gets its own random x/size/speed/color). */
-function ecRainHTML(n){
-  let out = '';
-  for(let i = 0; i < n; i++){
-    const x = (Math.random() * 100).toFixed(1) + '%';
-    const w = (5 + Math.random() * 6).toFixed(0) + 'px';
-    const c = EC_COLORS[i % EC_COLORS.length];
-    const dur = (2.6 + Math.random() * 1.8).toFixed(2) + 's';
-    const delay = (Math.random() * 1.3).toFixed(2) + 's';
-    const rot = Math.round(360 + Math.random() * 540) + 'deg';
-    out += `<span style="--x:${x};--w:${w};--c:${c};--dur:${dur};--delay:${delay};--rot:${rot};"></span>`;
-  }
-  return out;
-}
-/* One big radial burst fired from the badge the instant it pops in. */
-function ecBurstHTML(n){
-  let out = '';
-  for(let i = 0; i < n; i++){
-    const angle = (Math.PI * 2 * i) / n + Math.random() * 0.4;
-    const dist = 140 + Math.random() * 180;
-    const tx = Math.round(Math.cos(angle) * dist) + 'px';
-    const ty = Math.round(Math.sin(angle) * dist - 40) + 'px';
-    const tr = Math.round(Math.random() * 500 - 250) + 'deg';
-    const w = (5 + Math.random() * 5).toFixed(0) + 'px';
-    const c = EC_COLORS[i % EC_COLORS.length];
-    const delay = (Math.random() * 0.18).toFixed(2) + 's';
-    out += `<span style="--tx:${tx};--ty:${ty};--tr:${tr};--w:${w};--c:${c};--delay:${delay};"></span>`;
-  }
-  return out;
-}
-/* Slow-drifting sparkle stars that loop for as long as the overlay is open. */
-function ecSparklesHTML(n){
-  const glyphs = ['✦','✧','⭐','✨'];
-  let out = '';
-  for(let i = 0; i < n; i++){
-    const x = (Math.random() * 100).toFixed(1) + '%';
-    const sz = (12 + Math.random() * 14).toFixed(0) + 'px';
-    const sc = i % 2 === 0 ? 'var(--amber-500)' : '#fff';
-    const sdur = (3.5 + Math.random() * 2.5).toFixed(2) + 's';
-    const sdelay = (Math.random() * 3).toFixed(2) + 's';
-    out += `<span style="--x:${x};--sz:${sz};--sc:${sc};--sdur:${sdur};--sdelay:${sdelay};">${glyphs[i % glyphs.length]}</span>`;
-  }
-  return out;
-}
-
-/* The over-the-top "your enrollment was accepted" moment: a screen-filling glow, spinning
-   light rays, falling confetti, a radial burst, floating sparkles, and a bouncy badge with
-   a hand-drawn checkmark — then a card inviting the student straight into the course. */
+/* ================= ENROLLMENT ACCEPTED — confirmation screen =================
+   A calm, formal confirmation rather than a celebratory effect: a plain checkmark badge,
+   a clear confirmation message, and a direct way into the course. */
 function playEnrollmentCelebration(notif){
   if(document.getElementById('ecOverlay')) return;
   const courseTitle = notif.courseTitle || '';
@@ -4015,29 +3876,20 @@ function playEnrollmentCelebration(notif){
   overlay.id = 'ecOverlay';
   overlay.className = 'ec-overlay';
   overlay.innerHTML = `
-    <div class="ec-glow"></div>
-    <div class="ec-rays"></div>
-    <div class="ec-rain">${ecRainHTML(70)}</div>
-    <div class="ec-sparkles">${ecSparklesHTML(16)}</div>
     <div class="ec-card">
-      <div class="ec-burst">${ecBurstHTML(28)}</div>
       <button type="button" class="ec-close" id="ecCloseBtn" aria-label="إغلاق">${SIDE_ICONS.close}</button>
       <div class="ec-badge-wrap">
-        <span class="ec-badge-ring"></span>
-        <span class="ec-badge-ring r2"></span>
-        <span class="ec-badge-ring r3"></span>
         <div class="ec-badge">
-          <span class="ec-badge-shine"></span>
           <svg viewBox="0 0 24 24" fill="none">
             <path class="ec-check-path" d="M5 13l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
       </div>
-      <span class="ec-eyebrow">${SIDE_ICONS.check} تم تفعيل اشتراكك</span>
-      <h3>مبروك! تم قبول اشتراكك${courseTitle ? ` في<br/><span class="ec-course">${courseTitle}</span>` : ''} 🎉</h3>
-      <p>الكورس والمحاضرات فتحت ليك دلوقتي — يلّا نبدأ أول درس.</p>
-      <button type="button" class="ec-cta" id="ecCtaBtn">${SIDE_ICONS.playCircle} ابدأ التعلم الآن</button>
-      <span class="ec-secondary" id="ecLaterBtn">أشوفه بعدين</span>
+      <span class="ec-eyebrow">${SIDE_ICONS.check} تم تفعيل الاشتراك</span>
+      <h3>تهانينا، تم قبول اشتراكك${courseTitle ? ` في<br/><span class="ec-course">${courseTitle}</span>` : ''}</h3>
+      <p>أصبح بإمكانك الآن الوصول إلى محتوى الكورس والمحاضرات كاملةً، ويمكنك البدء بالدرس الأول في أي وقت تشاء.</p>
+      <button type="button" class="ec-cta" id="ecCtaBtn">${SIDE_ICONS.playCircle} بدء التعلّم الآن</button>
+      <span class="ec-secondary" id="ecLaterBtn">لاحقًا</span>
     </div>
   `;
   document.body.appendChild(overlay);
@@ -4045,7 +3897,7 @@ function playEnrollmentCelebration(notif){
 
   const close = () => {
     overlay.classList.add('leaving');
-    setTimeout(() => { overlay.remove(); document.body.style.overflow = ''; }, 380);
+    setTimeout(() => { overlay.remove(); document.body.style.overflow = ''; }, 260);
   };
   overlay.querySelector('#ecCloseBtn').addEventListener('click', close);
   overlay.querySelector('#ecLaterBtn').addEventListener('click', close);
@@ -4057,7 +3909,7 @@ function playEnrollmentCelebration(notif){
 }
 
 /* Runs once right after login resolves: if this student has an enrollment-approval
-   notification they haven't been shown the big celebration for yet, play it. The "shown"
+   notification they haven't been shown the confirmation for yet, show it. The "shown"
    flag lives in localStorage (per user, per notification id) so it survives across sessions
    without needing an extra Firestore write/permission just for this cosmetic moment. */
 async function checkEnrollmentCelebrations(){
@@ -5214,7 +5066,7 @@ function openCourseModal({ title, subtitle, headIcon, bodyHTML }){
 function cmBigStarSVG(){
   return `<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.63 22 9.24 16.5 14 18.18 21 12 17.27 5.82 21 7.5 14 2 9.24 8.91 8.63 12 2"/></svg>`;
 }
-const CM_STAR_LABELS = { 1:'ضعيف', 2:'مقبول', 3:'جيد', 4:'جيد جدًا', 5:'ممتاز! 🌟' };
+const CM_STAR_LABELS = { 1:'ضعيف', 2:'مقبول', 3:'جيد', 4:'جيد جدًا', 5:'ممتاز' };
 
 /* ---------------- 1) RATING — beautiful review-submission modal ---------------- */
 async function openCourseReviewModal(course){
@@ -6400,8 +6252,8 @@ let adminAlertsLastCounts = null;
 /* Tabs whose badge means "new since you last opened this tab" (as opposed to a pending-action
    queue like payments): the moment an admin opens the tab its last-seen time is stamped and the
    badge clears. Stored per browser in localStorage (best-effort — never breaks the panel). */
-const ADMIN_SEEN_TABS = { newUsers:'users', newCommunity:'community', newReviews:'reviews' };
-const ADMIN_SEEN_COLS = { users:'users', community:'communityMessages', reviews:'reviews' };
+const ADMIN_SEEN_TABS = { newUsers:'users', newCommunity:'community' };
+const ADMIN_SEEN_COLS = { users:'users', community:'communityMessages' };
 const seenStore = {
   get(k){ try{ return Number(localStorage.getItem('lvSeen_' + k)) || 0; }catch(e){ return 0; } },
   set(k, v){ try{ localStorage.setItem('lvSeen_' + k, String(v)); }catch(e){} },
@@ -6429,12 +6281,12 @@ async function getAdminPendingCounts(){
       try{ return (await getCountFromServer(query(collection(db, ADMIN_SEEN_COLS[tab]), where('createdAt','>', new Date(since))))).data().count; }
       catch(e){ return 0; }
     };
-    const [newUsers, newCommunity, newReviews] = await Promise.all([newCount('users'), newCount('community'), newCount('reviews')]);
+    const [newUsers, newCommunity] = await Promise.all([newCount('users'), newCount('community')]);
     return {
       payments: paySnap.data().count,
       library: librarySnap.data().count,
       review: reviewSnap.data().count,
-      newUsers, newCommunity, newReviews,
+      newUsers, newCommunity,
     };
   }catch(e){
     return null;
@@ -6507,7 +6359,7 @@ async function logAdminActivity(action, targetLabel, extra){
 }
 
 function applyAdminAlertBadges(counts){
-  const map = { payments:'payments', library:'library', review:'review', newUsers:'users', newCommunity:'community', newReviews:'reviews' };
+  const map = { payments:'payments', library:'library', review:'review', newUsers:'users', newCommunity:'community' };
   const total = Object.keys(map).reduce((s, k) => s + (counts[k] || 0), 0);
   const fmt = n => n > 99 ? '99+' : String(n);
   Object.entries(map).forEach(([countKey, tabKey]) => {
@@ -6576,9 +6428,6 @@ async function pollAdminAlerts(){
     }
     if(counts.newCommunity > (adminAlertsLastCounts.newCommunity || 0)){
       showAdminAlertToast('رسائل جديدة في المجتمع', `${counts.newCommunity} رسالة جديدة`, 'community');
-    }
-    if(counts.newReviews > (adminAlertsLastCounts.newReviews || 0)){
-      showAdminAlertToast('تقييم جديد', `${counts.newReviews} تقييم جديد`, 'reviews');
     }
   }
   adminAlertsLastCounts = counts;
@@ -6721,11 +6570,11 @@ function renderShell(activeKey){
         <div class="app-topbar">
           ${isAdminRole ? `<button type="button" class="icon-btn hamburger-btn" id="shellHamburgerBtn" title="القائمة">${SIDE_ICONS.menu}</button>` : ''}
           <div class="app-topbar-title">${shellTopbarTitle(activeKey)}</div>
-          <button type="button" class="app-search-trigger" id="shellSearchTrigger">
+          ${isAdminRole ? `<button type="button" class="app-search-trigger" id="shellSearchTrigger">
             <span class="ast-ic">${SIDE_ICONS.search}</span>
-            <span class="ast-label">${isAdminRole ? 'ابحث عن طالب، كورس، قسم...' : 'ابحث في المنصة...'}</span>
+            <span class="ast-label">ابحث عن طالب، كورس، قسم...</span>
             <span class="ast-kbd">Ctrl K</span>
-          </button>
+          </button>` : ''}
           <div class="topbar-actions">
             <div class="icon-btn" id="notifBellBtn">${SIDE_ICONS.bell}</div>
           </div>
@@ -7874,7 +7723,7 @@ async function learnRenderExams(area, course){
 
     area.querySelectorAll('[data-mark-done]').forEach(btn => {
       btn.addEventListener('click', async () => {
-        if(!confirm(`تأكيد إنك خلّصت "${btn.dataset.title}"؟ ده مش هيرجعلك درجة — بس بيسجّل إنك دخلته.`)) return;
+        if(!confirm(`تأكيد إتمامك "${btn.dataset.title}"؟ لن يمنحك هذا درجة — بل يُسجَّل فقط أنك دخلت إليه.`)) return;
         btn.disabled = true;
         try{
           await setDoc(doc(db, 'examResults', `${currentUser.uid}_${btn.dataset.markDone}`), {
@@ -8424,9 +8273,9 @@ async function manageRenderExams(area, course){
           </div>
           <div class="field" style="margin-bottom:0;">
             <label>تعليمات إضافية للطالب (اختياري)</label>
-            <input type="text" id="examLinkNote" placeholder="مثال: بعد ما تخلّص الامتحان ارجع هنا واضغط 'تأكيد الإنهاء'" />
+            <input type="text" id="examLinkNote" placeholder="مثال: بعد إتمام الامتحان عُد إلى هنا واضغط 'تأكيد الإنهاء'" />
           </div>
-          <p style="font-size:12.5px;color:var(--muted);margin:10px 0 0;">امتحان الرابط الخارجي مفيهوش تصحيح تلقائي ولا درجة — بس بيتسجّل إن الطالب دخل وخلّص، وتقدر تراجعه من لوحة الإدارة.</p>
+          <p style="font-size:12.5px;color:var(--muted);margin:10px 0 0;">امتحان الرابط الخارجي لا يتضمّن تصحيحًا تلقائيًا ولا درجة — يُسجَّل فقط دخول الطالب وإتمامه، ويمكنك مراجعته من لوحة الإدارة.</p>
         </div>
 
         <button type="button" class="btn btn-primary" id="saveExamBtn" style="margin-top:16px;display:block;">حفظ الامتحان</button>
@@ -8485,7 +8334,7 @@ async function manageRenderExams(area, course){
       if(!topic){ statusEl.textContent = 'اكتب موضوع أو نص الأول.'; statusEl.style.color = 'var(--danger)'; return; }
       if(!AI_QUESTIONS_ENDPOINT){
         statusEl.style.color = 'var(--danger)';
-        statusEl.textContent = 'ميزة التوليد الذكي محتاجة إعداد من المطوّر (Cloud Function) قبل ما تشتغل — لسه مش مفعّلة.';
+        statusEl.textContent = 'ميزة التوليد الذكي تحتاج إلى إعداد من المطوّر (Cloud Function) قبل أن تعمل — لم تُفعَّل بعد.';
         return;
       }
       const btn = document.getElementById('aiGenerateBtn');
@@ -9666,7 +9515,7 @@ async function adminRenderOverview(area){
   if(revCourses) A.push({ lvl:'hot', i:P.check, t:`${revCourses} كورس بانتظار موافقتك`, s:'مراجعة الكورسات المقدّمة من المدربين', go:H('review') });
   if(todayLec) A.push({ lvl:'info', i:P.vid, t:`${todayLec} محاضرة مباشرة اليوم`, s:'تأكد من الروابط والمواعيد', go:H('live-sessions') });
   if(awaitE.length) A.push({ lvl:'mid', i:P.clock, t:`${awaitE.length} طلب بانتظار رفع إيصال الدفع`, s:'الطالب ما رفع إثبات التحويل بعد', go:H('payments') + '&status=await' });
-  if(pms && !pms.length) A.push({ lvl:'warn', i:P.warn, t:'ما في وسيلة دفع مفعّلة', s:'الطلاب ما هيقدروا يكملوا الاشتراك في الكورسات المدفوعة', go:H('payment-methods') });
+  if(pms && !pms.length) A.push({ lvl:'warn', i:P.warn, t:'لا توجد وسيلة دفع مفعّلة', s:'لن يتمكن الطلاب من إتمام الاشتراك في الكورسات المدفوعة', go:H('payment-methods') });
   if(blockedN) A.push({ lvl:'info', i:P.ban, t:`${blockedN} حساب معطّل أو موقوف أو محظور`, s:'استعرضهم وراجع الحالات', go:H('users') });
   const links = [['payments','المدفوعات',P.card,pendE.length],['users','المستخدمون',P.users,0],['courses','الكورسات',P.book,0],['notifications','إرسال إشعار',P.bell,0],['archive','غرفة الأرشيف',P.folder,0],['activity-log','سجل النشاطات',P.act,0]];
 
@@ -9690,12 +9539,12 @@ async function adminRenderOverview(area){
   area.innerHTML = `
   <div class="ar ov" id="ovRoot">
     <div class="ar-hero">
-      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.act,24)}</span><div><h2>${greet}، ${E(name)} 👋</h2><p>${new Date().toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} — هذا ملخّص المنصة الآن.</p></div></div>
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.act,24)}</span><div><h2>${greet}، ${E(name)}</h2><p>${new Date().toLocaleDateString('ar-EG',{weekday:'long',day:'numeric',month:'long',year:'numeric'})} — هذا ملخّص المنصة الآن.</p></div></div>
       <div class="ar-hero-act"><span class="ov-upd" id="ovUpd">تم التحديث الآن</span><button class="btn btn-ghost btn-sm" id="ovRefresh">${svg(P.refresh,15)} تحديث</button></div>
     </div>
     <div class="ov-links">${links.map(([k,l,i,n],ix) => `<a href="${H(k)}" style="--d:${ix*.05}s"><span>${svg(i,18)}</span>${l}${n ? `<em>${n}</em>` : ''}</a>`).join('')}</div>
     <div class="widget ov-attn"><div class="widget-head"><h3>${svg(P.bell,16)} يحتاج انتباهك ${A.length ? `<em class="ov-cnt">${A.length}</em>` : ''}</h3></div>
-      ${A.length ? `<div class="ov-attn-g">${A.map((a,i) => `<a class="ov-a ${a.lvl}" href="${a.go}" style="--i:${i}"><span class="ov-ic">${svg(a.i,18)}</span><div><b>${a.t}</b><small>${a.s}</small></div><span class="ov-go">${svg(P.prev,16)}</span></a>`).join('')}</div>` : `<div class="ov-ok">${svg(P.check,26)}<div><b>كل شيء تمام</b><small>ما في مهام معلّقة الآن.</small></div></div>`}</div>
+      ${A.length ? `<div class="ov-attn-g">${A.map((a,i) => `<a class="ov-a ${a.lvl}" href="${a.go}" style="--i:${i}"><span class="ov-ic">${svg(a.i,18)}</span><div><b>${a.t}</b><small>${a.s}</small></div><span class="ov-go">${svg(P.prev,16)}</span></a>`).join('')}</div>` : `<div class="ov-ok">${svg(P.check,26)}<div><b>كل شيء على ما يرام</b><small>لا توجد مهام معلّقة الآن.</small></div></div>`}</div>
     <div class="ar-stats">${K.map((k,i) => `<a class="ov-kpi" href="${k.go}" style="--c:${k.c};--bg:${k.bg};--d:${i*.06}s"><div class="ov-kh"><span class="ar-stat-ic">${svg(k.i,20)}</span>${k.tr === undefined ? '' : tr(k.tr)}</div><b><span data-n="${k.n}">0</span>${k.u ? `<i>${k.u}</i>` : ''}</b><small>${k.l}</small>${spark(k.sp, k.c, i)}<em>${k.sub}</em></a>`).join('')}</div>
     <div class="ov-2">
       <div class="widget"><div class="widget-head"><h3>الإيرادات</h3><div class="ov-rng" id="ovRng"><button data-n="7">7 أيام</button><button data-n="30" class="on">30 يوم</button><button data-n="90">90 يوم</button></div></div><div class="ov-sum" id="ovSum"></div><div class="chart-box" style="height:250px"><canvas id="ovRev"></canvas></div></div>
@@ -10113,7 +9962,7 @@ async function adminRenderUsers(area){
     const L = filtered(), shown = L.slice(0, page*PAGE);
     document.querySelectorAll('#usRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#usCount').textContent = `عرض ${shown.length} من ${L.length}${L.length !== users.length ? ` (الإجمالي ${users.length})` : ''}`;
-    if(!L.length){ $('#usList').innerHTML = `<div class="ar-empty">${svg(P.srch,44)}<h4>ما في مستخدمين مطابقين</h4><p>جرّب تغيّر البحث أو الفلاتر.</p><button class="btn btn-ghost btn-sm" data-act="reset-f">مسح الفلاتر</button></div>`; return; }
+    if(!L.length){ $('#usList').innerHTML = `<div class="ar-empty">${svg(P.srch,44)}<h4>لا يوجد مستخدمون مطابقون</h4><p>جرّب تغيّر البحث أو الفلاتر.</p><button class="btn btn-ghost btn-sm" data-act="reset-f">مسح الفلاتر</button></div>`; return; }
     $('#usList').innerHTML = `<div class="${view==='list' ? 'ar-list us-list' : 'ar-cards'}">${view==='list' ? '<div class="ar-head us-head"><span></span><span></span><span>المستخدم</span><span>الدور</span><span>الحالة</span><span>النشاط</span><span>الانضمام</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${L.length - shown.length})</button>` : ''}`;
   }
   function paintBulk(){
@@ -10194,7 +10043,7 @@ async function adminRenderUsers(area){
     let reason = '';
     if(kind === 'banned'){ reason = await ask('حظر نهائي؟', `"${E(u.name || u.email)}" ما هيقدر يسجّل دخول أبدًا لحد ما ترجّع تفعيله.`, 'حظر', { input:'سبب الحظر (اختياري)', icon:P.ban }); if(reason === false) return; }
     else if(kind === 'suspend'){ if(!await ask(`إيقاف لمدة ${days} ${days === 1 ? 'يوم' : 'أيام'}؟`, `"${E(u.name || u.email)}" هيتسجّل خروجه ولا يقدر يدخل خلال المدة، وبعدها بيرجع تلقائيًا.`, 'إيقاف', { icon:P.clock })) return; }
-    else if(kind === 'disabled'){ if(!await ask('تعطيل الحساب؟', 'مش هيقدر صاحبه يسجّل الدخول لحد ما تفعّله تاني.', 'تعطيل', { icon:P.lock })) return; }
+    else if(kind === 'disabled'){ if(!await ask('تعطيل الحساب؟', 'لن يتمكن صاحبه من تسجيل الدخول إلى أن تُفعِّله مجددًا.', 'تعطيل', { icon:P.lock })) return; }
     try{ await setStatus(u, kind, days, reason); }catch(e){ console.error(e); return toast('تعذّر تحديث الحالة — راجع الصلاحيات'); }
     toast(kind === 'active' ? 'تمت إعادة التفعيل' : 'تم تحديث حالة الحساب'); paintAll(); paintDrawer();
   }
@@ -10359,7 +10208,7 @@ async function adminRenderCategories(area){
     const roots = filteredRoots();
     $('#catCount').textContent = cats.length ? `عرض ${roots.length} من ${rootCategories(cats).length} قسم رئيسي` : '';
     if(!roots.length){
-      $('#catTree').innerHTML = `<div class="ar-empty">${svg(cats.length ? P.srch : P.tag, 44)}<h4>${cats.length ? 'ما في نتائج مطابقة' : 'لا توجد أقسام بعد'}</h4><p>${cats.length ? 'جرّب تغيّر البحث أو الفلتر.' : 'الطلاب مش هيقدروا يتصفّحوا الكورسات بدون أقسام.'}</p>${cats.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new-root">إضافة قسم رئيسي</button>'}</div>`; return;
+      $('#catTree').innerHTML = `<div class="ar-empty">${svg(cats.length ? P.srch : P.tag, 44)}<h4>${cats.length ? 'لا توجد نتائج مطابقة' : 'لا توجد أقسام بعد'}</h4><p>${cats.length ? 'جرّب تغيّر البحث أو الفلتر.' : 'لن يتمكن الطلاب من تصفّح الكورسات دون أقسام.'}</p>${cats.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new-root">إضافة قسم رئيسي</button>'}</div>`; return;
     }
     let i = 0;
     $('#catTree').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>القسم</span><span>النوع</span><span>الكورسات</span><span></span><span>تحكّم</span></div>${roots.map(r => {
@@ -10601,7 +10450,7 @@ async function adminRenderArchive(area){
     document.querySelectorAll('.ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#arCount').textContent = items.length ? `عرض ${shown.length} من ${L.length}${L.length !== items.length ? ` (الإجمالي ${items.length})` : ''}` : '';
     if(!L.length){
-      $('#arList').innerHTML = `<div class="ar-empty">${svg(items.length ? P.srch : P.folder, 44)}<h4>${items.length ? 'ما في نتائج مطابقة' : 'الأرشيف فاضي'}</h4><p>${items.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ابدأ بإضافة أول محاضرة للأرشيف.'}</p>${items.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new">إضافة محاضرة</button>'}</div>`; return;
+      $('#arList').innerHTML = `<div class="ar-empty">${svg(items.length ? P.srch : P.folder, 44)}<h4>${items.length ? 'لا توجد نتائج مطابقة' : 'الأرشيف فارغ'}</h4><p>${items.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ابدأ بإضافة أول محاضرة للأرشيف.'}</p>${items.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new">إضافة محاضرة</button>'}</div>`; return;
     }
     $('#arList').innerHTML = `<div class="${view==='list' ? 'ar-list' : 'ar-cards'}">${view==='list' ? '<div class="ar-head"><span></span><span></span><span>المحاضرة</span><span>النوع</span><span>المرفوعة بواسطة</span><span>التاريخ</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${L.length - shown.length})</button>` : ''}`;
   }
@@ -10728,7 +10577,7 @@ async function adminRenderArchive(area){
     const u = e.target.value.trim(), msg = $('#arUrlMsg'); if(!typeTouched && u) $('#arfType').value = guess(u);
     const dup = items.find(x => x.url === u && x.id !== drw?.id);
     msg.className = 'ar-msg' + (dup ? ' warn' : u && !/^https?:\/\/\S+\.\S+/i.test(u) ? ' err' : ' ok');
-    msg.textContent = !u ? '' : dup ? `تنبيه: الرابط ده موجود قبل كده في "${dup.title}".` : !/^https?:\/\/\S+\.\S+/i.test(u) ? 'الرابط لازم يبدأ بـ https://' : `تم التعرّف عليه: ${tm(guess(u)).l}${dom(u) ? ' · ' + dom(u) : ''}`;
+    msg.textContent = !u ? '' : dup ? `تنبيه: هذا الرابط مُضاف مسبقًا في "${dup.title}".` : !/^https?:\/\/\S+\.\S+/i.test(u) ? 'يجب أن يبدأ الرابط بـ https://' : `تم التعرّف عليه: ${tm(guess(u)).l}${dom(u) ? ' · ' + dom(u) : ''}`;
   });
   $('#arQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); page = 1; paintList(); });
   $('#arSt').addEventListener('change', e => { fst = e.target.value; page = 1; paintAll(); });
@@ -10837,7 +10686,7 @@ async function adminRenderLibraryReview(area){
     const L = filtered();
     $('#libCount').textContent = works.length ? `عرض ${L.length} من ${works.length}` : '';
     if(!L.length){
-      $('#libList').innerHTML = `<div class="ar-empty">${svg(works.length ? P.srch : P.book, 44)}<h4>${works.length ? 'ما في نتائج مطابقة' : 'لا توجد أعمال مرسلة بعد'}</h4><p>${works.length ? 'جرّب تغيّر البحث أو الفلاتر.' : ''}</p>${works.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+      $('#libList').innerHTML = `<div class="ar-empty">${svg(works.length ? P.srch : P.book, 44)}<h4>${works.length ? 'لا توجد نتائج مطابقة' : 'لا توجد أعمال مرسلة بعد'}</h4><p>${works.length ? 'جرّب تغيّر البحث أو الفلاتر.' : ''}</p>${works.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
     }
     $('#libList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>العمل</span><span>القسم</span><span>الحالة</span><span>تاريخ الإرسال</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
   }
@@ -10986,7 +10835,7 @@ async function adminRenderCourses(area){
       <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.book,24)}</span><div><h2>الكورسات</h2><p>كل كورسات المنصة — الحالة، القسم، المدرب، وعدد الطلاب المسجّلين والإيرادات.</p></div></div>
       <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-primary btn-sm" data-act="new">${svg(P.plus,15)} كورس جديد</button></div>
     </div>
-    ${legacyCourses.length ? `<div class="pay-sla" id="crsLegacy"><span>${svg(P.warn,20)}</span><div><b>${legacyCourses.length} كورس قديم غير ظاهر للطلاب</b><small>اتعمل قبل نظام حالة الكورس، فمفيش له حالة محددة، فمش بيظهر في المتجر: ${legacyCourses.map(c=>E(c.title)).join('، ')}</small></div><button class="btn btn-sm" data-act="fix-legacy">تفعيلها كلها الآن</button></div>` : ''}
+    ${legacyCourses.length ? `<div class="pay-sla" id="crsLegacy"><span>${svg(P.warn,20)}</span><div><b>${legacyCourses.length} كورس قديم غير ظاهر للطلاب</b><small>أُنشئ قبل اعتماد نظام حالة الكورس، ولذلك لا توجد له حالة محددة، ولا يظهر في المتجر: ${legacyCourses.map(c=>E(c.title)).join('، ')}</small></div><button class="btn btn-sm" data-act="fix-legacy">تفعيلها كلها الآن</button></div>` : ''}
     <div class="ar-stats" id="crsStats"></div>
     <div class="widget ar-panel" style="margin-top:14px;">
       <div class="cat-tabs" id="crsChips"></div>
@@ -11055,7 +10904,7 @@ async function adminRenderCourses(area){
     const L = filtered();
     $('#crsCount').textContent = courses.length ? `عرض ${L.length} من ${courses.length}` : '';
     if(!L.length){
-      $('#crsList').innerHTML = `<div class="ar-empty">${svg(courses.length ? P.srch : P.book, 44)}<h4>${courses.length ? 'ما في نتائج مطابقة' : 'لا توجد كورسات بعد'}</h4><p>${courses.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ابدأ بإضافة أول كورس.'}</p>${courses.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new">كورس جديد</button>'}</div>`; return;
+      $('#crsList').innerHTML = `<div class="ar-empty">${svg(courses.length ? P.srch : P.book, 44)}<h4>${courses.length ? 'لا توجد نتائج مطابقة' : 'لا توجد كورسات بعد'}</h4><p>${courses.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ابدأ بإضافة أول كورس.'}</p>${courses.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : '<button class="btn btn-primary btn-sm" data-act="new">كورس جديد</button>'}</div>`; return;
     }
     $('#crsList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الكورس</span><span>الحالة</span><span>الطلاب</span><span>السعر</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
   }
@@ -11292,7 +11141,7 @@ async function adminRenderCourseReview(area){
     const L = filtered();
     $('#crvCount').textContent = pending.length ? `عرض ${L.length} من ${pending.length}` : '';
     if(!L.length){
-      $('#crvList').innerHTML = `<div class="ar-empty">${svg(pending.length ? P.srch : P.check, 44)}<h4>${pending.length ? 'ما في نتائج مطابقة' : 'لا توجد كورسات تحتاج مراجعة حاليًا 🎉'}</h4><p>${pending.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'كل الكورسات المرسلة تمت مراجعتها.'}</p>${pending.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+      $('#crvList').innerHTML = `<div class="ar-empty">${svg(pending.length ? P.srch : P.check, 44)}<h4>${pending.length ? 'لا توجد نتائج مطابقة' : 'لا توجد كورسات تحتاج مراجعة حاليًا'}</h4><p>${pending.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'كل الكورسات المرسلة تمت مراجعتها.'}</p>${pending.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
     }
     $('#crvList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الكورس</span><span>الحالة</span><span>السعر الحالي</span><span>وقت الانتظار</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
   }
@@ -11314,7 +11163,7 @@ async function adminRenderCourseReview(area){
       <div class="ar-kvs">
         ${[['القسم', E(c.categoryName||'—')],['المستوى', c.level||'—'],['المدة', c.durationText||'—'],['تاريخ الإرسال', fmtD(ts(c.submittedAt||c.createdAt)) + ` <small>${ago(ts(c.submittedAt||c.createdAt))}</small>`]].map(([k,v]) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`).join('')}
       </div>
-      <a href="#/course/${c.id}" target="_blank" rel="noopener" class="ar-lnk" style="display:inline-block;margin:10px 0;">معاينة صفحة الكورس كاملة ↗</a>
+      <a href="#/course/${c.id}" target="_blank" rel="noopener" class="ar-lnk" style="display:inline-flex;align-items:center;gap:5px;margin:10px 0;">معاينة صفحة الكورس كاملة ${svg(P.ext,13)}</a>
       <form id="crvForm" style="margin-top:10px;">
         <div style="display:flex;gap:10px;">
           <div class="field" style="flex:1;"><label>السعر (جنيه)</label><input id="crvfPrice" type="number" min="0" value="${c.price||0}"></div>
@@ -11501,7 +11350,7 @@ async function adminRenderPayments(area){
     const L = filtered(), shown = L.slice(0, page*PAGE), tot = L.reduce((s,e) => s + Number(e.finalAmount || 0), 0);
     document.querySelectorAll('#payRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#payCount').innerHTML = `عرض ${nm(shown.length)} من ${nm(L.length)} · مجموع المبالغ المعروضة: <b>${money(tot)}</b>`;
-    if(!L.length){ $('#payList').innerHTML = `<div class="ar-empty">${svg(P.card,44)}<h4>${enr.length ? 'ما في طلبات مطابقة' : 'لا توجد طلبات بعد'}</h4><p>${enr.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'هتظهر هنا أول ما الطلاب يبدأوا الاشتراك.'}</p>${enr.length ? '<button class="btn btn-ghost btn-sm" data-act="reset-f">مسح الفلاتر</button>' : ''}</div>`; return; }
+    if(!L.length){ $('#payList').innerHTML = `<div class="ar-empty">${svg(P.card,44)}<h4>${enr.length ? 'لا توجد طلبات مطابقة' : 'لا توجد طلبات بعد'}</h4><p>${enr.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'ستظهر هنا فور بدء الطلاب بالاشتراك.'}</p>${enr.length ? '<button class="btn btn-ghost btn-sm" data-act="reset-f">مسح الفلاتر</button>' : ''}</div>`; return; }
     $('#payList').innerHTML = `<div class="${view === 'list' ? 'ar-list pay-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head pay-head"><span></span><span></span><span>الطالب / الكورس</span><span>رقم الطلب</span><span>المبلغ</span><span>وسيلة الدفع</span><span>الحالة</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
   }
   function paintBulk(){
@@ -11565,7 +11414,7 @@ async function adminRenderPayments(area){
 
   /* ---- decisions ---- */
   const MSG = {
-    approved:(e) => ['تم قبول اشتراكك ✅', `تم تفعيل كورس "${e.courseTitle || ''}" — تقدر تبدأ التعلم من الآن.`],
+    approved:(e) => ['تم قبول اشتراكك', `تم تفعيل كورس "${e.courseTitle || ''}" — يمكنك بدء التعلم من الآن.`],
     rejected:(e, r) => ['تعذّر قبول طلب الاشتراك', `طلب اشتراكك في "${e.courseTitle || ''}" لم يُقبل${r ? ` — السبب: ${r}` : ''}. تقدر تعيد المحاولة أو تتواصل معنا.`],
     cancelled:(e, r) => ['تم إلغاء اشتراكك', `تم إلغاء اشتراكك في "${e.courseTitle || ''}"${r ? ` — السبب: ${r}` : ''}. للاستفسار تواصل مع الإدارة.`],
     remind:(e) => ['أكمل دفع اشتراكك', `طلبك في "${e.courseTitle || ''}" (#${e.orderNumber || ''}) بانتظار تأكيد الدفع. بعد التحويل اضغط "تم الدفع" من صفحة الاشتراك.`],
@@ -11586,13 +11435,13 @@ async function adminRenderPayments(area){
   }
   function afterDecision(nextId, sent, label){
     paintAll();
-    if(drw && auto && nextId){ open(nextId); } else if(drw && auto && !nextId && !enr.some(x => x.g === 'review')){ drw = null; paintDrawer(); toast('🎉 خلّصت كل الطلبات المعلّقة'); return; } else paintDrawer();
+    if(drw && auto && nextId){ open(nextId); } else if(drw && auto && !nextId && !enr.some(x => x.g === 'review')){ drw = null; paintDrawer(); toast('تم الانتهاء من جميع الطلبات المعلّقة'); return; } else paintDrawer();
     toast(`${label}${sent ? ' — وتم إشعار الطالب' : ''}`);
   }
   const nextReview = id => { const L = filtered().filter(x => x.g === 'review'), i = L.findIndex(x => x.id === id); return (L[i + 1] || L.find(x => x.id !== id))?.id || null; };
   async function approve(e){
-    const skipNote = e.g === 'await' ? '<br><b style="color:var(--amber-600)">⚠ الطالب لسه ما أكّد الدفع من عنده — استخدم ده بس لو اتأكدت من الدفع بطريقة تانية (واتساب، حوالة مباشرة، إلخ).</b>' : '';
-    if(!await ask('قبول الطلب وتفعيل الكورس؟', `${E(e.studentName || 'الطالب')} — ${E(e.courseTitle || '')} — ${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}${e.dupRef.length || e.dupCourse.length ? '<br><b style="color:var(--danger)">⚠ في تنبيهات تكرار على هذا الطلب!</b>' : ''}${skipNote}`, 'قبول', { safe:true, icon:P.check })) return;
+    const skipNote = e.g === 'await' ? '<br><b style="color:var(--amber-600)">تنبيه: لم يؤكّد الطالب الدفع من جهته بعد — استخدم هذا فقط في حال تأكدت من الدفع بطريقة أخرى (واتساب، حوالة مباشرة، إلخ).</b>' : '';
+    if(!await ask('قبول الطلب وتفعيل الكورس؟', `${E(e.studentName || 'الطالب')} — ${E(e.courseTitle || '')} — ${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}${e.dupRef.length || e.dupCourse.length ? `<br><b style="color:var(--danger)">${svg(P.warn,13)} توجد تنبيهات تكرار على هذا الطلب!</b>` : ''}${skipNote}`, 'قبول', { safe:true, icon:P.check })) return;
     const nx = nextReview(e.id);
     try{ const sent = await decide(e, 'approved'); afterDecision(nx, sent, 'تم قبول الطلب وتفعيل الكورس'); }catch(err){ console.error(err); toast('تعذّر تنفيذ العملية — راجع الاتصال والصلاحيات'); }
   }
@@ -11604,7 +11453,7 @@ async function adminRenderPayments(area){
     const L = enr.filter(e => sel.has(e.id) && e.g === 'review'); if(!L.length) return;
     let reason = '';
     if(kind === 'approved'){ if(!await ask(`قبول ${nm(L.length)} طلب؟`, 'هيتفعّل الكورس لكل الطلاب المحددين وهيتبلّغوا.', 'قبول الكل', { safe:true, icon:P.check })) return; }
-    else { reason = await ask(`رفض ${nm(L.length)} طلب؟`, 'هيتم إشعار الطلاب بالرفض.', 'رفض الكل', { input:'سبب الرفض (اختياري)', icon:P.ban }); if(reason === false) return; }
+    else { reason = await ask(`رفض ${nm(L.length)} طلب؟`, 'سيتم إشعار الطلاب بالرفض.', 'رفض الكل', { input:'سبب الرفض (اختياري)', icon:P.ban }); if(reason === false) return; }
     let ok = 0; for(const e of L){ try{ await decide(e, kind, reason); ok++; sel.delete(e.id); }catch(err){ console.error(err); } }
     paintAll(); toast(`تم تنفيذ ${nm(ok)} من ${nm(L.length)}`);
   }
@@ -11917,7 +11766,7 @@ function renderCertificatePreview(host, c){
 
   /* ================= ADMIN: REVIEWS ================= */
   .rv-head,.rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 1fr 92px 92px;}
-  .rv-stars{display:inline-flex;gap:1px;vertical-align:middle;} .rv-stars i{display:flex;color:var(--line);} .rv-stars i.on{color:var(--amber-500);}
+  .rv-stars{display:inline-flex;gap:1px;vertical-align:middle;} .rv-stars i{display:flex;color:var(--amber-500);}
   .rv-comment{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   @media (max-width:1050px){ .rv-head,.rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 92px;} .rv-head span:nth-child(4),.rv-list .rv-comment{display:none;} }
   @media (max-width:760px){ .rv-head{display:none;} .rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr);} .rv-list .ar-dt,.rv-list .ar-act{display:none;} .rv-list .ar-item{cursor:pointer;} }
@@ -11952,13 +11801,13 @@ async function renderVerifyCertificate(id){
   let c = null, failed = false;
   try{ const snap = await getDoc(doc(db, 'certificates', id)); if(snap.exists()) c = { id:snap.id, ...snap.data() }; }catch(e){ failed = true; console.warn('[Lavender] verify cert', e?.code); }
   app.innerHTML = `<div class="dash-wrap"><div class="dash-card" style="max-width:560px;margin:0 auto;text-align:center;">
-    ${c ? `<div style="width:64px;height:64px;border-radius:50%;background:#E9F5EE;color:var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;">✓</div>
+    ${c ? `<div style="width:64px;height:64px;border-radius:50%;background:#E9F5EE;color:var(--success);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l5 5L19 7"/></svg></div>
       <h2 style="margin:0 0 6px;color:var(--success);">شهادة صحيحة وموثّقة</h2><p style="color:var(--muted);margin:0 0 20px;">صادرة عن منصة لافندر</p>
       <div style="text-align:start;border:1px solid var(--line);border-radius:14px;overflow:hidden;">
         ${[['اسم الطالب', c.studentName], ['الكورس', c.courseTitle], ['تاريخ الإصدار', certDateLabel(c)], ['رقم الشهادة', certSerial(c)], ['ملاحظة', c.note]].filter(r => r[1]).map(([k,v]) => `<div style="display:flex;justify-content:space-between;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);"><span style="color:var(--muted);">${k}</span><b>${certEsc(v)}</b></div>`).join('')}
       </div>`
-    : `<div style="width:64px;height:64px;border-radius:50%;background:#FBEBEA;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:30px;">✕</div>
-      <h2 style="margin:0 0 6px;color:var(--danger);">${failed ? 'تعذّر التحقق الآن' : 'لم نجد هذه الشهادة'}</h2><p style="color:var(--muted);">${failed ? 'حاول مرة أخرى بعد قليل.' : 'تأكد من الرابط، أو تواصل مع الإدارة.'}</p>`}
+    : `<div style="width:64px;height:64px;border-radius:50%;background:#FBEBEA;color:var(--danger);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+      <h2 style="margin:0 0 6px;color:var(--danger);">${failed ? 'تعذّر التحقق الآن' : 'لم نجد هذه الشهادة'}</h2><p style="color:var(--muted);">${failed ? 'يرجى المحاولة مرة أخرى بعد قليل.' : 'يرجى التأكد من الرابط، أو التواصل مع الإدارة.'}</p>`}
     <a href="#/" class="btn btn-ghost" style="margin-top:20px;">الصفحة الرئيسية</a></div></div>`;
 }
 
@@ -12048,7 +11897,7 @@ async function adminRenderCertificates(area){
     const L = list(), shown = L.slice(0, page*PAGE);
     document.querySelectorAll('#crtRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#crtCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
-    if(!L.length){ $('#crtList').innerHTML = `<div class="ar-empty">${svg(P.medal,44)}<h4>${main === 'issued' ? (certs.length ? 'ما في نتائج مطابقة' : 'لا توجد شهادات صادرة بعد') : 'كل المشتركين حصلوا على شهاداتهم 🎉'}</h4><p>${main === 'issued' && !certs.length ? 'ابدأ بإصدار أول شهادة.' : 'جرّب تغيّر البحث أو الفلاتر.'}</p>${main === 'issued' && !certs.length ? '<button class="btn btn-primary btn-sm" data-act="new">إصدار شهادة</button>' : ''}</div>`; return; }
+    if(!L.length){ $('#crtList').innerHTML = `<div class="ar-empty">${svg(P.medal,44)}<h4>${main === 'issued' ? (certs.length ? 'لا توجد نتائج مطابقة' : 'لا توجد شهادات صادرة بعد') : 'جميع المشتركين حصلوا على شهاداتهم'}</h4><p>${main === 'issued' && !certs.length ? 'ابدأ بإصدار أول شهادة.' : 'جرّب تغيّر البحث أو الفلاتر.'}</p>${main === 'issued' && !certs.length ? '<button class="btn btn-primary btn-sm" data-act="new">إصدار شهادة</button>' : ''}</div>`; return; }
     $('#crtList').innerHTML = `<div class="${view === 'list' ? 'ar-list crt-list' : 'ar-cards'}">${view === 'list' ? `<div class="ar-head crt-head"><span></span><span></span><span>الطالب / الكورس</span><span>${main === 'issued' ? 'رقم الشهادة' : 'الامتحانات'}</span><span>${main === 'issued' ? 'الإصدار' : 'الاشتراك'}</span><span>تحكّم</span></div>` : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
   }
   function paintBulk(){
@@ -12105,7 +11954,7 @@ async function adminRenderCertificates(area){
   /* ---- actions ---- */
   async function notify(c){
     if(!c.studentId) return false;
-    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:c.studentId, title:'🎓 تم إصدار شهادتك', body:`تم إصدار شهادة إتمام كورس "${c.courseTitle || ''}" (${c.serialL || certSerial(c)}). تقدر تشوفها وتطبعها من صفحة "شهاداتي".`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }); return true; }
+    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:c.studentId, title:'تم إصدار شهادتك', body:`تم إصدار شهادة إتمام كورس "${c.courseTitle || ''}" (${c.serialL || certSerial(c)}). يمكنك عرضها وطباعتها من صفحة "شهاداتي".`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }); return true; }
     catch(e){ console.warn('[Lavender] cert notify', e?.code); return false; }
   }
   async function issueFor(en, note, date, doNotify){
@@ -12141,7 +11990,7 @@ async function adminRenderCertificates(area){
   }
   async function remove(ids){
     const L = ids.map(id => certs.find(c => c.id === id)).filter(Boolean); if(!L.length) return;
-    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} شهادة؟` : 'حذف هذه الشهادة؟', L.length > 1 ? 'الشهادات المحددة هتتلغي، وروابط التحقق بتاعتها هتوقف.' : `شهادة "${E(L[0].studentName)}" هتتلغي ورابط التحقق بتاعها هيوقف.`, 'حذف')) return;
+    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} شهادة؟` : 'حذف هذه الشهادة؟', L.length > 1 ? 'سيتم إلغاء الشهادات المحددة، وستتوقف روابط التحقق الخاصة بها.' : `سيتم إلغاء شهادة "${E(L[0].studentName)}"، وسيتوقف رابط التحقق الخاص بها.`, 'حذف')) return;
     try{ await Promise.all(L.map(c => deleteDoc(doc(db,'certificates',c.id)))); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
     certs = certs.filter(c => !ids.includes(c.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw.id)) drw = null;
     logAdminActivity('cert_delete', L[0].studentName, L.length > 1 ? `${L.length} شهادات` : L[0].serialL); paintAll(); paintDrawer();
@@ -12247,7 +12096,7 @@ async function adminRenderPaymentMethods(area){
 
   function paintTop(){
     const on = methods.filter(isOn), tot = methods.reduce((s,m) => s + use(m).rev, 0), totN = methods.reduce((s,m) => s + use(m).ok, 0), top = [...methods].sort((a,b) => use(b).n - use(a).n)[0];
-    $('#pmWarn').innerHTML = !on.length ? `<div class="pay-sla"><span>${svg(P.warn,20)}</span><div><b>ما في أي وسيلة دفع مفعّلة!</b><small>الطلاب ما هيقدروا يكملوا الاشتراك في الكورسات المدفوعة لحد ما تفعّل أو تضيف وسيلة.</small></div><button class="btn btn-sm" data-act="new">إضافة وسيلة</button></div>`
+    $('#pmWarn').innerHTML = !on.length ? `<div class="pay-sla"><span>${svg(P.warn,20)}</span><div><b>لا توجد أي وسيلة دفع مفعّلة!</b><small>لن يتمكن الطلاب من إتمام الاشتراك في الكورسات المدفوعة إلى أن تُفعِّل أو تضيف وسيلة.</small></div><button class="btn btn-sm" data-act="new">إضافة وسيلة</button></div>`
       : on.length === 1 ? `<div class="pm-note">${svg(P.warn,16)} في وسيلة واحدة بس مفعّلة (${E(on[0].label)}). يفضّل تضيف بديل لو الأولى وقفت.</div>` : '';
     const S = [
       { k:'all', l:'إجمالي الوسائل', n:methods.length, i:P.wallet, c:'#5A3B92', bg:'#EDE7F6', on:flt === 'all' },
@@ -12274,8 +12123,8 @@ async function adminRenderPaymentMethods(area){
   }
   function paintGrid(){
     const L = methods.filter(m => flt === 'all' || (flt === 'on' ? isOn(m) : !isOn(m)));
-    $('#pmGrid').innerHTML = L.length ? `<div class="pm-grid">${L.map(cardHTML).join('')}</div>${orphan ? `<small class="us-hint">⚠ ${nm(orphan)} طلب قديم مرتبط بوسائل دفع اتحذفت.</small>` : ''}`
-      : `<div class="ar-empty">${svg(P.wallet,44)}<h4>${methods.length ? 'ما في وسائل في التصنيف ده' : 'لا توجد وسائل دفع بعد'}</h4><p>${methods.length ? 'غيّر التصنيف من الأعلى.' : 'أضف أول وسيلة عشان الطلاب يقدروا يشتركوا.'}</p>${methods.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">إضافة وسيلة</button>'}</div>`;
+    $('#pmGrid').innerHTML = L.length ? `<div class="pm-grid">${L.map(cardHTML).join('')}</div>${orphan ? `<small class="us-hint">${svg(P.warn,12)} ${nm(orphan)} طلب قديم مرتبط بوسائل دفع محذوفة.</small>` : ''}`
+      : `<div class="ar-empty">${svg(P.wallet,44)}<h4>${methods.length ? 'لا توجد وسائل في هذا التصنيف' : 'لا توجد وسائل دفع بعد'}</h4><p>${methods.length ? 'غيّر التصنيف من الأعلى.' : 'أضف أول وسيلة حتى يتمكن الطلاب من الاشتراك.'}</p>${methods.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">إضافة وسيلة</button>'}</div>`;
   }
   const paintAll = () => { paintTop(); paintGrid(); };
 
@@ -12300,7 +12149,7 @@ async function adminRenderPaymentMethods(area){
       <div class="field"><label>ملاحظة خاصة بالإدارة (ما بتظهر للطلاب)</label><input id="pmNote" value="${E(m.adminNote || '')}" placeholder="مثال: الحساب باسم فلان — تحقق من الإشعار"></div>
       <label class="fin-tg"><input type="checkbox" id="pmActive" ${m.active === false ? '' : 'checked'}><i></i>مفعّلة (تظهر للطلاب)</label>
       <div class="ar-msg err" id="pmErr"></div>
-      <div class="field" style="margin-top:14px"><label>كده هتظهر للطالب</label><div class="pm-prev" id="pmPrev"></div></div>
+      <div class="field" style="margin-top:14px"><label>هكذا ستظهر للطالب</label><div class="pm-prev" id="pmPrev"></div></div>
       <div class="ar-form-b"><button class="btn btn-primary" type="submit">${editing ? 'حفظ التعديلات' : 'إضافة الوسيلة'}</button><button class="btn btn-ghost" type="button" data-act="close">إلغاء</button></div></form>`;
     paintPreview(); $('#pmLabel').focus();
   }
@@ -12331,7 +12180,7 @@ async function adminRenderPaymentMethods(area){
   }
   async function remove(m){
     const u = use(m);
-    if(!await ask('حذف وسيلة الدفع؟', `"${E(m.label)}" هتتشال نهائيًا.${u.n ? `<br><b style="color:var(--danger)">مرتبطة بـ ${nm(u.n)} طلب — هيظهروا بـ"وسيلة محذوفة". لو بس عايز توقفها، عطّلها بدل الحذف.</b>` : ''}`, 'حذف', { icon:P.trash })) return;
+    if(!await ask('حذف وسيلة الدفع؟', `سيتم حذف "${E(m.label)}" نهائيًا.${u.n ? `<br><b style="color:var(--danger)">مرتبطة بـ ${nm(u.n)} طلب — ستظهر لهم بوصف "وسيلة محذوفة". إذا كنت ترغب فقط في إيقافها، عطّلها بدلًا من حذفها.</b>` : ''}`, 'حذف', { icon:P.trash })) return;
     const { id, ...raw } = m;
     try{ await deleteDoc(doc(db,'paymentMethods',id)); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
     methods = methods.filter(x => x.id !== id); logAdminActivity('pm_delete', m.label); await persistOrder(); if(u.n) orphan += u.n; paintAll();
@@ -12472,7 +12321,7 @@ async function adminRenderLiveSessions(area){
     const L = filtered(), shown = L.slice(0, page*PAGE);
     document.querySelectorAll('#lsRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#lsCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
-    if(!L.length){ $('#lsList').innerHTML = `<div class="ar-empty">${svg(P.vid,44)}<h4>${lectures.length ? 'ما في محاضرات مطابقة' : 'لا توجد محاضرات مجدولة'}</h4><p>${lectures.length ? 'جرّب تغيّر الفلاتر.' : 'المدربون يجدولون المحاضرات من صفحة إدارة الكورس، أو جدولها أنت من هنا.'}</p>${lectures.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">جدولة محاضرة</button>'}</div>`; return; }
+    if(!L.length){ $('#lsList').innerHTML = `<div class="ar-empty">${svg(P.vid,44)}<h4>${lectures.length ? 'لا توجد محاضرات مطابقة' : 'لا توجد محاضرات مجدولة'}</h4><p>${lectures.length ? 'جرّب تغيّر الفلاتر.' : 'المدربون يجدولون المحاضرات من صفحة إدارة الكورس، أو جدولها أنت من هنا.'}</p>${lectures.length ? '' : '<button class="btn btn-primary btn-sm" data-act="new">جدولة محاضرة</button>'}</div>`; return; }
     $('#lsList').innerHTML = `<div class="${view === 'list' ? 'ar-list ls-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head ls-head"><span></span><span></span><span>المحاضرة</span><span>الموعد</span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
   }
   function paintBulk(){
@@ -12520,7 +12369,7 @@ async function adminRenderLiveSessions(area){
     try{
       const eS = await getDocs(query(collection(db,'enrollments'), where('courseId','==', l.courseId), where('status','==','approved')));
       const ids = [...new Set(eS.docs.map(d => d.data().studentId).filter(Boolean))]; if(!ids.length) return 0;
-      await Promise.all(ids.map(sid => addDoc(collection(db,'notifications'), { targetType:'user', targetId:sid, title:'📹 تذكير بمحاضرة مباشرة', body:`محاضرة "${l.title}" في كورس "${l.course?.title || ''}" يوم ${fmtDT(l)}${l.link ? '. الرابط هيكون متاح في صفحة الكورس.' : ''}`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() })));
+      await Promise.all(ids.map(sid => addDoc(collection(db,'notifications'), { targetType:'user', targetId:sid, title:'تذكير بمحاضرة مباشرة', body:`محاضرة "${l.title}" في كورس "${l.course?.title || ''}" يوم ${fmtDT(l)}${l.link ? '. سيكون الرابط متاحًا في صفحة الكورس.' : ''}`, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() })));
       return ids.length;
     }catch(e){ console.warn('[Lavender] notify lecture', e?.code); return -1; }
   }
@@ -12671,7 +12520,7 @@ async function adminRenderAttendance(area){
         <div class="att-roster">${L.length ? L.map((s,i) => { const st = attMap[lecId]?.[s.studentId], r = studentRate(s.studentId); return `
           <div class="att-row" style="--i:${Math.min(i,16)}"><span class="us-av" style="--c:${rateColor(r?.pct ?? null)}">${E(initial(s.studentName))}</span>
             <div class="ar-main"><div class="ar-t">${E(s.studentName || 'طالب')}</div><div class="ar-d">${r ? `${nm(r.n)}/${nm(r.total)} محاضرة · ${nm(r.pct)}%` : 'لا توجد محاضرات سابقة بعد'}</div></div>
-            <div class="att-toggle"><button class="${st === false ? 'on bad' : ''}" data-mark="${s.studentId}" data-v="false" title="غائب">${svg(P.x,16)}</button><button class="${st === true ? 'on good' : ''}" data-mark="${s.studentId}" data-v="true" title="حاضر">${svg(P.check,16)}</button></div></div>`; }).join('') : '<div class="ar-empty" style="padding:26px 0"><p>ما في نتائج مطابقة.</p></div>'}</div>
+            <div class="att-toggle"><button class="${st === false ? 'on bad' : ''}" data-mark="${s.studentId}" data-v="false" title="غائب">${svg(P.x,16)}</button><button class="${st === true ? 'on good' : ''}" data-mark="${s.studentId}" data-v="true" title="حاضر">${svg(P.check,16)}</button></div></div>`; }).join('') : '<div class="ar-empty" style="padding:26px 0"><p>لا توجد نتائج مطابقة.</p></div>'}</div>
       </div>`;
     root.querySelectorAll('#attBody .ar-stat b').forEach(countUp);
   }
@@ -12861,7 +12710,7 @@ async function adminRenderExamsOverview(area){
     const L = filtered();
     $('#exmCount').textContent = exams.length ? `عرض ${L.length} من ${exams.length}` : '';
     if(!L.length){
-      $('#exmList').innerHTML = `<div class="ar-empty">${svg(exams.length ? P.srch : P.exam, 44)}<h4>${exams.length ? 'ما في نتائج مطابقة' : 'لا توجد امتحانات على المنصة بعد'}</h4><p>${exams.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'أضف امتحانًا من صفحة إدارة محتوى أي كورس.'}</p>${exams.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+      $('#exmList').innerHTML = `<div class="ar-empty">${svg(exams.length ? P.srch : P.exam, 44)}<h4>${exams.length ? 'لا توجد نتائج مطابقة' : 'لا توجد امتحانات على المنصة بعد'}</h4><p>${exams.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'أضف امتحانًا من صفحة إدارة محتوى أي كورس.'}</p>${exams.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
     }
     $('#exmList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الامتحان</span><span>المحاولات</span><span>نسبة النجاح</span><span>المتوسط</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
   }
@@ -12997,7 +12846,7 @@ async function adminRenderCommunityModeration(area){
   area.innerHTML = `
   <div class="ar cm" id="cmRoot">
     <div class="ar-hero">
-      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.chat,24)}</span><div><h2>مجتمعات الكورسات</h2><p>كل الإعلانات والرسائل اللي بيبعتها المدربون لطلابهم — راجعها واحذف اللي مش مناسب.</p></div></div>
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.chat,24)}</span><div><h2>مجتمعات الكورسات</h2><p>جميع الإعلانات والرسائل التي يرسلها المدربون لطلابهم — راجعها واحذف غير المناسب منها.</p></div></div>
       <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-ghost btn-sm" data-act="csv">${svg(P.dl,15)}<span class="ar-hide-m">تصدير CSV</span></button></div>
     </div>
     <div class="ar-stats" id="cmStats"></div>
@@ -13039,7 +12888,7 @@ async function adminRenderCommunityModeration(area){
     $('#cmChips').innerHTML = [['all','الكل',msgs.length], ...Object.keys(TYPE).map(t => [t, TYPE[t].l, c(m => m.type === t)])].map(([k,l,n]) => `<button class="cat-tab ${ftype === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${nm(n)})</button>`).join('');
   }
   function rowHTML(m, i){
-    const t = tp(m), snippet = m.content ? m.content.slice(0, 90) : m.fileName ? `📎 ${m.fileName}` : m.fileURL ? '🔗 رابط' : '';
+    const t = tp(m), snippet = m.content ? m.content.slice(0, 90) : m.fileName ? `مرفق: ${m.fileName}` : m.fileURL ? 'رابط مرفق' : '';
     return `<div class="ar-item ${sel.has(m.id) ? 'sel' : ''}" data-id="${m.id}" style="--i:${Math.min(i,14)};--c:${t.c};--bg:${t.bg}">
       <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(m.id) ? 'checked' : ''}><i></i></label>
       <span class="us-av">${E(initial(m.senderName))}</span>
@@ -13051,7 +12900,7 @@ async function adminRenderCommunityModeration(area){
     const L = filtered(), shown = L.slice(0, page*PAGE);
     document.querySelectorAll('#cmRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#cmCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
-    if(!L.length){ $('#cmList').innerHTML = `<div class="ar-empty">${svg(P.chat,44)}<h4>${msgs.length ? 'ما في رسائل مطابقة' : 'لا توجد رسائل بعد'}</h4><p>${msgs.length ? 'جرّب تغيّر الفلاتر.' : 'هتظهر هنا أول ما المدربون يبدأوا ينشروا في مجتمعات كورساتهم.'}</p></div>`; return; }
+    if(!L.length){ $('#cmList').innerHTML = `<div class="ar-empty">${svg(P.chat,44)}<h4>${msgs.length ? 'لا توجد رسائل مطابقة' : 'لا توجد رسائل بعد'}</h4><p>${msgs.length ? 'جرّب تغيّر الفلاتر.' : 'ستظهر هنا فور بدء المدربين بالنشر في مجتمعات كورساتهم.'}</p></div>`; return; }
     $('#cmList').innerHTML = `<div class="${view === 'list' ? 'ar-list cm-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head cm-head"><span></span><span></span><span>الرسالة</span><span></span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
   }
   function paintBulk(){
@@ -13123,7 +12972,7 @@ async function adminRenderReviewsModeration(area){
   Object.assign(P, { star:'<polygon points="12 2 15.1 8.6 22 9.2 16.5 14 18.2 21 12 17.3 5.8 21 7.5 14 2 9.2 8.9 8.6"/>', hat:'<path d="M22 10L12 5 2 10l10 5zM6 12v5c3 2 9 2 12 0v-5"/>', ext:'<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>' });
   const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
   const nm = n => Number(n).toLocaleString('ar-EG'), initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase(), wk = () => Date.now()/1000 - 7*86400;
-  const stars = (n, size=13) => `<span class="rv-stars">${[1,2,3,4,5].map(i => svg(P.star, size)).map((s,i) => `<i class="${i < Math.round(n) ? 'on' : ''}">${s}</i>`).join('')}</span>`;
+  const stars = (n) => `<span class="rv-stars">${[1,2,3,4,5].map(i => `<i>${i <= Math.round(n) ? SIDE_ICONS.starFilled : SIDE_ICONS.starOutline}</i>`).join('')}</span>`;
 
   let reviews = [], cmap = {}, imap = {};
   try{
@@ -13200,7 +13049,7 @@ async function adminRenderReviewsModeration(area){
     const L = filtered(), shown = L.slice(0, page*PAGE);
     document.querySelectorAll('#rvRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
     $('#rvCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
-    if(!L.length){ $('#rvList').innerHTML = `<div class="ar-empty">${svg(P.star,44)}<h4>${reviews.length ? 'ما في تقييمات مطابقة' : 'لا توجد تقييمات بعد'}</h4><p>${reviews.length ? 'جرّب تغيّر الفلاتر.' : 'هتظهر هنا أول ما الطلاب يبدأوا يقيّموا الكورسات والمدربين.'}</p></div>`; return; }
+    if(!L.length){ $('#rvList').innerHTML = `<div class="ar-empty">${svg(P.star,44)}<h4>${reviews.length ? 'لا توجد تقييمات مطابقة' : 'لا توجد تقييمات بعد'}</h4><p>${reviews.length ? 'جرّب تغيّر الفلاتر.' : 'ستظهر هنا فور بدء الطلاب بتقييم الكورسات والمدربين.'}</p></div>`; return; }
     $('#rvList').innerHTML = `<div class="${view === 'list' ? 'ar-list rv-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head rv-head"><span></span><span></span><span>الطالب / التقييم</span><span>التعليق</span><span></span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
   }
   function paintBulk(){
@@ -13217,7 +13066,7 @@ async function adminRenderReviewsModeration(area){
     dr.style.setProperty('--c', c); dr.style.setProperty('--bg', bg);
     dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
     <div class="us-body">
-      <div class="pay-who" style="margin-bottom:14px"><span class="us-av">${E(initial(r.studentName))}</span><div><b>${E(r.studentName || 'طالب')}</b><small>${stars(r.rating, 15)} ${r.rating}/5</small></div></div>
+      <div class="pay-who" style="margin-bottom:14px"><span class="us-av">${E(initial(r.studentName))}</span><div><b>${E(r.studentName || 'طالب')}</b><small>${stars(r.rating)} ${r.rating}/5</small></div></div>
       ${r.comment ? `<p class="ar-dr-p">${E(r.comment)}</p>` : '<p class="us-miss">لم يكتب الطالب تعليقًا.</p>'}
       <div class="ar-kvs" style="margin-top:14px">${kv('نوع التقييم', r.type === 'instructor' ? 'مدرب' : 'كورس')}${kv(r.type === 'instructor' ? 'المدرب' : 'الكورس', r.type === 'course' && r.courseId ? `<a class="ar-lnk" href="#/course/${r.courseId}">${E(r.targetName)}</a>` : E(r.targetName))}${r.courseName && r.type === 'instructor' ? kv('في كورس', E(r.courseName)) : ''}${kv('التاريخ', r.t ? `${fmtD(r.t)}<small>${ago(r.t)}</small>` : '—')}</div>
     </div>
@@ -13536,7 +13385,7 @@ function adminAccountCardHTML(){
             <div class="field" style="margin-bottom:0;"><label>كلمة المرور الحالية</label><input type="password" id="acctEmailPw" required autocomplete="current-password" /></div>
             <button type="submit" class="btn btn-primary" style="align-self:flex-start;">تغيير البريد</button>
             <div id="acctEmailAlert"></div>
-            <div class="field-hint">هيوصلك رابط تأكيد على البريد الجديد، والتغيير بيتم بعد ما تضغط عليه — وبعدها سجّل دخول بالبريد الجديد. الأدمن معفى من إلزام التوثيق فتقدر تشتغل عادي في الأثناء.</div>
+            <div class="field-hint">سيصلك رابط تأكيد على البريد الإلكتروني الجديد، ويتم التغيير بعد الضغط عليه — ثم سجّل الدخول بالبريد الجديد. الأدمن معفى من إلزام التوثيق، فيمكنه العمل بشكل طبيعي خلال ذلك.</div>
           </form>
           <form id="acctPwForm" style="display:flex;flex-direction:column;gap:12px;flex:1;min-width:260px;max-width:420px;">
             <h4 style="margin:0;font-size:14px;">تغيير كلمة المرور</h4>
@@ -13564,7 +13413,7 @@ function wireAdminAccountCard(){
       f.reset();
       if(mode === 'direct'){
         $('acctCurEmail').textContent = email;
-        box.innerHTML = `<div class="alert alert-success">تم تغيير البريد إلى ${email.replace(/[<>&"]/g, '')}. أرسلنا لك رابط توثيق عليه — مش شرط للدخول لكن يفضّل تضغطه.</div>`;
+        box.innerHTML = `<div class="alert alert-success">تم تغيير البريد إلى ${email.replace(/[<>&"]/g, '')}. أرسلنا إليك رابط توثيق عليه — وهو غير إلزامي للدخول، لكن يُفضَّل الضغط عليه.</div>`;
       } else {
         box.innerHTML = `<div class="alert alert-success">أرسلنا رابط تأكيد إلى ${email.replace(/[<>&"]/g, '')}. اضغط عليه وبعدها سجّل دخول بالبريد الجديد.</div>`;
       }
@@ -13614,14 +13463,14 @@ async function adminRenderSettings(area){
             <div class="field" style="flex:1;min-width:150px"><label>رقم الهاتف</label><input type="text" id="genPhone" dir="ltr" value="${E(general.supportPhone || '')}" placeholder="+249…"></div>
           </div>
           <div class="field"><label>العملة المعروضة</label><select id="genCurrency"><option value="SDG" ${(!general.currency || general.currency === 'SDG') ? 'selected' : ''}>الجنيه السوداني (ج.س)</option><option value="USD" ${general.currency === 'USD' ? 'selected' : ''}>الدولار الأمريكي (USD)</option></select>
-            <div class="field-hint">تغيير هذا الإعداد بيحفظ العملة المفضّلة فقط — أسعار الكورسات وصفحات الدفع لسه مكتوبة بالجنيه السوداني مباشرة، وعرضها بعملة تانية في كل مكان يحتاج تحديثًا إضافيًا لاحقًا.</div></div>
+            <div class="field-hint">تغيير هذا الإعداد يحفظ العملة المفضّلة فقط — إذ لا تزال أسعار الكورسات وصفحات الدفع مكتوبة بالجنيه السوداني مباشرة، وعرضها بعملة أخرى في كل مكان يحتاج إلى تحديث إضافي لاحقًا.</div></div>
           <div class="ar-msg" id="generalSettingsAlert"></div>
           <div class="ar-form-b"><button type="submit" class="btn btn-primary">حفظ التغييرات</button></div>
         </form>
       </div>
       <div class="widget st-card">
         <div class="widget-head"><h3>${svg(P.wa,17)} التحقق من الدفع (واتساب / تلغرام)</h3></div>
-        <p class="us-hint" style="margin:-6px 0 14px">تظهر هذه البيانات للطالب بعد تأكيد الدفع عشان يبعت إشعارًا سريعًا. النظام بيسجّل بس إن الطالب ضغط الزر، ومش بيتأكد إن الرسالة وصلت فعلًا.</p>
+        <p class="us-hint" style="margin:-6px 0 14px">تظهر هذه البيانات للطالب بعد تأكيد الدفع كي يرسل إشعارًا سريعًا. يسجّل النظام فقط أن الطالب ضغط الزر، ولا يتأكد من وصول الرسالة فعليًا.</p>
         <form id="commSettingsForm" class="ar-form" style="padding:0">
           <div class="field"><label>رقم واتساب (بصيغة دولية بدون +)</label><input type="text" id="waNumber" dir="ltr" value="${E(comms.whatsappNumber || '')}" placeholder="249112160178">
             <div class="field-hint">لو سبته فاضي، هيستخدم النظام رقم الإدارة الافتراضي ‎+249 11 216 0178.</div></div>
