@@ -502,14 +502,45 @@
   }
   .topbar-search input{border:none;background:transparent;outline:none;font-family:inherit;font-size:13.5px;width:100%;color:var(--ink);}
   .topbar-actions{display:flex;align-items:center;gap:14px;}
+
+  /* ---- Smart search trigger shared by the dashboard topbar (student + admin) ---- */
+  .app-search-trigger{
+    display:flex;align-items:center;gap:10px;flex:1;max-width:420px;min-width:0;
+    background:var(--paper);border:1.5px solid var(--line);border-radius:12px;
+    padding:9px 15px;color:var(--muted);font-size:13.5px;font-family:inherit;cursor:pointer;
+    position:relative;overflow:hidden;
+    transition:border-color .2s,background .2s,box-shadow .2s,transform .12s;
+  }
+  .app-search-trigger:hover{border-color:var(--violet-600);background:#fff;box-shadow:0 8px 20px -12px rgba(94,58,146,0.35);}
+  .app-search-trigger:active{transform:scale(0.985);}
+  .app-search-trigger::before{
+    content:'';position:absolute;inset:0;border-radius:inherit;padding:1.5px;
+    background:conic-gradient(from var(--ast-a,0deg), transparent 0%, var(--violet-600) 12%, transparent 24%);
+    -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:0;transition:opacity .3s;pointer-events:none;
+    animation:astSpin 3.5s linear infinite paused;
+  }
+  .app-search-trigger:hover::before{opacity:1;animation-play-state:running;}
+  @keyframes astSpin{to{--ast-a:360deg;}}
+  .ast-ic{display:flex;flex-shrink:0;color:var(--violet-700);animation:astIcBreathe 2.6s ease-in-out infinite;}
+  @keyframes astIcBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  .ast-label{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right;font-weight:600;}
+  .ast-kbd{
+    font-size:10.5px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:2px 7px;color:var(--muted);flex-shrink:0;
+  }
+  @media (max-width:760px){ .app-search-trigger .ast-kbd{display:none;} }
+  @media (max-width:640px){
+    .app-search-trigger{max-width:none;padding:9px;border-radius:50%;justify-content:center;}
+    .app-search-trigger .ast-label, .app-search-trigger .ast-kbd{display:none;}
+  }
   .hamburger-btn{display:none;}
   /* Unified icon-accent colour: stat/KPI icon badges across every admin tab share one
      brand tone instead of a different colour per card, so the dashboard reads as one
      consistent system rather than a clash of random hues. Status/role colour-coding
      elsewhere (list rows, badges) is untouched — only the decorative stat icons. */
   .ar-stat, .ov-kpi{--c:var(--violet-700) !important;--bg:var(--mist) !important;}
-  .app-topbar.search-open .topbar-search{display:flex !important;flex:1;max-width:none !important;}
-  .app-topbar.search-open .app-topbar-title, .app-topbar.search-open .hamburger-btn{display:none !important;}
   .icon-btn{
     width:38px;height:38px;border-radius:10px;background:var(--paper);border:1px solid var(--line);
     display:flex;align-items:center;justify-content:center;color:var(--violet-700);position:relative;cursor:pointer;flex-shrink:0;
@@ -1627,6 +1658,160 @@
   .verify-celebrate-card p{font-size:13px;color:var(--muted);margin:0;}
   .verify-celebrate-confetti{position:absolute;inset:0;pointer-events:none;overflow:visible;}
   .verify-celebrate-confetti span{position:absolute;top:60px;right:50%;width:7px;height:7px;border-radius:2px;opacity:0;animation:confettiPop .85s ease forwards;}
+
+  /* ================= ENROLLMENT ACCEPTED — full-screen celebration ================= */
+  .ec-overlay{
+    position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;
+    padding:20px;overflow:hidden;opacity:0;animation:ecFadeIn .45s ease forwards;
+    background:radial-gradient(circle at 50% 42%, #3E2566 0%, #2A1948 46%, #17102A 100%);
+  }
+  .ec-overlay.leaving{animation:ecFadeOut .35s ease forwards;}
+  @keyframes ecFadeIn{to{opacity:1;}}
+  @keyframes ecFadeOut{to{opacity:0;}}
+  .ec-glow{
+    position:absolute;top:50%;left:50%;width:120vmax;height:120vmax;border-radius:50%;
+    background:radial-gradient(circle, rgba(226,163,59,0.22) 0%, rgba(110,75,175,0.14) 32%, transparent 62%);
+    transform:translate(-50%,-50%) scale(0.3);opacity:0;
+    animation:ecGlowBloom 1.4s cubic-bezier(.16,1,.3,1) .05s forwards;
+  }
+  @keyframes ecGlowBloom{0%{transform:translate(-50%,-50%) scale(0.2);opacity:0;}35%{opacity:1;}100%{transform:translate(-50%,-50%) scale(1);opacity:0.9;}}
+  .ec-rays{
+    position:absolute;top:50%;left:50%;width:900px;height:900px;margin:-450px 0 0 -450px;
+    background:conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.09) 8deg, transparent 16deg, transparent 40deg, rgba(226,163,59,0.12) 48deg, transparent 56deg, transparent 96deg, rgba(255,255,255,0.07) 104deg, transparent 112deg, transparent 152deg, rgba(226,163,59,0.1) 160deg, transparent 168deg, transparent 208deg, rgba(255,255,255,0.08) 216deg, transparent 224deg, transparent 264deg, rgba(226,163,59,0.11) 272deg, transparent 280deg, transparent 320deg, rgba(255,255,255,0.07) 328deg, transparent 336deg);
+    border-radius:50%;opacity:0;animation:ecRaysIn 1.8s ease .1s forwards, ecRaysSpin 28s linear 1.2s infinite;
+    pointer-events:none;
+  }
+  @keyframes ecRaysIn{to{opacity:1;}}
+  @keyframes ecRaysSpin{to{transform:rotate(360deg);}}
+
+  .ec-rain{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+  .ec-rain span{
+    position:absolute;top:-40px;left:var(--x);width:var(--w);height:calc(var(--w) * 2.6);
+    background:var(--c);opacity:0;border-radius:2px;
+    animation:ecRainFall var(--dur) cubic-bezier(.45,0,.55,1) var(--delay) forwards;
+  }
+  @keyframes ecRainFall{
+    0%{opacity:0;transform:translateY(0) rotate(0deg);}
+    6%{opacity:1;}
+    92%{opacity:1;}
+    100%{opacity:0;transform:translateY(112vh) rotate(var(--rot));}
+  }
+  .ec-burst{position:absolute;top:50%;left:50%;width:0;height:0;pointer-events:none;}
+  .ec-burst span{
+    position:absolute;top:0;left:0;width:var(--w);height:calc(var(--w) * 2.4);background:var(--c);
+    border-radius:2px;opacity:0;
+    animation:ecBurstPop 1.15s cubic-bezier(.19,1,.22,1) var(--delay) forwards;
+  }
+  @keyframes ecBurstPop{
+    0%{opacity:0;transform:translate(0,0) rotate(0deg) scale(0.3);}
+    10%{opacity:1;}
+    100%{opacity:0;transform:translate(var(--tx), var(--ty)) rotate(var(--tr)) scale(1);}
+  }
+  .ec-sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+  .ec-sparkles span{
+    position:absolute;bottom:-20px;left:var(--x);font-size:var(--sz);opacity:0;color:var(--sc);
+    animation:ecSparkleUp var(--sdur) ease-in var(--sdelay) infinite;
+    filter:drop-shadow(0 0 4px currentColor);
+  }
+  @keyframes ecSparkleUp{
+    0%{opacity:0;transform:translateY(0) rotate(0deg) scale(0.5);}
+    15%{opacity:1;}
+    50%{opacity:0.85;transform:translateY(-46vh) rotate(180deg) scale(1.1);}
+    85%{opacity:0.3;}
+    100%{opacity:0;transform:translateY(-96vh) rotate(340deg) scale(0.6);}
+  }
+
+  .ec-card{
+    position:relative;z-index:2;background:#fff;border-radius:32px;padding:52px 38px 40px;
+    text-align:center;max-width:400px;width:100%;
+    box-shadow:0 40px 100px -30px rgba(0,0,0,0.55);
+    transform:translateY(40px) scale(0.82) rotate(-2deg);opacity:0;
+    animation:ecCardIn .7s cubic-bezier(.2,1.4,.4,1) .25s forwards;
+  }
+  @keyframes ecCardIn{
+    0%{transform:translateY(40px) scale(0.8) rotate(-3deg);opacity:0;}
+    55%{transform:translateY(-6px) scale(1.035) rotate(1deg);opacity:1;}
+    75%{transform:translateY(2px) scale(0.99) rotate(-0.4deg);}
+    100%{transform:translateY(0) scale(1) rotate(0deg);opacity:1;}
+  }
+  .ec-close{
+    position:absolute;top:16px;left:16px;width:34px;height:34px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--line);color:var(--muted);
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:background .15s,color .15s,transform .15s;
+  }
+  .ec-close:hover{background:var(--mist);color:var(--violet-800);transform:scale(1.08);}
+
+  .ec-badge-wrap{position:relative;width:132px;height:132px;margin:0 auto 26px;display:flex;align-items:center;justify-content:center;}
+  .ec-badge-ring{position:absolute;inset:0;border-radius:50%;border:3px solid #3FBE7B;opacity:0;animation:ecRing 1.6s ease-out .55s infinite;}
+  .ec-badge-ring.r2{animation-delay:.95s;}
+  .ec-badge-ring.r3{animation-delay:1.35s;}
+  @keyframes ecRing{0%{transform:scale(0.75);opacity:0.85;}100%{transform:scale(1.9);opacity:0;}}
+  .ec-badge{
+    width:112px;height:112px;border-radius:50%;position:relative;z-index:2;
+    background:linear-gradient(135deg,#4ED494,#1F9159 65%);
+    display:flex;align-items:center;justify-content:center;color:#fff;
+    box-shadow:0 20px 44px -12px rgba(31,145,89,0.65), inset 0 -6px 14px rgba(0,0,0,0.12);
+    animation:ecBadgePop .6s cubic-bezier(.34,1.56,.64,1) .3s both, ecBadgeFloat 2.8s ease-in-out 1.1s infinite;
+  }
+  @keyframes ecBadgePop{0%{transform:scale(0);}65%{transform:scale(1.18);}100%{transform:scale(1);}}
+  @keyframes ecBadgeFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+  .ec-badge svg{width:52px;height:52px;overflow:visible;}
+  .ec-badge .ec-check-path{stroke-dasharray:30;stroke-dashoffset:30;animation:ecDraw .5s ease .62s forwards;}
+  @keyframes ecDraw{to{stroke-dashoffset:0;}}
+  .ec-badge-shine{
+    position:absolute;inset:-3px;border-radius:50%;
+    background:conic-gradient(from 0deg, transparent 0%, rgba(255,255,255,0.9) 4%, transparent 10%);
+    opacity:0;animation:ecShineIn .01s .78s forwards, ecShineSpin 3.2s linear .8s infinite;
+    z-index:3;mix-blend-mode:overlay;
+  }
+  @keyframes ecShineIn{to{opacity:1;}}
+  @keyframes ecShineSpin{to{transform:rotate(360deg);}}
+
+  .ec-eyebrow{
+    display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;color:var(--amber-600);
+    background:#FCF3E3;padding:5px 14px;border-radius:999px;margin-bottom:14px;
+    opacity:0;animation:ecFadeUp .5s ease .75s forwards;
+  }
+  .ec-card h3{
+    font-size:23px;font-weight:800;color:var(--violet-900);margin:0 0 10px;line-height:1.35;
+    opacity:0;animation:ecFadeUp .5s ease .82s forwards;
+  }
+  .ec-card .ec-course{color:var(--violet-600);}
+  .ec-card p{
+    font-size:14px;color:var(--muted);line-height:1.8;margin:0 0 26px;
+    opacity:0;animation:ecFadeUp .5s ease .9s forwards;
+  }
+  @keyframes ecFadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  .ec-cta{
+    position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:15px 20px;border-radius:14px;font-weight:800;font-size:15.5px;color:var(--violet-900);
+    background:linear-gradient(135deg,#F0B24C,var(--amber-500));border:none;cursor:pointer;
+    box-shadow:0 16px 32px -12px rgba(226,163,59,0.6);
+    opacity:0;animation:ecFadeUp .5s ease .98s forwards, ecCtaPulse 2.4s ease 2s infinite;
+    transition:transform .15s;
+  }
+  .ec-cta:hover{transform:translateY(-2px);}
+  .ec-cta:active{transform:scale(0.97);}
+  @keyframes ecCtaPulse{0%,100%{box-shadow:0 16px 32px -12px rgba(226,163,59,0.6);}50%{box-shadow:0 16px 40px -8px rgba(226,163,59,0.85);}}
+  .ec-cta::after{
+    content:'';position:absolute;top:0;bottom:0;width:60px;left:-80px;
+    background:linear-gradient(115deg,transparent,rgba(255,255,255,0.55),transparent);
+    animation:ecShimmer 2.6s ease-in-out 1.6s infinite;
+  }
+  @keyframes ecShimmer{0%{left:-80px;}35%,100%{left:120%;}}
+  .ec-secondary{
+    display:block;margin-top:14px;font-size:12.5px;color:var(--muted);font-weight:600;cursor:pointer;
+    opacity:0;animation:ecFadeUp .5s ease 1.05s forwards;
+  }
+  .ec-secondary:hover{color:var(--violet-700);}
+  @media (max-width:420px){
+    .ec-card{padding:44px 24px 32px;border-radius:26px;}
+    .ec-badge-wrap{width:112px;height:112px;}
+    .ec-badge{width:96px;height:96px;}
+    .ec-badge svg{width:44px;height:44px;}
+    .ec-card h3{font-size:20px;}
+  }
 
   /* ================= ADMIN: active-tab indicator (global) ================= */
   .side-link{position:relative;}
@@ -3239,6 +3424,150 @@ async function openSearchModal(prefill){
   requestAnimationFrame(() => input.focus());
 }
 
+/* ---- Admin smart search: same visual language as the public search modal, but indexing
+   people, every course (any status), and categories — since that's what an admin actually
+   needs to jump to quickly. Always fetched fresh (small collections, and staleness here
+   would hide people/courses the admin just added). ---- */
+function adminSearchModalKeyHandler(e){
+  if(e.key === 'Escape') closeAdminSearchModal();
+}
+function closeAdminSearchModal(){
+  const overlay = document.getElementById('adminSearchModalOverlay');
+  if(!overlay) return;
+  overlay.classList.add('closing');
+  document.removeEventListener('keydown', adminSearchModalKeyHandler);
+  document.body.style.overflow = '';
+  setTimeout(() => overlay.remove(), 220);
+}
+async function openAdminSearchModal(){
+  if(document.getElementById('adminSearchModalOverlay')) return;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'adminSearchModalOverlay';
+  overlay.className = 'search-modal-overlay';
+  overlay.innerHTML = `
+    <div class="search-modal-panel">
+      <div class="search-modal-head">
+        <span class="sm-ic">${SIDE_ICONS.search}</span>
+        <input type="text" id="adminSearchModalInput" placeholder="ابحث عن طالب، مدرب، كورس، قسم..." autocomplete="off" />
+        <button type="button" class="sm-close" id="adminSearchModalCloseBtn" aria-label="إغلاق">${SIDE_ICONS.close}</button>
+      </div>
+      <div class="search-modal-filters" id="adminSearchModalFilters">
+        <button type="button" class="sm-filter-chip active" data-t="all">الكل</button>
+        <button type="button" class="sm-filter-chip" data-t="user">المستخدمون</button>
+        <button type="button" class="sm-filter-chip" data-t="course">الكورسات</button>
+        <button type="button" class="sm-filter-chip" data-t="cat">الأقسام</button>
+      </div>
+      <div class="search-modal-body" id="adminSearchModalResults"><div class="sm-empty"><div class="sm-empty-ic">${SIDE_ICONS.search}</div><div class="sm-empty-title">جارٍ تحميل الفهرس...</div></div></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  const input = overlay.querySelector('#adminSearchModalInput');
+  const resultsEl = overlay.querySelector('#adminSearchModalResults');
+  let activeType = 'all';
+
+  let users = [], courses = [], cats = [];
+  try{
+    const [uSnap, cSnap, catSnap] = await Promise.all([
+      getDocs(collection(db, 'users')),
+      getDocs(collection(db, 'courses')),
+      getDocs(collection(db, 'categories')),
+    ]);
+    users = uSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    courses = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    cats = catSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+  }catch(e){ /* leave arrays empty — renderResults will show its own empty state */ }
+
+  function renderResults(){
+    const q = input.value.trim().toLowerCase();
+    if(!q){
+      resultsEl.innerHTML = `
+        <div class="sm-empty">
+          <div class="sm-empty-ic">${SIDE_ICONS.search}</div>
+          <div class="sm-empty-title">ابدأ الكتابة للبحث في المستخدمين والكورسات والأقسام</div>
+        </div>
+      `;
+      return;
+    }
+    const matchedUsers = (activeType === 'all' || activeType === 'user') ? users.filter(u =>
+      (u.name || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q) || (u.phone || '').includes(q)
+    ) : [];
+    const matchedCourses = (activeType === 'all' || activeType === 'course') ? courses.filter(c =>
+      (c.title || '').toLowerCase().includes(q) || (c.instructorName || '').toLowerCase().includes(q) || (c.categoryName || '').toLowerCase().includes(q)
+    ) : [];
+    const matchedCats = (activeType === 'all' || activeType === 'cat') ? cats.filter(c => (c.name || '').toLowerCase().includes(q)) : [];
+
+    if(!matchedUsers.length && !matchedCourses.length && !matchedCats.length){
+      resultsEl.innerHTML = `
+        <div class="sm-empty">
+          <div class="sm-empty-ic">${SIDE_ICONS.search}</div>
+          <div class="sm-empty-title">مفيش نتائج لـ "${input.value.trim()}"</div>
+          <div class="sm-empty-sub">جرّب كلمة تانية أو غيّر الفلتر فوق.</div>
+        </div>
+      `;
+      return;
+    }
+
+    let html = '';
+    if(matchedUsers.length){
+      html += `<div class="sm-section-label">المستخدمون (${matchedUsers.length})</div>`;
+      html += matchedUsers.slice(0, 15).map((u, i) => `
+        <a href="#/dashboard?tab=users&uid=${u.id}" class="sm-result-row" data-nav style="animation-delay:${i * 0.03}s;">
+          <span class="sm-r-ic">${SIDE_ICONS.users}</span>
+          <span class="sm-r-body"><span class="sm-r-title">${u.name || u.email || 'مستخدم'}</span><span class="sm-r-sub">${ROLE_LABEL[u.role] || 'طالب'}${u.email ? ' · ' + u.email : ''}</span></span>
+          <span class="sm-r-chev">${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `).join('');
+    }
+    if(matchedCourses.length){
+      html += `<div class="sm-section-label">الكورسات (${matchedCourses.length})</div>`;
+      html += matchedCourses.slice(0, 15).map((c, i) => `
+        <a href="#/manage/${c.id}" class="sm-result-row" data-nav style="animation-delay:${(matchedUsers.length ? matchedUsers.length : 0) * 0.03 + i * 0.03}s;">
+          <span class="sm-r-ic">${SIDE_ICONS.book}</span>
+          <span class="sm-r-body"><span class="sm-r-title">${c.title || 'بدون عنوان'}</span><span class="sm-r-sub">${c.categoryName ? c.categoryName + ' · ' : ''}${COURSE_STATUS_LABEL[c.status] || 'منشور'}</span></span>
+          <span class="sm-r-chev">${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `).join('');
+    }
+    if(matchedCats.length){
+      html += `<div class="sm-section-label">الأقسام (${matchedCats.length})</div>`;
+      html += matchedCats.slice(0, 10).map((c, i) => `
+        <a href="#/dashboard?tab=categories" class="sm-result-row" data-nav style="animation-delay:${i * 0.03}s;">
+          <span class="sm-r-ic">${SIDE_ICONS.tag}</span>
+          <span class="sm-r-body"><span class="sm-r-title">${c.name || ''}</span><span class="sm-r-sub">${c.parentId ? 'مجال فرعي' : 'قسم رئيسي'}</span></span>
+          <span class="sm-r-chev">${SIDE_ICONS.chevronLeft}</span>
+        </a>
+      `).join('');
+    }
+    resultsEl.innerHTML = html;
+  }
+
+  let debounceTimer = null;
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(renderResults, 150);
+  });
+  overlay.querySelectorAll('.sm-filter-chip[data-t]').forEach(chip => {
+    chip.addEventListener('click', () => {
+      overlay.querySelectorAll('.sm-filter-chip[data-t]').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeType = chip.dataset.t;
+      renderResults();
+    });
+  });
+  overlay.addEventListener('click', (e) => {
+    if(e.target === overlay) closeAdminSearchModal();
+    if(e.target.closest('[data-nav]')) closeAdminSearchModal();
+  });
+  overlay.querySelector('#adminSearchModalCloseBtn').addEventListener('click', closeAdminSearchModal);
+  document.addEventListener('keydown', adminSearchModalKeyHandler);
+
+  renderResults();
+  requestAnimationFrame(() => input.focus());
+}
+
 /* ---------------- AUTH ERROR MESSAGES ---------------- */
 function authErrorAr(code){
   const map = {
@@ -3561,6 +3890,127 @@ function playVerifyCelebration(onDone){
   `;
   document.body.appendChild(overlay);
   setTimeout(() => { onDone(); setTimeout(() => overlay.remove(), 400); }, 1900);
+}
+
+/* ================= ENROLLMENT ACCEPTED — full-screen celebration ================= */
+const EC_COLORS = ['#E2A33B','#6E4BAF','#3FBE7B','#3B6FBF','#F0B24C','#C98826','#8A63C9'];
+
+/* A steady rain of confetti falling from the top across the whole screen, running the
+   full length of the celebration (each piece gets its own random x/size/speed/color). */
+function ecRainHTML(n){
+  let out = '';
+  for(let i = 0; i < n; i++){
+    const x = (Math.random() * 100).toFixed(1) + '%';
+    const w = (5 + Math.random() * 6).toFixed(0) + 'px';
+    const c = EC_COLORS[i % EC_COLORS.length];
+    const dur = (2.6 + Math.random() * 1.8).toFixed(2) + 's';
+    const delay = (Math.random() * 1.3).toFixed(2) + 's';
+    const rot = Math.round(360 + Math.random() * 540) + 'deg';
+    out += `<span style="--x:${x};--w:${w};--c:${c};--dur:${dur};--delay:${delay};--rot:${rot};"></span>`;
+  }
+  return out;
+}
+/* One big radial burst fired from the badge the instant it pops in. */
+function ecBurstHTML(n){
+  let out = '';
+  for(let i = 0; i < n; i++){
+    const angle = (Math.PI * 2 * i) / n + Math.random() * 0.4;
+    const dist = 140 + Math.random() * 180;
+    const tx = Math.round(Math.cos(angle) * dist) + 'px';
+    const ty = Math.round(Math.sin(angle) * dist - 40) + 'px';
+    const tr = Math.round(Math.random() * 500 - 250) + 'deg';
+    const w = (5 + Math.random() * 5).toFixed(0) + 'px';
+    const c = EC_COLORS[i % EC_COLORS.length];
+    const delay = (Math.random() * 0.18).toFixed(2) + 's';
+    out += `<span style="--tx:${tx};--ty:${ty};--tr:${tr};--w:${w};--c:${c};--delay:${delay};"></span>`;
+  }
+  return out;
+}
+/* Slow-drifting sparkle stars that loop for as long as the overlay is open. */
+function ecSparklesHTML(n){
+  const glyphs = ['✦','✧','⭐','✨'];
+  let out = '';
+  for(let i = 0; i < n; i++){
+    const x = (Math.random() * 100).toFixed(1) + '%';
+    const sz = (12 + Math.random() * 14).toFixed(0) + 'px';
+    const sc = i % 2 === 0 ? 'var(--amber-500)' : '#fff';
+    const sdur = (3.5 + Math.random() * 2.5).toFixed(2) + 's';
+    const sdelay = (Math.random() * 3).toFixed(2) + 's';
+    out += `<span style="--x:${x};--sz:${sz};--sc:${sc};--sdur:${sdur};--sdelay:${sdelay};">${glyphs[i % glyphs.length]}</span>`;
+  }
+  return out;
+}
+
+/* The over-the-top "your enrollment was accepted" moment: a screen-filling glow, spinning
+   light rays, falling confetti, a radial burst, floating sparkles, and a bouncy badge with
+   a hand-drawn checkmark — then a card inviting the student straight into the course. */
+function playEnrollmentCelebration(notif){
+  if(document.getElementById('ecOverlay')) return;
+  const courseTitle = notif.courseTitle || '';
+  const overlay = document.createElement('div');
+  overlay.id = 'ecOverlay';
+  overlay.className = 'ec-overlay';
+  overlay.innerHTML = `
+    <div class="ec-glow"></div>
+    <div class="ec-rays"></div>
+    <div class="ec-rain">${ecRainHTML(70)}</div>
+    <div class="ec-sparkles">${ecSparklesHTML(16)}</div>
+    <div class="ec-card">
+      <div class="ec-burst">${ecBurstHTML(28)}</div>
+      <button type="button" class="ec-close" id="ecCloseBtn" aria-label="إغلاق">${SIDE_ICONS.close}</button>
+      <div class="ec-badge-wrap">
+        <span class="ec-badge-ring"></span>
+        <span class="ec-badge-ring r2"></span>
+        <span class="ec-badge-ring r3"></span>
+        <div class="ec-badge">
+          <span class="ec-badge-shine"></span>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path class="ec-check-path" d="M5 13l5 5L19 7" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+      <span class="ec-eyebrow">${SIDE_ICONS.check} تم تفعيل اشتراكك</span>
+      <h3>مبروك! تم قبول اشتراكك${courseTitle ? ` في<br/><span class="ec-course">${courseTitle}</span>` : ''} 🎉</h3>
+      <p>الكورس والمحاضرات فتحت ليك دلوقتي — يلّا نبدأ أول درس.</p>
+      <button type="button" class="ec-cta" id="ecCtaBtn">${SIDE_ICONS.playCircle} ابدأ التعلم الآن</button>
+      <span class="ec-secondary" id="ecLaterBtn">أشوفه بعدين</span>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  document.body.style.overflow = 'hidden';
+
+  const close = () => {
+    overlay.classList.add('leaving');
+    setTimeout(() => { overlay.remove(); document.body.style.overflow = ''; }, 380);
+  };
+  overlay.querySelector('#ecCloseBtn').addEventListener('click', close);
+  overlay.querySelector('#ecLaterBtn').addEventListener('click', close);
+  overlay.querySelector('#ecCtaBtn').addEventListener('click', () => {
+    close();
+    if(notif.courseId) location.hash = `#/learn/${notif.courseId}`;
+  });
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) close(); });
+}
+
+/* Runs once right after login resolves: if this student has an enrollment-approval
+   notification they haven't been shown the big celebration for yet, play it. The "shown"
+   flag lives in localStorage (per user, per notification id) so it survives across sessions
+   without needing an extra Firestore write/permission just for this cosmetic moment. */
+async function checkEnrollmentCelebrations(){
+  if(!currentUser || currentProfile?.role !== 'student') return;
+  try{
+    const myNotifs = await fetchMyNotifications();
+    const pending = myNotifs.filter(n => n.kind === 'enrollment_approved' && n.targetType === 'user' && n.targetId === currentUser.uid);
+    if(!pending.length) return;
+    const storeKey = `lvEnrollCelebrated_${currentUser.uid}`;
+    let shown = [];
+    try{ shown = JSON.parse(localStorage.getItem(storeKey) || '[]'); }catch(e){ shown = []; }
+    const next = pending.find(n => !shown.includes(n.id));
+    if(!next) return;
+    playEnrollmentCelebration(next);
+    shown.push(next.id);
+    try{ localStorage.setItem(storeKey, JSON.stringify(shown.slice(-50))); }catch(e){ /* ignore */ }
+  }catch(e){ /* non-fatal — this is a cosmetic moment, never block the app on it */ }
 }
 
 /* ---------------- COURSES LIST ---------------- */
@@ -6100,23 +6550,15 @@ function toggleSideDrawer(force){
   }
 }
 
-// Reveals the topbar search bar on mobile (where it's hidden by default to save space),
-// in place of the tab title, and focuses it. Toggling again (or Escape) closes it.
-function toggleTopbarSearch(force){
-  const bar = document.querySelector('.app-topbar');
-  if(!bar) return;
-  const open = typeof force === 'boolean' ? force : !bar.classList.contains('search-open');
-  bar.classList.toggle('search-open', open);
-  if(open){
-    const input = document.getElementById('shellSearchInput');
-    if(input) setTimeout(() => input.focus(), 50);
-  }
+// Opens the same smart search modal the topbar trigger uses — role-aware (admin gets the
+// people/courses/categories index, everyone else gets the public course/category search).
+function toggleTopbarSearch(){
+  currentProfile?.role === 'admin' ? openAdminSearchModal() : openSearchModal();
 }
 
 document.addEventListener('keydown', (e) => {
   if(e.key !== 'Escape') return;
   if(document.body.classList.contains('side-open')) toggleSideDrawer(false);
-  toggleTopbarSearch(false);
 });
 
 // Wires the admin sidebar's collapse toggle (desktop, remembered) and drag-to-resize
@@ -6215,10 +6657,11 @@ function renderShell(activeKey){
         <div class="app-topbar">
           ${isAdminRole ? `<button type="button" class="icon-btn hamburger-btn" id="shellHamburgerBtn" title="القائمة">${SIDE_ICONS.menu}</button>` : ''}
           <div class="app-topbar-title">${shellTopbarTitle(activeKey)}</div>
-          <div class="topbar-search">
-            <span class="side-ic" style="width:15px;height:15px;">${SIDE_ICONS.search}</span>
-            <input type="text" placeholder="بحث سريع..." id="shellSearchInput" />
-          </div>
+          <button type="button" class="app-search-trigger" id="shellSearchTrigger">
+            <span class="ast-ic">${SIDE_ICONS.search}</span>
+            <span class="ast-label">${isAdminRole ? 'ابحث عن طالب، كورس، قسم...' : 'ابحث في المنصة...'}</span>
+            <span class="ast-kbd">Ctrl K</span>
+          </button>
           <div class="topbar-actions">
             <div class="icon-btn" id="notifBellBtn">${SIDE_ICONS.bell}</div>
           </div>
@@ -6236,11 +6679,8 @@ function renderShell(activeKey){
     location.hash = '#/';
   });
 
-  const searchInput = document.getElementById('shellSearchInput');
-  searchInput.addEventListener('keydown', (e) => {
-    if(e.key === 'Enter'){
-      location.hash = '#/courses';
-    }
+  document.getElementById('shellSearchTrigger')?.addEventListener('click', () => {
+    isAdminRole ? openAdminSearchModal() : openSearchModal();
   });
 
   // Admin sidebar tabs act as in-page switches rather than full navigations
@@ -11068,7 +11508,8 @@ async function adminRenderPayments(area){
   };
   async function notify(e, key, reason){
     if(!e.studentId) return false; const [title, body] = MSG[key](e, reason);
-    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:e.studentId, title, body, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp() }); return true; }catch(err){ console.warn('[Lavender] notify failed', err?.code); return false; }
+    const extra = key === 'approved' ? { kind:'enrollment_approved', courseId:e.courseId || null, courseTitle:e.courseTitle || '' } : {};
+    try{ await addDoc(collection(db,'notifications'), { targetType:'user', targetId:e.studentId, title, body, readBy:[], createdBy:currentUser.uid, createdAt:serverTimestamp(), ...extra }); return true; }catch(err){ console.warn('[Lavender] notify failed', err?.code); return false; }
   }
   const LOG = { approved:['payment_approve','قبول'], rejected:['payment_reject','رفض'], cancelled:['payment_reject','إلغاء'], under_review:['payment_reopen','إعادة فتح'] };
   async function decide(e, kind, reason=''){
@@ -13254,6 +13695,7 @@ onAuthStateChanged(auth, async (user) => {
   }
   renderNav();
   router();
+  if(user && currentProfile) setTimeout(checkEnrollmentCelebrations, 700);
 });
 
 // Initial render before auth resolves (avoids blank screen)
