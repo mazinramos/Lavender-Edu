@@ -45,6 +45,17 @@
   button{font-family:inherit;cursor:pointer;}
   ::selection{background:var(--amber-500);color:var(--violet-900);}
 
+  /* Kill the default mobile-browser blue tap/focus rectangle on every clickable
+     element (links, buttons, inputs, anything focusable) so tapping never shows
+     the ugly blue highlight box. Keyboard users still get a clean, on-brand
+     focus ring via :focus-visible instead of losing accessibility entirely. */
+  *,*::before,*::after{-webkit-tap-highlight-color:transparent;}
+  a,button,input,textarea,select,[tabindex]{-webkit-tap-highlight-color:transparent;}
+  a:focus,button:focus,input:focus,textarea:focus,select:focus,[tabindex]:focus{outline:none;}
+  a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{
+    outline:2px solid var(--violet-600);outline-offset:2px;border-radius:6px;
+  }
+
   .container{max-width:1180px;margin:0 auto;padding:0 24px;}
 
   /* Nav */
@@ -71,6 +82,24 @@
   .nav-links a{font-weight:600;font-size:15px;color:var(--ink);opacity:0.8;transition:opacity .15s;}
   .nav-links a:hover{opacity:1;}
   .nav-cta{display:flex;gap:10px;align-items:center;}
+  /* Guest CTA buttons in the top bar get a bit more presence so "ابدأ الآن"
+     reads as the clear primary action next to the quieter login link. */
+  .nav-cta .btn{padding:10px 18px;font-size:14px;}
+  .nav-cta .btn-amber{
+    background:linear-gradient(135deg,var(--amber-500),var(--amber-600));
+    box-shadow:0 6px 16px -6px rgba(201,136,38,0.55);
+  }
+  .nav-cta .btn-amber:hover{box-shadow:0 10px 20px -6px rgba(201,136,38,0.65);transform:translateY(-1px);}
+  @media (max-width:480px){
+    .container{padding:0 16px;}
+    .nav-inner{height:64px;gap:8px;}
+    .brand-name{font-size:17px;}
+    .nav-cta .btn{padding:8px 13px;font-size:12.5px;}
+  }
+  @media (max-width:360px){
+    .brand-name{display:none;}
+    .nav-cta .btn-ghost{display:none;}
+  }
   .nav-search{display:flex;align-items:center;background:var(--mist);border-radius:10px;padding:5px 5px 5px 14px;gap:8px;}
   .nav-search input{border:none;background:transparent;font-size:13.5px;width:150px;outline:none;font-family:inherit;color:var(--ink);}
   .nav-search button{
@@ -770,16 +799,28 @@
     cursor:pointer;transition:background .2s,border-color .2s,transform .15s;flex-shrink:0;
   }
   .nav-search-trigger:hover{background:#EDE4F9;border-color:var(--violet-600);color:var(--violet-800);}
+  .nav-search-trigger:hover .nst-ic{animation-play-state:paused;transform:scale(1.15) rotate(-8deg);}
   .nav-search-trigger:active{transform:scale(.96);}
-  .nav-search-trigger .nst-ic{display:flex;color:var(--violet-700);flex-shrink:0;}
+  .nav-search-trigger .nst-ic{
+    display:flex;color:var(--violet-700);flex-shrink:0;
+    animation:nstBreathe 2.6s ease-in-out infinite;transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes nstBreathe{0%,100%{transform:scale(1);}50%{transform:scale(1.14);}}
   .nav-search-trigger .nst-label{white-space:nowrap;}
   .nav-search-trigger .nst-kbd{
     font-size:10.5px;font-weight:700;background:#fff;border:1px solid var(--line);border-radius:6px;
     padding:1px 6px;color:var(--muted);margin-inline-start:4px;
   }
   @media (max-width:640px){
-    .nav-search-trigger{padding:9px;border-radius:50%;}
+    .nav-search-trigger{
+      padding:9px;border-radius:50%;position:relative;
+      animation:nstRing 2.8s ease-in-out infinite;
+    }
     .nav-search-trigger .nst-label, .nav-search-trigger .nst-kbd{display:none;}
+    @keyframes nstRing{
+      0%,100%{box-shadow:0 0 0 0 rgba(94,58,146,0.16);}
+      50%{box-shadow:0 0 0 7px rgba(94,58,146,0);}
+    }
   }
 
   .search-modal-overlay{
@@ -819,7 +860,7 @@
   .search-modal-head .sm-ic{color:var(--violet-700);display:flex;flex-shrink:0;animation:smIcPulse 2s ease-in-out infinite;}
   @keyframes smIcPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
   .search-modal-head input{
-    flex:1;border:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink);background:transparent;
+    flex:1;min-width:0;border:none;outline:none;font-size:16px;font-family:inherit;color:var(--ink);background:transparent;
   }
   .search-modal-head input::placeholder{color:var(--muted);}
   .sm-close{
@@ -861,6 +902,14 @@
   @media (max-width:640px){
     .search-modal-overlay{padding:0;align-items:stretch;}
     .search-modal-panel{max-width:none;max-height:none;height:100%;border-radius:0;}
+    .search-modal-head{padding:14px 12px 14px 14px;gap:8px;}
+  }
+  /* On very narrow phones the close button's text label used to get pushed
+     off the edge of the screen by the input field — collapse it to a plain
+     round icon button so it always stays fully visible and tappable. */
+  @media (max-width:400px){
+    .sm-close{width:38px;height:38px;padding:0;border-radius:50%;gap:0;}
+    .sm-close span{display:none;}
   }
 
   /* ---- Sliding bottom-nav active indicator ---- */
@@ -879,8 +928,11 @@
     display:flex;flex-direction:column;align-items:center;gap:7px;font-size:11px;color:var(--ink);
     text-align:center;background:none;border:none;font-family:inherit;cursor:pointer;font-weight:600;
   }
-  .sheet-grid-item .ic-circle{width:48px;height:48px;border-radius:14px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;}
+  .sheet-grid-item .ic-circle{width:48px;height:48px;border-radius:14px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;transition:transform .2s cubic-bezier(.34,1.56,.64,1),box-shadow .2s ease;}
   .sheet-grid-item.active .ic-circle{background:var(--violet-700);color:#fff;}
+  .sheet-grid-item:hover .ic-circle{transform:translateY(-3px);box-shadow:0 10px 20px -10px rgba(34,21,48,0.35);}
+  .sheet-grid-item:active .ic-circle{transform:scale(.94);}
+  #sheetLogoutBtn:hover .ic-circle{box-shadow:0 10px 20px -10px rgba(214,69,62,0.45);}
 
   /* Widgets */
   .widget-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:20px;}
