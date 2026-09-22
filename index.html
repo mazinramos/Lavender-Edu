@@ -1470,7 +1470,7 @@
     [dir="ltr"] .app-sidebar{transform:translateX(-105%);}
     body.side-open .app-sidebar{transform:translateX(0);}
     .app-sidebar .lbl-text, .app-sidebar .side-label, .app-sidebar .side-user .name, .app-sidebar .side-user .role{display:inline;}
-    .app-sidebar .side-link .lbl-text{display:inline-block;}
+    .app-sidebar .side-link span.lbl-text{display:inline-block;}
     .side-collapse-btn{display:none;}
     .side-close-btn{display:flex;}
     .hamburger-btn{display:flex;}
@@ -5645,8 +5645,10 @@ function bottomNavHTML(activeKey, currentPath){
     // dashboard, so admins get a purpose-built bar instead: a menu button that opens the
     // full grouped tab drawer, a shortcut to the overview, quick search, and notifications
     // (with their own unread badge) — four things actually useful while managing the platform.
+    // No sliding indicator here — most of the admin's real tabs live behind "القائمة", not
+    // as one of these four items, so a pill that can only ever highlight two of them just
+    // sits stuck wherever it last was instead of tracking anything meaningful.
     return `
-      <div class="bottom-nav-indicator" id="bottomNavIndicator"></div>
       <button type="button" class="bottom-nav-item" id="bottomNavMenuBtn">
         <span class="side-ic">${SIDE_ICONS.menu}</span><span>القائمة</span>
       </button>
@@ -5854,7 +5856,7 @@ function wireBottomNav(activeKey){
   }
   const menuBtn = document.getElementById('bottomNavMenuBtn');
   if(menuBtn){
-    menuBtn.addEventListener('click', () => toggleSideDrawer());
+    menuBtn.addEventListener('click', () => openAdminMoreSheet(activeKey));
   }
   const searchBtn = document.getElementById('bottomNavSearchBtn');
   if(searchBtn){
@@ -10986,7 +10988,9 @@ async function adminRenderPayments(area){
       <div class="pay-st">${pill(e)}${waitChip(e)}</div>
       <div class="ar-act">
         <button class="icon-action" data-act="open" title="التفاصيل">${svg(P.eye,15)}</button>
-        ${e.g === 'review' ? `<button class="icon-action success" data-act="approve" title="قبول">${svg(P.check,15)}</button><button class="icon-action danger" data-act="reject" title="رفض">${svg(P.x,15)}</button>` : (waLink(u?.phone) ? `<a class="icon-action" href="${waLink(u.phone)}" target="_blank" rel="noopener" title="واتساب">${svg(P.chat,15)}</a>` : '')}
+        ${e.g === 'review' ? `<button class="icon-action success" data-act="approve" title="قبول">${svg(P.check,15)}</button><button class="icon-action danger" data-act="reject" title="رفض">${svg(P.x,15)}</button>`
+          : e.g === 'await' ? `<button class="icon-action success" data-act="approve" title="تفعيل يدوي — بدون انتظار تأكيد الطالب">${svg(P.check,15)}</button>${waLink(u?.phone) ? `<a class="icon-action" href="${waLink(u.phone)}" target="_blank" rel="noopener" title="واتساب">${svg(P.chat,15)}</a>` : ''}`
+          : (waLink(u?.phone) ? `<a class="icon-action" href="${waLink(u.phone)}" target="_blank" rel="noopener" title="واتساب">${svg(P.chat,15)}</a>` : '')}
       </div></div>`;
   }
   function paintList(){
@@ -11046,6 +11050,7 @@ async function adminRenderPayments(area){
     </div>
     <div class="ar-dr-f pay-f">${rej ? `<div class="pay-rej"><b>${drw.kind === 'cancelled' ? 'سبب الإلغاء' : 'سبب الرفض'} <small>(بيوصل للطالب في إشعار)</small></b><div class="pay-rs">${REASONS.map(r => `<button data-act="reason" data-r="${E(r)}">${r}</button>`).join('')}</div><textarea id="payReason" rows="2" placeholder="اكتب السبب أو اختر من الأعلى…"></textarea><div class="pay-rb"><button class="btn btn-sm ar-danger" data-act="confirm-no">${drw.kind === 'cancelled' ? 'تأكيد الإلغاء' : 'تأكيد الرفض'}</button><button class="btn btn-ghost btn-sm" data-act="rej-cancel">تراجع</button></div></div>`
       : e.g === 'review' ? `<button class="btn btn-primary" data-act="approve">${svg(P.check,16)} قبول وتفعيل الكورس</button><button class="btn ar-danger" data-act="reject">${svg(P.x,16)} رفض</button>`
+      : e.g === 'await' ? `<button class="btn btn-primary btn-sm" data-act="approve">${svg(P.check,14)} تفعيل يدوي (تخطي انتظار الدفع)</button><button class="btn btn-sm" data-act="remind">${svg(P.bell,14)} إرسال تذكير للطالب</button><button class="btn btn-sm ar-danger" data-act="revoke">إلغاء الطلب</button>`
       : e.g === 'ok' ? `<button class="btn btn-sm ar-danger" data-act="revoke">${svg(P.undo,14)} إلغاء الاشتراك وسحب الوصول</button>`
       : e.g === 'bad' ? `<button class="btn btn-primary btn-sm" data-act="reopen">${svg(P.undo,14)} إعادة فتح للمراجعة</button>`
       : `<button class="btn btn-primary btn-sm" data-act="remind">${svg(P.bell,14)} إرسال تذكير للطالب</button><button class="btn btn-sm ar-danger" data-act="revoke">إلغاء الطلب</button>`}
@@ -11081,7 +11086,8 @@ async function adminRenderPayments(area){
   }
   const nextReview = id => { const L = filtered().filter(x => x.g === 'review'), i = L.findIndex(x => x.id === id); return (L[i + 1] || L.find(x => x.id !== id))?.id || null; };
   async function approve(e){
-    if(!await ask('قبول الطلب وتفعيل الكورس؟', `${E(e.studentName || 'الطالب')} — ${E(e.courseTitle || '')} — ${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}${e.dupRef.length || e.dupCourse.length ? '<br><b style="color:var(--danger)">⚠ في تنبيهات تكرار على هذا الطلب!</b>' : ''}`, 'قبول', { safe:true, icon:P.check })) return;
+    const skipNote = e.g === 'await' ? '<br><b style="color:var(--amber-600)">⚠ الطالب لسه ما أكّد الدفع من عنده — استخدم ده بس لو اتأكدت من الدفع بطريقة تانية (واتساب، حوالة مباشرة، إلخ).</b>' : '';
+    if(!await ask('قبول الطلب وتفعيل الكورس؟', `${E(e.studentName || 'الطالب')} — ${E(e.courseTitle || '')} — ${Number(e.finalAmount) === 0 ? 'مجاني' : money(e.finalAmount)}${e.dupRef.length || e.dupCourse.length ? '<br><b style="color:var(--danger)">⚠ في تنبيهات تكرار على هذا الطلب!</b>' : ''}${skipNote}`, 'قبول', { safe:true, icon:P.check })) return;
     const nx = nextReview(e.id);
     try{ const sent = await decide(e, 'approved'); afterDecision(nx, sent, 'تم قبول الطلب وتفعيل الكورس'); }catch(err){ console.error(err); toast('تعذّر تنفيذ العملية — راجع الاتصال والصلاحيات'); }
   }
