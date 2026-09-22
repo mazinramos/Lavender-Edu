@@ -7155,6 +7155,20 @@ async function learnRenderExams(area, course){
 
     area.innerHTML = exams.map(ex => {
       const result = myResults.find(r => r.examId === ex.id);
+      if(ex.type === 'link'){
+        return `
+          <div class="exam-card">
+            <div>
+              <div style="font-weight:700;color:var(--violet-900);">${ex.title} <span class="pill" style="color:#3B6FBF;background:#EEF3FB;">رابط خارجي</span></div>
+              <div style="font-size:13px;color:var(--muted);margin-top:4px;">${ex.durationMinutes ? 'مدة تقريبية ' + ex.durationMinutes + ' دقيقة' : ''}${ex.note ? (ex.durationMinutes ? ' · ' : '') + ex.note : ''}</div>
+            </div>
+            ${result
+              ? `<span class="status-badge status-approved">تم الإنهاء ✓</span>`
+              : `<div style="display:flex;gap:8px;"><a href="${ex.linkUrl}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">فتح الامتحان</a><button type="button" class="btn btn-primary btn-sm" data-mark-done="${ex.id}" data-title="${(ex.title||'').replace(/"/g,'&quot;')}">تأكيد الإنهاء</button></div>`
+            }
+          </div>
+        `;
+      }
       return `
         <div class="exam-card">
           <div>
@@ -7168,6 +7182,25 @@ async function learnRenderExams(area, course){
         </div>
       `;
     }).join('');
+
+    area.querySelectorAll('[data-mark-done]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if(!confirm(`تأكيد إنك خلّصت "${btn.dataset.title}"؟ ده مش هيرجعلك درجة — بس بيسجّل إنك دخلته.`)) return;
+        btn.disabled = true;
+        try{
+          await setDoc(doc(db, 'examResults', `${currentUser.uid}_${btn.dataset.markDone}`), {
+            examId: btn.dataset.markDone, courseId: course.id, studentId: currentUser.uid,
+            studentName: currentProfile?.name || currentUser.email,
+            type:'link', completed:true, score:null, total:null, passed:null,
+            submittedAt: serverTimestamp(),
+          });
+          learnRenderExams(area, course);
+        }catch(e){
+          alert('تعذّر التسجيل، حاول مرة أخرى.');
+          btn.disabled = false;
+        }
+      });
+    });
   }catch(e){
     area.innerHTML = `<div class="empty-state">تعذّر تحميل الامتحانات.</div>`;
   }
@@ -7193,6 +7226,11 @@ async function renderExamTake(examId){
 
   if(!exam){
     app.innerHTML = `<div class="dash-card" style="text-align:center;"><p>هذا الامتحان غير موجود.</p></div>`;
+    return;
+  }
+
+  if(exam.type === 'link'){
+    app.innerHTML = `<div class="dash-card" style="text-align:center;max-width:480px;margin:0 auto;"><p>هذا امتحان برابط خارجي — افتحه من صفحة امتحانات الكورس.</p><a href="#/learn/${exam.courseId}" class="btn btn-primary" style="margin-top:10px;">الرجوع لقاعة الكورس</a></div>`;
     return;
   }
 
@@ -7651,48 +7689,136 @@ async function manageRenderExams(area, course){
   try{
     const snap = await getDocs(query(collection(db, 'exams'), where('courseId','==', course.id)));
     let exams = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    let examType = 'quiz';
 
     area.innerHTML = `
       <div style="margin-bottom:22px;padding:18px;background:var(--paper);border:1px solid var(--line);border-radius:12px;">
+        <div class="cat-tabs" id="examTypeTabs" style="margin-bottom:16px;">
+          <button type="button" class="cat-tab active" data-type="quiz">أسئلة داخل المنصة (تصحيح تلقائي)</button>
+          <button type="button" class="cat-tab" data-type="link">رابط خارجي</button>
+        </div>
         <div class="field" style="margin-bottom:12px;">
           <label>عنوان الامتحان</label>
           <input type="text" id="examTitle" placeholder="مثال: امتحان الفصل الأول" />
         </div>
         <div class="field" style="margin-bottom:14px;max-width:220px;">
-          <label>مدة الامتحان (دقيقة)</label>
+          <label>مدة الامتحان (دقيقة) — اختياري</label>
           <input type="number" id="examDuration" min="1" placeholder="30" />
         </div>
-        <div id="questionsBuilder"></div>
-        <button type="button" class="btn btn-ghost" id="addQuestionBtn" style="margin-top:10px;">+ إضافة سؤال</button>
+
+        <div id="quizModeBox">
+          <div class="widget" style="background:var(--mist);border:1px dashed var(--violet-300, #C9B8E8);margin-bottom:16px;padding:14px;">
+            <div style="display:flex;align-items:center;gap:8px;font-weight:700;color:var(--violet-800);margin-bottom:8px;">
+              <span class="side-ic" style="width:16px;height:16px;">${SIDE_ICONS.paperPlane}</span> توليد أسئلة بالذكاء الاصطناعي
+            </div>
+            <div class="field" style="margin-bottom:10px;">
+              <label>الصق موضوع أو نص المحاضرة اللي هتُبنى منه الأسئلة</label>
+              <textarea id="aiTopic" rows="3" placeholder="مثال: نص أو ملخص المحاضرة، أو موضوع مثل: 'أساسيات الدورة الدموية'"></textarea>
+            </div>
+            <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+              <div class="field" style="margin-bottom:0;max-width:160px;">
+                <label>عدد الأسئلة</label>
+                <input type="number" id="aiCount" min="1" max="20" value="5" />
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="aiGenerateBtn">توليد الأسئلة</button>
+            </div>
+            <div id="aiStatus" style="font-size:12.5px;color:var(--muted);margin-top:8px;"></div>
+          </div>
+          <div id="questionsBuilder"></div>
+          <button type="button" class="btn btn-ghost" id="addQuestionBtn" style="margin-top:10px;">+ إضافة سؤال يدويًا</button>
+        </div>
+
+        <div id="linkModeBox" class="hidden">
+          <div class="field" style="margin-bottom:12px;">
+            <label>رابط الامتحان الخارجي *</label>
+            <input type="url" id="examLinkUrl" dir="ltr" placeholder="https://forms.google.com/..." />
+          </div>
+          <div class="field" style="margin-bottom:0;">
+            <label>تعليمات إضافية للطالب (اختياري)</label>
+            <input type="text" id="examLinkNote" placeholder="مثال: بعد ما تخلّص الامتحان ارجع هنا واضغط 'تأكيد الإنهاء'" />
+          </div>
+          <p style="font-size:12.5px;color:var(--muted);margin:10px 0 0;">امتحان الرابط الخارجي مفيهوش تصحيح تلقائي ولا درجة — بس بيتسجّل إن الطالب دخل وخلّص، وتقدر تراجعه من لوحة الإدارة.</p>
+        </div>
+
         <button type="button" class="btn btn-primary" id="saveExamBtn" style="margin-top:16px;display:block;">حفظ الامتحان</button>
       </div>
       <div id="examsListArea"></div>
     `;
 
+    document.getElementById('examTypeTabs').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-type]'); if(!btn) return;
+      examType = btn.dataset.type;
+      document.querySelectorAll('#examTypeTabs .cat-tab').forEach(b => b.classList.toggle('active', b === btn));
+      document.getElementById('quizModeBox').classList.toggle('hidden', examType !== 'quiz');
+      document.getElementById('linkModeBox').classList.toggle('hidden', examType !== 'link');
+    });
+
     let questionCount = 0;
-    function addQuestionRow(){
+    function addQuestionRow(prefill){
       questionCount++;
       const qi = questionCount;
       const wrap = document.createElement('div');
       wrap.className = 'question-block';
       wrap.dataset.qindex = qi;
+      const opts = prefill?.options || ['','','',''];
+      const correctIx = prefill?.correctIndex ?? 0;
       wrap.innerHTML = `
-        <div class="field" style="margin-bottom:10px;">
-          <label>السؤال ${qi}</label>
-          <input type="text" class="qText" required />
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+          <div class="field" style="margin-bottom:10px;flex:1;">
+            <label>السؤال ${qi}${prefill ? ' <span style="color:var(--violet-600);font-weight:400;">(مولّد بالذكاء الاصطناعي — راجعه قبل الحفظ)</span>' : ''}</label>
+            <input type="text" class="qText" required value="${(prefill?.text||'').replace(/"/g,'&quot;')}" />
+          </div>
+          <button type="button" class="icon-action danger removeQBtn" title="حذف السؤال" style="margin-top:22px;">${SIDE_ICONS.trash}</button>
         </div>
         ${[0,1,2,3].map(oi => `
           <div class="field" style="margin-bottom:8px;display:flex;align-items:center;gap:8px;">
-            <input type="radio" name="correct${qi}" value="${oi}" ${oi===0?'checked':''} style="accent-color:var(--violet-700);" />
-            <input type="text" class="qOption" placeholder="اختيار ${oi+1}" required style="flex:1;padding:9px 12px;border-radius:8px;border:1.5px solid var(--line);font-family:inherit;" />
+            <input type="radio" name="correct${qi}" value="${oi}" ${oi===correctIx?'checked':''} style="accent-color:var(--violet-700);" />
+            <input type="text" class="qOption" placeholder="اختيار ${oi+1}" required value="${(opts[oi]||'').replace(/"/g,'&quot;')}" style="flex:1;padding:9px 12px;border-radius:8px;border:1.5px solid var(--line);font-family:inherit;" />
           </div>
         `).join('')}
         <div style="font-size:12px;color:var(--muted);">اختر الدائرة بجانب الإجابة الصحيحة.</div>
       `;
+      wrap.querySelector('.removeQBtn').addEventListener('click', () => wrap.remove());
       document.getElementById('questionsBuilder').appendChild(wrap);
+      return wrap;
     }
-    document.getElementById('addQuestionBtn').addEventListener('click', addQuestionRow);
+    document.getElementById('addQuestionBtn').addEventListener('click', () => addQuestionRow());
     addQuestionRow();
+
+    /* AI question generation — calls a Firebase Cloud Function that holds the Anthropic API
+       key server-side (never expose an API key in this client file). Deploy the companion
+       Cloud Function and paste its URL below to activate this button. */
+    const AI_QUESTIONS_ENDPOINT = ''; // e.g. 'https://REGION-PROJECT.cloudfunctions.net/generateExamQuestions'
+    document.getElementById('aiGenerateBtn').addEventListener('click', async () => {
+      const statusEl = document.getElementById('aiStatus');
+      const topic = document.getElementById('aiTopic').value.trim();
+      const count = Math.max(1, Math.min(20, Number(document.getElementById('aiCount').value) || 5));
+      if(!topic){ statusEl.textContent = 'اكتب موضوع أو نص الأول.'; statusEl.style.color = 'var(--danger)'; return; }
+      if(!AI_QUESTIONS_ENDPOINT){
+        statusEl.style.color = 'var(--danger)';
+        statusEl.textContent = 'ميزة التوليد الذكي محتاجة إعداد من المطوّر (Cloud Function) قبل ما تشتغل — لسه مش مفعّلة.';
+        return;
+      }
+      const btn = document.getElementById('aiGenerateBtn');
+      btn.disabled = true; statusEl.style.color = 'var(--muted)'; statusEl.textContent = 'جارٍ توليد الأسئلة...';
+      try{
+        const res = await fetch(AI_QUESTIONS_ENDPOINT, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic, count }),
+        });
+        if(!res.ok) throw new Error('bad status');
+        const data = await res.json();
+        const questions = Array.isArray(data.questions) ? data.questions : [];
+        if(!questions.length) throw new Error('empty');
+        questions.forEach(q => addQuestionRow({ text: q.text, options: q.options, correctIndex: q.correctIndex }));
+        statusEl.style.color = 'var(--success)';
+        statusEl.textContent = `تمت إضافة ${questions.length} سؤال — راجعها وعدّل فيها قبل الحفظ.`;
+      }catch(e){
+        statusEl.style.color = 'var(--danger)';
+        statusEl.textContent = 'تعذّر التوليد، حاول مرة أخرى.';
+      }
+      btn.disabled = false;
+    });
 
     function renderExamsList(){
       const listEl = document.getElementById('examsListArea');
@@ -7703,8 +7829,8 @@ async function manageRenderExams(area, course){
       listEl.innerHTML = exams.map(ex => `
         <div class="exam-card">
           <div>
-            <div style="font-weight:700;color:var(--violet-900);">${ex.title}</div>
-            <div style="font-size:13px;color:var(--muted);margin-top:4px;">${ex.questions?.length || 0} سؤال</div>
+            <div style="font-weight:700;color:var(--violet-900);">${ex.title} ${ex.type === 'link' ? '<span class="pill" style="color:#3B6FBF;background:#EEF3FB;">رابط خارجي</span>' : ''}</div>
+            <div style="font-size:13px;color:var(--muted);margin-top:4px;">${ex.type === 'link' ? 'امتحان برابط — بدون تصحيح تلقائي' : `${ex.questions?.length || 0} سؤال`}</div>
           </div>
           <button class="btn btn-sm btn-danger" data-id="${ex.id}">حذف</button>
         </div>
@@ -7729,6 +7855,27 @@ async function manageRenderExams(area, course){
       const duration = document.getElementById('examDuration').value;
       if(!title){ alert('اكتب عنوان الامتحان.'); return; }
 
+      if(examType === 'link'){
+        const linkUrl = document.getElementById('examLinkUrl').value.trim();
+        const note = document.getElementById('examLinkNote').value.trim();
+        if(!linkUrl){ alert('حط رابط الامتحان.'); return; }
+        try{
+          const ref = await addDoc(collection(db, 'exams'), {
+            courseId: course.id, title, type:'link', linkUrl, note: note || null,
+            durationMinutes: duration ? Number(duration) : null, createdAt: serverTimestamp(),
+          });
+          exams.push({ id: ref.id, courseId: course.id, title, type:'link', linkUrl, note });
+          renderExamsList();
+          document.getElementById('examTitle').value = '';
+          document.getElementById('examDuration').value = '';
+          document.getElementById('examLinkUrl').value = '';
+          document.getElementById('examLinkNote').value = '';
+        }catch(e){
+          alert('تعذّر حفظ الامتحان.');
+        }
+        return;
+      }
+
       const blocks = document.querySelectorAll('#questionsBuilder .question-block');
       const questions = [];
       let valid = true;
@@ -7749,11 +7896,11 @@ async function manageRenderExams(area, course){
 
       try{
         const ref = await addDoc(collection(db, 'exams'), {
-          courseId: course.id, title,
+          courseId: course.id, title, type:'quiz',
           durationMinutes: duration ? Number(duration) : null,
           questions, createdAt: serverTimestamp(),
         });
-        exams.push({ id: ref.id, courseId: course.id, title, questions });
+        exams.push({ id: ref.id, courseId: course.id, title, type:'quiz', questions });
         renderExamsList();
         document.getElementById('examTitle').value = '';
         document.getElementById('examDuration').value = '';
@@ -9910,63 +10057,190 @@ async function adminRenderArchive(area){
 }
 
 /* ---------------- ADMIN: LIBRARY REVIEW ---------------- */
+/* ---------------- ADMIN: LIBRARY REVIEW (v2 — pro) ---------------- */
 async function adminRenderLibraryReview(area){
+  document.getElementById('libOv')?.remove(); document.getElementById('libBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, { edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>' });
+  const GROUP_L = Object.fromEntries(LIBRARY_GROUPS.map(g => [g.key, g.label]));
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+
+  let works = [];
   try{
     const snap = await getDocs(collection(db, 'libraryWorks'));
-    let works = snap.docs.map(d => ({ id: d.id, ...d.data() }))
-      .sort((a,b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>مراجعة أعمال المكتبة</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-10px 0 14px;">وافق على العمل عشان يظهر للمستخدمين في المكتبة، أو ارفضه.</p>
-        <div id="libraryReviewList"></div>
-      </div>
-    `;
-
-    function renderList(){
-      const listEl = document.getElementById('libraryReviewList');
-      if(works.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد أعمال مرسلة بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = works.map(w => `
-        <div class="table-widget-row">
-          <img src="${(w.images && w.images[0]) || ''}" style="width:44px;height:44px;border-radius:9px;object-fit:cover;flex-shrink:0;" />
-          <div class="grow">
-            <div class="t1">${w.title || 'بدون عنوان'}</div>
-            <div class="t2">${w.authorName || ''} · ${LIBRARY_GROUPS.find(g => g.key === w.group)?.label || w.group} · ${(w.images||[]).length} صفحة · ${LIBRARY_STATUS_LABEL[w.status] || w.status}</div>
-          </div>
-          <a href="#/library-work/${w.id}" target="_blank" class="btn btn-ghost btn-sm">معاينة</a>
-          ${w.status !== 'approved' ? `<button type="button" class="btn btn-sm btn-primary" data-approve="${w.id}">قبول</button>` : ''}
-          ${w.status !== 'rejected' ? `<button type="button" class="btn btn-sm btn-danger" data-reject="${w.id}">رفض</button>` : ''}
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-approve]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          try{
-            await updateDoc(doc(db, 'libraryWorks', btn.dataset.approve), { status: 'approved' });
-            const w = works.find(x => x.id === btn.dataset.approve); if(w) w.status = 'approved';
-            renderList();
-            showSuccessToast('تم نشر العمل!', w?.title || '');
-          }catch(e){ alert('تعذّر تحديث حالة العمل.'); }
-        });
-      });
-      listEl.querySelectorAll('button[data-reject]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          try{
-            await updateDoc(doc(db, 'libraryWorks', btn.dataset.reject), { status: 'rejected' });
-            const w = works.find(x => x.id === btn.dataset.reject); if(w) w.status = 'rejected';
-            renderList();
-          }catch(e){ alert('تعذّر تحديث حالة العمل.'); }
-        });
-      });
-    }
-    renderList();
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل أعمال المكتبة.</div>`;
+    works = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => ts(b.createdAt) - ts(a.createdAt));
+  }catch(err){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل أعمال المكتبة.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="libRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('libRetry').onclick = () => adminRenderLibraryReview(area); return;
   }
+
+  let q = '', fst = 'pending', fgroup = 'all', drw = null;
+  const sel = new Set();
+
+  area.innerHTML = `
+  <div class="ar" id="libRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.book,24)}</span><div><h2>مراجعة المكتبة</h2><p>وافق على الأعمال عشان تظهر للمستخدمين في المكتبة، أو ارفضها.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button></div>
+    </div>
+    <div class="ar-stats" id="libStats"></div>
+    <div class="widget ar-panel" style="margin-top:14px;">
+      <div class="cat-tabs" id="libChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="libQ" placeholder="ابحث بالعنوان أو اسم المؤلف…   ( / )" /></div>
+        <select id="libGroup" class="ar-sel"><option value="all">كل الأقسام</option>${LIBRARY_GROUPS.map(g => `<option value="${g.key}">${g.label}</option>`).join('')}</select>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="libCount"></div>
+      <div id="libList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('libRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'libOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr" id="libDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'libBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => works.filter(w => {
+    if(fst !== 'all' && (w.status||'pending') !== fst) return false;
+    if(fgroup !== 'all' && w.group !== fgroup) return false;
+    if(q && !`${w.title||''} ${w.authorName||''}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  function paintTop(){
+    const pending = works.filter(w => (w.status||'pending')==='pending').length;
+    const approved = works.filter(w => w.status==='approved').length;
+    const rejected = works.filter(w => w.status==='rejected').length;
+    const authorCounts = {}; works.forEach(w => { if(w.authorName) authorCounts[w.authorName] = (authorCounts[w.authorName]||0)+1; });
+    const topAuthor = Object.entries(authorCounts).sort((a,b) => b[1]-a[1])[0];
+    const oldestPending = works.filter(w => (w.status||'pending')==='pending').sort((a,b) => ts(a.createdAt)-ts(b.createdAt))[0];
+    const S = [
+      { k:'all', l:'إجمالي الأعمال', n:works.length, i:P.book, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
+      { k:'pending', l:'قيد المراجعة', n:pending, i:P.clock, c:'#C98826', bg:'#FFF4E0', on:fst==='pending' },
+      { k:'approved', l:'مقبولة ومنشورة', n:approved, i:P.check, c:'#2F7A4F', bg:'#E9F5EE', on:fst==='approved' },
+      { k:'rejected', l:'مرفوضة', n:rejected, i:P.ban, c:'#B3413A', bg:'#FBEBEA', on:fst==='rejected' },
+      { k:'-1', l:'الأكثر إرسالًا', txt: topAuthor ? E(topAuthor[0]) : '—', sub: topAuthor ? `${topAuthor[1]} عمل` : '', i:P.users, c:'#3B6FBF', bg:'#EEF3FB' },
+      { k:'-2', l:'أقدم عمل بانتظار المراجعة', txt: oldestPending ? ago(ts(oldestPending.createdAt)) : '—', i:P.warn, c:'#6B6072', bg:'#F1EDF5' },
+    ];
+    $('#libStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on?'on':''}" ${s.k.startsWith('-')?'':`data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt ? `<b style="font-size:15px;">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small style="color:var(--muted);">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#libStats b[data-n]').forEach(countUp);
+    $('#libChips').innerHTML = [['all','الكل',works.length],['pending','قيد المراجعة',pending],['approved','مقبولة',approved],['rejected','مرفوضة',rejected]].map(([k,l,n]) => `<button class="cat-tab ${fst===k?'active':''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+
+  function rowHTML(w, i){
+    const st = w.status || 'pending';
+    const c = st === 'approved' ? { c:'#2F7A4F', bg:'#E9F5EE' } : st === 'rejected' ? { c:'#B3413A', bg:'#FBEBEA' } : { c:'#C98826', bg:'#FFF4E0' };
+    return `<div class="ar-item ${sel.has(w.id)?'sel':''}" data-id="${w.id}" style="--i:${Math.min(i,14)};--c:${c.c};--bg:${c.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(w.id)?'checked':''}><i></i></label>
+      <div class="ar-th">${(w.images&&w.images[0]) ? `<img loading="lazy" src="${E(w.images[0])}" style="width:100%;height:100%;object-fit:cover;" onerror="this.remove()">` : svg(P.book,20)}</div>
+      <div class="ar-main"><div class="ar-t">${E(w.title || 'بدون عنوان')}</div><div class="ar-d">${E(w.authorName || '')} · ${(w.images||[]).length} صفحة</div></div>
+      <span class="ar-badge">${GROUP_L[w.group] || w.group || '—'}</span>
+      <div class="ar-up"><b style="color:${c.c};">${LIBRARY_STATUS_LABEL[st] || st}</b></div>
+      <div class="ar-dt">${fmtD(ts(w.createdAt))}</div>
+      <div class="ar-act">
+        <a class="icon-action" href="#/library-work/${w.id}" target="_blank" rel="noopener" title="معاينة">${svg(P.eye,15)}</a>
+        ${st !== 'approved' ? `<button class="icon-action" data-act="approve" title="قبول">${svg(P.check,15)}</button>` : ''}
+        ${st !== 'rejected' ? `<button class="icon-action danger" data-act="reject" title="رفض">${svg(P.ban,15)}</button>` : ''}
+        <button class="icon-action danger" data-act="del" title="حذف نهائي">${svg(P.trash,15)}</button>
+      </div></div>`;
+  }
+  function paintList(){
+    const L = filtered();
+    $('#libCount').textContent = works.length ? `عرض ${L.length} من ${works.length}` : '';
+    if(!L.length){
+      $('#libList').innerHTML = `<div class="ar-empty">${svg(works.length ? P.srch : P.book, 44)}<h4>${works.length ? 'ما في نتائج مطابقة' : 'لا توجد أعمال مرسلة بعد'}</h4><p>${works.length ? 'جرّب تغيّر البحث أو الفلاتر.' : ''}</p>${works.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+    }
+    $('#libList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>العمل</span><span>القسم</span><span>الحالة</span><span>تاريخ الإرسال</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${n}</b><span>محدد</span><button data-act="b-approve">${svg(P.check,15)} قبول</button><button data-act="b-reject">${svg(P.ban,15)} رفض</button><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr" title="إلغاء التحديد">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer (view) ---- */
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const w = works.find(x => x.id === drw), dr = $('#libDr'); if(!w){ drw = null; ov.classList.remove('open'); return; }
+    const st = w.status || 'pending';
+    const c = st === 'approved' ? { c:'#2F7A4F', bg:'#E9F5EE' } : st === 'rejected' ? { c:'#B3413A', bg:'#FBEBEA' } : { c:'#C98826', bg:'#FFF4E0' };
+    dr.style.setProperty('--c', c.c); dr.style.setProperty('--bg', c.bg);
+    dr.innerHTML = `<div class="ar-dr-h"><h3>تفاصيل العمل</h3><button class="icon-action" data-act="close" title="إغلاق (Esc)">${svg(P.x,16)}</button></div>
+    <div class="ar-prev" style="background:${c.bg};">${(w.images&&w.images[0]) ? `<img src="${E(w.images[0])}" style="width:100%;height:100%;object-fit:cover;">` : svg(P.book,40)}</div>
+    <div class="ar-dr-b"><h3 class="ar-dr-t">${E(w.title || 'بدون عنوان')}</h3>
+      <div class="ar-chips"><span class="ar-badge">${GROUP_L[w.group] || w.group || '—'}</span><span class="ar-st ${st==='approved'?'on':st==='rejected'?'off':''}">${LIBRARY_STATUS_LABEL[st] || st}</span></div>
+      <div class="ar-kvs">
+        ${kv('المؤلف', E(w.authorName || '—'))}
+        ${kv('تاريخ الإرسال', fmtD(ts(w.createdAt)) + (w.createdAt ? ` <small>${ago(ts(w.createdAt))}</small>` : ''))}
+        ${kv('عدد الصفحات', (w.images||[]).length)}
+        ${w.rejectionNote ? kv('سبب الرفض', E(w.rejectionNote)) : ''}
+        ${kv('المعرّف', `<code dir="ltr">${E(w.id)}</code>`)}
+      </div>
+      ${(w.images||[]).length ? `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;">${w.images.map(src => `<a href="${E(src)}" target="_blank" rel="noopener"><img src="${E(src)}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;" loading="lazy"></a>`).join('')}</div>` : ''}
+    </div>
+    <div class="ar-dr-f">
+      ${st !== 'approved' ? `<button class="btn btn-primary btn-sm" data-act="approve">${svg(P.check,14)} قبول</button>` : ''}
+      ${st !== 'rejected' ? `<button class="btn btn-ghost btn-sm" data-act="reject">${svg(P.ban,14)} رفض</button>` : ''}
+      <button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف نهائي</button>
+    </div>`;
+  }
+  const open = id => { drw = id; paintDrawer(); };
+
+  /* ---- data actions ---- */
+  async function setStatus(ids, status, note){
+    try{ await Promise.all(ids.map(id => updateDoc(doc(db,'libraryWorks',id), status==='rejected' && note ? { status, rejectionNote: note } : { status }))); }
+    catch(e){ return toast('تعذّر تحديث الحالة'); }
+    ids.forEach(id => { const w = works.find(x=>x.id===id); if(w){ w.status = status; if(note) w.rejectionNote = note; } });
+    logAdminActivity(status==='approved' ? 'library_approve' : 'library_reject', ids.length>1?`${ids.length} أعمال`:works.find(x=>x.id===ids[0])?.title);
+    if(status==='approved') showSuccessToast('تم قبول العمل!'); 
+    paintAll(); paintDrawer();
+  }
+  async function remove(ids){
+    const list = ids.map(id => works.find(x => x.id === id)).filter(Boolean); if(!list.length) return;
+    if(!await ask(list.length > 1 ? `حذف ${list.length} أعمال؟` : 'حذف هذا العمل نهائيًا؟', 'هيتشال العمل والصور المرفوعة معاه من قائمة المكتبة نهائيًا.')) return;
+    try{ await Promise.all(list.map(w => deleteDoc(doc(db,'libraryWorks',w.id)))); }catch(e){ return toast('تعذّر الحذف'); }
+    works = works.filter(x => !ids.includes(x.id)); ids.forEach(id => sel.delete(id)); if(drw && ids.includes(drw)) drw = null;
+    logAdminActivity('library_delete', list[0].title, list.length > 1 ? `${list.length} عناصر` : '');
+    paintAll(); paintDrawer(); toast('تم الحذف');
+  }
+  async function rejectWithNote(ids){
+    const note = prompt('سبب الرفض (اختياري — يساعد المؤلف يفهم ليه اتُرفض):', '');
+    if(note === null) return; // cancelled
+    setStatus(ids, 'rejected', note.trim() || null);
+  }
+
+  /* ---- events ---- */
+  async function onClick(e){
+    const el = e.target.closest('[data-act]'), row = e.target.closest('.ar-item'); const id = row?.dataset.id;
+    if(!el){ if(e.target === ov) drw = null, paintDrawer(); else if(row && !e.target.closest('.ar-chk')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'close'){ drw = null; paintDrawer(); }
+    else if(a === 'approve') setStatus([id || drw], 'approved');
+    else if(a === 'reject') rejectWithNote([id || drw]);
+    else if(a === 'del') remove([id || drw]);
+    else if(a === 'stat'){ fst = el.dataset.k; paintAll(); }
+    else if(a === 'reset'){ q = ''; fst = 'all'; fgroup = 'all'; $('#libQ').value=''; $('#libGroup').value='all'; paintAll(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderLibraryReview(area); }
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); }
+    else if(a === 'b-approve') setStatus([...sel], 'approved');
+    else if(a === 'b-reject') rejectWithNote([...sel]);
+    else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  $('#libQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); paintList(); });
+  $('#libGroup').addEventListener('change', e => { fgroup = e.target.value; paintList(); });
+  const onKey = e => {
+    if(!root.isConnected) return;
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(e.key === 'Escape' && drw){ drw = null; paintDrawer(); }
+    else if(!typing && e.key === '/'){ e.preventDefault(); $('#libQ').focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 const LIBRARY_STATUS_LABEL = { pending:'قيد المراجعة', approved:'مقبول', rejected:'مرفوض' };
 
@@ -10244,126 +10518,177 @@ async function adminRenderCourses(area){
   paintAll();
 }
 
+/* ---------------- ADMIN: COURSE REVIEW (v2 — pro) ---------------- */
 async function adminRenderCourseReview(area){
+  document.getElementById('crvOv')?.remove(); document.getElementById('crvBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, { edit:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>' });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const money = n => Number(n||0).toLocaleString('ar-EG') + ' ج.س';
+
+  let pending = [];
   try{
     const snap = await getDocs(query(collection(db, 'courses'), where('status','in',['pending_review','needs_changes'])));
-    let pending = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    pending.sort((a,b) => (b.submittedAt?.seconds || 0) - (a.submittedAt?.seconds || 0));
-
-    area.innerHTML = `
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>مركز مراجعة الكورسات</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">الكورسات اللي بعتها المدربين للمراجعة. لازم تحدد السعر وتوافق عشان الكورس يظهر في المتجر.</p>
-        <div id="reviewList"></div>
-      </div>
-    `;
-
-    function renderList(){
-      const listEl = document.getElementById('reviewList');
-      if(pending.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد كورسات تحتاج مراجعة حالياً.</div>`;
-        return;
-      }
-      listEl.innerHTML = pending.map(c => `
-        <div class="table-widget-row" style="align-items:flex-start;flex-direction:column;">
-          <div style="display:flex;align-items:center;gap:12px;width:100%;">
-            <div class="avatar-sm">${(c.title || '؟').trim()[0]?.toUpperCase() || '؟'}</div>
-            <div class="grow">
-              <div class="t1">${c.title}</div>
-              <div class="t2">المدرب: ${c.instructorName || '—'} · <span class="status-badge ${COURSE_STATUS_CLASS[c.status]}">${COURSE_STATUS_LABEL[c.status]}</span></div>
-            </div>
-            <button class="btn btn-ghost btn-sm" data-toggle="${c.id}">فتح للمراجعة</button>
-          </div>
-          <div id="reviewPanel-${c.id}" class="hidden" style="width:100%;margin-top:16px;padding-top:16px;border-top:1px solid var(--line);"></div>
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-toggle]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const panel = document.getElementById(`reviewPanel-${btn.dataset.toggle}`);
-          const wasHidden = panel.classList.contains('hidden');
-          panel.classList.toggle('hidden');
-          if(wasHidden && !panel.dataset.loaded){
-            renderReviewPanel(panel, pending.find(c => c.id === btn.dataset.toggle));
-            panel.dataset.loaded = '1';
-          }
-        });
-      });
-    }
-
-    function renderReviewPanel(panel, course){
-      panel.innerHTML = `
-        <p style="font-size:13.5px;color:var(--muted);line-height:1.8;margin:0 0 12px;">${course.description || 'بدون وصف'}</p>
-        ${Array.isArray(course.whatToLearn) && course.whatToLearn.length ? `
-          <div style="margin-bottom:14px;">
-            <div style="font-size:12.5px;font-weight:700;color:var(--violet-900);margin-bottom:6px;">ماذا سيتعلم الطالب:</div>
-            <ul style="margin:0;padding-right:18px;font-size:13px;color:var(--muted);">
-              ${course.whatToLearn.map(pt => `<li>${pt}</li>`).join('')}
-            </ul>
-          </div>
-        ` : ''}
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
-          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
-            <label>السعر (جنيه)</label>
-            <input type="number" min="0" class="reviewPrice" value="${course.price || 0}" />
-          </div>
-          <div class="field" style="flex:1;min-width:140px;margin-bottom:0;">
-            <label>السعر بعد الخصم (اختياري)</label>
-            <input type="number" min="0" class="reviewDiscount" value="${course.discountPrice || ''}" placeholder="بدون خصم" />
-          </div>
-        </div>
-        <div class="field" style="margin-bottom:14px;">
-          <label>ملاحظة للمدرب (سبب الرفض أو التعديلات المطلوبة)</label>
-          <input type="text" class="reviewNote" placeholder="اختياري لو موافقة، إلزامي لو رفض أو طلب تعديل" />
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" data-decision="approve">قبول ونشر الكورس</button>
-          <button class="btn btn-ghost btn-sm" data-decision="needs_changes">طلب تعديلات</button>
-          <button class="btn btn-sm btn-danger" data-decision="reject">رفض</button>
-        </div>
-      `;
-
-      panel.querySelectorAll('button[data-decision]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const decision = btn.dataset.decision;
-          const note = panel.querySelector('.reviewNote').value.trim();
-          if(decision !== 'approve' && !note){
-            alert('لازم تكتب ملاحظة للمدرب توضح السبب.');
-            return;
-          }
-          const price = Number(panel.querySelector('.reviewPrice').value || 0);
-          const discountVal = panel.querySelector('.reviewDiscount').value;
-          const discountPrice = discountVal ? Number(discountVal) : null;
-
-          btn.disabled = true;
-          try{
-            const updates = { reviewNote: note || null, reviewedAt: serverTimestamp() };
-            if(decision === 'approve'){
-              updates.status = 'approved';
-              updates.price = price;
-              updates.discountPrice = discountPrice;
-            } else if(decision === 'needs_changes'){
-              updates.status = 'needs_changes';
-            } else {
-              updates.status = 'rejected';
-            }
-            await updateDoc(doc(db, 'courses', course.id), updates);
-            coursesCache = null;
-            pending = pending.filter(c => c.id !== course.id);
-            renderList();
-            if(decision === 'approve') showSuccessToast('تم قبول الكورس!', course.title || '');
-          }catch(e){
-            alert('تعذّر تحديث حالة الكورس.');
-            btn.disabled = false;
-          }
-        });
-      });
-    }
-
-    renderList();
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات قيد المراجعة.</div>`;
+    pending = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => ts(a.submittedAt||a.createdAt) - ts(b.submittedAt||b.createdAt));
+  }catch(err){
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الكورسات قيد المراجعة.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="crvRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('crvRetry').onclick = () => adminRenderCourseReview(area); return;
   }
+
+  let q = '', fst = 'all', drw = null;
+  const sel = new Set();
+
+  area.innerHTML = `
+  <div class="ar" id="crvRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.clipboardCheck || P.check,24)}</span><div><h2>مراجعة الكورسات</h2><p>الكورسات اللي بعتها المدربين للمراجعة — حدد السعر ووافق عشان تظهر في المتجر.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh" title="تحديث">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button></div>
+    </div>
+    <div class="ar-stats" id="crvStats"></div>
+    <div class="widget ar-panel" style="margin-top:14px;">
+      <div class="cat-tabs" id="crvChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="crvQ" placeholder="ابحث بعنوان الكورس أو اسم المدرب…   ( / )" /></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="crvCount"></div>
+      <div id="crvList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('crvRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'crvOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr" id="crvDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'crvBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => pending.filter(c => {
+    if(fst !== 'all' && c.status !== fst) return false;
+    if(q && !`${c.title||''} ${c.instructorName||''}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  function paintTop(){
+    const pr = pending.filter(c => c.status === 'pending_review').length;
+    const nc = pending.filter(c => c.status === 'needs_changes').length;
+    const noPrice = pending.filter(c => !c.price).length;
+    const oldest = pending[0];
+    const instrCounts = {}; pending.forEach(c => { if(c.instructorName) instrCounts[c.instructorName] = (instrCounts[c.instructorName]||0)+1; });
+    const topInstr = Object.entries(instrCounts).sort((a,b) => b[1]-a[1])[0];
+    const S = [
+      { k:'all', l:'إجمالي قيد المراجعة', n:pending.length, i:P.clipboardCheck || P.check, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
+      { k:'pending_review', l:'مرسلة لأول مرة', n:pr, i:P.clock, c:'#C98826', bg:'#FFF4E0', on:fst==='pending_review' },
+      { k:'needs_changes', l:'معاد إرسالها بعد تعديل', n:nc, i:P.redo || P.refresh, c:'#3B6FBF', bg:'#EEF3FB', on:fst==='needs_changes' },
+      { k:'noPrice', l:'بدون سعر محدد', n:noPrice, i:P.card, c:'#B3413A', bg:'#FBEBEA', on:fst==='noPrice' },
+      { k:'-1', l:'أقدم كورس بانتظار المراجعة', txt: oldest ? ago(ts(oldest.submittedAt||oldest.createdAt)) : '—', sub: oldest ? E(oldest.title) : '', i:P.warn, c:'#6B6072', bg:'#F1EDF5' },
+      { k:'-2', l:'الأكثر انتظارًا', txt: topInstr ? E(topInstr[0]) : '—', sub: topInstr ? `${topInstr[1]} كورس` : '', i:P.users, c:'#2F7A4F', bg:'#E9F5EE' },
+    ];
+    $('#crvStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on?'on':''}" ${s.k.startsWith('-')?'':`data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt ? `<b style="font-size:15px;">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small style="color:var(--muted);">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#crvStats b[data-n]').forEach(countUp);
+    $('#crvChips').innerHTML = [['all','الكل',pending.length],['pending_review','لأول مرة',pr],['needs_changes','معاد إرسالها',nc]].map(([k,l,n]) => `<button class="cat-tab ${fst===k?'active':''}" data-act="stat" data-k="${k}">${l} (${n})</button>`).join('');
+  }
+
+  function rowHTML(c, i){
+    const st = c.status;
+    const clr = st === 'needs_changes' ? { c:'#3B6FBF', bg:'#EEF3FB' } : { c:'#C98826', bg:'#FFF4E0' };
+    const waitS = ts(c.submittedAt||c.createdAt);
+    return `<div class="ar-item ${sel.has(c.id)?'sel':''}" data-id="${c.id}" style="--i:${Math.min(i,14)};--c:${clr.c};--bg:${clr.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(c.id)?'checked':''}><i></i></label>
+      <div class="ar-th" style="background:${clr.bg};color:${clr.c};">${(c.title||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
+      <div class="ar-main"><div class="ar-t">${E(c.title || 'بدون عنوان')}</div><div class="ar-d">المدرب: ${E(c.instructorName || '—')} · ${E(c.categoryName || 'بدون قسم')}</div></div>
+      <span class="ar-badge">${st === 'needs_changes' ? 'معاد إرسالها' : 'لأول مرة'}</span>
+      <div class="ar-up">${c.price ? money(c.price) : '<span style="color:var(--muted);">بدون سعر</span>'}</div>
+      <div class="ar-dt" title="${fmtD(waitS)}">${ago(waitS)}</div>
+      <div class="ar-act"><button class="icon-action" data-act="open" title="فتح للمراجعة">${svg(P.eye,15)}</button></div></div>`;
+  }
+  function paintList(){
+    const L = filtered();
+    $('#crvCount').textContent = pending.length ? `عرض ${L.length} من ${pending.length}` : '';
+    if(!L.length){
+      $('#crvList').innerHTML = `<div class="ar-empty">${svg(pending.length ? P.srch : P.check, 44)}<h4>${pending.length ? 'ما في نتائج مطابقة' : 'لا توجد كورسات تحتاج مراجعة حاليًا 🎉'}</h4><p>${pending.length ? 'جرّب تغيّر البحث أو الفلاتر.' : 'كل الكورسات المرسلة تمت مراجعتها.'}</p>${pending.length ? '<button class="btn btn-ghost btn-sm" data-act="reset">مسح الفلاتر</button>' : ''}</div>`; return;
+    }
+    $('#crvList').innerHTML = `<div class="ar-list"><div class="ar-head"><span></span><span></span><span>الكورس</span><span>الحالة</span><span>السعر الحالي</span><span>وقت الانتظار</span><span>تحكّم</span></div>${L.map(rowHTML).join('')}</div>`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${n}</b><span>محدد</span><span style="font-size:12px;color:var(--muted);">استخدم "فتح للمراجعة" لتحديد السعر والقرار لكل كورس على حدة</span><button class="x" data-act="b-clr" title="إلغاء التحديد">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  /* ---- drawer (review form) ---- */
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const c = pending.find(x => x.id === drw), dr = $('#crvDr'); if(!c){ drw = null; ov.classList.remove('open'); return; }
+    dr.innerHTML = `<div class="ar-dr-h"><h3>مراجعة: ${E(c.title)}</h3><button class="icon-action" data-act="close" title="إغلاق (Esc)">${svg(P.x,16)}</button></div>
+    <div class="ar-dr-b">
+      <div class="ar-chips"><span class="ar-badge">${c.status==='needs_changes'?'معاد إرسالها':'لأول مرة'}</span><span class="ar-st on">المدرب: ${E(c.instructorName||'—')}</span></div>
+      <p class="ar-dr-p">${E(c.description || 'بدون وصف')}</p>
+      ${Array.isArray(c.whatToLearn) && c.whatToLearn.length ? `<div style="margin:10px 0;"><b style="font-size:12.5px;color:var(--violet-900);">ماذا سيتعلم الطالب:</b><ul style="margin:6px 0 0;padding-inline-start:18px;font-size:13px;color:var(--muted);">${c.whatToLearn.map(pt=>`<li>${E(pt)}</li>`).join('')}</ul></div>` : ''}
+      <div class="ar-kvs">
+        ${[['القسم', E(c.categoryName||'—')],['المستوى', c.level||'—'],['المدة', c.durationText||'—'],['تاريخ الإرسال', fmtD(ts(c.submittedAt||c.createdAt)) + ` <small>${ago(ts(c.submittedAt||c.createdAt))}</small>`]].map(([k,v]) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`).join('')}
+      </div>
+      <a href="#/course/${c.id}" target="_blank" rel="noopener" class="ar-lnk" style="display:inline-block;margin:10px 0;">معاينة صفحة الكورس كاملة ↗</a>
+      <form id="crvForm" style="margin-top:10px;">
+        <div style="display:flex;gap:10px;">
+          <div class="field" style="flex:1;"><label>السعر (جنيه)</label><input id="crvfPrice" type="number" min="0" value="${c.price||0}"></div>
+          <div class="field" style="flex:1;"><label>سعر بعد الخصم (اختياري)</label><input id="crvfDisc" type="number" min="0" value="${c.discountPrice||''}" placeholder="بدون خصم"></div>
+        </div>
+        <div class="field"><label>ملاحظة للمدرب (إلزامي لو رفض أو طلب تعديل)</label><textarea id="crvfNote" rows="2" placeholder="اكتب سبب الرفض أو التعديلات المطلوبة..."></textarea></div>
+        <div class="ar-msg err" id="crvErr"></div>
+        <div class="ar-form-b">
+          <button class="btn btn-primary" type="button" data-decision="approve">قبول ونشر الكورس</button>
+          <button class="btn btn-ghost" type="button" data-decision="needs_changes">طلب تعديلات</button>
+          <button class="btn ar-danger" type="button" data-decision="reject">رفض</button>
+        </div>
+      </form>
+    </div>`;
+  }
+  const open = id => { drw = id; paintDrawer(); };
+
+  /* ---- data actions ---- */
+  async function decide(id, decision){
+    const c = pending.find(x => x.id === id); if(!c) return;
+    const note = $('#crvfNote')?.value.trim() || '';
+    if(decision !== 'approve' && !note){ $('#crvErr').textContent = 'لازم تكتب ملاحظة للمدرب توضح السبب.'; return; }
+    const price = Number($('#crvfPrice')?.value || 0);
+    const discountVal = $('#crvfDisc')?.value;
+    const discountPrice = discountVal ? Number(discountVal) : null;
+    const updates = { reviewNote: note || null, reviewedAt: serverTimestamp() };
+    if(decision === 'approve'){ updates.status = 'approved'; updates.price = price; updates.discountPrice = discountPrice; }
+    else updates.status = decision;
+    try{ await updateDoc(doc(db,'courses',id), updates); }catch(e){ toast('تعذّر تحديث حالة الكورس'); return; }
+    coursesCache = null;
+    pending = pending.filter(x => x.id !== id); sel.delete(id); if(drw === id) drw = null;
+    logAdminActivity('course_review', c.title, decision === 'approve' ? 'قبول ونشر' : decision === 'needs_changes' ? 'طلب تعديلات' : 'رفض');
+    if(decision === 'approve') showSuccessToast('تم قبول الكورس ونشره!', c.title);
+    else toast(decision === 'needs_changes' ? 'تم إرجاعه للمدرب لطلب تعديلات' : 'تم رفض الكورس');
+    paintAll(); paintDrawer();
+  }
+
+  /* ---- events ---- */
+  async function onClick(e){
+    const el = e.target.closest('[data-act],[data-decision]'), row = e.target.closest('.ar-item'); const id = row?.dataset.id;
+    if(!el){ if(e.target === ov) drw = null, paintDrawer(); else if(row && !e.target.closest('.ar-chk')) open(row.dataset.id); return; }
+    if(el.dataset.decision){ decide(drw, el.dataset.decision); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'open') open(id);
+    else if(a === 'close'){ drw = null; paintDrawer(); }
+    else if(a === 'stat'){ fst = el.dataset.k; paintAll(); }
+    else if(a === 'reset'){ q = ''; fst = 'all'; $('#crvQ').value=''; paintAll(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderCourseReview(area); }
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); }
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  $('#crvQ').addEventListener('input', e => { q = e.target.value.trim().toLowerCase(); paintList(); });
+  const onKey = e => {
+    if(!root.isConnected) return;
+    const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName);
+    if(e.key === 'Escape' && drw){ drw = null; paintDrawer(); }
+    else if(!typing && e.key === '/'){ e.preventDefault(); $('#crvQ').focus(); }
+  };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
 /* ---------------- ADMIN: PAYMENTS (v2 — pro) ---------------- */
@@ -10888,7 +11213,36 @@ function certificateDocHTML(c){
 /* On-screen preview: rendered inside a Shadow DOM (isolated styles, no iframe needed). */
 function renderCertificatePreview(host, c){
   const root = host.shadowRoot || host.attachShadow({ mode:'open' }), { css, body } = certificateParts(c);
-  root.innerHTML = `<style>${css}</style>${body}`;
+  root.innerHTML = `<style>${css}
+  /* ================= ADMIN: COMMUNITY ================= */
+  .cm-head,.cm-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 130px 92px;}
+  .cm-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px;font-size:11.5px;color:var(--muted);} .cm-meta span{display:inline-flex;align-items:center;gap:4px;}
+  @media (max-width:1000px){ .cm-head,.cm-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 92px;} .cm-head span:nth-child(4),.cm-list .cm-meta span:first-child{display:none;} }
+  @media (max-width:760px){ .cm-head{display:none;} .cm-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) auto;} .cm-list .cm-meta{flex-direction:row;} }
+
+
+  /* ================= ADMIN: REVIEWS ================= */
+  .rv-head,.rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 1fr 92px 92px;}
+  .rv-stars{display:inline-flex;gap:1px;vertical-align:middle;} .rv-stars i{display:flex;color:var(--line);} .rv-stars i.on{color:var(--amber-500);}
+  .rv-comment{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  @media (max-width:1050px){ .rv-head,.rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr) 92px;} .rv-head span:nth-child(4),.rv-list .rv-comment{display:none;} }
+  @media (max-width:760px){ .rv-head{display:none;} .rv-list .ar-item{grid-template-columns:26px 44px minmax(0,1fr);} .rv-list .ar-dt,.rv-list .ar-act{display:none;} .rv-list .ar-item{cursor:pointer;} }
+
+
+  /* ================= ADMIN: SETTINGS ================= */
+  .st-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;}
+  .st-links a{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:13px 14px;transition:.25s cubic-bezier(.22,1,.36,1);animation:widgetIn .5s both;}
+  .st-links a:hover{transform:translateY(-3px);border-color:var(--violet-600);box-shadow:0 14px 26px -18px var(--violet-700);}
+  .st-links a > span:first-child{width:36px;height:36px;border-radius:10px;background:var(--mist);color:var(--violet-700);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .st-links a div{flex:1;min-width:0;} .st-links a b{display:block;font-size:13px;color:var(--ink);} .st-links a small{color:var(--muted);font-size:11.5px;} .st-links a svg:last-child{color:var(--muted);flex-shrink:0;}
+  .st-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}
+  .st-card .widget-head h3{display:flex;align-items:center;gap:8px;}
+  .st-prev{margin-top:2px;} .st-prev small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:8px;}
+  .st-prev-b{display:flex;gap:8px;flex-wrap:wrap;} .st-prev-b a{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:99px;background:var(--mist);color:var(--violet-800);font-size:12.5px;font-weight:700;transition:.2s;} .st-prev-b a:hover{background:var(--violet-700);color:#fff;transform:translateY(-2px);}
+  .st .ar-form-b{margin-top:4px;}
+  @media (max-width:1000px){ .st-grid{grid-template-columns:1fr;} }
+
+</style>${body}`;
 }
 function openCertificate(c){
   const win = window.open('', '_blank'); if(!win){ alert('اسمح بالنوافذ المنبثقة عشان تشوف الشهادة وتطبعها.'); return; }
@@ -11728,10 +12082,12 @@ async function adminRenderExamsOverview(area){
   const pct = (s,t) => t ? Math.round(s/t*100) : 0;
   const resOf = examId => results.filter(r => r.examId === examId);
   const statsOf = examId => {
-    const rs = resOf(examId); if(!rs.length) return { n:0, avg:0, passN:0, passRate:0 };
-    const avg = Math.round(rs.reduce((s,r) => s + pct(r.score,r.total), 0) / rs.length);
-    const passN = rs.filter(r => r.passed).length;
-    return { n: rs.length, avg, passN, passRate: Math.round(passN/rs.length*100) };
+    const rs = resOf(examId);
+    if(!rs.length) return { n:0, avg:0, passN:0, passRate:0, graded:false };
+    const graded = rs.filter(r => r.total != null);
+    const avg = graded.length ? Math.round(graded.reduce((s,r) => s + pct(r.score,r.total), 0) / graded.length) : 0;
+    const passN = graded.filter(r => r.passed).length;
+    return { n: rs.length, avg, passN, passRate: graded.length ? Math.round(passN/graded.length*100) : 0, graded: graded.length > 0 };
   };
 
   let q = '', fst = 'all', fcourse = 'all', sort = 'new', drw = null;
@@ -11763,7 +12119,7 @@ async function adminRenderExamsOverview(area){
   const filtered = () => exams.filter(ex => {
     const s = statsOf(ex.id);
     if(fst === 'noAttempts' && s.n > 0) return false;
-    if(fst === 'lowPass' && !(s.n > 0 && s.passRate < 50)) return false;
+    if(fst === 'lowPass' && !(s.graded && s.passRate < 50)) return false;
     if(fcourse !== 'all' && ex.courseId !== fcourse) return false;
     if(q && !(ex.title||'').toLowerCase().includes(q)) return false;
     return true;
@@ -11775,16 +12131,16 @@ async function adminRenderExamsOverview(area){
   });
 
   function paintTop(){
-    const totalAttempts = results.length, totalPassed = results.filter(r => r.passed).length;
-    const overallPass = totalAttempts ? Math.round(totalPassed/totalAttempts*100) : 0;
-    const avgAll = totalAttempts ? Math.round(results.reduce((s,r) => s + pct(r.score,r.total), 0) / totalAttempts) : 0;
+    const totalAttempts = results.length, graded = results.filter(r => r.total != null);
+    const overallPass = graded.length ? Math.round(graded.filter(r => r.passed).length/graded.length*100) : 0;
+    const avgAll = graded.length ? Math.round(graded.reduce((s,r) => s + pct(r.score,r.total), 0) / graded.length) : 0;
     const noAtt = exams.filter(ex => statsOf(ex.id).n === 0).length;
-    const lowPass = exams.filter(ex => { const s = statsOf(ex.id); return s.n > 0 && s.passRate < 50; }).length;
+    const lowPass = exams.filter(ex => { const s = statsOf(ex.id); return s.graded && s.passRate < 50; }).length;
     const S = [
       { k:'all', l:'إجمالي الامتحانات', n:exams.length, i:P.exam, c:'#5A3B92', bg:'#EDE7F6', on:fst==='all' },
       { k:'-1', l:'إجمالي المحاولات', n:totalAttempts, i:P.list, c:'#3B6FBF', bg:'#EEF3FB' },
-      { k:'-2', l:'نسبة النجاح العامة', txt:totalAttempts ? overallPass+'%' : '—', i:P.check, c:'#2F7A4F', bg:'#E9F5EE' },
-      { k:'-3', l:'متوسط الدرجات', txt:totalAttempts ? avgAll+'%' : '—', i:P.cert, c:'#C98826', bg:'#FFF4E0' },
+      { k:'-2', l:'نسبة النجاح العامة', txt:graded.length ? overallPass+'%' : '—', i:P.check, c:'#2F7A4F', bg:'#E9F5EE' },
+      { k:'-3', l:'متوسط الدرجات', txt:graded.length ? avgAll+'%' : '—', i:P.cert, c:'#C98826', bg:'#FFF4E0' },
       { k:'noAttempts', l:'بدون أي محاولة', n:noAtt, i:P.warn, c:'#6B6072', bg:'#F1EDF5', on:fst==='noAttempts' },
       { k:'lowPass', l:'نسبة نجاح ضعيفة (أقل من 50%)', n:lowPass, i:P.ban, c:'#B3413A', bg:'#FBEBEA', on:fst==='lowPass' },
     ];
@@ -11794,14 +12150,14 @@ async function adminRenderExamsOverview(area){
   }
 
   function rowHTML(ex, i){
-    const s = statsOf(ex.id), c = s.n === 0 ? { c:'#6B6072', bg:'#F1EDF5' } : s.passRate < 50 ? { c:'#B3413A', bg:'#FBEBEA' } : { c:'#2F7A4F', bg:'#E9F5EE' };
+    const s = statsOf(ex.id), c = s.n === 0 ? { c:'#6B6072', bg:'#F1EDF5' } : !s.graded ? { c:'#3B6FBF', bg:'#EEF3FB' } : s.passRate < 50 ? { c:'#B3413A', bg:'#FBEBEA' } : { c:'#2F7A4F', bg:'#E9F5EE' };
     return `<div class="ar-item ${sel.has(ex.id)?'sel':''}" data-id="${ex.id}" style="--i:${Math.min(i,14)};--c:${c.c};--bg:${c.bg}">
       <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(ex.id)?'checked':''}><i></i></label>
       <div class="ar-th" style="background:${c.bg};color:${c.c};">${svg(P.exam,20)}</div>
-      <div class="ar-main"><div class="ar-t">${E(ex.title || 'امتحان')}</div><div class="ar-d">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')} · ${ex.questions?.length||0} سؤال${ex.durationMinutes ? ` · ${ex.durationMinutes} دقيقة` : ''}</div></div>
-      <span class="ar-badge">${s.n} محاولة</span>
-      <div class="ar-up">${s.n ? `<b style="color:${c.c};">${s.passRate}%</b>` : '<span style="color:var(--muted);">—</span>'}</div>
-      <div class="ar-dt">${s.n ? `متوسط ${s.avg}%` : 'لا يوجد'}</div>
+      <div class="ar-main"><div class="ar-t">${E(ex.title || 'امتحان')}</div><div class="ar-d">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')} · ${ex.type === 'link' ? 'رابط خارجي' : `${ex.questions?.length||0} سؤال`}${ex.durationMinutes ? ` · ${ex.durationMinutes} دقيقة` : ''}</div></div>
+      <span class="ar-badge">${s.n} ${ex.type === 'link' ? 'إنهاء' : 'محاولة'}</span>
+      <div class="ar-up">${!s.n ? '<span style="color:var(--muted);">—</span>' : ex.type === 'link' ? `<b style="color:${c.c};">مكتمل</b>` : `<b style="color:${c.c};">${s.passRate}%</b>`}</div>
+      <div class="ar-dt">${s.n ? (ex.type === 'link' ? 'بدون تصحيح تلقائي' : `متوسط ${s.avg}%`) : 'لا يوجد'}</div>
       <div class="ar-act">
         <button class="icon-action" data-act="open" title="عرض النتائج">${svg(P.eye,15)}</button>
         <button class="icon-action danger" data-act="del" title="حذف الامتحان">${svg(P.trash,15)}</button>
@@ -11830,13 +12186,13 @@ async function adminRenderExamsOverview(area){
     const s = statsOf(ex.id);
     dr.innerHTML = `<div class="ar-dr-h"><h3>نتائج: ${E(ex.title)}</h3><button class="icon-action" data-act="close" title="إغلاق (Esc)">${svg(P.x,16)}</button></div>
     <div class="ar-dr-b">
-      <div class="ar-chips"><span class="ar-badge">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')}</span><span class="ar-st on">${s.n} محاولة</span>${s.n ? `<span class="ar-st ${s.passRate<50?'off':'on'}">نجاح ${s.passRate}%</span>` : ''}</div>
+      <div class="ar-chips"><span class="ar-badge">${E(courseMap[ex.courseId]?.title || 'كورس محذوف')}</span><span class="ar-st on">${s.n} ${ex.type === 'link' ? 'إنهاء' : 'محاولة'}</span>${s.graded ? `<span class="ar-st ${s.passRate<50?'off':'on'}">نجاح ${s.passRate}%</span>` : ''}</div>
       <div class="topbar-search ar-search" style="margin:14px 0;"><input id="exmDrQ" placeholder="ابحث باسم الطالب..." value="${E(drQ)}"></div>
       <div id="exmDrList">${rs.length ? rs.map(r => `
         <div class="ar-kv" style="align-items:center;">
           <span>${E(r.studentName || 'طالب')}<br><small style="color:var(--muted);font-weight:400;">${fmtD(ts(r.submittedAt))}</small></span>
           <div style="display:flex;align-items:center;gap:10px;">
-            <span class="ar-st ${r.passed?'on':'off'}">${r.score}/${r.total} (${pct(r.score,r.total)}%)</span>
+            <span class="ar-st ${r.total == null ? 'on' : r.passed?'on':'off'}">${r.total == null ? 'تم الإنهاء' : `${r.score}/${r.total} (${pct(r.score,r.total)}%)`}</span>
             <button class="icon-action" data-act="reset-res" data-id="${r.id}" data-n="${E(r.studentName||'الطالب')}" title="حذف المحاولة (تسمح له بإعادة المحاولة)">${svg(P.redo,14)}</button>
           </div>
         </div>`).join('') : `<div class="empty-state" style="padding:20px 0;">${drQ ? 'لا يوجد طالب بهذا الاسم.' : 'لا توجد محاولات على هذا الامتحان بعد.'}</div>`}</div>
@@ -11870,7 +12226,7 @@ async function adminRenderExamsOverview(area){
   }
   function csvRows(list){
     const rows = [['الامتحان','الكورس','الطالب','الدرجة','من','النسبة','النتيجة','تاريخ التسليم']];
-    list.forEach(ex => resOf(ex.id).forEach(r => rows.push([ex.title, courseMap[ex.courseId]?.title||'', r.studentName||'', r.score, r.total, pct(r.score,r.total)+'%', r.passed?'ناجح':'راسب', fmtD(ts(r.submittedAt))])));
+    list.forEach(ex => resOf(ex.id).forEach(r => rows.push([ex.title, courseMap[ex.courseId]?.title||'', r.studentName||'', r.total==null?'—':r.score, r.total==null?'—':r.total, r.total==null?'—':pct(r.score,r.total)+'%', r.total==null?'تم الإنهاء (بدون تصحيح)':(r.passed?'ناجح':'راسب'), fmtD(ts(r.submittedAt))])));
     return rows;
   }
   function csv(list, name){
@@ -11915,94 +12271,302 @@ async function adminRenderExamsOverview(area){
 }
 
 
+/* ---------------- ADMIN: COMMUNITY MODERATION (v2 — pro) ---------------- */
 async function adminRenderCommunityModeration(area){
+  document.getElementById('cmOv')?.remove(); document.getElementById('cmBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, {
+    chat:'<path d="M21 11.5a8.4 8.4 0 01-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1121 11.5z"/>', bull:'<path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 01-3.4 0"/>',
+    heart:'<path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/>', ext:'<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>',
+  });
+  const TYPE = { announcement:{ l:'إعلان', c:'#C98826', bg:'#FFF4E0', i:P.bull }, reminder:{ l:'تذكير', c:'#3B6FBF', bg:'#EEF3FB', i:P.clock }, lesson:{ l:'رسالة تعليمية', c:'#2F7A4F', bg:'#E9F5EE', i:P.book }, schedule:{ l:'موعد محاضرة', c:'#5A3B92', bg:'#EDE7F6', i:P.cal }, file:{ l:'ملف', c:'#6E4BAF', bg:'#F3EDFB', i:P.note }, link:{ l:'رابط', c:'#B3413A', bg:'#FBEBEA', i:P.ext } };
+  const tp = m => TYPE[m.type] || { l:m.type || 'رسالة', c:'#6B6072', bg:'#F1EDF5', i:P.chat };
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const nm = n => Number(n).toLocaleString('ar-EG'), initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase(), wk = () => Date.now()/1000 - 7*86400;
+
+  let msgs = [], cmap = {};
   try{
-    const [msgSnap, courses] = await Promise.all([
-      getDocs(collection(db, 'communityMessages')),
-      fetchAllCoursesAdmin(),
-    ]);
-    const courseMap = Object.fromEntries(courses.map(c => [c.id, c]));
-    let messages = msgSnap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-
-    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>رسائل مجتمعات الكورسات (${messages.length})</h3></div><div id="communityModList"></div></div>`;
-
-    function renderList(){
-      const listEl = document.getElementById('communityModList');
-      if(messages.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد رسائل بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = messages.slice(0,50).map(m => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${(m.senderName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
-          <div class="grow">
-            <div class="t1">${m.senderName || 'مدرب'} <span class="chat-type-pill">${COMMUNITY_TYPE_LABEL[m.type]||m.type}</span></div>
-            <div class="t2">${courseMap[m.courseId]?.title || 'كورس'} · ${m.content ? m.content.slice(0,80) : (m.fileName || '')}</div>
-          </div>
-          <button class="icon-action danger" data-id="${m.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('حذف هذه الرسالة من مجتمع الكورس؟')) return;
-          try{
-            await deleteDoc(doc(db, 'communityMessages', btn.dataset.id));
-            messages = messages.filter(m => m.id !== btn.dataset.id);
-            renderList();
-          }catch(e){
-            alert('تعذّر حذف الرسالة.');
-          }
-        });
-      });
-    }
-    renderList();
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل المجتمعات.</div>`;
+    const [msgSnap, courses] = await Promise.all([getDocs(collection(db,'communityMessages')), fetchAllCoursesAdmin()]);
+    cmap = Object.fromEntries(courses.map(c => [c.id, c]));
+    msgs = msgSnap.docs.map(d => ({ id:d.id, ...d.data() })).map(m => ({ ...m, t:ts(m.createdAt), rn:Object.keys(m.reactions || {}).length, course:cmap[m.courseId] }));
+  }catch(err){
+    console.error('[Lavender] community load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل رسائل المجتمع.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="cmRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('cmRetry').onclick = () => adminRenderCommunityModeration(area); return;
   }
+
+  let q = '', ftype = 'all', fc = 'all', sort = 'new', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null;
+  const sel = new Set(), PAGE = 24;
+  const courseOpts = [...new Map(msgs.map(m => [m.courseId, m.course?.title || 'كورس محذوف'])).entries()];
+
+  area.innerHTML = `
+  <div class="ar cm" id="cmRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.chat,24)}</span><div><h2>مجتمعات الكورسات</h2><p>كل الإعلانات والرسائل اللي بيبعتها المدربون لطلابهم — راجعها واحذف اللي مش مناسب.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-ghost btn-sm" data-act="csv">${svg(P.dl,15)}<span class="ar-hide-m">تصدير CSV</span></button></div>
+    </div>
+    <div class="ar-stats" id="cmStats"></div>
+    <div class="widget ar-panel">
+      <div class="cat-tabs" id="cmChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="cmQ" placeholder="ابحث في محتوى الرسالة أو اسم المدرب…   ( / )" /></div>
+        <select id="cmC" class="ar-sel"><option value="all">كل الكورسات</option>${courseOpts.map(([id,t]) => `<option value="${id}">${E(t)}</option>`).join('')}</select>
+        <select id="cmSort" class="ar-sel"><option value="new">الأحدث</option><option value="old">الأقدم</option><option value="react">الأكثر تفاعلًا</option></select>
+        <div class="ar-seg"><button data-act="view" data-v="list">${svg(P.list,16)}</button><button data-act="view" data-v="cards">${svg(P.grid,16)}</button></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="cmCount"></div><div id="cmList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('cmRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'cmOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="cmDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'cmBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => msgs.filter(m => (ftype === 'all' || m.type === ftype) && (fc === 'all' || m.courseId === fc) && (!q || `${m.content || ''} ${m.senderName || ''} ${m.fileName || ''}`.toLowerCase().includes(q)))
+    .sort((a,b) => sort === 'old' ? a.t - b.t : sort === 'react' ? b.rn - a.rn : b.t - a.t);
+
+  function paintTop(){
+    const c = f => msgs.filter(f).length, week = c(m => m.t >= wk());
+    const byCourse = {}; msgs.forEach(m => { byCourse[m.courseId] = (byCourse[m.courseId] || 0) + 1; });
+    const topCourse = Object.entries(byCourse).sort((a,b) => b[1] - a[1])[0];
+    const byIns = {}; msgs.forEach(m => { byIns[m.senderName] = (byIns[m.senderName] || 0) + 1; });
+    const topIns = Object.entries(byIns).sort((a,b) => b[1] - a[1])[0];
+    const S = [
+      { k:'all', l:'إجمالي الرسائل', n:msgs.length, i:P.chat, c:'#5A3B92', bg:'#EDE7F6', on:ftype === 'all' && fc === 'all' },
+      { k:'announcement', l:'إعلانات', n:c(m => m.type === 'announcement'), i:P.bull, c:'#C98826', bg:'#FFF4E0', on:ftype === 'announcement' },
+      { k:'reminder', l:'تذكيرات', n:c(m => m.type === 'reminder'), i:P.clock, c:'#3B6FBF', bg:'#EEF3FB', on:ftype === 'reminder' },
+      { k:'week', l:'هذا الأسبوع', n:week, i:P.cal, c:'#2F7A4F', bg:'#E9F5EE', on:sort === '__week' },
+      { k:'-', l:'أنشط كورس', txt:topCourse ? E(cmap[topCourse[0]]?.title || 'كورس') : '—', sub:topCourse ? `${nm(topCourse[1])} رسالة` : '', i:P.book, c:'#6E4BAF', bg:'#F3EDFB' },
+      { k:'-', l:'أنشط مدرب', txt:topIns ? E(topIns[0]) : '—', sub:topIns ? `${nm(topIns[1])} رسالة` : '', i:P.hat || P.users, c:'#B3413A', bg:'#FBEBEA' },
+    ];
+    $('#cmStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''}" ${s.k === '-' ? '' : `data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt !== undefined ? `<b style="font-size:15px">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small class="pay-sub">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#cmStats b[data-n]').forEach(countUp);
+    $('#cmChips').innerHTML = [['all','الكل',msgs.length], ...Object.keys(TYPE).map(t => [t, TYPE[t].l, c(m => m.type === t)])].map(([k,l,n]) => `<button class="cat-tab ${ftype === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${nm(n)})</button>`).join('');
+  }
+  function rowHTML(m, i){
+    const t = tp(m), snippet = m.content ? m.content.slice(0, 90) : m.fileName ? `📎 ${m.fileName}` : m.fileURL ? '🔗 رابط' : '';
+    return `<div class="ar-item ${sel.has(m.id) ? 'sel' : ''}" data-id="${m.id}" style="--i:${Math.min(i,14)};--c:${t.c};--bg:${t.bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(m.id) ? 'checked' : ''}><i></i></label>
+      <span class="us-av">${E(initial(m.senderName))}</span>
+      <div class="ar-main"><div class="ar-t"><span class="ar-badge" style="--c:${t.c};--bg:${t.bg}">${t.l}</span>${E(m.senderName || 'مدرب')}</div><div class="ar-d">${m.course ? E(m.course.title) : 'كورس محذوف'} · ${E(snippet)}</div></div>
+      <div class="cm-meta">${m.rn ? `<span title="تفاعلات">${svg(P.heart,13)} ${nm(m.rn)}</span>` : ''}<span class="ar-dt" title="${ago(m.t)}">${fmtD(m.t)}</span></div>
+      <div class="ar-act"><button class="icon-action" data-act="open" title="عرض">${svg(P.eye,15)}</button><button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button></div></div>`;
+  }
+  function paintList(){
+    const L = filtered(), shown = L.slice(0, page*PAGE);
+    document.querySelectorAll('#cmRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#cmCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
+    if(!L.length){ $('#cmList').innerHTML = `<div class="ar-empty">${svg(P.chat,44)}<h4>${msgs.length ? 'ما في رسائل مطابقة' : 'لا توجد رسائل بعد'}</h4><p>${msgs.length ? 'جرّب تغيّر الفلاتر.' : 'هتظهر هنا أول ما المدربون يبدأوا ينشروا في مجتمعات كورساتهم.'}</p></div>`; return; }
+    $('#cmList').innerHTML = `<div class="${view === 'list' ? 'ar-list cm-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head cm-head"><span></span><span></span><span>الرسالة</span><span></span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${nm(n)}</b><span>محدد</span><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const m = msgs.find(x => x.id === drw); if(!m){ drw = null; ov.classList.remove('open'); return; }
+    const t = tp(m), L = filtered(), ix = L.findIndex(x => x.id === m.id), dr = $('#cmDr');
+    dr.style.setProperty('--c', t.c); dr.style.setProperty('--bg', t.bg);
+    dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <div class="us-body">
+      <div class="ls-badge-row"><span class="ar-badge" style="--c:${t.c};--bg:${t.bg}">${t.l}</span></div>
+      <div class="pay-who" style="margin-bottom:14px"><span class="us-av">${E(initial(m.senderName))}</span><div><b>${E(m.senderName || 'مدرب')}</b><small>${m.course ? E(m.course.title) : 'كورس محذوف'}</small></div></div>
+      ${m.content ? `<p class="ar-dr-p">${E(m.content)}</p>` : ''}
+      ${m.fileURL ? `<a class="btn btn-ghost btn-sm" href="${E(m.fileURL)}" target="_blank" rel="noopener">${svg(P.ext,14)} ${m.fileName ? E(m.fileName) : 'فتح المرفق'}</a>` : ''}
+      <div class="ar-kvs" style="margin-top:14px">${kv('التاريخ', m.t ? `${fmtD(m.t)}<small>${ago(m.t)}</small>` : '—')}${kv('عدد التفاعلات', nm(m.rn))}${kv('المعرّف', `<code dir="ltr">${E(m.id)}</code>`)}</div>
+    </div>
+    <div class="ar-dr-f"><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف الرسالة</button></div>`;
+  }
+  const open = id => { drw = id; paintDrawer(); };
+  const nav = d => { const L = filtered(), i = L.findIndex(x => x.id === drw); if(L[i + d]) open(L[i + d].id); };
+
+  async function remove(ids){
+    const L = ids.map(id => msgs.find(m => m.id === id)).filter(Boolean); if(!L.length) return;
+    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} رسالة؟` : 'حذف هذه الرسالة؟', L.length > 1 ? 'هتتشال كل الرسائل المحددة من مجتمعات الكورسات.' : 'هتتشال من مجتمع الكورس نهائيًا.', 'حذف')) return;
+    try{ await Promise.all(L.map(m => deleteDoc(doc(db,'communityMessages',m.id)))); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
+    msgs = msgs.filter(m => !ids.includes(m.id)); ids.forEach(id => sel.delete(id)); if(ids.includes(drw)) drw = null;
+    logAdminActivity('community_delete', L[0].senderName || '', L.length > 1 ? `${L.length} رسائل` : ''); paintAll(); paintDrawer();
+    toast(`تم حذف ${L.length > 1 ? nm(L.length) + ' رسائل' : 'الرسالة'}`, 'تراجع', async () => { try{ await Promise.all(L.map(({ id, t, rn, course, ...raw }) => setDoc(doc(db,'communityMessages',id), raw))); msgs.push(...L); paintAll(); toast('تمت الاستعادة'); }catch(e){ toast('تعذّرت الاستعادة'); } });
+  }
+  function csv(){
+    const rows = [['التاريخ','النوع','المدرب','الكورس','المحتوى','تفاعلات']].concat(filtered().map(m => [m.t ? new Date(m.t*1000).toISOString().slice(0,16).replace('T',' ') : '', tp(m).l, m.senderName || '', m.course?.title || '', m.content || m.fileName || '', m.rn]));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'community-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast('تم تصدير الرسائل');
+  }
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), row = ev.target.closest('.ar-item'), id = row?.dataset.id || drw;
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } else if(row && !ev.target.closest('.ar-chk,.ar-act')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'open') open(id); else if(a === 'close'){ drw = null; paintDrawer(); } else if(a === 'prev') nav(-1); else if(a === 'next') nav(1);
+    else if(a === 'del') remove([id]);
+    else if(a === 'stat'){ const k = el.dataset.k; ftype = Object.keys(TYPE).includes(k) ? k : 'all'; page = 1; paintAll(); }
+    else if(a === 'view'){ view = el.dataset.v; paintList(); } else if(a === 'more'){ page++; paintList(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderCommunityModeration(area); } else if(a === 'csv') csv();
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); } else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  $('#cmQ').addEventListener('input', ev => { q = ev.target.value.trim().toLowerCase(); page = 1; paintList(); });
+  $('#cmC').addEventListener('change', ev => { fc = ev.target.value; page = 1; paintList(); });
+  $('#cmSort').addEventListener('change', ev => { sort = ev.target.value; paintList(); });
+  const onKey = ev => { if(!root.isConnected) return; const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName); if(ev.key === 'Escape' && drw){ drw = null; paintDrawer(); } else if(!typing && ev.key === '/'){ ev.preventDefault(); $('#cmQ').focus(); } else if(!typing && drw && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) nav(ev.key === 'ArrowLeft' ? 1 : -1); };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
+/* ---------------- ADMIN: REVIEWS MODERATION (v2 — pro) ---------------- */
 async function adminRenderReviewsModeration(area){
+  document.getElementById('rvOv')?.remove(); document.getElementById('rvBulk')?.remove();
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-stats">${'<div class="ar-sk" style="height:92px"></div>'.repeat(6)}</div><div class="ar-sk" style="height:340px"></div></div>`;
+  const { E, svg, P, toast, ask, countUp, fmtD, ago } = AdmUI;
+  Object.assign(P, { star:'<polygon points="12 2 15.1 8.6 22 9.2 16.5 14 18.2 21 12 17.3 5.8 21 7.5 14 2 9.2 8.9 8.6"/>', hat:'<path d="M22 10L12 5 2 10l10 5zM6 12v5c3 2 9 2 12 0v-5"/>', ext:'<path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6M15 3h6v6M10 14L21 3"/>' });
+  const ts = x => x?.seconds || (x?.toDate ? Math.floor(x.toDate().getTime()/1000) : 0);
+  const nm = n => Number(n).toLocaleString('ar-EG'), initial = n => ((n || '؟').trim()[0] || '؟').toUpperCase(), wk = () => Date.now()/1000 - 7*86400;
+  const stars = (n, size=13) => `<span class="rv-stars">${[1,2,3,4,5].map(i => svg(P.star, size)).map((s,i) => `<i class="${i < Math.round(n) ? 'on' : ''}">${s}</i>`).join('')}</span>`;
+
+  let reviews = [], cmap = {}, imap = {};
   try{
-    const snap = await getDocs(collection(db, 'reviews'));
-    let reviews = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (b.createdAt?.seconds||0) - (a.createdAt?.seconds||0));
-
-    area.innerHTML = `<div class="widget widget-4"><div class="widget-head"><h3>كل التقييمات (${reviews.length})</h3></div><div id="reviewsModList"></div></div>`;
-
-    function renderList(){
-      const listEl = document.getElementById('reviewsModList');
-      if(reviews.length === 0){
-        listEl.innerHTML = `<div class="empty-state">لا توجد تقييمات بعد.</div>`;
-        return;
-      }
-      listEl.innerHTML = reviews.map(r => `
-        <div class="table-widget-row">
-          <div class="avatar-sm">${(r.studentName||'؟').trim()[0]?.toUpperCase()||'؟'}</div>
-          <div class="grow">
-            <div class="t1">${r.studentName || 'طالب'} <span class="chat-type-pill">${r.type === 'course' ? 'تقييم كورس' : 'تقييم مدرب'}</span></div>
-            <div class="t2">${starRowHTML(r.rating)} ${r.comment || ''}</div>
-          </div>
-          <button class="icon-action danger" data-id="${r.id}" title="حذف">${SIDE_ICONS.trash}</button>
-        </div>
-      `).join('');
-
-      listEl.querySelectorAll('button[data-id]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          if(!confirm('حذف هذا التقييم؟')) return;
-          try{
-            await deleteDoc(doc(db, 'reviews', btn.dataset.id));
-            reviews = reviews.filter(r => r.id !== btn.dataset.id);
-            renderList();
-          }catch(e){
-            alert('تعذّر حذف التقييم.');
-          }
-        });
-      });
-    }
-    renderList();
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل التقييمات.</div>`;
+    const [rSnap, courses, uSnap] = await Promise.all([getDocs(collection(db,'reviews')), fetchAllCoursesAdmin(), getDocs(query(collection(db,'users'), where('role','==','instructor'))).catch(() => ({ docs:[] }))]);
+    cmap = Object.fromEntries(courses.map(c => [c.id, c])); uSnap.docs.forEach(d => imap[d.id] = d.data());
+    reviews = rSnap.docs.map(d => ({ id:d.id, ...d.data() })).map(r => ({ ...r, t:ts(r.createdAt),
+      targetName: r.type === 'instructor' ? (imap[r.targetId]?.name || imap[r.targetId]?.email || 'مدرب') : (cmap[r.targetId || r.courseId]?.title || 'كورس محذوف'),
+      courseName: cmap[r.courseId]?.title || '' }));
+  }catch(err){
+    console.error('[Lavender] reviews load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل التقييمات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="rvRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('rvRetry').onclick = () => adminRenderReviewsModeration(area); return;
   }
+
+  let q = '', ftype = 'all', frate = 'all', fc = 'all', sort = 'new', view = innerWidth < 760 ? 'cards' : 'list', page = 1, drw = null;
+  const sel = new Set(), PAGE = 24;
+  const courseOpts = [...new Map(reviews.map(r => [r.courseId, r.courseName || 'كورس محذوف']).filter(x => x[0])).entries()];
+
+  area.innerHTML = `
+  <div class="ar rv" id="rvRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.star,24)}</span><div><h2>التقييمات</h2><p>كل تقييمات الطلاب للكورسات والمدربين — تابع النجوم المنخفضة واحذف أي تقييم غير لائق.</p></div></div>
+      <div class="ar-hero-act"><button class="btn btn-ghost btn-sm" data-act="refresh">${svg(P.refresh,15)}<span class="ar-hide-m">تحديث</span></button><button class="btn btn-ghost btn-sm" data-act="csv">${svg(P.dl,15)}<span class="ar-hide-m">تصدير CSV</span></button></div>
+    </div>
+    <div class="ar-stats" id="rvStats"></div>
+    <div class="widget ar-panel">
+      <div class="cat-tabs" id="rvChips"></div>
+      <div class="ar-tools">
+        <div class="topbar-search ar-search">${svg(P.srch,15)}<input id="rvQ" placeholder="ابحث في التعليق أو اسم الطالب…   ( / )" /></div>
+        <select id="rvR" class="ar-sel"><option value="all">كل التقييمات</option><option value="5">★★★★★</option><option value="4">★★★★</option><option value="3">★★★</option><option value="2">★★</option><option value="1">★</option><option value="low">منخفضة (1-2)</option></select>
+        <select id="rvC" class="ar-sel"><option value="all">كل الكورسات</option>${courseOpts.map(([id,t]) => `<option value="${id}">${E(t)}</option>`).join('')}</select>
+        <select id="rvSort" class="ar-sel"><option value="new">الأحدث</option><option value="old">الأقدم</option><option value="low">الأقل نجومًا</option><option value="high">الأعلى نجومًا</option></select>
+        <div class="ar-seg"><button data-act="view" data-v="list">${svg(P.list,16)}</button><button data-act="view" data-v="cards">${svg(P.grid,16)}</button></div>
+        <button class="btn btn-ghost btn-sm" data-act="selall">تحديد الكل</button>
+      </div>
+      <div class="ar-count" id="rvCount"></div><div id="rvList"></div>
+    </div>
+  </div>`;
+  const root = document.getElementById('rvRoot'), $ = s => document.querySelector(s);
+  const ov = document.createElement('div'); ov.id = 'rvOv'; ov.className = 'ar-ov'; ov.innerHTML = '<div class="ar-dr us-dr" id="rvDr"></div>'; document.body.appendChild(ov);
+  const bulk = document.createElement('div'); bulk.id = 'rvBulk'; bulk.className = 'ar-bulk'; document.body.appendChild(bulk);
+
+  const filtered = () => reviews.filter(r => {
+    if(ftype !== 'all' && r.type !== ftype) return false; if(fc !== 'all' && r.courseId !== fc) return false;
+    if(frate === 'low' && r.rating > 2) return false; else if(frate !== 'all' && frate !== 'low' && Math.round(r.rating) !== +frate) return false;
+    return !q || `${r.comment || ''} ${r.studentName || ''} ${r.targetName || ''}`.toLowerCase().includes(q);
+  }).sort((a,b) => sort === 'old' ? a.t - b.t : sort === 'low' ? a.rating - b.rating || b.t - a.t : sort === 'high' ? b.rating - a.rating || b.t - a.t : b.t - a.t);
+
+  function paintTop(){
+    const c = f => reviews.filter(f).length, avg = reviews.length ? (reviews.reduce((s,r) => s + (r.rating || 0), 0) / reviews.length) : 0, low = c(r => r.rating <= 2), withC = c(r => r.comment);
+    const S = [
+      { k:'all', l:'إجمالي التقييمات', n:reviews.length, i:P.star, c:'#5A3B92', bg:'#EDE7F6', on:ftype === 'all' && frate === 'all' },
+      { k:'-', l:'المتوسط العام', txt:reviews.length ? avg.toFixed(1) + ' / 5' : '—', i:P.pct, c:'#C98826', bg:'#FFF4E0' },
+      { k:'course', l:'تقييمات كورسات', n:c(r => r.type === 'course'), i:P.book, c:'#3B6FBF', bg:'#EEF3FB', on:ftype === 'course' },
+      { k:'instructor', l:'تقييمات مدربين', n:c(r => r.type === 'instructor'), i:P.hat, c:'#2F7A4F', bg:'#E9F5EE', on:ftype === 'instructor' },
+      { k:'low', l:'تقييمات منخفضة (1-2)', n:low, i:P.warn, c:'#B3413A', bg:'#FBEBEA', on:frate === 'low', hot:low > 0 },
+      { k:'-', l:'بتعليق مكتوب', n:withC, sub:`${nm(reviews.length - withC)} بدون تعليق`, i:P.note, c:'#6B6072', bg:'#F1EDF5' },
+    ];
+    $('#rvStats').innerHTML = S.map((s,i) => `<button class="ar-stat ${s.on ? 'on' : ''} ${s.hot ? 'pay-hot' : ''}" ${s.k === '-' ? '' : `data-act="stat" data-k="${s.k}"`} style="--c:${s.c};--bg:${s.bg};--d:${i*.06}s"><span class="ar-stat-ic">${svg(s.i,20)}</span><span>${s.txt !== undefined ? `<b style="font-size:17px">${s.txt}</b>` : `<b data-n="${s.n}">0</b>`}<small>${s.l}</small>${s.sub ? `<small class="pay-sub">${s.sub}</small>` : ''}</span></button>`).join('');
+    document.querySelectorAll('#rvStats b[data-n]').forEach(countUp);
+    $('#rvChips').innerHTML = [['all','الكل',reviews.length],['course','تقييمات كورسات',c(r => r.type === 'course')],['instructor','تقييمات مدربين',c(r => r.type === 'instructor')]].map(([k,l,n]) => `<button class="cat-tab ${ftype === k ? 'active' : ''}" data-act="stat" data-k="${k}">${l} (${nm(n)})</button>`).join('');
+  }
+  function rowHTML(r, i){
+    const low = r.rating <= 2, c = low ? '#B3413A' : r.type === 'instructor' ? '#2F7A4F' : '#3B6FBF', bg = low ? '#FBEBEA' : r.type === 'instructor' ? '#E9F5EE' : '#EEF3FB';
+    return `<div class="ar-item ${sel.has(r.id) ? 'sel' : ''}" data-id="${r.id}" style="--i:${Math.min(i,14)};--c:${c};--bg:${bg}">
+      <label class="ar-chk"><input type="checkbox" data-act="sel" ${sel.has(r.id) ? 'checked' : ''}><i></i></label>
+      <span class="us-av">${E(initial(r.studentName))}</span>
+      <div class="ar-main"><div class="ar-t">${E(r.studentName || 'طالب')}${low ? `<em class="pay-flag" title="تقييم منخفض">${svg(P.warn,12)}</em>` : ''}</div><div class="ar-d">${stars(r.rating)} <span class="ar-badge" style="--c:${c};--bg:${bg}">${r.type === 'instructor' ? 'مدرب' : 'كورس'}</span> ${E(r.targetName)}</div></div>
+      <div class="rv-comment">${r.comment ? E(r.comment.slice(0, 70)) : '<span class="us-miss">بدون تعليق</span>'}</div>
+      <span class="ar-dt" title="${ago(r.t)}">${fmtD(r.t)}</span>
+      <div class="ar-act"><button class="icon-action" data-act="open" title="عرض">${svg(P.eye,15)}</button><button class="icon-action danger" data-act="del" title="حذف">${svg(P.trash,15)}</button></div></div>`;
+  }
+  function paintList(){
+    const L = filtered(), shown = L.slice(0, page*PAGE);
+    document.querySelectorAll('#rvRoot .ar-seg button').forEach(b => b.classList.toggle('on', b.dataset.v === view));
+    $('#rvCount').textContent = `عرض ${nm(shown.length)} من ${nm(L.length)}`;
+    if(!L.length){ $('#rvList').innerHTML = `<div class="ar-empty">${svg(P.star,44)}<h4>${reviews.length ? 'ما في تقييمات مطابقة' : 'لا توجد تقييمات بعد'}</h4><p>${reviews.length ? 'جرّب تغيّر الفلاتر.' : 'هتظهر هنا أول ما الطلاب يبدأوا يقيّموا الكورسات والمدربين.'}</p></div>`; return; }
+    $('#rvList').innerHTML = `<div class="${view === 'list' ? 'ar-list rv-list' : 'ar-cards'}">${view === 'list' ? '<div class="ar-head rv-head"><span></span><span></span><span>الطالب / التقييم</span><span>التعليق</span><span></span><span>تحكّم</span></div>' : ''}${shown.map(rowHTML).join('')}</div>${L.length > shown.length ? `<button class="btn btn-ghost ar-more" data-act="more">عرض المزيد (${nm(L.length - shown.length)})</button>` : ''}`;
+  }
+  function paintBulk(){
+    const n = sel.size; bulk.classList.toggle('show', n > 0);
+    bulk.innerHTML = n ? `<b>${nm(n)}</b><span>محدد</span><button class="dz" data-act="b-del">${svg(P.trash,15)} حذف</button><button class="x" data-act="b-clr">${svg(P.x,15)}</button>` : '';
+  }
+  const paintAll = () => { paintTop(); paintList(); paintBulk(); };
+
+  const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
+  function paintDrawer(){
+    ov.classList.toggle('open', !!drw); if(!drw) return;
+    const r = reviews.find(x => x.id === drw); if(!r){ drw = null; ov.classList.remove('open'); return; }
+    const L = filtered(), ix = L.findIndex(x => x.id === r.id), dr = $('#rvDr'), c = r.rating <= 2 ? '#B3413A' : r.type === 'instructor' ? '#2F7A4F' : '#3B6FBF', bg = r.rating <= 2 ? '#FBEBEA' : r.type === 'instructor' ? '#E9F5EE' : '#EEF3FB';
+    dr.style.setProperty('--c', c); dr.style.setProperty('--bg', bg);
+    dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
+    <div class="us-body">
+      <div class="pay-who" style="margin-bottom:14px"><span class="us-av">${E(initial(r.studentName))}</span><div><b>${E(r.studentName || 'طالب')}</b><small>${stars(r.rating, 15)} ${r.rating}/5</small></div></div>
+      ${r.comment ? `<p class="ar-dr-p">${E(r.comment)}</p>` : '<p class="us-miss">لم يكتب الطالب تعليقًا.</p>'}
+      <div class="ar-kvs" style="margin-top:14px">${kv('نوع التقييم', r.type === 'instructor' ? 'مدرب' : 'كورس')}${kv(r.type === 'instructor' ? 'المدرب' : 'الكورس', r.type === 'course' && r.courseId ? `<a class="ar-lnk" href="#/course/${r.courseId}">${E(r.targetName)}</a>` : E(r.targetName))}${r.courseName && r.type === 'instructor' ? kv('في كورس', E(r.courseName)) : ''}${kv('التاريخ', r.t ? `${fmtD(r.t)}<small>${ago(r.t)}</small>` : '—')}</div>
+    </div>
+    <div class="ar-dr-f"><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف التقييم</button></div>`;
+  }
+  const open = id => { drw = id; paintDrawer(); };
+  const nav = d => { const L = filtered(), i = L.findIndex(x => x.id === drw); if(L[i + d]) open(L[i + d].id); };
+
+  async function remove(ids){
+    const L = ids.map(id => reviews.find(r => r.id === id)).filter(Boolean); if(!L.length) return;
+    if(!await ask(L.length > 1 ? `حذف ${nm(L.length)} تقييم؟` : 'حذف هذا التقييم؟', L.length > 1 ? 'التقييمات المحددة هتتشال نهائيًا.' : 'هيتشال نهائيًا ولن يظهر في متوسط التقييمات.', 'حذف')) return;
+    try{ await Promise.all(L.map(r => deleteDoc(doc(db,'reviews',r.id)))); }catch(e){ console.error(e); return toast('تعذّر الحذف — راجع الصلاحيات'); }
+    reviews = reviews.filter(r => !ids.includes(r.id)); ids.forEach(id => sel.delete(id)); if(ids.includes(drw)) drw = null;
+    logAdminActivity('review_delete', L[0].studentName || '', L.length > 1 ? `${L.length} تقييمات` : `${L[0].rating}★`); paintAll(); paintDrawer();
+    toast(`تم حذف ${L.length > 1 ? nm(L.length) + ' تقييمات' : 'التقييم'}`, 'تراجع', async () => { try{ await Promise.all(L.map(({ id, t, targetName, courseName, ...raw }) => setDoc(doc(db,'reviews',id), raw))); reviews.push(...L); paintAll(); toast('تمت الاستعادة'); }catch(e){ toast('تعذّرت الاستعادة'); } });
+  }
+  function csv(){
+    const rows = [['التاريخ','النوع','الطالب','الهدف','النجوم','التعليق']].concat(filtered().map(r => [r.t ? new Date(r.t*1000).toISOString().slice(0,10) : '', r.type === 'instructor' ? 'مدرب' : 'كورس', r.studentName || '', r.targetName || '', r.rating, r.comment || '']));
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['\ufeff' + rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')], { type:'text/csv;charset=utf-8' }));
+    a.download = 'reviews-' + new Date().toISOString().slice(0,10) + '.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); toast('تم تصدير التقييمات');
+  }
+  async function onClick(ev){
+    const el = ev.target.closest('[data-act]'), row = ev.target.closest('.ar-item'), id = row?.dataset.id || drw;
+    if(!el){ if(ev.target === ov){ drw = null; paintDrawer(); } else if(row && !ev.target.closest('.ar-chk,.ar-act')) open(row.dataset.id); return; }
+    const a = el.dataset.act;
+    if(a === 'sel'){ el.checked ? sel.add(id) : sel.delete(id); row.classList.toggle('sel', el.checked); paintBulk(); }
+    else if(a === 'open') open(id); else if(a === 'close'){ drw = null; paintDrawer(); } else if(a === 'prev') nav(-1); else if(a === 'next') nav(1);
+    else if(a === 'del') remove([id]);
+    else if(a === 'stat'){ const k = el.dataset.k; if(k === 'low'){ frate = frate === 'low' ? 'all' : 'low'; $('#rvR').value = frate; } else { ftype = ['course','instructor'].includes(k) ? k : 'all'; } page = 1; paintAll(); }
+    else if(a === 'view'){ view = el.dataset.v; paintList(); } else if(a === 'more'){ page++; paintList(); }
+    else if(a === 'selall'){ const L = filtered(); L.every(x => sel.has(x.id)) ? L.forEach(x => sel.delete(x.id)) : L.forEach(x => sel.add(x.id)); paintList(); paintBulk(); }
+    else if(a === 'refresh'){ el.classList.add('spin'); adminRenderReviewsModeration(area); } else if(a === 'csv') csv();
+    else if(a === 'b-clr'){ sel.clear(); paintList(); paintBulk(); } else if(a === 'b-del') remove([...sel]);
+  }
+  root.addEventListener('click', onClick); ov.addEventListener('click', onClick); bulk.addEventListener('click', onClick);
+  $('#rvQ').addEventListener('input', ev => { q = ev.target.value.trim().toLowerCase(); page = 1; paintList(); });
+  $('#rvR').addEventListener('change', ev => { frate = ev.target.value; page = 1; paintAll(); });
+  $('#rvC').addEventListener('change', ev => { fc = ev.target.value; page = 1; paintList(); });
+  $('#rvSort').addEventListener('change', ev => { sort = ev.target.value; paintList(); });
+  const onKey = ev => { if(!root.isConnected) return; const typing = /INPUT|TEXTAREA|SELECT/.test(document.activeElement?.tagName); if(ev.key === 'Escape' && drw){ drw = null; paintDrawer(); } else if(!typing && ev.key === '/'){ ev.preventDefault(); $('#rvQ').focus(); } else if(!typing && drw && (ev.key === 'ArrowLeft' || ev.key === 'ArrowRight')) nav(ev.key === 'ArrowLeft' ? 1 : -1); };
+  document.addEventListener('keydown', onKey);
+  const guard = setInterval(() => { if(!root.isConnected){ clearInterval(guard); document.removeEventListener('keydown', onKey); ov.remove(); bulk.remove(); } }, 800);
+  paintAll();
 }
 
 async function adminRenderNotifications(area){
@@ -12141,6 +12705,8 @@ const ACTIVITY_ACTION_META = {
   cert_issue: { label:'إصدار شهادة', icon: SIDE_ICONS.certificate, color:'#C98826', bg:'#FFF4E0' },
   cert_edit: { label:'تعديل شهادة', icon: SIDE_ICONS.certificate, color:'#3B6FBF', bg:'#EEF3FB' },
   cert_delete: { label:'حذف شهادة', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  review_delete: { label:'حذف تقييم', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  community_delete: { label:'حذف رسالة مجتمع', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
   attendance_mark: { label:'تسجيل حضور', icon: SIDE_ICONS.check, color:'#2F7A4F', bg:'#E9F5EE' },
   lecture_create: { label:'جدولة محاضرة مباشرة', icon: SIDE_ICONS.video, color:'#2F7A4F', bg:'#E9F5EE' },
   lecture_edit: { label:'تعديل محاضرة مباشرة', icon: SIDE_ICONS.video, color:'#3B6FBF', bg:'#EEF3FB' },
@@ -12151,6 +12717,10 @@ const ACTIVITY_ACTION_META = {
   course_edit: { label:'تعديل كورس', icon: SIDE_ICONS.book, color:'#3B6FBF', bg:'#EEF3FB' },
   course_delete: { label:'حذف كورس', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
   course_status_change: { label:'تغيير حالة نشر كورس', icon: SIDE_ICONS.book, color:'var(--amber-600)', bg:'#FCF3E3' },
+  library_approve: { label:'قبول عمل مكتبة', icon: SIDE_ICONS.check, color:'var(--success)', bg:'#E9F5EE' },
+  library_reject: { label:'رفض عمل مكتبة', icon: SIDE_ICONS.close, color:'var(--danger)', bg:'#FBEBEA' },
+  library_delete: { label:'حذف عمل مكتبة', icon: SIDE_ICONS.trash, color:'var(--danger)', bg:'#FBEBEA' },
+  course_review: { label:'مراجعة كورس (قبول/تعديل/رفض)', icon: SIDE_ICONS.clipboardCheck, color:'var(--amber-600)', bg:'#FCF3E3' },
   pm_add: { label:'إضافة وسيلة دفع', icon: SIDE_ICONS.card, color:'#2F7A4F', bg:'#E9F5EE' },
   pm_edit: { label:'تعديل وسيلة دفع', icon: SIDE_ICONS.card, color:'#3B6FBF', bg:'#EEF3FB' },
   pm_toggle: { label:'تفعيل/تعطيل وسيلة دفع', icon: SIDE_ICONS.card, color:'var(--amber-600)', bg:'#FCF3E3' },
@@ -12315,119 +12885,93 @@ function wireAdminAccountCard(){
   });
 }
 
+/* ---------------- ADMIN: SETTINGS (v2 — pro) ---------------- */
 async function adminRenderSettings(area){
-  try{
-    const [commSnap, generalSnap] = await Promise.all([
-      getDoc(doc(db, 'settings', 'communication')),
-      getDoc(doc(db, 'settings', 'general')),
-    ]);
-    const comms = commSnap.exists() ? commSnap.data() : {};
-    const general = generalSnap.exists() ? generalSnap.data() : {};
+  area.innerHTML = `<div class="ar"><div class="ar-sk" style="height:84px"></div><div class="ar-sk" style="height:70px"></div><div class="ar-sk" style="height:220px"></div><div class="ar-sk" style="height:260px"></div></div>`;
+  const { E, svg, P } = AdmUI;
+  Object.assign(P, { globe:'<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/>', phone:'<path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .4 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.3a2 2 0 012.1-.4c.9.3 1.8.6 2.8.7a2 2 0 011.7 2z"/>', wa:'<path d="M3 21l1.5-4.5A8 8 0 1113 21z"/>', tg:'<path d="M22 2L11 13M22 2l-7 20-4-9-9-4z"/>', gear:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 01-4 0v-.1a1.7 1.7 0 00-1-1.6 1.7 1.7 0 00-1.9.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.9 1.7 1.7 0 00-1.5-1H3a2 2 0 010-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.3H9a1.7 1.7 0 001-1.5V3a2 2 0 014 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.9V9a1.7 1.7 0 001.5 1H21a2 2 0 010 4h-.1a1.7 1.7 0 00-1.5 1z"/>' });
 
-    area.innerHTML = `
-      ${adminAccountCardHTML()}
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>معلومات المنصة العامة</h3></div>
-        <form id="generalSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
-          <div class="field" style="margin-bottom:0;">
-            <label>اسم المنصة</label>
-            <input type="text" id="genPlatformName" value="${general.platformName || 'لافندر'}" />
-          </div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap;">
-            <div class="field" style="flex:1;min-width:180px;margin-bottom:0;">
-              <label>بريد التواصل</label>
-              <input type="email" id="genEmail" value="${general.supportEmail || ''}" />
-            </div>
-            <div class="field" style="flex:1;min-width:150px;margin-bottom:0;">
-              <label>رقم الهاتف</label>
-              <input type="text" id="genPhone" value="${general.supportPhone || ''}" />
-            </div>
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>العملة المعروضة</label>
-            <select id="genCurrency">
-              <option value="SDG" ${(!general.currency || general.currency==='SDG') ? 'selected' : ''}>الجنيه السوداني (ج.س)</option>
-              <option value="USD" ${general.currency==='USD' ? 'selected' : ''}>الدولار الأمريكي (USD)</option>
-            </select>
-            <div class="field-hint">تنبيه بالأمانة: تغيير هذا الإعداد بيحفظ العملة المفضّلة، لكن الأسعار المعروضة حالياً في صفحات الكورسات والدفع مكتوبة بالجنيه السوداني مباشرة. عرض الأسعار بعملة مختلفة تلقائياً في كل الصفحات يحتاج تحديثاً إضافياً لاحقاً.</div>
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ</button>
-          <div id="generalSettingsAlert"></div>
-        </form>
-      </div>
-      <div class="widget widget-4">
-        <div class="widget-head"><h3>إعدادات التحقق من الدفع (واتساب / تلغرام)</h3></div>
-        <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 16px;">هذه البيانات بتظهر للطالب بعد تأكيد الدفع عشان يقدر يبعت إشعار سريع للتحقق. النظام بيسجّل فقط إن الطالب ضغط الزر، وما بيقدر يتأكد إن الرسالة وصلت فعلاً.</p>
-        <form id="commSettingsForm" style="display:flex;flex-direction:column;gap:14px;max-width:480px;">
-          <div class="field" style="margin-bottom:0;">
-            <label>رقم واتساب (بصيغة دولية بدون +، مثال: 249912345678)</label>
-            <input type="text" id="waNumber" value="${comms.whatsappNumber || ''}" placeholder="249112160178" />
-            <div class="field-hint">لو سبته فاضي، هيستخدم النظام رقم الإدارة الافتراضي +249 11 216 0178.</div>
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>أو رابط واتساب جاهز (اختياري بدل الرقم)</label>
-            <input type="text" id="waLink" value="${comms.whatsappLink || ''}" placeholder="https://wa.me/..." />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>اسم مستخدم تلغرام (بدون @)</label>
-            <input type="text" id="tgUsername" value="${comms.telegramUsername || ''}" placeholder="lavender_support" />
-          </div>
-          <div class="field" style="margin-bottom:0;">
-            <label>أو رابط تلغرام جاهز (اختياري)</label>
-            <input type="text" id="tgLink" value="${comms.telegramLink || ''}" placeholder="https://t.me/..." />
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">حفظ الإعدادات</button>
-          <div id="commSettingsAlert"></div>
-        </form>
-      </div>
-    `;
-
-    wireAdminAccountCard();
-
-    document.getElementById('generalSettingsForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const platformName = document.getElementById('genPlatformName').value.trim();
-      const supportEmail = document.getElementById('genEmail').value.trim();
-      const supportPhone = document.getElementById('genPhone').value.trim();
-      const currency = document.getElementById('genCurrency').value;
-      const alertBox = document.getElementById('generalSettingsAlert');
-      try{
-        await setDoc(doc(db, 'settings', 'general'), {
-          platformName: platformName || 'لافندر',
-          supportEmail: supportEmail || null,
-          supportPhone: supportPhone || null,
-          currency,
-          updatedAt: serverTimestamp(),
-        });
-        alertBox.innerHTML = `<div class="alert alert-success">تم الحفظ.</div>`;
-      }catch(e){
-        alertBox.innerHTML = `<div class="alert alert-error">تعذّر الحفظ.</div>`;
-      }
-    });
-
-    document.getElementById('commSettingsForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const whatsappNumber = document.getElementById('waNumber').value.trim();
-      const whatsappLink = document.getElementById('waLink').value.trim();
-      const telegramUsername = document.getElementById('tgUsername').value.trim();
-      const telegramLink = document.getElementById('tgLink').value.trim();
-      const alertBox = document.getElementById('commSettingsAlert');
-      try{
-        await setDoc(doc(db, 'settings', 'communication'), {
-          whatsappNumber: whatsappNumber || null,
-          whatsappLink: whatsappLink || null,
-          telegramUsername: telegramUsername || null,
-          telegramLink: telegramLink || null,
-          updatedAt: serverTimestamp(),
-        });
-        alertBox.innerHTML = `<div class="alert alert-success">تم حفظ الإعدادات.</div>`;
-      }catch(e){
-        alertBox.innerHTML = `<div class="alert alert-error">تعذّر حفظ الإعدادات.</div>`;
-      }
-    });
-  }catch(e){
-    area.innerHTML = `<div class="empty-state">تعذّر تحميل الإعدادات.</div>`;
+  let comms = {}, general = {};
+  try{ const [commSnap, generalSnap] = await Promise.all([getDoc(doc(db,'settings','communication')), getDoc(doc(db,'settings','general'))]); comms = commSnap.exists() ? commSnap.data() : {}; general = generalSnap.exists() ? generalSnap.data() : {}; }
+  catch(err){
+    console.error('[Lavender] settings load', err);
+    area.innerHTML = `<div class="empty-state">تعذّر تحميل الإعدادات.<br><button class="btn btn-primary btn-sm" style="margin-top:14px" id="stRetry">إعادة المحاولة</button></div>`;
+    document.getElementById('stRetry').onclick = () => adminRenderSettings(area); return;
   }
+  const H = t => `#/dashboard?tab=${t}`;
+
+  area.innerHTML = `
+  <div class="ar st" id="stRoot">
+    <div class="ar-hero">
+      <div class="ar-hero-t"><span class="ar-hero-ic">${svg(P.gear,24)}</span><div><h2>الإعدادات</h2><p>البيانات العامة للمنصة، وسائل التحقق من الدفع، وأمان حساب الإدارة.</p></div></div>
+    </div>
+    <div class="st-links">
+      <a href="${H('finance')}"><span>${svg(P.card,18)}</span><div><b>نسبة المنصة من الإيرادات</b><small>يتم ضبطها من تاب التحليلات المالية</small></div>${svg(P.next,15)}</a>
+      <a href="${H('payment-methods')}"><span>${svg(P.wallet || P.card,18)}</span><div><b>حسابات استلام التحويلات</b><small>يتم إدارتها من تاب وسائل الدفع</small></div>${svg(P.next,15)}</a>
+    </div>
+    <div id="stAccount">${adminAccountCardHTML()}</div>
+    <div class="st-grid">
+      <div class="widget st-card">
+        <div class="widget-head"><h3>${svg(P.globe,17)} معلومات المنصة العامة</h3></div>
+        <form id="generalSettingsForm" class="ar-form" style="padding:0">
+          <div class="field"><label>اسم المنصة</label><input type="text" id="genPlatformName" value="${E(general.platformName || 'لافندر')}" maxlength="40"></div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap">
+            <div class="field" style="flex:1;min-width:180px"><label>بريد التواصل</label><input type="email" id="genEmail" dir="ltr" value="${E(general.supportEmail || '')}" placeholder="support@example.com"></div>
+            <div class="field" style="flex:1;min-width:150px"><label>رقم الهاتف</label><input type="text" id="genPhone" dir="ltr" value="${E(general.supportPhone || '')}" placeholder="+249…"></div>
+          </div>
+          <div class="field"><label>العملة المعروضة</label><select id="genCurrency"><option value="SDG" ${(!general.currency || general.currency === 'SDG') ? 'selected' : ''}>الجنيه السوداني (ج.س)</option><option value="USD" ${general.currency === 'USD' ? 'selected' : ''}>الدولار الأمريكي (USD)</option></select>
+            <div class="field-hint">تغيير هذا الإعداد بيحفظ العملة المفضّلة فقط — أسعار الكورسات وصفحات الدفع لسه مكتوبة بالجنيه السوداني مباشرة، وعرضها بعملة تانية في كل مكان يحتاج تحديثًا إضافيًا لاحقًا.</div></div>
+          <div class="ar-msg" id="generalSettingsAlert"></div>
+          <div class="ar-form-b"><button type="submit" class="btn btn-primary">حفظ التغييرات</button></div>
+        </form>
+      </div>
+      <div class="widget st-card">
+        <div class="widget-head"><h3>${svg(P.wa,17)} التحقق من الدفع (واتساب / تلغرام)</h3></div>
+        <p class="us-hint" style="margin:-6px 0 14px">تظهر هذه البيانات للطالب بعد تأكيد الدفع عشان يبعت إشعارًا سريعًا. النظام بيسجّل بس إن الطالب ضغط الزر، ومش بيتأكد إن الرسالة وصلت فعلًا.</p>
+        <form id="commSettingsForm" class="ar-form" style="padding:0">
+          <div class="field"><label>رقم واتساب (بصيغة دولية بدون +)</label><input type="text" id="waNumber" dir="ltr" value="${E(comms.whatsappNumber || '')}" placeholder="249112160178">
+            <div class="field-hint">لو سبته فاضي، هيستخدم النظام رقم الإدارة الافتراضي ‎+249 11 216 0178.</div></div>
+          <div class="field"><label>أو رابط واتساب جاهز (اختياري بدل الرقم)</label><input type="text" id="waLink" dir="ltr" value="${E(comms.whatsappLink || '')}" placeholder="https://wa.me/…"></div>
+          <div class="field"><label>اسم مستخدم تلغرام (بدون @)</label><input type="text" id="tgUsername" dir="ltr" value="${E(comms.telegramUsername || '')}" placeholder="lavender_support"></div>
+          <div class="field"><label>أو رابط تلغرام جاهز (اختياري)</label><input type="text" id="tgLink" dir="ltr" value="${E(comms.telegramLink || '')}" placeholder="https://t.me/…"></div>
+          <div class="st-prev" id="stCommPrev"></div>
+          <div class="ar-msg" id="commSettingsAlert"></div>
+          <div class="ar-form-b"><button type="submit" class="btn btn-primary">حفظ الإعدادات</button></div>
+        </form>
+      </div>
+    </div>
+  </div>`;
+  const root = document.getElementById('stRoot'), $ = s => document.querySelector(s);
+  wireAdminAccountCard();
+
+  const waLink = () => { const l = $('#waLink').value.trim(); if(l) return l; const n = $('#waNumber').value.trim().replace(/\D/g,''); return n ? `https://wa.me/${n}` : `https://wa.me/${DEFAULT_ADMIN_WHATSAPP}`; };
+  const tgLink = () => { const l = $('#tgLink').value.trim(); if(l) return l; const u = $('#tgUsername').value.trim().replace(/^@/,''); return u ? `https://t.me/${u}` : ''; };
+  function paintPreview(){
+    const wl = waLink(), tl = tgLink();
+    $('#stCommPrev').innerHTML = `<small>هيظهر للطالب هيك:</small><div class="st-prev-b"><a href="${E(wl)}" target="_blank" rel="noopener">${svg(P.wa,15)} فتح واتساب</a>${tl ? `<a href="${E(tl)}" target="_blank" rel="noopener">${svg(P.tg,15)} فتح تلغرام</a>` : ''}</div>`;
+  }
+  paintPreview();
+  root.querySelectorAll('#waNumber,#waLink,#tgUsername,#tgLink').forEach(el => el.addEventListener('input', paintPreview));
+
+  async function submitSaved(form, box, saver){
+    const btn = form.querySelector('button[type=submit]'), old = btn.textContent; btn.disabled = true; btn.innerHTML = `<span class="spinner"></span> جارٍ الحفظ...`; box.innerHTML = '';
+    try{ await saver(); btn.innerHTML = `${AdmUI.svg(AdmUI.P.check, 14)} تم الحفظ`; box.innerHTML = `<div class="alert alert-success">تم حفظ التغييرات بنجاح.</div>`; }
+    catch(e){ console.error(e); box.innerHTML = `<div class="alert alert-error">تعذّر الحفظ — راجع الاتصال والصلاحيات.</div>`; btn.textContent = old; btn.disabled = false; return; }
+    setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 1800);
+  }
+  $('#generalSettingsForm').addEventListener('submit', e => {
+    e.preventDefault(); const box = $('#generalSettingsAlert');
+    const email = $('#genEmail').value.trim();
+    if(email && !/^\S+@\S+\.\S+$/.test(email)){ box.innerHTML = `<div class="alert alert-error">صيغة بريد التواصل غير صحيحة.</div>`; return; }
+    submitSaved(e.target, box, () => setDoc(doc(db,'settings','general'), { platformName:$('#genPlatformName').value.trim() || 'لافندر', supportEmail:email || null, supportPhone:$('#genPhone').value.trim() || null, currency:$('#genCurrency').value, updatedAt:serverTimestamp() }));
+  });
+  $('#commSettingsForm').addEventListener('submit', e => {
+    e.preventDefault(); const box = $('#commSettingsAlert');
+    const wl = $('#waLink').value.trim(), tl = $('#tgLink').value.trim();
+    if(wl && !/^https?:\/\/\S+\.\S+/i.test(wl)){ box.innerHTML = `<div class="alert alert-error">رابط واتساب لازم يبدأ بـ https://</div>`; return; }
+    if(tl && !/^https?:\/\/\S+\.\S+/i.test(tl)){ box.innerHTML = `<div class="alert alert-error">رابط تلغرام لازم يبدأ بـ https://</div>`; return; }
+    submitSaved(e.target, box, () => setDoc(doc(db,'settings','communication'), { whatsappNumber:$('#waNumber').value.trim() || null, whatsappLink:wl || null, telegramUsername:$('#tgUsername').value.trim() || null, telegramLink:tl || null, updatedAt:serverTimestamp() }));
+  });
 }
 
 async function loadMyEnrollments(){
