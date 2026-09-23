@@ -1878,9 +1878,17 @@
 
   .ar-ov{position:fixed;inset:0;z-index:80;background:rgba(34,21,48,.45);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .28s;}
   .ar-ov.open{opacity:1;pointer-events:auto;}
-  .ar-dr{position:absolute;inset-block:0;inset-inline-end:0;width:min(480px,100%);background:#fff;display:flex;flex-direction:column;box-shadow:-20px 0 50px -20px rgba(34,21,48,.4);transform:translateX(-105%);transition:transform .38s cubic-bezier(.22,1,.36,1);overflow-y:auto;}
-  [dir="ltr"] .ar-dr{transform:translateX(105%);} .ar-ov.open .ar-dr{transform:none;}
-  .ar-dr-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:3;} .ar-dr-h h3{margin:0;font-size:16px;color:var(--violet-900);}
+  .ar-dr{
+    position:fixed;top:50%;left:50%;
+    width:min(560px,92vw);max-height:88vh;
+    background:#fff;border-radius:22px;
+    display:flex;flex-direction:column;overflow-y:auto;
+    box-shadow:0 40px 90px -24px rgba(34,21,48,.5);
+    transform:translate(-50%,-50%) scale(.94);opacity:0;pointer-events:none;
+    transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+  }
+  .ar-ov.open .ar-dr{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto;}
+  .ar-dr-h{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:3;flex-shrink:0;} .ar-dr-h h3{margin:0;font-size:16px;color:var(--violet-900);}
   .ar-nav{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--muted);} .ar-nav button:disabled{opacity:.35;pointer-events:none;}
   .ar-nav .icon-action,.ar-dr-h > .icon-action{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;}
   .ar-prev{position:relative;height:210px;background:var(--bg);color:var(--c);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;}
@@ -1896,8 +1904,8 @@
   .ar-kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;animation:rowIn .4s both;} .ar-kv:last-child{border:0;} .ar-kv:nth-child(even){background:var(--paper);}
   .ar-kv > span{color:var(--muted);font-size:12.5px;flex-shrink:0;} .ar-kv > div{display:flex;align-items:center;gap:8px;min-width:0;text-align:end;} .ar-kv small{display:block;color:var(--muted);font-size:11.5px;}
   .ar-lnk{color:var(--violet-700);font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;} .ar-kv code{font-size:11px;background:var(--mist);border-radius:6px;padding:2px 7px;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
-  .ar-mini{border:1px solid var(--line);background:#fff;border-radius:8px;padding:3px 10px;font-size:11.5px;color:var(--violet-700);flex-shrink:0;} .ar-mini:hover{background:var(--mist);}
-  .ar-dr-f{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--line);position:sticky;bottom:0;background:#fff;} .ar-dr-f .btn{display:inline-flex;align-items:center;gap:6px;}
+  .ar-mini{border:1px solid var(--line);background:#fff;border-radius:9px;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;color:var(--violet-700);flex-shrink:0;transition:.15s;} .ar-mini:hover{background:var(--violet-700);color:#fff;border-color:var(--violet-700);}
+  .ar-dr-f{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-top:1px solid var(--line);position:sticky;bottom:0;background:#fff;flex-shrink:0;} .ar-dr-f .btn{display:inline-flex;align-items:center;gap:6px;}
   .ar-danger{background:#FBEBEA;color:var(--danger);border:1px solid #F0C9C6;} .ar-danger:hover{background:var(--danger);color:#fff;}
   .ar-form{padding:18px;} .ar-form-b{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
   .ar-msg{font-size:12px;margin-top:6px;min-height:0;color:var(--muted);} .ar-msg.ok{color:var(--success);} .ar-msg.warn{color:var(--amber-600);} .ar-msg.err{color:var(--danger);} .ar-msg:empty{display:none;}
@@ -1915,7 +1923,14 @@
     .ar-head{display:none;} .ar-list .ar-item{grid-template-columns:26px 60px minmax(0,1fr) auto;grid-template-areas:"c t m b" "a a a a";row-gap:10px;}
     .ar-list .ar-chk{grid-area:c;} .ar-list .ar-th{grid-area:t;width:60px;} .ar-list .ar-main{grid-area:m;} .ar-list .ar-badge{grid-area:b;} .ar-list .ar-dt{display:none;} .ar-list .ar-act{grid-area:a;justify-content:flex-start;}
     .ar-hide-m{display:none;} .ar-stats{grid-template-columns:repeat(2,1fr);} .ar-hero{padding:16px;} .ar-cards{grid-template-columns:1fr;}
-    .ar-dr{width:100%;} .ar-bulk{bottom:88px;} .ar-toast{right:12px;left:12px;bottom:88px;justify-content:space-between;} .ar-search{flex-basis:100%;}
+    .ar-dr{
+      top:auto;bottom:0;left:0;right:0;width:100%;max-width:100%;max-height:92vh;
+      border-radius:20px 20px 0 0;transform:translateY(100%) scale(1);opacity:1;
+    }
+    .ar-ov.open .ar-dr{transform:translateY(0) scale(1);}
+    .ar-dr::before{content:'';position:absolute;top:10px;left:50%;transform:translateX(-50%);width:40px;height:4px;border-radius:99px;background:var(--line);z-index:4;}
+    .ar-dr-h{padding-top:20px;}
+    .ar-bulk{bottom:88px;} .ar-toast{right:12px;left:12px;bottom:88px;justify-content:space-between;} .ar-search{flex-basis:100%;}
   }
   @media (prefers-reduced-motion:reduce){ .ar *,.ar-dr,.ar-bulk,.ar-toast,.ar-dlg,.side-link::before{animation:none !important;transition:none !important;} }
 
@@ -1932,7 +1947,7 @@
   .us-act{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:3px;min-width:0;} .us-pend{font-style:normal;font-size:10.5px;font-weight:800;color:#B5651D;background:#FCF3E3;border-radius:99px;padding:1px 8px;width:fit-content;}
   .ar-item.is-hid .ar-main{opacity:.7;} .ar-item.is-hid .us-av{filter:grayscale(.7);}
   .ar-cards .us-av{width:54px;height:54px;font-size:20px;} .ar-cards .us-act{flex-direction:row;gap:8px;flex-wrap:wrap;align-items:center;}
-  .us-dr{width:min(560px,100%);}
+  .us-dr{width:min(640px,92vw);}
   .us-hd{display:flex;gap:16px;align-items:center;padding:20px 20px 18px;color:#fff;background:linear-gradient(120deg,var(--violet-800),var(--c,var(--violet-600)));position:relative;overflow:hidden;}
   .us-hd::after{content:'';position:absolute;width:180px;height:180px;border-radius:50%;inset-inline-end:-50px;top:-70px;background:radial-gradient(circle,rgba(226,163,59,.4),transparent 70%);}
   .us-hd > div{min-width:0;position:relative;z-index:1;} .us-hd h3{margin:0;font-size:19px;} .us-hd p{margin:2px 0 10px;font-size:12.5px;opacity:.85;overflow:hidden;text-overflow:ellipsis;text-align:start;}
@@ -1944,10 +1959,10 @@
   .us-tabs button::after{content:'';position:absolute;inset-inline:10px;bottom:-1px;height:3px;border-radius:3px 3px 0 0;background:linear-gradient(90deg,var(--violet-600),var(--amber-500));transform:scaleX(0);transition:transform .3s cubic-bezier(.34,1.56,.64,1);}
   .us-tabs button.on{color:var(--violet-800);} .us-tabs button.on::after{transform:scaleX(1);}
   .us-body{padding:18px;flex:1;animation:rowIn .35s both;}
-  .us-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-  .us-kpi{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px;transition:transform .25s,box-shadow .25s;animation:rowIn .4s both;}
-  .us-kpi:hover{transform:translateY(-3px);box-shadow:0 12px 22px -16px var(--c);} .us-kpi span{color:var(--c);display:flex;} .us-kpi b{font-family:'Cairo',sans-serif;font-size:16px;color:var(--violet-900);} .us-kpi small{font-size:11px;color:var(--muted);}
-  .us-prog{margin-bottom:16px;} .us-prog > div{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px;} .us-prog i{display:block;height:8px;border-radius:9px;background:var(--mist);overflow:hidden;}
+  .us-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px;}
+  .us-kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:9px;transition:transform .25s,box-shadow .25s,border-color .25s;animation:rowIn .4s both;}
+  .us-kpi:hover{transform:translateY(-3px);box-shadow:0 14px 26px -18px var(--c);border-color:var(--c);} .us-kpi span{width:30px;height:30px;border-radius:9px;background:var(--paper);color:var(--c);display:flex;align-items:center;justify-content:center;flex-shrink:0;} .us-kpi b{font-family:'Cairo',sans-serif;font-size:18px;color:var(--violet-900);line-height:1;} .us-kpi small{font-size:11px;color:var(--muted);}
+  .us-prog{margin-bottom:18px;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 16px;} .us-prog > div{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;margin-bottom:8px;} .us-prog > div span{color:var(--muted);font-weight:600;} .us-prog > div b{color:var(--violet-800);font-size:14.5px;} .us-prog i{display:block;height:8px;border-radius:9px;background:var(--mist);overflow:hidden;}
   .us-prog u{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--violet-600),var(--amber-500));animation:arGrow .9s cubic-bezier(.22,1,.36,1);transform-origin:right;} .us-prog small{display:block;margin-top:6px;color:#B5651D;font-size:11.5px;}
   .us-miss{color:#B5651D;font-size:12px;} .us-hint{display:block;color:var(--muted);font-size:11.5px;margin-top:8px;line-height:1.7;}
   .us-note-view{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;background:#FFF9EC;border:1px dashed var(--amber-500);border-radius:12px;padding:10px 12px;margin:14px 0 0;color:var(--ink);}
@@ -2094,7 +2109,7 @@
   .crt-head,.crt-list .ar-item{grid-template-columns:26px 46px minmax(0,1fr) 150px 110px 176px;}
   .crt-ic{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,var(--amber-500),var(--amber-600));color:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 16px -10px var(--amber-600);transition:transform .3s cubic-bezier(.34,1.56,.64,1);} .ar-item:hover .crt-ic{transform:scale(1.1) rotate(-6deg);}
   .crt-ex{font-size:11.5px;color:var(--muted);background:#F1EDF5;border-radius:99px;padding:3px 10px;width:fit-content;} .crt-ex.ok{background:#E9F5EE;color:var(--success);font-weight:700;}
-  .crt-dr{width:min(640px,100%);}
+  .crt-dr{width:min(640px,92vw);}
   .crt-prev{width:100%;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 14px 30px -20px rgba(42,25,72,.5);position:relative;animation:rowIn .45s both;}
   .crt-prev .crt-host{position:absolute;top:0;left:0;width:1123px;height:794px;transform-origin:top left;background:#fff;}
   .crt-pick{max-height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:12px;padding:6px;display:flex;flex-direction:column;gap:4px;}
@@ -5796,7 +5811,7 @@ async function renderCheckoutStep2(course, enrollment){
           <div class="payment-account-box">
             <strong>${certEsc(method.label)}</strong><br/>
             ${method.accountName ? `اسم الحساب: ${certEsc(method.accountName)}<br/>` : ''}
-            ${method.accountNumber ? `الرقم: <b dir="ltr">${certEsc(method.accountNumber)}</b> <button type="button" class="ar-mini" data-copy-acc="${certEsc(method.accountNumber)}">نسخ</button><br/>` : ''}
+            ${method.accountNumber ? `الرقم: <b dir="ltr">${certEsc(method.accountNumber)}</b> <button type="button" class="ar-mini" data-copy-acc="${certEsc(method.accountNumber)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button><br/>` : ''}
             ${method.instructions ? `<div style="margin-top:6px;white-space:pre-line;">${certEsc(method.instructions)}</div>` : ''}
           </div>
         ` : `
@@ -9987,15 +10002,15 @@ async function adminRenderUsers(area){
     const k = u.role === 'student' ? kpi(P.book, u.enr.length, 'طلبات اشتراك') + kpi(P.check, u.ap, 'كورس مفعّل') + kpi(P.card, money(u.paid), 'إجمالي المدفوع') + kpi(P.cert, d ? d.certs ?? '—' : busy, 'شهادات') + kpi(P.note, d ? d.exams ?? '—' : busy, 'امتحانات') + kpi(P.clock, u.pend, 'طلبات معلّقة')
       : u.role === 'instructor' ? kpi(P.book, u.taught.length, 'كورس') + kpi(P.users, u.students, 'طالب مشترك') + kpi(P.card, money(u.revenue), 'إيرادات') + kpi(P.check, d ? (d.rating?.count ? d.rating.avg.toFixed(1) + ' ★' : 'بدون') : busy, 'التقييم') : '';
     return `${k ? `<div class="us-kpis">${k}</div>` : ''}
-      ${u.role === 'student' ? `<div class="us-prog"><div><span>اكتمال الملف الشخصي</span><b>${pct}%</b></div><i><u style="width:${pct}%"></u></i>${c.missing.length ? `<small>ناقص: ${c.missing.map(E).join('، ')}</small>` : ''}</div>` : ''}
+      ${u.role === 'student' ? `<div class="us-prog"><div><span>اكتمال الملف الشخصي</span><b>${pct}%</b></div><i><u style="width:${pct}%"></u></i>${c.missing.length ? `<small>ناقص: ${c.missing.map(m => E(m.label)).join('، ')}</small>` : ''}</div>` : ''}
       <div class="ar-kvs">
-        ${kv('البريد', `<span dir="ltr">${E(u.email || '—')}</span>${u.email ? `<button class="ar-mini" data-act="copy" data-v="${E(u.email)}">نسخ</button>` : ''}`)}
-        ${kv('الهاتف', u.phone ? `<span dir="ltr">${E(u.phone)}</span><button class="ar-mini" data-act="copy" data-v="${E(u.phone)}">نسخ</button>` : '<span class="us-miss">غير مسجّل</span>')}
+        ${kv('البريد', `<span dir="ltr">${E(u.email || '—')}</span>${u.email ? `<button class="ar-mini" data-act="copy" data-v="${E(u.email)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>` : ''}`)}
+        ${kv('الهاتف', u.phone ? `<span dir="ltr">${E(u.phone)}</span><button class="ar-mini" data-act="copy" data-v="${E(u.phone)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>` : '<span class="us-miss">غير مسجّل</span>')}
         ${u.role === 'instructor' ? kv('التخصص / المجال', E(instructorDomainLabel(u, cats) || 'غير محدد')) : ''}
         ${u.role === 'student' ? kv('الجنس', u.gender === 'male' ? 'ذكر' : u.gender === 'female' ? 'أنثى' : '<span class="us-miss">غير محدد</span>') + kv('العمر', age !== null ? `${age} سنة<small>${E(u.birthDate)}</small>` : '<span class="us-miss">غير محدد</span>') + kv('التخصص / المرحلة', E(u.major || '') || '<span class="us-miss">غير محدد</span>') : ''}
         ${kv('تاريخ الانضمام', s ? `${fmtD(s)}<small>${ago(s)}</small>` : '—')}
         ${kv('آخر دخول', ll ? `${fmtD(ll)}<small>${ago(ll)}</small>` : '<span class="us-miss">لم يُسجَّل بعد</span>')}
-        ${kv('المعرّف (UID)', `<code dir="ltr">${E(u.id)}</code><button class="ar-mini" data-act="copy" data-v="${E(u.id)}">نسخ</button>`)}
+        ${kv('المعرّف (UID)', `<code dir="ltr">${E(u.id)}</code><button class="ar-mini" data-act="copy" data-v="${E(u.id)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`)}
       </div>${u.bio ? `<p class="ar-dr-p"><b>نبذة:</b> ${E(u.bio)}</p>` : ''}${u.adminNotes ? `<p class="us-note-view">${svg(P.note,14)} ${E(u.adminNotes)}</p>` : ''}`;
   }
   function tabSubs(u){
@@ -10485,10 +10500,10 @@ async function adminRenderArchive(area){
       <div class="ar-chips"><span class="ar-badge">${m.l}</span><span class="ar-st ${it.hidden?'off':'on'}">${it.hidden ? 'مخفية عن الطلاب' : 'منشورة للطلاب'}</span>${it.pinned ? '<span class="ar-st pin">مثبّتة</span>' : ''}</div>
       ${it.description ? `<p class="ar-dr-p">${E(it.description)}</p>` : ''}
       <div class="ar-kvs">
-        ${kv('الرابط', `<a href="${/^https?:\/\//i.test(it.url||'') ? E(it.url) : '#'}" target="_blank" rel="noopener" dir="ltr" class="ar-lnk">${E(dom(it.url) || it.url)}</a><button class="ar-mini" data-act="copy" data-v="${E(it.url)}">نسخ</button>`)}
+        ${kv('الرابط', `<a href="${/^https?:\/\//i.test(it.url||'') ? E(it.url) : '#'}" target="_blank" rel="noopener" dir="ltr" class="ar-lnk">${E(dom(it.url) || it.url)}</a><button class="ar-mini" data-act="copy" data-v="${E(it.url)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`)}
         ${kv('المرفوعة بواسطة', `<span class="ar-av">${E((uname(it)[0] || '؟').toUpperCase())}</span><span>${E(uname(it))}${u.email && u.name ? `<small>${E(u.email)}</small>` : ''}</span>`)}
         ${kv('تاريخ الإضافة', s ? `${fmtD(s)}<small>${new Date(s*1000).toLocaleTimeString('ar-EG',{hour:'2-digit',minute:'2-digit'})} · ${ago(s)}</small>` : '—')}
-        ${kv('المعرّف', `<code dir="ltr">${E(it.id)}</code><button class="ar-mini" data-act="copy" data-v="${E(it.id)}">نسخ</button>`)}
+        ${kv('المعرّف', `<code dir="ltr">${E(it.id)}</code><button class="ar-mini" data-act="copy" data-v="${E(it.id)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`)}
       </div></div>
     <div class="ar-dr-f"><button class="btn btn-primary btn-sm" data-act="edit">${svg(P.edit,14)} تعديل</button><button class="btn btn-ghost btn-sm" data-act="pin">${svg(P.pin,14)} ${it.pinned?'إلغاء التثبيت':'تثبيت'}</button><button class="btn btn-ghost btn-sm" data-act="hide">${svg(it.hidden?P.eye:P.eyeOff,14)} ${it.hidden?'إظهار':'إخفاء'}</button><button class="btn btn-ghost btn-sm" data-act="dup">${svg(P.copy,14)} تكرار</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف</button></div>`;
   }
@@ -11361,7 +11376,7 @@ async function adminRenderPayments(area){
 
   /* ---- drawer ---- */
   const kv = (k, v) => `<div class="ar-kv"><span>${k}</span><div>${v}</div></div>`;
-  const cp = v => `<button class="ar-mini" data-act="copy" data-v="${E(v)}">نسخ</button>`;
+  const cp = v => `<button class="ar-mini" data-act="copy" data-v="${E(v)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`;
   function paintDrawer(){
     ov.classList.toggle('open', !!drw); if(!drw) return;
     const e = enr.find(x => x.id === drw.id), dr = $('#payDr'); if(!e){ drw = null; ov.classList.remove('open'); return; }
@@ -11926,7 +11941,7 @@ async function adminRenderCertificates(area){
       dr.innerHTML = `<div class="ar-dr-h"><div class="ar-nav"><button class="icon-action" data-act="prev" ${ix <= 0 ? 'disabled' : ''}>${svg(P.prev,15)}</button><span>${ix >= 0 ? `${nm(ix+1)} / ${nm(L.length)}` : ''}</span><button class="icon-action" data-act="next" ${ix < 0 || ix >= L.length-1 ? 'disabled' : ''}>${svg(P.next,15)}</button></div><button class="icon-action" data-act="close">${svg(P.x,16)}</button></div>
       <div class="us-body">${prevFrame(c)}
         <h3 class="ar-dr-t" style="margin-top:16px">${E(c.studentName || 'طالب')}</h3><div class="ar-chips"><span class="ar-badge" style="--c:#C98826;--bg:#FFF4E0">${E(c.serialL)}</span><span class="ar-st on">${fmtD(c.t)}</span></div>
-        <div class="ar-kvs" style="margin-top:14px">${kv('الكورس', `<a class="ar-lnk" href="#/course/${c.courseId}">${E(c.courseTitle || 'كورس')}</a>`)}${kv('الطالب', `<a class="ar-lnk" href="#/dashboard?tab=users&uid=${c.studentId}">${E(u.email || 'ملف الطالب')}</a>`)}${kv('تاريخ الإصدار', certDateLabel(c))}${c.note ? kv('الملاحظة', E(c.note)) : ''}${kv('رابط التحقق', `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(url.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copylink">نسخ</button>`)}</div></div>
+        <div class="ar-kvs" style="margin-top:14px">${kv('الكورس', `<a class="ar-lnk" href="#/course/${c.courseId}">${E(c.courseTitle || 'كورس')}</a>`)}${kv('الطالب', `<a class="ar-lnk" href="#/dashboard?tab=users&uid=${c.studentId}">${E(u.email || 'ملف الطالب')}</a>`)}${kv('تاريخ الإصدار', certDateLabel(c))}${c.note ? kv('الملاحظة', E(c.note)) : ''}${kv('رابط التحقق', `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(url.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copylink" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>`)}</div></div>
       <div class="ar-dr-f"><button class="btn btn-primary btn-sm" data-act="print">${svg(P.print,14)} طباعة / حفظ PDF</button><button class="btn btn-ghost btn-sm" data-act="notify">${svg(P.bell,14)} إشعار الطالب</button><button class="btn btn-ghost btn-sm" data-act="edit">${svg(P.edit,14)} تعديل</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف</button></div>`;
       requestAnimationFrame(() => fitPreview(c));
       return;
@@ -12113,7 +12128,7 @@ async function adminRenderPaymentMethods(area){
     return `<div class="pm-card ${isOn(m) ? '' : 'off'}" draggable="true" data-id="${m.id}" style="--i:${Math.min(i,10)};--c:${t.c};--bg:${t.bg}">
       <div class="pm-top"><span class="pm-grip" title="اسحب لإعادة الترتيب">${svg(P.grip,16)}</span><span class="pm-ic">${svg(t.i,20)}</span><div class="pm-tt"><b>${E(m.label)}</b><small>${t.l} · ترتيب ${nm(idx + 1)}</small></div>
         <label class="fin-tg" title="${isOn(m) ? 'تعطيل' : 'تفعيل'}"><input type="checkbox" data-act="toggle" ${isOn(m) ? 'checked' : ''}><i></i></label></div>
-      <div class="pm-acc">${m.accountName ? `<div><span>اسم الحساب</span><b>${E(m.accountName)}</b></div>` : ''}${m.accountNumber ? `<div><span>الرقم</span><b dir="ltr">${E(m.accountNumber)}</b><button class="ar-mini" data-act="copy" data-v="${E(m.accountNumber)}">نسخ</button></div>` : '<div class="pm-miss">لم يُدخل رقم حساب</div>'}</div>
+      <div class="pm-acc">${m.accountName ? `<div><span>اسم الحساب</span><b>${E(m.accountName)}</b></div>` : ''}${m.accountNumber ? `<div><span>الرقم</span><b dir="ltr">${E(m.accountNumber)}</b><button class="ar-mini" data-act="copy" data-v="${E(m.accountNumber)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div>` : '<div class="pm-miss">لم يُدخل رقم حساب</div>'}</div>
       ${m.instructions ? `<p class="pm-ins">${E(m.instructions)}</p>` : ''}
       <div class="pm-use"><div><b>${nm(u.n)}</b><small>طلب</small></div><div><b>${nm(u.ok)}</b><small>مقبول</small></div><div><b>${money(u.rev)}</b><small>إيرادات</small></div></div>
       <div class="pm-bar" title="${pct}% من الطلبات"><u style="width:${pct}%"></u></div>
@@ -12343,7 +12358,7 @@ async function adminRenderLiveSessions(area){
         <div class="ls-badge-row">${stBadge(l)}${!l.link ? '<span class="ar-tag" style="color:var(--danger)">بدون رابط</span>' : ''}</div>
         <h3 class="ar-dr-t">${E(l.title || 'محاضرة')}</h3>
         <div class="ar-kvs">${kv('الكورس', c ? `<a class="ar-lnk" href="#/course/${l.courseId}">${E(c.title)}</a>` : 'كورس محذوف')}${c?.instructorName ? kv('المدرب', E(c.instructorName)) : ''}${kv('الموعد', fmtDT(l))}${kv('عدد المشتركين', nm(n))}
-          ${kv('رابط البث', l.link ? `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(l.link.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copy" data-v="${E(l.link)}">نسخ</button>` : '<span class="us-miss">لم يُضَف بعد</span>')}</div>
+          ${kv('رابط البث', l.link ? `<span class="ar-lnk" dir="ltr" style="max-width:190px">${E(l.link.replace(/^https?:\/\//,''))}</span><button class="ar-mini" data-act="copy" data-v="${E(l.link)}" title="نسخ"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>` : '<span class="us-miss">لم يُضَف بعد</span>')}</div>
       </div>
       <div class="ar-dr-f">${l.link ? `<a class="btn btn-primary btn-sm" href="${E(l.link)}" target="_blank" rel="noopener">${svg(P.play,14)} فتح البث</a>` : ''}<button class="btn btn-ghost btn-sm" data-act="notify" ${n ? '' : 'disabled'}>${svg(P.bell,14)} إشعار ${nm(n)} طالب</button><button class="btn btn-ghost btn-sm" data-act="edit">${svg(P.edit,14)} تعديل</button><button class="btn btn-sm ar-danger" data-act="del">${svg(P.trash,14)} حذف</button></div>`;
       return;
