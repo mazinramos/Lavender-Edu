@@ -2177,63 +2177,28 @@
   .us-av.sm{width:26px;height:26px;font-size:11px;}
   @media (max-width:760px){ .att-pick{flex-direction:column;align-items:stretch;} .att-stats{grid-template-columns:repeat(2,1fr);} .att-tools{width:100%;} }
 
-  :root{
-  --ink:#221530; --paper:#FBF9FD; --mist:#EDE7F6;
-  --violet-600:#6E4BAF; --violet-700:#5A3B92; --violet-800:#3E2566; --violet-900:#2A1948;
-  --amber-500:#E2A33B; --amber-600:#C98826;
-  --muted:#6B6072; --line:#DFD6EC;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  margin:0; font-family:'IBM Plex Sans Arabic', sans-serif;
-  background:var(--paper); color:var(--ink); -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3,.font-display{font-family:'Cairo', sans-serif}
-a{text-decoration:none;color:inherit}
-.container{max-width:860px;margin:0 auto;padding:0 24px}
 
-/* Nav — matches the main app's header */
-.nav{position:sticky;top:0;z-index:50;background:rgba(251,249,253,0.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px}
-.brand{display:flex;align-items:center;gap:10px}
-.brand-mark{width:38px;height:38px;border-radius:50%;flex-shrink:0;object-fit:contain;display:block}
-.brand-name{font-family:'Cairo',sans-serif;font-weight:800;font-size:20px;color:var(--violet-900)}
-.nav-cta a{font-size:14px;font-weight:700;color:var(--violet-800)}
-@media (max-width:480px){.container{padding:0 16px}.nav-inner{height:64px}.brand-name{font-size:17px}}
-
-/* Page content */
-main{padding:34px 0 60px}
-.updated{color:var(--muted);font-size:13px;margin-bottom:26px}
-h1.page-title{font-size:26px;font-weight:800;color:var(--violet-900);margin:0 0 4px}
-.page-sub{color:var(--muted);font-size:14px;margin:0 0 30px}
-h2{font-size:17px;font-weight:800;color:var(--violet-800);margin:30px 0 10px;padding-top:4px}
-h2:first-of-type{margin-top:0}
-p,li{color:#3b3045;font-size:14.5px;line-height:1.9}
-ul{padding-inline-start:22px;margin:8px 0}
-li{margin-bottom:6px}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
-th,td{border:1px solid var(--line);padding:9px 10px;text-align:right;vertical-align:top}
-th{background:var(--mist);color:var(--violet-800);font-weight:700}
-.box{background:var(--mist);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:14px 0}
-.contact-card{
-  background:#fff;border-radius:20px;padding:26px 28px;margin-top:26px;
-  box-shadow:0 30px 60px -30px rgba(34,21,48,0.25); border:1px solid var(--line);
-}
-.contact-card strong{color:var(--violet-900);font-size:15px}
-a.link{color:var(--violet-700);font-weight:700}
-a.link:hover{text-decoration:underline}
-.back-link{display:inline-flex;align-items:center;gap:4px;margin-top:22px;font-size:13.5px;font-weight:700;color:var(--violet-700)}
-
-/* Footer — matches the main app's footer */
-footer.site-footer{background:var(--violet-900);color:#fff;padding:40px 0 26px;margin-top:0}
-.footer-inner{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
-.footer-brand{display:flex;align-items:center;gap:10px;opacity:.95}
-.brand-mark-footer{width:32px;height:32px;border-radius:50%;flex-shrink:0;object-fit:contain}
-.footer-links{display:flex;gap:18px;font-size:13.5px;opacity:.75}
-.footer-links a:hover{opacity:1}
-.footer-bottom{border-top:1px solid rgba(255,255,255,0.12);margin-top:22px;padding-top:18px;font-size:12.5px;opacity:.65;text-align:center}
-
+  /* ---------------- LEGAL PAGES (terms / privacy) — scoped so nothing leaks into the app ---------------- */
+  .legal-page{padding:34px 0 60px;}
+  .legal-page .legal-wrap{max-width:860px;margin:0 auto;padding:0 24px;}
+  .legal-page .updated{color:var(--muted);font-size:13px;margin-bottom:26px;}
+  .legal-page h1.page-title{font-size:26px;font-weight:800;color:var(--violet-900);margin:0 0 4px;}
+  .legal-page .page-sub{color:var(--muted);font-size:14px;margin:0 0 30px;}
+  .legal-page h2{font-size:17px;font-weight:800;color:var(--violet-800);margin:30px 0 10px;padding-top:4px;}
+  .legal-page h2:first-of-type{margin-top:0;}
+  .legal-page p,.legal-page li{color:#3b3045;font-size:14.5px;line-height:1.9;}
+  .legal-page ul{padding-inline-start:22px;margin:8px 0;}
+  .legal-page li{margin-bottom:6px;}
+  .legal-page .legal-tbl{overflow-x:auto;margin:16px 0;}
+  .legal-page table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  .legal-page th,.legal-page td{border:1px solid var(--line);padding:9px 10px;text-align:right;vertical-align:top;}
+  .legal-page th{background:var(--mist);color:var(--violet-800);font-weight:700;}
+  .legal-page .contact-card{background:#fff;border-radius:20px;padding:26px 28px;margin-top:26px;box-shadow:0 30px 60px -30px rgba(34,21,48,0.25);border:1px solid var(--line);}
+  .legal-page .contact-card strong{color:var(--violet-900);font-size:15px;}
+  .legal-page a.link{color:var(--violet-700);font-weight:700;}
+  .legal-page a.link:hover{text-decoration:underline;}
+  .legal-page .back-link{display:inline-flex;align-items:center;gap:4px;margin-top:22px;font-size:13.5px;font-weight:700;color:var(--violet-700);}
+  @media (max-width:480px){ .legal-page .legal-wrap{padding:0 16px;} .legal-page .contact-card{padding:20px 18px;} }
 
 </style>
 </head>
@@ -2294,8 +2259,8 @@ footer.site-footer{background:var(--violet-900);color:#fff;padding:40px 0 26px;m
       <div>
         <h5>قانوني</h5>
         <ul>
-          <li><a href="#">سياسة الخصوصية</a></li>
-          <li><a href="#">الشروط والأحكام</a></li>
+          <li><a href="#/privacy">سياسة الخصوصية</a></li>
+          <li><a href="#/terms">الشروط والأحكام</a></li>
         </ul>
       </div>
     </div>
@@ -2491,6 +2456,17 @@ const STEPS = [
   { t:'بدء التعلم', d:'المحتوى والمحاضرات تفتح فوراً بعد التفعيل.' },
 ];
 
+/* ---------------- LEGAL PAGES (terms / privacy) ---------------- */
+const LEGAL_PAGES = {
+  terms:   { title: 'الشروط والأحكام',  html: "<h1 class=\"page-title\">الشروط والأحكام</h1>\n    <p class=\"page-sub\">منصة لافندر التعليمية</p>\n    <p class=\"updated\">آخر تحديث: 1 أكتوبر 2026</p>\n\n    <p>باستخدامك منصة <strong>لافندر</strong> فإنك توافق على الشروط التالية. يرجى قراءتها قبل إنشاء حساب أو الاشتراك في أي كورس.</p>\n\n    <h2>1) الحساب</h2>\n    <ul>\n      <li>تحتاج بريدًا إلكترونيًا فعّالًا لإنشاء حساب، ويجب تأكيده قبل الاشتراك في أي كورس.</li>\n      <li>أنت مسؤول عن سرية كلمة مرورك وعن أي نشاط يتم من حسابك.</li>\n      <li>يجب أن تكون المعلومات التي تقدّمها (الاسم، البريد، الهاتف) صحيحة.</li>\n    </ul>\n\n    <h2>2) الاشتراك في الكورسات والدفع</h2>\n    <ul>\n      <li>الدفع يتم يدويًا عبر وسائل الدفع المحلية المعلنة في المنصة (مثل بنكك أو فوري).</li>\n      <li>يُفعَّل اشتراكك بعد مراجعة الإدارة لإشعار التحويل والتأكد منه، وقد يستغرق ذلك بعض الوقت.</li>\n      <li>الإدارة لها الحق في رفض أي طلب اشتراك لا يمكن التحقق منه.</li>\n      <li>\n        <strong>سياسة الاسترداد:</strong>\n        لا يُسترد المبلغ بعد تفعيل الاشتراك في الكورس، لأن الوصول للمحتوى يُتاح لك فور التفعيل. يُستثنى من ذلك الحالة التي يتبيّن فيها وجود خطأ تقني من المنصة نفسها منعك من الوصول للمحتوى، وفي هذه الحالة تواصل مع الإدارة خلال 3 أيام من تاريخ التفعيل لمراجعة طلبك. كما يمكنك التواصل معنا خلال المدة نفسها لأي إشكال متعلق بالدفع، مثل تحويل مبلغ خاطئ.\n      </li>\n    </ul>\n\n    <h2>3) المحتوى التعليمي والمحاضرات</h2>\n    <ul>\n      <li>المحتوى المتاح لك (دروس، ملفات، روابط محاضرات مباشرة) مخصص <strong>لاستخدامك الشخصي فقط</strong>، ولا يجوز مشاركته أو إعادة نشره أو بيعه لأي طرف آخر.</li>\n      <li>تُعقد بعض المحاضرات عبر Zoom أو Google Meet؛ رابط الحضور متاح فقط للمشتركين الفعّالين في الكورس، ويُسحَب عند انتهاء اشتراكك.</li>\n      <li>تحتفظ لافندر والمدربون بحقوق الملكية الفكرية لكل المحتوى التعليمي المقدَّم.</li>\n    </ul>\n\n    <h2>4) الامتحانات والشهادات</h2>\n    <ul>\n      <li>نتائج الامتحانات تُحسب بناءً على أدائك الفعلي داخل المنصة.</li>\n      <li>الشهادات الصادرة قابلة للتحقق عبر رابط تحقق عام مخصص لكل شهادة.</li>\n      <li>أي محاولة غش أو انتحال في الامتحانات قد تؤدي لإلغاء الشهادة وتعليق الحساب.</li>\n    </ul>\n\n    <h2>5) معرض الأعمال والمجتمع</h2>\n    <ul>\n      <li>ما تنشره في معرض الأعمال العام يظهر لكل زوار المنصة بعد موافقة الإدارة، ويبقى منسوبًا لاسمك.</li>\n      <li>ما تشاركه داخل مجتمع كورس معيّن يظهر فقط لزملائك المشتركين في نفس الكورس.</li>\n      <li>لا تنشر محتوى مسيئًا أو مخالفًا للآداب العامة أو ينتهك حقوق طرف آخر. الإدارة لها الحق في إزالة أي محتوى مخالف دون إشعار مسبق.</li>\n    </ul>\n\n    <h2>6) الاستخدام المقبول</h2>\n    <p>يُحظر عليك:</p>\n    <ul>\n      <li>مشاركة حسابك أو بيانات دخولك مع آخرين.</li>\n      <li>محاولة الوصول لمحتوى كورسات لم تشترك فيها.</li>\n      <li>استخدام المنصة لأي غرض غير قانوني أو مسيء لمستخدمين آخرين أو للمدربين.</li>\n    </ul>\n    <p>مخالفة ما سبق قد تؤدي لتعليق حسابك أو إلغائه دون استرداد.</p>\n\n    <h2>7) المدربون</h2>\n    <p>المدرب مسؤول عن محتوى الكورس الذي يقدّمه ودقّته. لافندر منصة وسيطة تتيح الوصول للمحتوى وتدير عملية الاشتراك، ولا تضمن نتيجة تعليمية محددة.</p>\n\n    <h2>8) حدود المسؤولية</h2>\n    <p>تُقدَّم المنصة \"كما هي\". لا تتحمل لافندر مسؤولية انقطاع الخدمة المؤقت، أو أي ضرر غير مباشر ناتج عن استخدامك للمنصة، قدر ما يسمح به القانون المعمول به.</p>\n\n    <h2>9) إنهاء الحساب</h2>\n    <p>يمكنك طلب حذف حسابك في أي وقت بالتواصل معنا. كما يحق لإدارة لافندر تعليق أو إنهاء أي حساب يخالف هذه الشروط.</p>\n\n    <h2>10) القانون المعمول به</h2>\n    <p>تخضع هذه الشروط للقوانين المعمول بها في جمهورية السودان، وأي نزاع يُحال للجهات المختصة هناك ما لم يُتفق على غير ذلك.</p>\n\n    <h2>11) التعديلات</h2>\n    <p>قد تُحدَّث هذه الشروط من وقت لآخر. استمرارك في استخدام المنصة بعد أي تحديث يُعد موافقة على الشروط الجديدة.</p>\n\n    <div class=\"contact-card\">\n      <strong>للاستفسار بخصوص هذه الشروط</strong><br>\n      مازن محمد عباس (Mazin Mohamed Abbas) — <a class=\"link\" href=\"mailto:mazinflwo.dev@gmail.com\">mazinflwo.dev@gmail.com</a>\n    </div>\n\n    <a class=\"back-link\" href=\"#/\">⟵ الرجوع إلى لافندر</a>" },
+  privacy: { title: 'سياسة الخصوصية', html: "<h1 class=\"page-title\">سياسة الخصوصية</h1>\n    <p class=\"page-sub\">منصة لافندر التعليمية</p>\n    <p class=\"updated\">آخر تحديث: 1 أكتوبر 2026</p>\n\n    <p>هذه السياسة توضح البيانات التي تجمعها منصة <strong>لافندر</strong> من المستخدمين (طلاب، مدربين، زوّار)، وكيف تُستخدم، ومع من تُشارك، وكيف يمكنك التحكم فيها.</p>\n\n    <h2>1) من يدير المنصة</h2>\n    <p>منصة لافندر يديرها مازن محمد عباس (Mazin Mohamed Abbas). للتواصل بخصوص الخصوصية: <a class=\"link\" href=\"mailto:mazinflwo.dev@gmail.com\">mazinflwo.dev@gmail.com</a></p>\n\n    <h2>2) البيانات التي نجمعها</h2>\n    <div class=\"legal-tbl\"><table>\n      <tr><th>البيانات</th><th>متى تُجمع</th><th>الغرض</th></tr>\n      <tr><td>الاسم الكامل والبريد الإلكتروني وكلمة المرور</td><td>عند إنشاء الحساب</td><td>تسجيل الدخول وإدارة الحساب</td></tr>\n      <tr><td>رقم الهاتف</td><td>اختياري عند التسجيل، أو لاحقًا من صفحة حسابك</td><td>التواصل بخصوص اشتراكاتك، وتفعيلها عبر واتساب</td></tr>\n      <tr><td>الجنس وتاريخ الميلاد والتخصص</td><td>اختياري، من صفحة إكمال الملف الشخصي</td><td>تخصيص المحتوى، وتظهر للمدرب/الإدارة عند الحاجة</td></tr>\n      <tr><td>بيانات الاشتراك في الكورسات (رقم الطلب، المبلغ، حالة المراجعة)</td><td>عند الاشتراك في كورس</td><td>تفعيل الكورس بعد تأكيد الدفع</td></tr>\n      <tr><td>إشعار التحويل البنكي</td><td>عند إتمام الدفع</td><td>يُرسل مباشرة إلى واتساب الإدارة لمراجعته، ولا يُرفع أو يُخزَّن داخل المنصة نفسها</td></tr>\n      <tr><td>صور الأعمال والملفات المرفوعة (قسم الأعمال/المجتمع)</td><td>عند رفعها من المستخدم اختياريًا</td><td>عرضها في معرض الأعمال العام بعد موافقة الإدارة، أو مشاركتها داخل مجتمع الكورس</td></tr>\n      <tr><td>نتائج الامتحانات والشهادات</td><td>عند أداء امتحان داخل كورس</td><td>عرض تقدّمك، وإصدار شهادة قابلة للتحقق</td></tr>\n      <tr><td>سجل النشاط وآخر دخول</td><td>تلقائيًا أثناء الاستخدام</td><td>أمان الحساب ودعم المستخدم</td></tr>\n    </table></div>\n\n    <h2>3) كيف تُستخدم بياناتك</h2>\n    <ul>\n      <li>إنشاء حسابك وتسجيل دخولك والتحقق من بريدك الإلكتروني.</li>\n      <li>تفعيل اشتراكك في الكورسات بعد مراجعة الإدارة لدفعتك.</li>\n      <li>عرض تقدّمك ونتائجك وشهاداتك داخل حسابك.</li>\n      <li>عرض الأعمال التي توافق على نشرها في المعرض العام (مرئية لكل الزوار).</li>\n      <li>مشاركة ملفاتك مع زملائك داخل مجتمع الكورس الذي اشتركت فيه فقط.</li>\n      <li>التواصل معك بخصوص حسابك أو اشتراكك.</li>\n    </ul>\n\n    <h2>4) الدفع</h2>\n    <p>الدفع في لافندر <strong>يدوي</strong>: تُحوّل المبلغ عبر وسيلة دفع محلية (مثل بنكك أو فوري)، ثم تُرسل إشعار التحويل عبر واتساب إلى الإدارة مباشرة لمراجعته. لافندر <strong>لا تخزّن</strong> بيانات حسابك البنكي أو صورة الإشعار داخل قواعد بياناتها — فقط رقم الطلب والمبلغ وحالة المراجعة (قيد المراجعة / مفعّل / مرفوض).</p>\n\n    <h2>5) من يرى بياناتك</h2>\n    <ul>\n      <li><strong>أنت</strong>: بياناتك في حسابك الشخصي.</li>\n      <li><strong>الإدارة</strong>: للموافقة على الاشتراكات والأعمال المنشورة، ولإدارة الحسابات والدعم.</li>\n      <li><strong>المدرب</strong>: بيانات أساسية (الاسم، تقدّمك، نتائجك) للطلاب المشتركين في كورسه فقط.</li>\n      <li><strong>زملاؤك في نفس الكورس</strong>: ما تنشره أنت بنفسك في مجتمع ذلك الكورس فقط.</li>\n      <li><strong>كل الزوار</strong>: الأعمال التي وافقت الإدارة على نشرها في معرض الأعمال العام، والشهادات عند التحقق منها عبر رابط التحقق العام.</li>\n    </ul>\n    <p>لافندر <strong>لا تبيع</strong> بياناتك لأي طرف ثالث، ولا تستخدمها في إعلانات.</p>\n\n    <h2>6) الخدمات الخارجية</h2>\n    <div class=\"legal-tbl\"><table>\n      <tr><th>الخدمة</th><th>الغرض</th><th>البيانات المرتبطة</th></tr>\n      <tr><td>Firebase Authentication (Google)</td><td>الحساب وتسجيل الدخول</td><td>البريد، كلمة المرور، معرّف الحساب</td></tr>\n      <tr><td>Cloud Firestore (Google)</td><td>حفظ بيانات المنصة</td><td>كل البيانات المذكورة أعلاه</td></tr>\n      <tr><td>Firebase Storage (Google)</td><td>حفظ الملفات التي ترفعها</td><td>صور الأعمال وملفات المجتمع</td></tr>\n      <tr><td>واتساب</td><td>تأكيد الدفع والتواصل</td><td>رقم هاتفك إن تواصلت، ونص الرسالة التي ترسلها بنفسك</td></tr>\n      <tr><td>Zoom / Google Meet</td><td>حضور المحاضرات المباشرة (للمشتركين فقط)</td><td>لا تُرسل بيانات حساب إضافية من لافندر لهذه الخدمات؛ رابط الحضور فقط</td></tr>\n    </table></div>\n    <p>لا تستخدم المنصة إعلانات ولا أدوات تحليلات تتبّع تصفحك.</p>\n\n    <h2>7) حقوقك</h2>\n    <ul>\n      <li><strong>التعديل:</strong> عدّل بياناتك الشخصية في أي وقت من صفحة حسابك.</li>\n      <li><strong>الحذف:</strong> يمكنك طلب حذف حسابك وبياناتك بالتواصل على <a class=\"link\" href=\"mailto:mazinflwo.dev@gmail.com\">mazinflwo.dev@gmail.com</a>. يُحذف حسابك وملفك الشخصي؛ أما شهاداتك الصادرة ونتائج امتحاناتك المرتبطة بكورسات أكملتها فقد تُحتفظ بسجل محدود منها لأغراض التحقق من صحة الشهادة، ما لم تطلب غير ذلك صراحة.</li>\n      <li><strong>إلغاء نشر عمل:</strong> يمكنك طلب إزالة أي عمل نشرته من معرض الأعمال العام في أي وقت.</li>\n    </ul>\n\n    <h2>8) أمان البيانات</h2>\n    <p>تُحفظ بياناتك على خوادم Google (Firebase) ومشفّرة أثناء النقل. الوصول لبيانات كل مستخدم مقيّد بقواعد صلاحيات تمنع أي مستخدم من الوصول لبيانات غيره، باستثناء ما هو معروض للعموم صراحة (كمعرض الأعمال والشهادات).</p>\n\n    <h2>9) الفئة العمرية</h2>\n    <p>لافندر مخصصة لمن هم 13 عامًا فأكثر. إن كنت دون هذا السن فيرجى استخدام المنصة بإشراف ولي أمر.</p>\n\n    <h2>10) تحديثات هذه السياسة</h2>\n    <p>قد تُحدَّث هذه السياسة من وقت لآخر. سيُنشر أي تغيير جوهري على هذه الصفحة مع تاريخ التحديث أعلاه.</p>\n\n    <div class=\"contact-card\">\n      <strong>للتواصل بخصوص الخصوصية أو طلب حذف بياناتك</strong><br>\n      مازن محمد عباس (Mazin Mohamed Abbas) — <a class=\"link\" href=\"mailto:mazinflwo.dev@gmail.com\">mazinflwo.dev@gmail.com</a>\n    </div>\n\n    <a class=\"back-link\" href=\"#/\">⟵ الرجوع إلى لافندر</a>" },
+};
+function renderLegal(kind){
+  const page = LEGAL_PAGES[kind] || LEGAL_PAGES.terms;
+  document.title = page.title + ' | لافندر';
+  document.getElementById('app').innerHTML = `<div class="legal-page"><div class="legal-wrap">${page.html}</div></div>`;
+}
+
 /* ---------------- ROUTER ---------------- */
 function router(){
   const hash = location.hash || '#/';
@@ -2528,7 +2504,7 @@ function router(){
   // browse, enroll, submit to the library, none of it — until the address on file is
   // proven real. Every route funnels through the verification page first, for every role
   // except admin (an admin account is set up directly, never through self-registration).
-  if(currentUser && !isAdminAccount() && !currentUser.emailVerified && path !== '#/verify-email'){
+  if(currentUser && !isAdminAccount() && !currentUser.emailVerified && path !== '#/verify-email' && path !== '#/terms' && path !== '#/privacy'){
     location.hash = '#/verify-email';
     return;
   }
@@ -2536,6 +2512,8 @@ function router(){
   if(path.startsWith('#/login')) renderLogin();
   else if(path.startsWith('#/register')) renderRegister();
   else if(path.startsWith('#/verify-email')) renderVerifyEmail();
+  else if(path === '#/terms') renderLegal('terms');
+  else if(path === '#/privacy') renderLegal('privacy');
   else if(path.startsWith('#/dashboard')) renderDashboard(params.get('tab'));
   else if(path.startsWith('#/learn/')) renderLearnRoom(path.split('#/learn/')[1]);
   else if(path.startsWith('#/lesson/')) renderLessonDetail(path.split('#/lesson/')[1]);
